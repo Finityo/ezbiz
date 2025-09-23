@@ -26,38 +26,40 @@ import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/form-llc" element={<LLC />} />
-          <Route path="/c-corporation" element={<CCorporation />} />
-          <Route path="/s-corporation" element={<SCorporation />} />
-          <Route path="/professional-corporation" element={<ProfessionalCorporation />} />
-          <Route path="/nonprofit-corporation" element={<NonprofitCorporation />} />
-          <Route path="/partnership" element={<Partnership />} />
-          <Route path="/sole-proprietorship" element={<SoleProprietorship />} />
-          <Route path="/registered-agent" element={<RegisteredAgent />} />
-          <Route path="/name-search" element={<BusinessNameSearch />} />
-          <Route path="/dba-filing" element={<DBAFiling />} />
-          <Route path="/ein-number" element={<EINNumber />} />
-          <Route path="/operating-agreement" element={<OperatingAgreement />} />
-          <Route path="/corporate-bylaws" element={<CorporateBylaws />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/business-guide" element={<BusinessGuide />} />
-          <Route path="/state-requirements" element={<StateRequirements />} />
-          <Route path="/consultation" element={<Consultation />} />
-          <Route path="/about" element={<About />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/form-llc" element={<LLC />} />
+            <Route path="/c-corporation" element={<CCorporation />} />
+            <Route path="/s-corporation" element={<SCorporation />} />
+            <Route path="/professional-corporation" element={<ProfessionalCorporation />} />
+            <Route path="/nonprofit-corporation" element={<NonprofitCorporation />} />
+            <Route path="/partnership" element={<Partnership />} />
+            <Route path="/sole-proprietorship" element={<SoleProprietorship />} />
+            <Route path="/registered-agent" element={<RegisteredAgent />} />
+            <Route path="/name-search" element={<BusinessNameSearch />} />
+            <Route path="/dba-filing" element={<DBAFiling />} />
+            <Route path="/ein-number" element={<EINNumber />} />
+            <Route path="/operating-agreement" element={<OperatingAgreement />} />
+            <Route path="/corporate-bylaws" element={<CorporateBylaws />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/business-guide" element={<BusinessGuide />} />
+            <Route path="/state-requirements" element={<StateRequirements />} />
+            <Route path="/consultation" element={<Consultation />} />
+            <Route path="/about" element={<About />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
