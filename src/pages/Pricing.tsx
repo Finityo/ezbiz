@@ -1,0 +1,378 @@
+import Navigation from "@/components/Navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, Star } from "lucide-react";
+
+const Pricing = () => {
+  const llcPackages = [
+    {
+      name: "Basic LLC",
+      price: "$49",
+      period: "+ State Fee",
+      description: "Essential LLC formation service",
+      features: [
+        "Articles of Organization filing",
+        "Registered Agent service (1 year)",
+        "EIN application",
+        "Operating Agreement template",
+        "Email support"
+      ],
+      popular: false
+    },
+    {
+      name: "Standard LLC", 
+      price: "$149",
+      period: "+ State Fee",
+      description: "Most popular LLC package",
+      features: [
+        "Everything in Basic",
+        "Express processing",
+        "Banking resolution",
+        "Compliance calendar",
+        "Priority phone support",
+        "Business name search"
+      ],
+      popular: true
+    },
+    {
+      name: "Premium LLC",
+      price: "$299", 
+      period: "+ State Fee",
+      description: "Complete LLC formation with extras",
+      features: [
+        "Everything in Standard",
+        "Custom Operating Agreement",
+        "Business license research",
+        "Domain name consultation", 
+        "Trademark search",
+        "1-hour attorney consultation"
+      ],
+      popular: false
+    }
+  ];
+
+  const corpPackages = [
+    {
+      name: "Basic Corporation",
+      price: "$99",
+      period: "+ State Fee", 
+      description: "Essential corporation formation",
+      features: [
+        "Articles of Incorporation filing",
+        "Registered Agent service (1 year)",
+        "EIN application",
+        "Corporate bylaws template",
+        "Email support"
+      ]
+    },
+    {
+      name: "Standard Corporation",
+      price: "$199",
+      period: "+ State Fee",
+      description: "Complete corporation package", 
+      features: [
+        "Everything in Basic",
+        "Custom Corporate Bylaws",
+        "Stock certificates",
+        "Corporate seal",
+        "Priority support",
+        "Banking resolution"
+      ]
+    },
+    {
+      name: "Premium Corporation", 
+      price: "$399",
+      period: "+ State Fee",
+      description: "Full-service corporation formation",
+      features: [
+        "Everything in Standard",
+        "Attorney consultation",
+        "S-Corp election assistance",
+        "Compliance calendar",
+        "Business license research",
+        "Ongoing support"
+      ]
+    }
+  ];
+
+  const additionalServices = [
+    { name: "Registered Agent Service", price: "$199/year" },
+    { name: "Business Name Search", price: "$49" },
+    { name: "DBA Filing", price: "$99" },
+    { name: "EIN Application", price: "$79" },
+    { name: "Operating Agreement", price: "$199" },
+    { name: "Corporate Bylaws", price: "$299" },
+    { name: "Business License Research", price: "$149" },
+    { name: "Trademark Search", price: "$99" }
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <main>
+        {/* Hero Section */}
+        <section className="bg-gradient-primary text-white py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-5xl font-bold mb-6">Transparent Pricing</h1>
+              <p className="text-xl mb-8 text-white/90">
+                No hidden fees. No surprises. Choose the package that's right for your business.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* LLC Packages */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">LLC Formation Packages</h2>
+              <p className="text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {llcPackages.map((pkg, index) => (
+                <Card key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`}>
+                  {pkg.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center">
+                        <Star className="h-4 w-4 mr-1" />
+                        Most Popular
+                      </div>
+                    </div>
+                  )}
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
+                    <div className="text-4xl font-bold text-primary">{pkg.price}</div>
+                    <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    <CardDescription>{pkg.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <ul className="space-y-3">
+                      {pkg.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start space-x-3">
+                          <Check className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className={`w-full ${pkg.popular ? 'bg-primary' : ''}`}>
+                      Choose {pkg.name}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Corporation Packages */}
+        <section className="py-16 bg-muted/50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Corporation Formation Packages</h2>
+              <p className="text-xl text-muted-foreground">Establish your corporation with professional service</p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {corpPackages.map((pkg, index) => (
+                <Card key={index}>
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
+                    <div className="text-4xl font-bold text-primary">{pkg.price}</div>
+                    <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    <CardDescription>{pkg.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <ul className="space-y-3">
+                      {pkg.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start space-x-3">
+                          <Check className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className="w-full" variant="outline">
+                      Choose {pkg.name}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Additional Services */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Additional Services</h2>
+              <p className="text-xl text-muted-foreground">Add-on services to complement your business formation</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+              {additionalServices.map((service, index) => (
+                <Card key={index} className="text-center">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{service.name}</CardTitle>
+                    <div className="text-2xl font-bold text-primary">{service.price}</div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Add Service
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* State Fees Info */}
+        <section className="py-16 bg-muted/50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-8">State Filing Fees</h2>
+              <Card>
+                <CardContent className="p-8">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">LLC State Fees</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>Delaware</span>
+                          <span>$90</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Wyoming</span>
+                          <span>$100</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Nevada</span>
+                          <span>$75</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Florida</span>
+                          <span>$125</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Texas</span>
+                          <span>$300</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>California</span>
+                          <span>$70</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">Corporation State Fees</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>Delaware</span>
+                          <span>$89</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Wyoming</span>
+                          <span>$100</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Nevada</span>
+                          <span>$75</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Florida</span>
+                          <span>$70</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Texas</span>
+                          <span>$300</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>California</span>
+                          <span>$100</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      * State fees are paid directly to the state and are in addition to our service fees. 
+                      Fees may vary by state and are subject to change. Contact us for current fees in your state.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Money Back Guarantee */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-6">100% Satisfaction Guarantee</h2>
+              <Card className="border-success">
+                <CardContent className="p-8">
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
+                      <Check className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-4">Money-Back Guarantee</h3>
+                  <p className="text-muted-foreground mb-6">
+                    We're so confident in our services that we offer a 100% money-back guarantee. 
+                    If you're not completely satisfied with our service, we'll refund your money within 60 days.
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                      <div className="font-semibold">Fast Processing</div>
+                      <div className="text-muted-foreground">Quick turnaround times</div>
+                    </div>
+                    <div>
+                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                      <div className="font-semibold">Expert Support</div>
+                      <div className="text-muted-foreground">Professional guidance</div>
+                    </div>
+                    <div>
+                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                      <div className="font-semibold">Accuracy Guaranteed</div>
+                      <div className="text-muted-foreground">Error-free filing</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 bg-gradient-primary text-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-6">Ready to Start Your Business?</h2>
+              <p className="text-xl text-white/90 mb-8">
+                Choose your package and get started today. Our experts are here to help you every step of the way.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Start Your LLC</Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Start Your Corporation</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-muted py-12">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Pricing;
