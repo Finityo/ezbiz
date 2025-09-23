@@ -19,6 +19,10 @@ import EINNumber from "./pages/EINNumber";
 import OperatingAgreement from "./pages/OperatingAgreement";
 import CorporateBylaws from "./pages/CorporateBylaws";
 import Pricing from "./pages/Pricing";
+import BusinessGuide from "./pages/BusinessGuide";
+import StateRequirements from "./pages/StateRequirements";
+import Consultation from "./pages/Consultation";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +48,10 @@ const App = () => (
           <Route path="/operating-agreement" element={<OperatingAgreement />} />
           <Route path="/corporate-bylaws" element={<CorporateBylaws />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/business-guide" element={<BusinessGuide />} />
+          <Route path="/state-requirements" element={<StateRequirements />} />
+          <Route path="/consultation" element={<Consultation />} />
+          <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
