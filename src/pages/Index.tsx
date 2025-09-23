@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, Shield, Clock, Users, Star } from "lucide-react";
 import Logo from "@/components/ui/logo";
+import Navigation from "@/components/Navigation";
 import heroImage from "@/assets/hero-business.jpg";
 
 const Index = () => {
@@ -71,21 +72,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Logo size="md" />
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-muted-foreground hover:text-foreground transition-fast">Services</a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-fast">Pricing</a>
-              <a href="#about" className="text-muted-foreground hover:text-foreground transition-fast">About</a>
-              <Button variant="outline">Sign In</Button>
-              <Button variant="hero" size="sm">Get Started</Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
