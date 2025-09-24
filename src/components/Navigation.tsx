@@ -77,7 +77,7 @@ const Navigation = () => {
     { title: "State Requirements", href: "/state-requirements", description: "Requirements by state" },
     { title: "Pricing", href: "/pricing", description: "Transparent pricing for all services" },
     { title: "Free Consultation", href: "/consultation", description: "Speak with a business expert" },
-    { title: "Admin Login", href: "/auth", description: "Administrative access portal", isAdminLogin: true },
+    { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true },
     // Downloadable PDFs
     { title: "LLC Formation Guide", href: "/LLC-Formation-Guide.pdf", description: "Comprehensive LLC formation guide", isDownload: true },
     { title: "Corporation Handbook", href: "/Corporation-Handbook.pdf", description: "Complete corporation handbook", isDownload: true },
