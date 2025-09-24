@@ -5,6 +5,7 @@ import { CheckCircle, ArrowRight, Shield, Clock, DollarSign, Users, FileText, Bu
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
+import llcFormation from "@/assets/llc-formation.jpg";
 
 const LLC = () => {
   const navigate = useNavigate();

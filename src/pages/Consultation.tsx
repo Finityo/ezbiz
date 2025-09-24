@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
+import consultationMeeting from "@/assets/consultation-meeting.jpg"
 
 const Consultation = () => {
   const [formData, setFormData] = useState({

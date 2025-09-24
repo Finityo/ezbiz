@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, TrendingUp, Users, Shield, Globe } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
+import corporationMeeting from "@/assets/corporation-meeting.jpg";
 
 const CCorporation = () => {
   const navigate = useNavigate();

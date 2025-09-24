@@ -7,6 +7,9 @@ import { useToast } from "@/hooks/use-toast";
 import businessConsultation from "@/assets/business-consultation.jpg";
 import businessDocuments from "@/assets/business-documents.jpg";
 import businessSuccess from "@/assets/business-success.jpg";
+import pricingHero from "@/assets/pricing-hero.jpg";
+import transparentPricing from "@/assets/transparent-pricing.jpg";
+import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -148,13 +151,38 @@ const Pricing = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-primary text-white py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-5xl font-bold mb-6">Transparent Pricing</h1>
-              <p className="text-xl mb-8 text-white/90">
-                No hidden fees. No surprises. Choose the package that's right for your business.
-              </p>
+        <section className="relative bg-gradient-primary text-white overflow-hidden">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="container mx-auto px-4 py-20 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="max-w-2xl">
+                <h1 className="text-5xl font-bold mb-6">Transparent Pricing</h1>
+                <p className="text-xl mb-8 text-white/90">
+                  No hidden fees. No surprises. Choose the package that's right for your business.
+                </p>
+                <div className="flex items-center space-x-6 text-white/80">
+                  <div className="flex items-center space-x-2">
+                    <Check className="h-5 w-5" />
+                    <span>No Hidden Fees</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Check className="h-5 w-5" />
+                    <span>Money-Back Guarantee</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Check className="h-5 w-5" />
+                    <span>Expert Support</span>
+                  </div>
+                </div>
+              </div>
+              <div className="relative">
+                <img 
+                  src={pricingHero} 
+                  alt="Professional business team celebrating success" 
+                  className="rounded-lg shadow-2xl w-full h-auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent rounded-lg"></div>
+              </div>
             </div>
           </div>
         </section>
@@ -196,13 +224,13 @@ const Pricing = () => {
                     </div>
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative order-1 lg:order-2">
                   <img 
-                    src={businessConsultation} 
-                    alt="Professional business consultation" 
+                    src={transparentPricing} 
+                    alt="Business calculator and financial documents showing transparent pricing" 
                     className="rounded-lg shadow-lg w-full h-auto"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-lg"></div>
                 </div>
               </div>
             </div>
@@ -518,8 +546,8 @@ const Pricing = () => {
                 </div>
                 <div className="relative">
                   <img 
-                    src={businessSuccess} 
-                    alt="Successful business entrepreneurs celebrating milestone" 
+                    src={customerSatisfaction} 
+                    alt="Satisfied customers reviewing business services with happy expressions" 
                     className="rounded-lg shadow-lg w-full h-auto"
                   />
                   <div className="absolute inset-0 bg-gradient-to-tl from-success/20 to-transparent rounded-lg"></div>
