@@ -94,11 +94,39 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="hero" size="lg" className="group" onClick={() => navigate('/form-llc')}>
+                <Button 
+                  variant="hero" 
+                  size="lg" 
+                  className="group touch-manipulation" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate('/pricing');
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  style={{ 
+                    minHeight: '44px',
+                    WebkitTapHighlightColor: 'transparent'
+                  }}
+                >
                   Start Your Business Today
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button variant="professional" size="lg" onClick={() => navigate('/consultation')}>
+                <Button 
+                  variant="professional" 
+                  size="lg" 
+                  className="touch-manipulation"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate('/consultation');
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  style={{ 
+                    minHeight: '44px',
+                    WebkitTapHighlightColor: 'transparent'
+                  }}
+                >
                   Free Consultation
                 </Button>
               </div>
@@ -162,7 +190,17 @@ const Index = () => {
                   </ul>
                   <Button 
                     variant={type.popular ? "hero" : "default"} 
-                    className="w-full mt-6"
+                    className="w-full mt-6 touch-manipulation"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate('/pricing');
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    style={{ 
+                      minHeight: '44px',
+                      WebkitTapHighlightColor: 'transparent'
+                    }}
                   >
                     Get Started
                   </Button>
@@ -253,10 +291,38 @@ const Index = () => {
             Get started today with our simple, fast, and affordable process.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl">
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="shadow-lg hover:shadow-xl touch-manipulation"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/pricing');
+              }}
+              onTouchStart={(e) => e.stopPropagation()}
+              style={{ 
+                minHeight: '44px',
+                WebkitTapHighlightColor: 'transparent'
+              }}
+            >
               Start Your LLC - $149
             </Button>
-            <Button variant="professional" size="lg" className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary">
+            <Button 
+              variant="professional" 
+              size="lg" 
+              className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary touch-manipulation"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/consultation');
+              }}
+              onTouchStart={(e) => e.stopPropagation()}
+              style={{ 
+                minHeight: '44px',
+                WebkitTapHighlightColor: 'transparent'
+              }}
+            >
               Free Consultation
             </Button>
           </div>
