@@ -84,6 +84,15 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
+                <div className="bg-primary/10 p-4 rounded-lg border-l-4 border-primary">
+                  <h2 className="text-lg font-semibold text-primary mb-2">Admin Access</h2>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Sign in to access your admin dashboard and manage consultation requests.
+                  </p>
+                  <Button onClick={() => navigate('/auth')} className="w-full">
+                    Sign In to Admin Dashboard
+                  </Button>
+                </div>
                 <Badge variant="secondary" className="text-sm">
                   Trusted by 50,000+ Entrepreneurs
                 </Badge>
@@ -326,6 +335,24 @@ const Index = () => {
             >
               Free Consultation
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Admin Access Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-md mx-auto">
+            <div className="bg-primary/10 p-6 rounded-lg border-l-4 border-primary text-center">
+              <Shield className="h-8 w-8 text-primary mx-auto mb-3" />
+              <h2 className="text-xl font-semibold text-primary mb-2">Admin Access</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Access your admin dashboard to manage consultation requests and business applications.
+              </p>
+              <Button onClick={() => navigate('/auth')} className="w-full">
+                Sign In to Admin Dashboard
+              </Button>
+            </div>
           </div>
         </div>
       </section>

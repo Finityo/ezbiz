@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, User } from "lucide-react"
+import { Menu, X, User, Shield } from "lucide-react"
 import Logo from "@/components/ui/logo"
 import { useAuth } from "@/hooks/useAuth"
 import { Link, useNavigate } from "react-router-dom"
+import { supabase } from "@/integrations/supabase/client"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,8 +24,33 @@ import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        try {
+          const { data } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .eq('role', 'admin')
+            .maybeSingle();
+          
+          setIsAdmin(!!data);
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   const businessStructures = [
     { title: "Limited Liability Company (LLC)", href: "/form-llc", description: "Most popular choice for small businesses" },
@@ -174,9 +200,35 @@ const Navigation = () => {
                   <User className="h-4 w-4 mr-2" />
                   Dashboard
                 </Button>
-                <Button variant="outline" onClick={signOut}>
-                  Sign Out
-                </Button>
+                {isAdmin && (
+                  <Button variant="outline" onClick={() => navigate('/admin')}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Admin
+                  </Button>
+                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">
+                      Account
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                      <User className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate('/admin')}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut}>
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             ) : (
               <>
@@ -237,6 +289,12 @@ const Navigation = () => {
                       <User className="h-4 w-4 mr-2" />
                       Dashboard
                     </Button>
+                    {isAdmin && (
+                      <Button variant="outline" className="justify-start" onClick={() => navigate('/admin')}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </Button>
+                    )}
                     <Button variant="outline" onClick={signOut}>
                       Sign Out
                     </Button>
