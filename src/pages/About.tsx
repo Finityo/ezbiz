@@ -116,13 +116,13 @@ const About = () => {
                 <CardContent className="p-8">
                   <div className="prose prose-lg max-w-none">
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                      Finityo was founded in 2009 with a simple mission: to make business formation accessible, affordable, and straightforward for entrepreneurs across America. Our founder, Christian Talavera, experienced firsthand the confusion and complexity of starting a business and knew there had to be a better way.
+                      Finityo was founded in 2018 with a simple mission: to make business formation accessible, affordable, and straightforward for entrepreneurs across America. Our founder, Christian Talavera, a military veteran, experienced firsthand the confusion and complexity of starting a business after his service and knew there had to be a better way.
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                      What started as a small practice helping local entrepreneurs has grown into a nationwide service that has helped over 50,000 businesses get started. We've maintained our commitment to personal service while leveraging technology to make the process faster and more efficient.
+                      What started as a small practice in a tight-knit community, helping local entrepreneurs and fellow veterans navigate the business formation process, has grown into a nationwide service that has helped over 50,000 businesses get started. We've maintained our small-town values of personal service and integrity while leveraging technology to make the process faster and more efficient.
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                      Today, Finityo is recognized as one of the leading business formation companies in the United States, but we never forget our roots. Every client receives the same personalized attention and expert guidance that built our reputation.
+                      Today, Finityo is recognized as one of the leading veteran-owned business formation companies in the United States, but we never forget our roots in serving our community. Every client receives the same personalized attention and expert guidance that built our reputation, backed by our commitment to supporting entrepreneurs the way we wished we had been supported.
                     </p>
                   </div>
                 </CardContent>
