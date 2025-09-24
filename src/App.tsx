@@ -29,7 +29,7 @@ import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -67,6 +67,6 @@ const App = () => {
     </AuthProvider>
   </QueryClientProvider>
   );
-};
+}
 
 export default App;
