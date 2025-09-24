@@ -10,6 +10,9 @@ const Pricing = () => {
   const { toast } = useToast();
 
   const handlePackageSelect = (packageName: string, packageType: string) => {
+    // Prevent event bubbling on mobile
+    console.log(`Package selected: ${packageName} (${packageType})`);
+    
     toast({
       title: "Package Selected!",
       description: `You selected ${packageName}. Redirecting to order form...`,
@@ -27,6 +30,8 @@ const Pricing = () => {
   };
 
   const handleServiceAdd = (serviceName: string) => {
+    console.log(`Service added: ${serviceName}`);
+    
     toast({
       title: "Service Added!",
       description: `${serviceName} has been noted. Contact us to add this service.`,
@@ -186,8 +191,17 @@ const Pricing = () => {
                       ))}
                     </ul>
                     <Button 
-                      className={`w-full ${pkg.popular ? 'bg-primary' : ''}`}
-                      onClick={() => handlePackageSelect(pkg.name, 'LLC')}
+                      className={`w-full touch-manipulation ${pkg.popular ? 'bg-primary' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handlePackageSelect(pkg.name, 'LLC');
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      style={{ 
+                        minHeight: '44px',
+                        WebkitTapHighlightColor: 'transparent'
+                      }}
                     >
                       Choose {pkg.name}
                     </Button>
@@ -225,9 +239,18 @@ const Pricing = () => {
                       ))}
                     </ul>
                     <Button 
-                      className="w-full" 
+                      className="w-full touch-manipulation" 
                       variant="outline"
-                      onClick={() => handlePackageSelect(pkg.name, 'Corporation')}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handlePackageSelect(pkg.name, 'Corporation');
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      style={{ 
+                        minHeight: '44px',
+                        WebkitTapHighlightColor: 'transparent'
+                      }}
                     >
                       Choose {pkg.name}
                     </Button>
@@ -257,8 +280,17 @@ const Pricing = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
-                      onClick={() => handleServiceAdd(service.name)}
+                      className="w-full touch-manipulation"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleServiceAdd(service.name);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      style={{ 
+                        minHeight: '44px',
+                        WebkitTapHighlightColor: 'transparent'
+                      }}
                     >
                       Add Service
                     </Button>
