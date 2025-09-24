@@ -37,6 +37,7 @@ const Navigation = () => {
   ];
 
   const services = [
+    { title: "Business Filings", href: "/business-filings", description: "Comprehensive filing and compliance services" },
     { title: "Registered Agent", href: "/registered-agent", description: "Professional registered agent services" },
     { title: "Business Name Search", href: "/name-search", description: "Check name availability" },
     { title: "DBA Filing", href: "/dba-filing", description: "Doing Business As registration" },

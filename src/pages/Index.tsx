@@ -342,19 +342,20 @@ const Index = () => {
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-fast">LLC Formation</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Corporation</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">DBA Filing</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Registered Agent</a></li>
+                <li><a href="/business-filings" className="hover:text-foreground transition-fast">Business Filings</a></li>
+                <li><a href="/form-llc" className="hover:text-foreground transition-fast">LLC Formation</a></li>
+                <li><a href="/c-corporation" className="hover:text-foreground transition-fast">Corporation</a></li>
+                <li><a href="/dba-filing" className="hover:text-foreground transition-fast">DBA Filing</a></li>
+                <li><a href="/registered-agent" className="hover:text-foreground transition-fast">Registered Agent</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-fast">Business Guide</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">State Requirements</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Support</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Contact</a></li>
+                <li><a href="/business-guide" className="hover:text-foreground transition-fast">Business Guide</a></li>
+                <li><a href="/state-requirements" className="hover:text-foreground transition-fast">State Requirements</a></li>
+                <li><a href="/consultation" className="hover:text-foreground transition-fast">Support</a></li>
+                <li><a href="/about" className="hover:text-foreground transition-fast">Contact</a></li>
               </ul>
             </div>
             <div>

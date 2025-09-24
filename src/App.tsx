@@ -22,6 +22,7 @@ import CorporateBylaws from "./pages/CorporateBylaws";
 import Pricing from "./pages/Pricing";
 import BusinessGuide from "./pages/BusinessGuide";
 import StateRequirements from "./pages/StateRequirements";
+import BusinessFilings from "./pages/BusinessFilings";
 import Consultation from "./pages/Consultation";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
@@ -55,6 +56,7 @@ function App() {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/business-guide" element={<BusinessGuide />} />
             <Route path="/state-requirements" element={<StateRequirements />} />
+            <Route path="/business-filings" element={<BusinessFilings />} />
             <Route path="/consultation" element={<Consultation />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
