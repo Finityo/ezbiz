@@ -30,6 +30,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
+import OrderNow from "./pages/OrderNow";
 
 function App() {
   const [queryClient] = React.useState(() => new QueryClient());
@@ -62,6 +63,7 @@ function App() {
             <Route path="/business-filings" element={<BusinessFilings />} />
             <Route path="/consultation" element={<Consultation />} />
             <Route path="/about" element={<About />} />
+            <Route path="/order-now" element={<OrderNow />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />

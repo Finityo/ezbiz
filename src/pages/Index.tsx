@@ -111,7 +111,7 @@ const Index = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    navigate('/pricing');
+                    navigate('/order-now');
                   }}
                   onTouchStart={(e) => e.stopPropagation()}
                   style={{ 
@@ -308,7 +308,7 @@ const Index = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                navigate('/pricing');
+                navigate('/order-now');
               }}
               onTouchStart={(e) => e.stopPropagation()}
               style={{ 
