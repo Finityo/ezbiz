@@ -2,8 +2,36 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Pricing = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handlePackageSelect = (packageName: string, packageType: string) => {
+    toast({
+      title: "Package Selected!",
+      description: `You selected ${packageName}. Redirecting to order form...`,
+    });
+    
+    // Navigate to consultation page for now, can be updated to specific order page later
+    setTimeout(() => {
+      navigate("/consultation", { 
+        state: { 
+          selectedPackage: packageName, 
+          packageType: packageType 
+        } 
+      });
+    }, 1500);
+  };
+
+  const handleServiceAdd = (serviceName: string) => {
+    toast({
+      title: "Service Added!",
+      description: `${serviceName} has been noted. Contact us to add this service.`,
+    });
+  };
   const llcPackages = [
     {
       name: "Basic LLC",
@@ -157,7 +185,10 @@ const Pricing = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className={`w-full ${pkg.popular ? 'bg-primary' : ''}`}>
+                    <Button 
+                      className={`w-full ${pkg.popular ? 'bg-primary' : ''}`}
+                      onClick={() => handlePackageSelect(pkg.name, 'LLC')}
+                    >
                       Choose {pkg.name}
                     </Button>
                   </CardContent>
@@ -193,7 +224,11 @@ const Pricing = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant="outline">
+                    <Button 
+                      className="w-full" 
+                      variant="outline"
+                      onClick={() => handlePackageSelect(pkg.name, 'Corporation')}
+                    >
                       Choose {pkg.name}
                     </Button>
                   </CardContent>
@@ -219,7 +254,12 @@ const Pricing = () => {
                     <div className="text-2xl font-bold text-primary">{service.price}</div>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => handleServiceAdd(service.name)}
+                    >
                       Add Service
                     </Button>
                   </CardContent>
@@ -357,8 +397,22 @@ const Pricing = () => {
                 Choose your package and get started today. Our experts are here to help you every step of the way.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Start Your LLC</Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Start Your Corporation</Button>
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-8 py-4"
+                  onClick={() => navigate("/llc")}
+                >
+                  Start Your LLC
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary"
+                  onClick={() => navigate("/c-corporation")}
+                >
+                  Start Your Corporation
+                </Button>
               </div>
             </div>
           </div>
