@@ -1,9 +1,12 @@
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star } from "lucide-react";
+import { Check, Star, Shield, Users, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import businessConsultation from "@/assets/business-consultation.jpg";
+import businessDocuments from "@/assets/business-documents.jpg";
+import businessSuccess from "@/assets/business-success.jpg";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -156,6 +159,56 @@ const Pricing = () => {
           </div>
         </section>
 
+        {/* Trust Indicators */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">Why Choose Finityo?</h2>
+                  <div className="space-y-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <Shield className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">100% Satisfaction Guaranteed</h3>
+                        <p className="text-muted-foreground">We stand behind our work with a complete money-back guarantee.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <Users className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Expert Support</h3>
+                        <p className="text-muted-foreground">Our experienced team guides you through every step of formation.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">All Documents Included</h3>
+                        <p className="text-muted-foreground">Get all necessary formation documents and ongoing compliance support.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative">
+                  <img 
+                    src={businessConsultation} 
+                    alt="Professional business consultation" 
+                    className="rounded-lg shadow-lg w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* LLC Packages */}
         <section className="py-16">
           <div className="container mx-auto px-4">
@@ -257,6 +310,50 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Process Overview */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="relative order-2 lg:order-1">
+                  <img 
+                    src={businessDocuments} 
+                    alt="Business formation documents and legal paperwork" 
+                    className="rounded-lg shadow-lg w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-lg"></div>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <h2 className="text-3xl font-bold mb-6">Simple 3-Step Process</h2>
+                  <div className="space-y-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Choose Your Package</h3>
+                        <p className="text-muted-foreground">Select the formation package that best fits your business needs and budget.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Provide Information</h3>
+                        <p className="text-muted-foreground">Complete our simple form with your business details and preferences.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">We Handle the Rest</h3>
+                        <p className="text-muted-foreground">Our experts prepare and file all documents while keeping you informed.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -381,41 +478,53 @@ const Pricing = () => {
         </section>
 
         {/* Money Back Guarantee */}
-        <section className="py-16">
+        <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6">100% Satisfaction Guarantee</h2>
-              <Card className="border-success">
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-center mb-6">
-                    <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
-                      <Check className="h-8 w-8 text-white" />
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-semibold mb-4">Money-Back Guarantee</h3>
-                  <p className="text-muted-foreground mb-6">
-                    We're so confident in our services that we offer a 100% money-back guarantee. 
-                    If you're not completely satisfied with our service, we'll refund your money within 60 days.
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                      <div className="font-semibold">Fast Processing</div>
-                      <div className="text-muted-foreground">Quick turnaround times</div>
-                    </div>
-                    <div>
-                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                      <div className="font-semibold">Expert Support</div>
-                      <div className="text-muted-foreground">Professional guidance</div>
-                    </div>
-                    <div>
-                      <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                      <div className="font-semibold">Accuracy Guaranteed</div>
-                      <div className="text-muted-foreground">Error-free filing</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">100% Satisfaction Guarantee</h2>
+                  <Card className="border-success">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6">
+                        <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
+                          <Check className="h-8 w-8 text-white" />
+                        </div>
+                      </div>
+                      <h3 className="text-2xl font-semibold mb-4">Money-Back Guarantee</h3>
+                      <p className="text-muted-foreground mb-6">
+                        We're so confident in our services that we offer a 100% money-back guarantee. 
+                        If you're not completely satisfied with our service, we'll refund your money within 60 days.
+                      </p>
+                      <div className="grid md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                          <div className="font-semibold">Fast Processing</div>
+                          <div className="text-muted-foreground">Quick turnaround times</div>
+                        </div>
+                        <div>
+                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                          <div className="font-semibold">Expert Support</div>
+                          <div className="text-muted-foreground">Professional guidance</div>
+                        </div>
+                        <div>
+                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                          <div className="font-semibold">Accuracy Guaranteed</div>
+                          <div className="text-muted-foreground">Error-free filing</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="relative">
+                  <img 
+                    src={businessSuccess} 
+                    alt="Successful business entrepreneurs celebrating milestone" 
+                    className="rounded-lg shadow-lg w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tl from-success/20 to-transparent rounded-lg"></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
