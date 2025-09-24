@@ -52,23 +52,6 @@ const OrderNow = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header Bar */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-6">
-            <img src="/placeholder.svg" alt="BusinessForm Logo" className="h-8" />
-            <div className="flex items-center text-primary">
-              <Phone className="h-4 w-4 mr-2" />
-              <span className="font-medium">1.888.449.2638</span>
-            </div>
-          </div>
-          <div className="flex space-x-3">
-            <Button variant="outline" size="sm">Start a New Order</Button>
-            <Button variant="default" size="sm" className="bg-orange-500 hover:bg-orange-600">Sign In</Button>
-          </div>
-        </div>
-      </div>
-
       <Navigation />
 
       {/* Hero Section */}
