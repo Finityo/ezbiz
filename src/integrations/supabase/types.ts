@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      business_applications: {
+        Row: {
+          application_data: Json
+          business_name: string
+          business_type: string
+          created_at: string
+          id: string
+          state: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_data?: Json
+          business_name: string
+          business_type: string
+          created_at?: string
+          id?: string
+          state: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_data?: Json
+          business_name?: string
+          business_type?: string
+          created_at?: string
+          id?: string
+          state?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      consultation_requests: {
+        Row: {
+          business_type: string
+          consultation_type: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          questions: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          business_type: string
+          consultation_type: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          questions?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          business_type?: string
+          consultation_type?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          questions?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

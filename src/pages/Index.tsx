@@ -5,8 +5,10 @@ import { CheckCircle, ArrowRight, Shield, Clock, Users, Star } from "lucide-reac
 import Logo from "@/components/ui/logo";
 import Navigation from "@/components/Navigation";
 import heroImage from "@/assets/hero-business.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const businessTypes = [
     {
       title: "Limited Liability Company (LLC)",
@@ -92,11 +94,11 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="hero" size="lg" className="group">
+                <Button variant="hero" size="lg" className="group" onClick={() => navigate('/form-llc')}>
                   Start Your Business Today
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button variant="professional" size="lg">
+                <Button variant="professional" size="lg" onClick={() => navigate('/consultation')}>
                   Free Consultation
                 </Button>
               </div>

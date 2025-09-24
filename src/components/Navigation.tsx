@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Menu, X, User } from "lucide-react"
+import Logo from "@/components/ui/logo"
+import { useAuth } from "@/hooks/useAuth"
+import { Link, useNavigate } from "react-router-dom"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,11 +20,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import Logo from "@/components/ui/logo";
-import { ChevronDown, Menu, X } from "lucide-react";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const businessStructures = [
     { title: "Limited Liability Company (LLC)", href: "/form-llc", description: "Most popular choice for small businesses" },
@@ -67,15 +71,15 @@ const Navigation = () => {
                     <div className="grid w-[600px] gap-3 p-6 md:grid-cols-2">
                       {businessStructures.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.title}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {item.description}
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       ))}
                     </div>
@@ -91,15 +95,15 @@ const Navigation = () => {
                     <div className="grid w-[500px] gap-3 p-6 md:grid-cols-2">
                       {services.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.title}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {item.description}
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       ))}
                     </div>
@@ -115,15 +119,15 @@ const Navigation = () => {
                     <div className="w-[400px] gap-3 p-6">
                       {resources.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.title}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {item.description}
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       ))}
                     </div>
@@ -132,18 +136,36 @@ const Navigation = () => {
               </NavigationMenuList>
             </NavigationMenu>
 
-            <a href="/pricing" className="text-muted-foreground hover:text-foreground transition-fast">
+            <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-fast">
               Pricing
-            </a>
-            <a href="/about" className="text-muted-foreground hover:text-foreground transition-fast">
+            </Link>
+            <Link to="/about" className="text-muted-foreground hover:text-foreground transition-fast">
               About
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Action Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost">Sign In</Button>
-            <Button variant="hero" size="sm">Get Started</Button>
+            {user ? (
+              <>
+                <Button variant="ghost" onClick={() => navigate('/dashboard')}>
+                  <User className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Button>
+                <Button variant="outline" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" onClick={() => navigate('/auth')}>
+                  Sign In
+                </Button>
+                <Button variant="hero" size="sm" onClick={() => navigate('/form-llc')}>
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -187,8 +209,26 @@ const Navigation = () => {
 
               {/* Mobile Action Buttons */}
               <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="justify-start">Sign In</Button>
-                <Button variant="hero" size="sm">Get Started</Button>
+                {user ? (
+                  <>
+                    <Button variant="ghost" className="justify-start" onClick={() => navigate('/dashboard')}>
+                      <User className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Button>
+                    <Button variant="outline" onClick={signOut}>
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" className="justify-start" onClick={() => navigate('/auth')}>
+                      Sign In
+                    </Button>
+                    <Button variant="hero" size="sm" onClick={() => navigate('/form-llc')}>
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

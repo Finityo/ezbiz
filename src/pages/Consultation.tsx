@@ -1,12 +1,17 @@
-import Navigation from "@/components/Navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Check, Phone, Video, MessageSquare, Calendar, Users, Shield, Clock } from "lucide-react";
-import { useState } from "react";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle, Clock, Users, MessageCircle, Phone, Video, Calendar } from "lucide-react"
+import Navigation from "@/components/Navigation"
+import { supabase } from "@/integrations/supabase/client"
+import { useAuth } from "@/hooks/useAuth"
+import { useToast } from "@/hooks/use-toast"
+import { useNavigate } from "react-router-dom"
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
@@ -17,75 +22,104 @@ const Consultation = () => {
     consultationType: "",
     questions: ""
   });
+  const [loading, setLoading] = useState(false);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const consultationTypes = [
     {
-      type: "Business Structure",
-      icon: Shield,
-      description: "Choose the right entity type for your business",
-      duration: "30 minutes",
-      topics: [
-        "LLC vs Corporation comparison", 
-        "Tax implications analysis",
-        "Liability protection options",
-        "Ownership structure planning"
-      ]
+      title: "Business Structure Consultation",
+      description: "Get personalized advice on choosing the right business entity (LLC, Corporation, etc.) for your specific needs and goals.",
+      icon: <Users className="h-8 w-8" />,
+      duration: "30 minutes"
     },
     {
-      type: "State Selection",
-      icon: Users,
-      description: "Find the best state to incorporate your business",
-      duration: "25 minutes", 
-      topics: [
-        "Delaware vs Wyoming vs Nevada",
-        "Home state vs foreign state pros/cons",
-        "Tax considerations by state",
-        "Compliance requirements comparison"
-      ]
+      title: "State-Specific Guidance", 
+      description: "Learn about the requirements, benefits, and considerations for forming your business in your preferred state.",
+      icon: <MessageCircle className="h-8 w-8" />,
+      duration: "20 minutes"
     },
     {
-      type: "Ongoing Compliance",
-      icon: Calendar,
-      description: "Understand your ongoing business obligations",
-      duration: "20 minutes",
-      topics: [
-        "Annual report requirements",
-        "Tax filing obligations", 
-        "Record keeping best practices",
-        "Corporate formalities maintenance"
-      ]
+      title: "Tax Strategy Discussion",
+      description: "Understand the tax implications of different business structures and strategies to minimize your tax burden.",
+      icon: <CheckCircle className="h-8 w-8" />,
+      duration: "45 minutes"
     }
   ];
 
   const meetingFormats = [
     {
-      format: "Phone Call",
-      icon: Phone,
-      description: "Traditional phone consultation",
-      availability: "Mon-Fri 9am-6pm EST"
+      title: "Phone Call",
+      description: "Quick and convenient phone consultation at your preferred time",
+      icon: <Phone className="h-6 w-6" />
     },
     {
-      format: "Video Call", 
-      icon: Video,
-      description: "Zoom or Teams video meeting",
-      availability: "Mon-Fri 9am-6pm EST"
+      title: "Video Conference", 
+      description: "Face-to-face video call with screen sharing for documents",
+      icon: <Video className="h-6 w-6" />
     },
     {
-      format: "Live Chat",
-      icon: MessageSquare, 
-      description: "Real-time text-based consultation",
-      availability: "Mon-Fri 9am-8pm EST"
+      title: "In-Person Meeting",
+      description: "Meet at our office or a convenient location near you",
+      icon: <Users className="h-6 w-6" />
     }
   ];
 
-  const benefits = [
-    "Expert guidance from business formation specialists",
-    "Personalized recommendations for your specific situation", 
-    "No-pressure consultation - we're here to educate",
-    "Follow-up resources and next steps provided",
-    "Same-day scheduling available",
-    "100% free with no obligation"
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('consultation_requests')
+        .insert({
+          user_id: user?.id || null,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          business_type: formData.businessType,
+          consultation_type: formData.consultationType,
+          questions: formData.questions
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Consultation Request Submitted!",
+        description: "We'll contact you within 24 hours to schedule your free consultation.",
+      });
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        businessType: "",
+        consultationType: "",
+        questions: ""
+      });
+
+      // If user is logged in, redirect to dashboard
+      if (user) {
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Error submitting consultation request:', error);
+      toast({
+        title: "Error",
+        description: "There was a problem submitting your request. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,16 +127,31 @@ const Consultation = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-primary text-white py-20">
+        <section className="py-16 bg-gradient-subtle">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-5xl font-bold mb-6">Free Business Consultation</h1>
-              <p className="text-xl mb-8 text-white/90">
-                Get expert advice on business formation, structure selection, and compliance requirements
+              <Badge variant="secondary" className="mb-4">Free Consultation</Badge>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Get Expert Guidance for Your <span className="gradient-hero bg-clip-text text-transparent">Business Formation</span>
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+                Schedule a free consultation with our business formation experts. Get personalized advice, 
+                understand your options, and make informed decisions about your business structure.
               </p>
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-                Schedule Your Free Call
-              </Button>
+              <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <span>100% Free</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <span>No Obligations</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <span>Expert Advice</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -110,193 +159,171 @@ const Consultation = () => {
         {/* Consultation Types */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">What We Can Help You With</h2>
-              <div className="grid lg:grid-cols-3 gap-8">
-                {consultationTypes.map((consultation, index) => {
-                  const IconComponent = consultation.icon;
-                  return (
-                    <Card key={index} className="h-full">
-                      <CardHeader className="text-center">
-                        <IconComponent className="h-12 w-12 text-primary mx-auto mb-4" />
-                        <CardTitle className="text-xl">{consultation.type}</CardTitle>
-                        <CardDescription>{consultation.description}</CardDescription>
-                        <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          <span>{consultation.duration}</span>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <h4 className="font-semibold mb-3">Topics Covered:</h4>
-                        <ul className="space-y-2">
-                          {consultation.topics.map((topic, idx) => (
-                            <li key={idx} className="flex items-start space-x-2">
-                              <Check className="h-4 w-4 text-success mt-1 flex-shrink-0" />
-                              <span className="text-sm">{topic}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">What We Can Help You With</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our experienced consultants can provide guidance on a wide range of business formation topics
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              {consultationTypes.map((type, index) => (
+                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="inline-flex p-4 rounded-full bg-primary/10 text-primary mb-4 mx-auto">
+                      {type.icon}
+                    </div>
+                    <CardTitle className="text-xl">{type.title}</CardTitle>
+                    <Badge variant="outline">{type.duration}</Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{type.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Meeting Formats */}
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-semibold mb-4">Choose Your Preferred Format</h3>
+              <p className="text-muted-foreground">We offer flexible consultation options to fit your schedule</p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {meetingFormats.map((format, index) => (
+                <Card key={index} className="text-center">
+                  <CardContent className="p-6">
+                    <div className="inline-flex p-3 rounded-full bg-accent text-accent-foreground mb-3">
+                      {format.icon}
+                    </div>
+                    <h4 className="font-semibold mb-2">{format.title}</h4>
+                    <p className="text-sm text-muted-foreground">{format.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Meeting Formats */}
+        {/* Request Form */}
         <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">Choose Your Preferred Format</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {meetingFormats.map((format, index) => {
-                  const IconComponent = format.icon;
-                  return (
-                    <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <IconComponent className="h-12 w-12 text-primary mx-auto mb-4" />
-                        <CardTitle className="text-lg">{format.format}</CardTitle>
-                        <CardDescription>{format.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground mb-4">{format.availability}</p>
-                        <Button variant="outline" className="w-full">Select Format</Button>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4">Request Your Free Consultation</h2>
+                <p className="text-muted-foreground">
+                  Fill out the form below and we'll get back to you within 24 hours to schedule your consultation
+                </p>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Consultation Request Form */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12">
-                <div>
-                  <h2 className="text-3xl font-bold mb-6">Request Your Free Consultation</h2>
-                  <p className="text-muted-foreground mb-8">
-                    Fill out the form below and we'll contact you within 24 hours to schedule your free consultation.
-                  </p>
-                  
-                  <div className="space-y-4 mb-8">
-                    <h3 className="text-xl font-semibold">What You'll Get:</h3>
-                    {benefits.map((benefit, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <Check className="h-5 w-5 text-success mt-1 flex-shrink-0" />
-                        <span className="text-muted-foreground">{benefit}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Consultation Request Form</CardTitle>
-                    <CardDescription>Tell us about your business needs</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input 
-                          id="name"
-                          placeholder="Enter your full name"
-                          value={formData.name}
-                          onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number *</Label>
-                        <Input 
-                          id="phone"
-                          placeholder="(555) 123-4567"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        />
-                      </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Consultation Request Form</CardTitle>
+                  <CardDescription>
+                    All fields marked with * are required
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <Label htmlFor="name">Full Name *</Label>
+                      <Input
+                        id="name"
+                        placeholder="Your full name"
+                        value={formData.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                        required
+                      />
                     </div>
-                    
-                    <div className="space-y-2">
+
+                    <div>
                       <Label htmlFor="email">Email Address *</Label>
-                      <Input 
+                      <Input
                         id="email"
                         type="email"
                         placeholder="your@email.com"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        required
                       />
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="businessType">What type of business are you starting?</Label>
-                      <Select value={formData.businessType} onValueChange={(value) => setFormData({...formData, businessType: value})}>
+
+                    <div>
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="(555) 123-4567"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="businessType">What type of business are you starting? *</Label>
+                      <Select value={formData.businessType} onValueChange={(value) => handleInputChange("businessType", value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="service">Service Business</SelectItem>
-                          <SelectItem value="product">Product/Retail Business</SelectItem>
-                          <SelectItem value="professional">Professional Practice</SelectItem>
-                          <SelectItem value="restaurant">Restaurant/Food Service</SelectItem>
-                          <SelectItem value="ecommerce">E-commerce</SelectItem>
-                          <SelectItem value="consulting">Consulting</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="llc">Limited Liability Company (LLC)</SelectItem>
+                          <SelectItem value="c-corp">C Corporation</SelectItem>
+                          <SelectItem value="s-corp">S Corporation</SelectItem>
+                          <SelectItem value="partnership">Partnership</SelectItem>
+                          <SelectItem value="sole-proprietorship">Sole Proprietorship</SelectItem>
+                          <SelectItem value="nonprofit">Nonprofit Organization</SelectItem>
+                          <SelectItem value="unsure">Not sure yet</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="consultationType">What would you like to discuss?</Label>
-                      <Select value={formData.consultationType} onValueChange={(value) => setFormData({...formData, consultationType: value})}>
+
+                    <div>
+                      <Label htmlFor="consultationType">What type of consultation do you need? *</Label>
+                      <Select value={formData.consultationType} onValueChange={(value) => handleInputChange("consultationType", value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select consultation topic" />
+                          <SelectValue placeholder="Select consultation type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="structure">Business Structure Selection</SelectItem>
-                          <SelectItem value="state">State of Incorporation</SelectItem>
-                          <SelectItem value="compliance">Ongoing Compliance</SelectItem>
-                          <SelectItem value="general">General Business Formation</SelectItem>
-                          <SelectItem value="multiple">Multiple Topics</SelectItem>
+                          <SelectItem value="business-structure">Business Structure Consultation</SelectItem>
+                          <SelectItem value="state-guidance">State-Specific Guidance</SelectItem>
+                          <SelectItem value="tax-strategy">Tax Strategy Discussion</SelectItem>
+                          <SelectItem value="general">General Questions</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="questions">Specific Questions or Details</Label>
-                      <Textarea 
+
+                    <div>
+                      <Label htmlFor="questions">Questions or Additional Information</Label>
+                      <Textarea
                         id="questions"
-                        placeholder="Tell us about your specific situation or questions..."
-                        rows={4}
+                        placeholder="Tell us about your business goals, specific questions you have, or anything else you'd like to discuss..."
                         value={formData.questions}
-                        onChange={(e) => setFormData({...formData, questions: e.target.value})}
+                        onChange={(e) => handleInputChange("questions", e.target.value)}
+                        className="min-h-[100px]"
                       />
                     </div>
-                    
-                    <Button className="w-full" size="lg">
-                      Request Free Consultation
+
+                    <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                      {loading ? "Submitting..." : "Request Free Consultation"}
                     </Button>
-                    
-                    <p className="text-xs text-muted-foreground text-center">
-                      By submitting this form, you agree to receive communications from Finityo. 
-                      We respect your privacy and will never share your information.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+                  </form>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-muted/50">
+        <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p className="text-muted-foreground">
+                  Common questions about our free consultation service
+                </p>
+              </div>
+              
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div>
