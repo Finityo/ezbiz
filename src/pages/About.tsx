@@ -36,10 +36,10 @@ const About = () => {
 
   const teamMembers = [
     {
-      name: "Sarah Johnson",
+      name: "Christian Talavera, MBA, MSL",
       role: "CEO & Founder",
       bio: "15+ years in business formation law with a passion for helping entrepreneurs succeed.",
-      credentials: "J.D., Harvard Law School"
+      credentials: "University of Southern California Gould School of Law"
     },
     {
       name: "Michael Chen",
@@ -116,7 +116,7 @@ const About = () => {
                 <CardContent className="p-8">
                   <div className="prose prose-lg max-w-none">
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                      Finityo was founded in 2009 with a simple mission: to make business formation accessible, affordable, and straightforward for entrepreneurs across America. Our founder, Sarah Johnson, experienced firsthand the confusion and complexity of starting a business and knew there had to be a better way.
+                      Finityo was founded in 2009 with a simple mission: to make business formation accessible, affordable, and straightforward for entrepreneurs across America. Our founder, Christian Talavera, experienced firsthand the confusion and complexity of starting a business and knew there had to be a better way.
                     </p>
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                       What started as a small practice helping local entrepreneurs has grown into a nationwide service that has helped over 50,000 businesses get started. We've maintained our commitment to personal service while leveraging technology to make the process faster and more efficient.
@@ -244,7 +244,7 @@ const About = () => {
                     "To empower entrepreneurs and small business owners by providing expert, accessible, and affordable business formation services, helping them turn their dreams into successful enterprises that contribute to economic growth and innovation."
                   </blockquote>
                   <div className="mt-6 text-right">
-                    <div className="font-semibold">- Sarah Johnson</div>
+                    <div className="font-semibold">- Christian Talavera, MBA, MSL</div>
                     <div className="text-sm text-muted-foreground">CEO & Founder</div>
                   </div>
                 </CardContent>
