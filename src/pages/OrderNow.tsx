@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,9 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Star, Phone, CheckCircle } from "lucide-react";
 
 const OrderNow = () => {
+  const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState("");
   const [selectedBusinessType, setSelectedBusinessType] = useState("");
   const [activeTab, setActiveTab] = useState("new");
+
+  const handleContinue = () => {
+    if (selectedState && selectedBusinessType) {
+      navigate(`/business-formation?state=${encodeURIComponent(selectedState)}&entityType=${encodeURIComponent(selectedBusinessType)}`);
+    }
+  };
 
   const states = [
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", 
@@ -153,6 +161,7 @@ const OrderNow = () => {
                 size="lg" 
                 className="h-12 bg-orange-500 hover:bg-orange-600 text-white font-bold tracking-wide"
                 disabled={!selectedState || !selectedBusinessType}
+                onClick={handleContinue}
               >
                 CONTINUE
               </Button>
