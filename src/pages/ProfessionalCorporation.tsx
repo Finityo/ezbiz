@@ -2,8 +2,10 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Shield, Users, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ProfessionalCorporation = () => {
+  const navigate = useNavigate();
   const professions = [
     "Doctors", "Lawyers", "Accountants", "Architects", "Engineers",
     "Dentists", "Veterinarians", "Chiropractors", "Psychologists", "Consultants"
@@ -31,7 +33,7 @@ const ProfessionalCorporation = () => {
               <p className="text-xl mb-8 text-white/90">
                 Specialized corporate structure designed for licensed professionals
               </p>
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => navigate('/pricing')}>
                 Form Your Professional Corporation
               </Button>
             </div>
@@ -193,8 +195,8 @@ const ProfessionalCorporation = () => {
                 Get the liability protection and professional credibility your practice deserves.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Get Started Now</Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Free Consultation</Button>
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => navigate('/pricing')}>Get Started Now</Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary" onClick={() => navigate('/consultation')}>Free Consultation</Button>
               </div>
             </div>
           </div>

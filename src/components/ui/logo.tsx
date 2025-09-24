@@ -36,9 +36,9 @@ const Logo = ({ className, size = 'md', showText = true }: LogoProps) => {
       {showText && (
         <span className={cn(
           "font-bold tracking-tight",
-          size === 'sm' && "text-lg",
-          size === 'md' && "text-2xl", 
-          size === 'lg' && "text-3xl"
+          size === 'sm' && "text-xl",
+          size === 'md' && "text-3xl", 
+          size === 'lg' && "text-4xl"
         )}>
           Finityo
         </span>

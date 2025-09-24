@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, TrendingUp, Users, Shield, Globe } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { useNavigate } from "react-router-dom";
 
 const CCorporation = () => {
+  const navigate = useNavigate();
   const benefits = [
     {
       icon: <TrendingUp className="h-8 w-8" />,
@@ -67,11 +69,11 @@ const CCorporation = () => {
               or scale rapidly. Get unlimited growth potential with professional incorporation services.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="lg" className="group">
+              <Button variant="hero" size="lg" className="group" onClick={() => navigate('/pricing')}>
                 Incorporate Now - $199
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="professional" size="lg">
+              <Button variant="professional" size="lg" onClick={() => navigate('/consultation')}>
                 Free Incorporation Guide
               </Button>
             </div>
@@ -136,7 +138,7 @@ const CCorporation = () => {
                   </li>
                 ))}
               </ul>
-              <Button variant="hero" size="lg">
+              <Button variant="hero" size="lg" onClick={() => navigate('/pricing')}>
                 Start Incorporation Process
               </Button>
             </div>
@@ -213,10 +215,10 @@ const CCorporation = () => {
             Our experts will handle all the paperwork and filings.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl">
+            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl" onClick={() => navigate('/pricing')}>
               Start Incorporation - $199
             </Button>
-            <Button variant="professional" size="lg" className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary">
+            <Button variant="professional" size="lg" className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary" onClick={() => navigate('/consultation')}>
               Speak with Expert
             </Button>
           </div>

@@ -2,8 +2,10 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Shield, TrendingUp, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const SCorporation = () => {
+  const navigate = useNavigate();
   const benefits = [
     "Pass-through taxation - no double taxation",
     "Personal asset protection from business liabilities",
@@ -35,7 +37,7 @@ const SCorporation = () => {
               <p className="text-xl mb-8 text-white/90">
                 Avoid double taxation while maintaining corporate structure and liability protection
               </p>
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => navigate('/pricing')}>
                 Form Your S Corporation Today
               </Button>
             </div>
@@ -164,8 +166,8 @@ const SCorporation = () => {
                 Let our experts handle the formation process while you focus on growing your business.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="text-lg px-8 py-4">Get Started Now</Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4">Free Consultation</Button>
+                <Button size="lg" className="text-lg px-8 py-4" onClick={() => navigate('/pricing')}>Get Started Now</Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4" onClick={() => navigate('/consultation')}>Free Consultation</Button>
               </div>
             </div>
           </div>
