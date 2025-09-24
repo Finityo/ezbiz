@@ -77,6 +77,7 @@ const Navigation = () => {
     { title: "State Requirements", href: "/state-requirements", description: "Requirements by state" },
     { title: "Pricing", href: "/pricing", description: "Transparent pricing for all services" },
     { title: "Free Consultation", href: "/consultation", description: "Speak with a business expert" },
+    { title: "Admin Login", href: "/auth", description: "Administrative access portal", isAdminLogin: true },
     // Downloadable PDFs
     { title: "LLC Formation Guide", href: "/LLC-Formation-Guide.pdf", description: "Comprehensive LLC formation guide", isDownload: true },
     { title: "Corporation Handbook", href: "/Corporation-Handbook.pdf", description: "Complete corporation handbook", isDownload: true },
@@ -165,6 +166,20 @@ const Navigation = () => {
                                 {item.description}
                               </p>
                             </a>
+                          ) : item.isAdminLogin ? (
+                            <Link
+                              to={item.href}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Shield className="h-4 w-4 mr-2" />
+                                {item.title}
+                                <span className="ml-2 text-xs bg-destructive text-destructive-foreground px-2 py-1 rounded">ADMIN</span>
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </Link>
                           ) : (
                             <Link
                               to={item.href}
