@@ -3,12 +3,89 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Check, Search, AlertCircle, Shield } from "lucide-react";
+import { Check, Search, AlertCircle, Shield, X, Loader } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const BusinessNameSearch = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedState, setSelectedState] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Mock search function - simulates real API call
+  const handleNameSearch = async () => {
+    if (!searchName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter a business name to search.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!selectedState) {
+      toast({
+        title: "Missing Information", 
+        description: "Please select a state for incorporation.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSearching(true);
+    
+    // Simulate API delay
+    setTimeout(() => {
+      // Mock search logic - in reality this would call your backend
+      const isAvailable = Math.random() > 0.3; // 70% chance of being available
+      const hasTrademarkConflict = Math.random() > 0.8; // 20% chance of trademark issue
+      const isDomainAvailable = Math.random() > 0.4; // 60% chance domain available
+      
+      const results = {
+        searchedName: searchName,
+        state: selectedState,
+        isAvailable,
+        hasTrademarkConflict,
+        isDomainAvailable,
+        suggestions: isAvailable ? [] : [
+          `${searchName} LLC`,
+          `${searchName} Corp`,
+          `${searchName} Solutions`,
+          `${searchName} Group`,
+          `New ${searchName}`
+        ]
+      };
+      
+      setSearchResults(results);
+      setIsSearching(false);
+      
+      toast({
+        title: "Search Complete",
+        description: `Found ${isAvailable ? 'availability' : 'conflicts'} for "${searchName}" in ${selectedState}`,
+      });
+    }, 2000);
+  };
+
+  const handleReserveClick = () => {
+    toast({
+      title: "Name Reservation",
+      description: "Redirecting to complete name reservation and business formation...",
+    });
+    
+    setTimeout(() => {
+      navigate("/consultation", { 
+        state: { 
+          businessName: searchName,
+          selectedState: selectedState,
+          action: "reserve-name" 
+        } 
+      });
+    }, 1500);
+  };
 
   const features = [
     "Real-time availability checking",
@@ -87,15 +164,158 @@ const BusinessNameSearch = () => {
                     </Select>
                   </div>
                   
-                  <Button size="lg" className="w-full text-lg p-4">
-                    <Search className="h-5 w-5 mr-2" />
-                    Search Name Availability
+                  <Button 
+                    size="lg" 
+                    className="w-full text-lg p-4"
+                    onClick={handleNameSearch}
+                    disabled={isSearching}
+                  >
+                    {isSearching ? (
+                      <>
+                        <Loader className="h-5 w-5 mr-2 animate-spin" />
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-5 w-5 mr-2" />
+                        Search Name Availability
+                      </>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
+
+        {/* Search Results Section */}
+        {searchResults && (
+          <section className="py-16 bg-muted/50">
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-8">Search Results</h2>
+                
+                <Card className="mb-8">
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">
+                      "{searchResults.searchedName}" in {searchResults.state}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {/* Name Availability */}
+                      <Card className={`${searchResults.isAvailable ? 'border-success' : 'border-destructive'}`}>
+                        <CardHeader className="text-center">
+                          {searchResults.isAvailable ? (
+                            <Check className="h-12 w-12 text-success mx-auto mb-2" />
+                          ) : (
+                            <X className="h-12 w-12 text-destructive mx-auto mb-2" />
+                          )}
+                          <CardTitle className="text-lg">Business Name</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center">
+                          <p className={`font-semibold ${searchResults.isAvailable ? 'text-success' : 'text-destructive'}`}>
+                            {searchResults.isAvailable ? 'Available' : 'Not Available'}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {searchResults.isAvailable 
+                              ? 'This name can be registered in your state'
+                              : 'This name is already taken or restricted'
+                            }
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      {/* Trademark Check */}
+                      <Card className={`${searchResults.hasTrademarkConflict ? 'border-warning' : 'border-success'}`}>
+                        <CardHeader className="text-center">
+                          {searchResults.hasTrademarkConflict ? (
+                            <AlertCircle className="h-12 w-12 text-warning mx-auto mb-2" />
+                          ) : (
+                            <Check className="h-12 w-12 text-success mx-auto mb-2" />
+                          )}
+                          <CardTitle className="text-lg">Trademark Check</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center">
+                          <p className={`font-semibold ${searchResults.hasTrademarkConflict ? 'text-warning' : 'text-success'}`}>
+                            {searchResults.hasTrademarkConflict ? 'Potential Conflict' : 'Clear'}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {searchResults.hasTrademarkConflict 
+                              ? 'Similar trademarks found - review recommended'
+                              : 'No conflicting trademarks found'
+                            }
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      {/* Domain Availability */}
+                      <Card className={`${searchResults.isDomainAvailable ? 'border-success' : 'border-warning'}`}>
+                        <CardHeader className="text-center">
+                          {searchResults.isDomainAvailable ? (
+                            <Check className="h-12 w-12 text-success mx-auto mb-2" />
+                          ) : (
+                            <AlertCircle className="h-12 w-12 text-warning mx-auto mb-2" />
+                          )}
+                          <CardTitle className="text-lg">Domain Name</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center">
+                          <p className={`font-semibold ${searchResults.isDomainAvailable ? 'text-success' : 'text-warning'}`}>
+                            {searchResults.isDomainAvailable ? 'Available' : 'Taken'}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {searchResults.isDomainAvailable 
+                              ? '.com domain is available for registration'
+                              : '.com taken - other extensions may be available'
+                            }
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-8 text-center space-y-4">
+                      {searchResults.isAvailable ? (
+                        <div className="space-y-4">
+                          <Button 
+                            size="lg" 
+                            className="px-8"
+                            onClick={handleReserveClick}
+                          >
+                            <Shield className="h-5 w-5 mr-2" />
+                            Reserve This Name & Start Business
+                          </Button>
+                          <p className="text-sm text-muted-foreground">
+                            Secure your business name now and complete formation when ready
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold">Alternative Suggestions</h3>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {searchResults.suggestions.map((suggestion, index) => (
+                              <Button 
+                                key={index}
+                                variant="outline" 
+                                className="w-full"
+                                onClick={() => setSearchName(suggestion)}
+                              >
+                                {suggestion}
+                              </Button>
+                            ))}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Click any suggestion to search again, or try a different name
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Features Section */}
         <section className="py-16 bg-muted/50">
@@ -257,8 +477,22 @@ const BusinessNameSearch = () => {
                 Start your name search today and take the first step towards forming your business.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Search Names Now</Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Free Consultation</Button>
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-8 py-4"
+                  onClick={() => window.scrollTo({ top: 48, behavior: 'smooth' })}
+                >
+                  Search Names Now
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary"
+                  onClick={() => navigate("/consultation")}
+                >
+                  Free Consultation
+                </Button>
               </div>
             </div>
           </div>
