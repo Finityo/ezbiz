@@ -50,6 +50,11 @@ const Navigation = () => {
     { title: "State Requirements", href: "/state-requirements", description: "Requirements by state" },
     { title: "Pricing", href: "/pricing", description: "Transparent pricing for all services" },
     { title: "Free Consultation", href: "/consultation", description: "Speak with a business expert" },
+    // Downloadable PDFs
+    { title: "LLC Formation Guide", href: "/LLC-Formation-Guide.pdf", description: "Comprehensive LLC formation guide", isDownload: true },
+    { title: "Corporation Handbook", href: "/Corporation-Handbook.pdf", description: "Complete corporation handbook", isDownload: true },
+    { title: "Business License Checklist", href: "/Business-License-Checklist.pdf", description: "Essential business license checklist", isDownload: true },
+    { title: "Tax Election Guide", href: "/Tax-Election-Guide.pdf", description: "Understanding tax elections", isDownload: true },
   ];
 
   return (
@@ -119,15 +124,31 @@ const Navigation = () => {
                     <div className="w-[400px] gap-3 p-6">
                       {resources.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <Link
-                            to={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
+                          {item.isDownload ? (
+                            <a
+                              href={item.href}
+                              download
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                {item.title}
+                                <span className="ml-2 text-xs bg-success text-success-foreground px-2 py-1 rounded">PDF</span>
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </a>
+                          ) : (
+                            <Link
+                              to={item.href}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">{item.title}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </Link>
+                          )}
                         </NavigationMenuLink>
                       ))}
                     </div>

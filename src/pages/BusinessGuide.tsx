@@ -79,28 +79,32 @@ const BusinessGuide = () => {
       description: "Complete guide to forming your LLC",
       type: "PDF",
       pages: "24 pages",
-      icon: FileText
+      icon: FileText,
+      downloadUrl: "/LLC-Formation-Guide.pdf"
     },
     {
       title: "Corporation Handbook",
       description: "Everything you need to know about corporations",
       type: "PDF", 
       pages: "32 pages",
-      icon: Building
+      icon: Building,
+      downloadUrl: "/Corporation-Handbook.pdf"
     },
     {
       title: "Tax Election Guide",
       description: "Understanding business tax elections",
       type: "PDF",
       pages: "16 pages", 
-      icon: Shield
+      icon: Shield,
+      downloadUrl: "/Tax-Election-Guide.pdf"
     },
     {
       title: "Business License Checklist",
       description: "State-by-state license requirements",
       type: "PDF",
       pages: "28 pages",
-      icon: Users
+      icon: Users,
+      downloadUrl: "/Business-License-Checklist.pdf"
     }
   ];
 
@@ -235,9 +239,15 @@ const BusinessGuide = () => {
                             <p className="text-muted-foreground mb-3">{resource.description}</p>
                             <div className="flex items-center justify-between">
                               <span className="text-sm text-muted-foreground">{resource.type} • {resource.pages}</span>
-                              <Button size="sm" variant="outline">
-                                <Download className="h-4 w-4 mr-2" />
-                                Download
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                asChild
+                              >
+                                <a href={resource.downloadUrl} download>
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download
+                                </a>
                               </Button>
                             </div>
                           </div>
