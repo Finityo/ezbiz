@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, Shield, Clock, Users, Star } from "lucide-react";
 import Logo from "@/components/ui/logo";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-business.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -330,49 +331,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <Logo size="sm" />
-              <p className="text-muted-foreground text-sm">
-                Professional business formation services trusted by entrepreneurs nationwide.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/business-filings" className="hover:text-foreground transition-fast">Business Filings</a></li>
-                <li><a href="/form-llc" className="hover:text-foreground transition-fast">LLC Formation</a></li>
-                <li><a href="/c-corporation" className="hover:text-foreground transition-fast">Corporation</a></li>
-                <li><a href="/dba-filing" className="hover:text-foreground transition-fast">DBA Filing</a></li>
-                <li><a href="/registered-agent" className="hover:text-foreground transition-fast">Registered Agent</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/business-guide" className="hover:text-foreground transition-fast">Business Guide</a></li>
-                <li><a href="/state-requirements" className="hover:text-foreground transition-fast">State Requirements</a></li>
-                <li><a href="/consultation" className="hover:text-foreground transition-fast">Support</a></li>
-                <li><a href="/about" className="hover:text-foreground transition-fast">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-fast">About Us</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-foreground transition-fast">Reviews</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border mt-12 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Finityo. All rights reserved. Professional business formation services nationwide.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

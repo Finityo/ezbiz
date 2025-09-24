@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, Shield, Clock, DollarSign, Users, FileText, Building } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 
 const LLC = () => {
@@ -272,6 +273,8 @@ const LLC = () => {
           </div>
         </div>
       </section>
+      
+      <Footer />
     </div>
   );
 };

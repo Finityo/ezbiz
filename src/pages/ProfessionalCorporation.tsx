@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Shield, Users, FileText } from "lucide-react";
+import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 
 const ProfessionalCorporation = () => {
@@ -203,12 +204,7 @@ const ProfessionalCorporation = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-muted py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

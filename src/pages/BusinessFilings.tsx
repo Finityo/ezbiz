@@ -16,6 +16,7 @@ import {
   FileCheck,
   Gavel
 } from "lucide-react";
+import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 
 const BusinessFilings = () => {
@@ -288,6 +289,8 @@ const BusinessFilings = () => {
           </div>
         </div>
       </section>
+      
+      <Footer />
     </div>
   );
 };
