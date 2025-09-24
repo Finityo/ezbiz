@@ -11,7 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink } from 'lucide-react';
+import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 interface ConsultationRequest {
   id: string;
@@ -26,6 +27,18 @@ interface ConsultationRequest {
   updated_at: string;
 }
 
+interface BusinessApplication {
+  id: string;
+  user_id: string;
+  business_name: string;
+  business_type: string;
+  state: string;
+  status: string;
+  application_data: any;
+  created_at: string;
+  updated_at: string;
+}
+
 const AdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -33,11 +46,21 @@ const AdminDashboard = () => {
   
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
   const [filteredConsultations, setFilteredConsultations] = useState<ConsultationRequest[]>([]);
+  const [applications, setApplications] = useState<BusinessApplication[]>([]);
+  const [filteredApplications, setFilteredApplications] = useState<BusinessApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [businessTypeFilter, setBusinessTypeFilter] = useState('all');
+  
+  // Consultation filters
+  const [consultationSearchTerm, setConsultationSearchTerm] = useState('');
+  const [consultationStatusFilter, setConsultationStatusFilter] = useState('all');
+  const [consultationBusinessTypeFilter, setConsultationBusinessTypeFilter] = useState('all');
+  
+  // Application filters
+  const [applicationSearchTerm, setApplicationSearchTerm] = useState('');
+  const [applicationStatusFilter, setApplicationStatusFilter] = useState('all');
+  const [applicationBusinessTypeFilter, setApplicationBusinessTypeFilter] = useState('all');
+  const [applicationStateFilter, setApplicationStateFilter] = useState('all');
 
   useEffect(() => {
     if (!user) {
@@ -60,6 +83,7 @@ const AdminDashboard = () => {
       if (roleData) {
         setIsAdmin(true);
         fetchConsultations();
+        fetchApplications();
       } else {
         toast({
           title: "Access Denied",
@@ -71,6 +95,27 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error checking admin status:', error);
       navigate('/dashboard');
+    }
+  };
+
+  const fetchApplications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('business_applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setApplications(data || []);
+      setFilteredApplications(data || []);
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch business applications.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -97,7 +142,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const updateStatus = async (id: string, newStatus: string) => {
+  const updateConsultationStatus = async (id: string, newStatus: string) => {
     try {
       const { error } = await supabase
         .from('consultation_requests')
@@ -127,30 +172,60 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateApplicationStatus = async (id: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('business_applications')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setApplications(prev => 
+        prev.map(a => a.id === id ? { ...a, status: newStatus } : a)
+      );
+      setFilteredApplications(prev => 
+        prev.map(a => a.id === id ? { ...a, status: newStatus } : a)
+      );
+
+      toast({
+        title: "Status Updated",
+        description: `Application status updated to ${newStatus}`,
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update status.",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     let filtered = consultations;
 
     // Filter by search term
-    if (searchTerm) {
+    if (consultationSearchTerm) {
       filtered = filtered.filter(c => 
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (c.phone && c.phone.includes(searchTerm))
+        c.name.toLowerCase().includes(consultationSearchTerm.toLowerCase()) ||
+        c.email.toLowerCase().includes(consultationSearchTerm.toLowerCase()) ||
+        (c.phone && c.phone.includes(consultationSearchTerm))
       );
     }
 
     // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(c => c.status === statusFilter);
+    if (consultationStatusFilter !== 'all') {
+      filtered = filtered.filter(c => c.status === consultationStatusFilter);
     }
 
     // Filter by business type
-    if (businessTypeFilter !== 'all') {
-      filtered = filtered.filter(c => c.business_type === businessTypeFilter);
+    if (consultationBusinessTypeFilter !== 'all') {
+      filtered = filtered.filter(c => c.business_type === consultationBusinessTypeFilter);
     }
 
     setFilteredConsultations(filtered);
-  }, [consultations, searchTerm, statusFilter, businessTypeFilter]);
+  }, [consultations, consultationSearchTerm, consultationStatusFilter, consultationBusinessTypeFilter]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -162,7 +237,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const exportToCSV = () => {
+  const exportConsultationsToCSV = () => {
     const headers = ['Name', 'Email', 'Phone', 'Business Type', 'Consultation Type', 'Status', 'Created Date', 'Questions'];
     const csvContent = [
       headers.join(','),
@@ -185,6 +260,31 @@ const AdminDashboard = () => {
     a.download = `consultation-requests-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  const exportApplicationsToExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    
+    // Prepare data for Excel
+    const applicationData = filteredApplications.map(app => ({
+      'Business Name': app.business_name,
+      'Business Type': app.business_type,
+      'State': app.state,
+      'Status': app.status,
+      'User ID': app.user_id,
+      'Created Date': new Date(app.created_at).toLocaleDateString(),
+      'Updated Date': new Date(app.updated_at).toLocaleDateString(),
+      'Application Data': JSON.stringify(app.application_data)
+    }));
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(applicationData);
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Business Applications');
+    
+    // Save the file
+    XLSX.writeFile(workbook, `business-applications-${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   if (loading) {
@@ -217,10 +317,14 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="consultations" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-1">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="consultations">
               <MessageSquare className="h-4 w-4 mr-2" />
-              Consultation Requests ({filteredConsultations.length})
+              Consultations ({filteredConsultations.length})
+            </TabsTrigger>
+            <TabsTrigger value="applications">
+              <FileText className="h-4 w-4 mr-2" />
+              Applications ({filteredApplications.length})
             </TabsTrigger>
           </TabsList>
 
@@ -281,12 +385,12 @@ const AdminDashboard = () => {
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search by name, email, or phone..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      value={consultationSearchTerm}
+                      onChange={(e) => setConsultationSearchTerm(e.target.value)}
                       className="pl-10"
                     />
                   </div>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <Select value={consultationStatusFilter} onValueChange={setConsultationStatusFilter}>
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
@@ -298,7 +402,7 @@ const AdminDashboard = () => {
                       <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Select value={businessTypeFilter} onValueChange={setBusinessTypeFilter}>
+                  <Select value={consultationBusinessTypeFilter} onValueChange={setConsultationBusinessTypeFilter}>
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by business type" />
                     </SelectTrigger>
@@ -310,7 +414,7 @@ const AdminDashboard = () => {
                       <SelectItem value="sole-proprietorship">Sole Proprietorship</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button onClick={exportToCSV} variant="outline">
+                  <Button onClick={exportConsultationsToCSV} variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export CSV
                   </Button>
@@ -386,7 +490,7 @@ const AdminDashboard = () => {
                           <TableCell>
                             <Select 
                               value={consultation.status}
-                              onValueChange={(value) => updateStatus(consultation.id, value)}
+                              onValueChange={(value) => updateConsultationStatus(consultation.id, value)}
                             >
                               <SelectTrigger className="w-32">
                                 <SelectValue>
@@ -437,9 +541,228 @@ const AdminDashboard = () => {
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-semibold mb-2">No consultation requests found</h3>
                     <p className="text-muted-foreground">
-                      {searchTerm || statusFilter !== 'all' || businessTypeFilter !== 'all' 
+                      {consultationSearchTerm || consultationStatusFilter !== 'all' || consultationBusinessTypeFilter !== 'all' 
                         ? "Try adjusting your filters"
                         : "Consultation requests will appear here when clients submit them"
+                      }
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Business Applications Tab */}
+          <TabsContent value="applications" className="space-y-6">
+            {/* Applications Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{applications.length}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Draft</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-gray-600">
+                    {applications.filter(a => a.status === 'draft').length}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Submitted</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {applications.filter(a => a.status === 'submitted').length}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Processing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {applications.filter(a => a.status === 'processing').length}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Application Filters */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Filter className="h-5 w-5" />
+                  Filters & Search
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search by business name or user ID..."
+                      value={applicationSearchTerm}
+                      onChange={(e) => setApplicationSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={applicationStatusFilter} onValueChange={setApplicationStatusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="submitted">Submitted</SelectItem>
+                      <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={applicationBusinessTypeFilter} onValueChange={setApplicationBusinessTypeFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by business type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Business Types</SelectItem>
+                      <SelectItem value="llc">LLC</SelectItem>
+                      <SelectItem value="corporation">Corporation</SelectItem>
+                      <SelectItem value="partnership">Partnership</SelectItem>
+                      <SelectItem value="sole-proprietorship">Sole Proprietorship</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={applicationStateFilter} onValueChange={setApplicationStateFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by state" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All States</SelectItem>
+                      <SelectItem value="DE">Delaware</SelectItem>
+                      <SelectItem value="WY">Wyoming</SelectItem>
+                      <SelectItem value="NV">Nevada</SelectItem>
+                      <SelectItem value="FL">Florida</SelectItem>
+                      <SelectItem value="TX">Texas</SelectItem>
+                      <SelectItem value="CA">California</SelectItem>
+                      <SelectItem value="NY">New York</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button onClick={exportApplicationsToExcel} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export Excel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Business Applications Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Business Applications</CardTitle>
+                <CardDescription>
+                  Manage and track all business formation applications
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Business Details</TableHead>
+                        <TableHead>Business Type</TableHead>
+                        <TableHead>State</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>User ID</TableHead>
+                        <TableHead>Date Created</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredApplications.map((application) => (
+                        <TableRow key={application.id}>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{application.business_name}</div>
+                              <div className="text-sm text-muted-foreground">
+                                ID: {application.id.substring(0, 8)}...
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {application.business_type.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {application.state}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Select 
+                              value={application.status}
+                              onValueChange={(value) => updateApplicationStatus(application.id, value)}
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue>
+                                  <Badge className={getStatusColor(application.status)}>
+                                    {application.status}
+                                  </Badge>
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="draft">Draft</SelectItem>
+                                <SelectItem value="submitted">Submitted</SelectItem>
+                                <SelectItem value="processing">Processing</SelectItem>
+                                <SelectItem value="completed">Completed</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell className="text-sm font-mono">
+                            {application.user_id.substring(0, 8)}...
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {new Date(application.created_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard.writeText(JSON.stringify(application.application_data, null, 2));
+                                toast({
+                                  title: "Copied",
+                                  description: "Application data copied to clipboard",
+                                });
+                              }}
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {filteredApplications.length === 0 && (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">No business applications found</h3>
+                    <p className="text-muted-foreground">
+                      {applicationSearchTerm || applicationStatusFilter !== 'all' || 
+                       applicationBusinessTypeFilter !== 'all' || applicationStateFilter !== 'all'
+                        ? "Try adjusting your filters"
+                        : "Business applications will appear here when clients submit them"
                       }
                     </p>
                   </div>
