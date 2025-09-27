@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -54,7 +54,9 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Logo />
+          <Link to="/" className="inline-block">
+            <Logo />
+          </Link>
           <h1 className="text-2xl font-bold mt-4">Welcome to Finityo</h1>
           <p className="text-muted-foreground">Sign in to manage your business formation</p>
         </div>
