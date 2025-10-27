@@ -32,6 +32,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import OrderNow from "./pages/OrderNow";
 import BusinessFormation from "./pages/BusinessFormation";
+import EnhancedOrderFlow from "./pages/EnhancedOrderFlow";
+import CaliforniaLLC from "./pages/states/CaliforniaLLC";
+import DelawareLLC from "./pages/states/DelawareLLC";
+import TexasLLC from "./pages/states/TexasLLC";
 
 function App() {
   const [queryClient] = React.useState(() => new QueryClient());
@@ -70,6 +74,10 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/order-flow" element={<EnhancedOrderFlow />} />
+            <Route path="/state/california/llc" element={<CaliforniaLLC />} />
+            <Route path="/state/delaware/llc" element={<DelawareLLC />} />
+            <Route path="/state/texas/llc" element={<TexasLLC />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

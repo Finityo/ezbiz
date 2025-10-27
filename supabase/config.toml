@@ -1,1 +1,7 @@
 project_id = "fpclrbfqlyghdyitisox"
+
+[functions.corpnet-api]
+verify_jwt = true
+
+[functions.corpnet-webhook]
+verify_jwt = false
