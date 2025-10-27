@@ -1,261 +1,201 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import Navigation from '@/components/Navigation';
-import { Plus, FileText, Calendar, User } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import OrderStatusCard from "@/components/dashboard/OrderStatusCard";
+import ProfileEditor from "@/components/dashboard/ProfileEditor";
+import { User, FileText, CreditCard, Settings } from "lucide-react";
+import { toast } from "sonner";
+
+interface Order {
+  id: string;
+  businessName: string;
+  entityType: string;
+  state: string;
+  status: 'pending' | 'processing' | 'filed' | 'completed' | 'rejected';
+  submittedDate: string;
+  lastUpdated: string;
+  package: string;
+  documents?: Array<{
+    name: string;
+    url: string;
+  }>;
+}
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [applications, setApplications] = useState([]);
-  const [consultations, setConsultations] = useState([]);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
     if (!user) {
-      navigate('/auth');
-      return;
+      navigate("/auth");
+    } else {
+      fetchUserData();
     }
-
-    const fetchData = async () => {
-      try {
-        // Fetch business applications
-        const { data: appsData } = await supabase
-          .from('business_applications')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
-
-        // Fetch consultation requests
-        const { data: consultData } = await supabase
-          .from('consultation_requests')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
-
-        // Fetch user profile
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-
-        setApplications(appsData || []);
-        setConsultations(consultData || []);
-        setProfile(profileData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
   }, [user, navigate]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-success text-success-foreground';
-      case 'processing': return 'bg-warning text-warning-foreground';
-      case 'submitted': return 'bg-info text-info-foreground';
-      case 'scheduled': return 'bg-info text-info-foreground';
-      default: return 'bg-secondary text-secondary-foreground';
+  const fetchUserData = async () => {
+    try {
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (profileError) throw profileError;
+      setProfile(profileData);
+
+      // Fetch orders
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('business_applications')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (ordersError) throw ordersError;
+
+      // Transform data to match Order interface
+      const transformedOrders: Order[] = (ordersData || []).map(order => {
+        const appData = typeof order.application_data === 'object' && order.application_data !== null 
+          ? order.application_data as any 
+          : {};
+        
+        return {
+          id: order.id,
+          businessName: order.business_name,
+          entityType: order.business_type,
+          state: order.state,
+          status: order.status as Order['status'],
+          submittedDate: order.created_at,
+          lastUpdated: order.updated_at || order.created_at,
+          package: appData.package || 'Standard',
+          documents: appData.documents || []
+        };
+      });
+
+      setOrders(transformedOrders);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoadingData(false);
     }
   };
 
-  if (loading) {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  if (loadingData) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center">Loading...</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">
-              Welcome, {profile?.first_name || user?.email}!
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your business formation and consultation requests
-            </p>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">
+                Welcome back, {profile?.first_name || 'User'}
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                Manage your business formations and account
+              </p>
+            </div>
+            <Button onClick={handleSignOut} variant="outline">
+              Sign Out
+            </Button>
           </div>
-          <Button onClick={signOut} variant="outline">
-            Sign Out
-          </Button>
-        </div>
 
-        <Tabs defaultValue="applications" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="applications">
-              <FileText className="h-4 w-4 mr-2" />
-              Applications
-            </TabsTrigger>
-            <TabsTrigger value="consultations">
-              <Calendar className="h-4 w-4 mr-2" />
-              Consultations
-            </TabsTrigger>
-            <TabsTrigger value="profile">
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="orders" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="orders" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Orders
+              </TabsTrigger>
+              <TabsTrigger value="profile" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Profile
+              </TabsTrigger>
+              <TabsTrigger value="billing" className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Billing
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="applications" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">Business Applications</h2>
-              <Button onClick={() => navigate('/form-llc')}>
-                <Plus className="h-4 w-4 mr-2" />
-                New Application
-              </Button>
-            </div>
-
-            {applications.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No applications yet</h3>
+            <TabsContent value="orders" className="space-y-4">
+              {orders.length === 0 ? (
+                <div className="text-center py-12 bg-muted/50 rounded-lg">
+                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No orders yet</h3>
                   <p className="text-muted-foreground mb-4">
-                    Start your first business formation application today
+                    Start your business formation journey today
                   </p>
-                  <Button onClick={() => navigate('/form-llc')}>
-                    Create Your First Application
+                  <Button onClick={() => navigate('/order-flow')}>
+                    Start New Order
                   </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-4">
-                {applications.map((app) => (
-                  <Card key={app.id}>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle>{app.business_name}</CardTitle>
-                          <CardDescription>
-                            {app.business_type} in {app.state}
-                          </CardDescription>
-                        </div>
-                        <Badge className={getStatusColor(app.status)}>
-                          {app.status}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Created: {new Date(app.created_at).toLocaleDateString()}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="consultations" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">Consultation Requests</h2>
-              <Button onClick={() => navigate('/consultation')}>
-                <Plus className="h-4 w-4 mr-2" />
-                Request Consultation
-              </Button>
-            </div>
-
-            {consultations.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No consultations yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Book a free consultation with our business formation experts
-                  </p>
-                  <Button onClick={() => navigate('/consultation')}>
-                    Request Free Consultation
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-4">
-                {consultations.map((consult) => (
-                  <Card key={consult.id}>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle>{consult.consultation_type}</CardTitle>
-                          <CardDescription>
-                            {consult.business_type} consultation
-                          </CardDescription>
-                        </div>
-                        <Badge className={getStatusColor(consult.status)}>
-                          {consult.status}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Requested: {new Date(consult.created_at).toLocaleDateString()}
-                      </p>
-                      {consult.questions && (
-                        <p className="text-sm mt-2">
-                          <strong>Questions:</strong> {consult.questions}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="profile" className="space-y-6">
-            <h2 className="text-2xl font-semibold">Profile Information</h2>
-            <Card>
-              <CardHeader>
-                <CardTitle>Account Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Email</label>
-                  <p className="text-muted-foreground">{user?.email}</p>
                 </div>
-                {profile?.first_name && (
-                  <div>
-                    <label className="text-sm font-medium">Name</label>
-                    <p className="text-muted-foreground">
-                      {profile.first_name} {profile.last_name}
-                    </p>
-                  </div>
-                )}
-                {profile?.phone && (
-                  <div>
-                    <label className="text-sm font-medium">Phone</label>
-                    <p className="text-muted-foreground">{profile.phone}</p>
-                  </div>
-                )}
-                {profile?.company_name && (
-                  <div>
-                    <label className="text-sm font-medium">Company</label>
-                    <p className="text-muted-foreground">{profile.company_name}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+              ) : (
+                <div className="grid gap-4">
+                  {orders.map(order => (
+                    <OrderStatusCard key={order.id} order={order} />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="profile" className="space-y-4">
+              {profile && user && (
+                <ProfileEditor 
+                  profile={profile} 
+                  userId={user.id}
+                  onUpdate={fetchUserData}
+                />
+              )}
+            </TabsContent>
+
+            <TabsContent value="billing" className="space-y-4">
+              <div className="bg-card rounded-lg border p-6">
+                <h2 className="text-xl font-semibold mb-4">Billing & Payments</h2>
+                <p className="text-muted-foreground">
+                  Payment history and invoices will appear here.
+                </p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="settings" className="space-y-4">
+              <div className="bg-card rounded-lg border p-6">
+                <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
+                <p className="text-muted-foreground">
+                  Manage your account preferences and security settings.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };
