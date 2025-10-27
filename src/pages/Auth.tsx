@@ -14,6 +14,7 @@ const Auth = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
   
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -47,8 +48,49 @@ const Auth = () => {
     
     const { error } = await signUp(email, password, firstName, lastName);
     
+    if (!error) {
+      setShowEmailVerification(true);
+    }
+    
     setLoading(false);
   };
+
+  if (showEmailVerification) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <Link to="/" className="inline-block">
+              <Logo />
+            </Link>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Check Your Email</CardTitle>
+              <CardDescription>
+                We've sent a verification link to <strong>{email}</strong>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Click the link in the email to verify your account and access your dashboard.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                After verifying, you can sign in with your credentials.
+              </p>
+              <Button 
+                onClick={() => setShowEmailVerification(false)} 
+                variant="outline" 
+                className="w-full"
+              >
+                Back to Sign In
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
