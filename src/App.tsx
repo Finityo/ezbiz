@@ -36,6 +36,25 @@ import EnhancedOrderFlow from "./pages/EnhancedOrderFlow";
 import CaliforniaLLC from "./pages/states/CaliforniaLLC";
 import DelawareLLC from "./pages/states/DelawareLLC";
 import TexasLLC from "./pages/states/TexasLLC";
+import NewYorkLLC from "./pages/states/NewYorkLLC";
+import NewYorkCorporation from "./pages/states/NewYorkCorporation";
+import FloridaLLC from "./pages/states/FloridaLLC";
+import FloridaCorporation from "./pages/states/FloridaCorporation";
+import NevadaLLC from "./pages/states/NevadaLLC";
+import NevadaCorporation from "./pages/states/NevadaCorporation";
+import WyomingLLC from "./pages/states/WyomingLLC";
+import WyomingCorporation from "./pages/states/WyomingCorporation";
+import OhioLLC from "./pages/states/OhioLLC";
+import IllinoisLLC from "./pages/states/IllinoisLLC";
+import GeorgiaLLC from "./pages/states/GeorgiaLLC";
+import VirginiaLLC from "./pages/states/VirginiaLLC";
+import ColoradoLLC from "./pages/states/ColoradoLLC";
+import WashingtonLLC from "./pages/states/WashingtonLLC";
+import AnnualReport from "./pages/AnnualReport";
+import ComplianceServices from "./pages/ComplianceServices";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
 
 function App() {
   const [queryClient] = React.useState(() => new QueryClient());
@@ -78,6 +97,25 @@ function App() {
             <Route path="/state/california/llc" element={<CaliforniaLLC />} />
             <Route path="/state/delaware/llc" element={<DelawareLLC />} />
             <Route path="/state/texas/llc" element={<TexasLLC />} />
+            <Route path="/state/new-york/llc" element={<NewYorkLLC />} />
+            <Route path="/state/new-york/corporation" element={<NewYorkCorporation />} />
+            <Route path="/state/florida/llc" element={<FloridaLLC />} />
+            <Route path="/state/florida/corporation" element={<FloridaCorporation />} />
+            <Route path="/state/nevada/llc" element={<NevadaLLC />} />
+            <Route path="/state/nevada/corporation" element={<NevadaCorporation />} />
+            <Route path="/state/wyoming/llc" element={<WyomingLLC />} />
+            <Route path="/state/wyoming/corporation" element={<WyomingCorporation />} />
+            <Route path="/state/ohio/llc" element={<OhioLLC />} />
+            <Route path="/state/illinois/llc" element={<IllinoisLLC />} />
+            <Route path="/state/georgia/llc" element={<GeorgiaLLC />} />
+            <Route path="/state/virginia/llc" element={<VirginiaLLC />} />
+            <Route path="/state/colorado/llc" element={<ColoradoLLC />} />
+            <Route path="/state/washington/llc" element={<WashingtonLLC />} />
+            <Route path="/annual-report" element={<AnnualReport />} />
+            <Route path="/compliance" element={<ComplianceServices />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

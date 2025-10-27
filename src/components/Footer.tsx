@@ -16,8 +16,8 @@ const Footer = () => {
     { name: "Registered Agent", href: "/registered-agent" },
     { name: "DBA Filing", href: "/dba-filing" },
     { name: "EIN Number", href: "/ein-number" },
-    { name: "Operating Agreement", href: "/operating-agreement" },
-    { name: "Corporate Bylaws", href: "/corporate-bylaws" },
+    { name: "Annual Reports", href: "/annual-report" },
+    { name: "Compliance Services", href: "/compliance" },
   ];
 
   const guides = [
@@ -67,9 +67,9 @@ const Footer = () => {
   ];
 
   const legal = [
-    { name: "Privacy Policy", href: "/consultation" },
-    { name: "Terms of Service", href: "/consultation" },
-    { name: "Refund Policy", href: "/consultation" },
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "Refund Policy", href: "/refund-policy" },
     { name: "Security", href: "/consultation" },
     { name: "Accessibility", href: "/consultation" },
   ];

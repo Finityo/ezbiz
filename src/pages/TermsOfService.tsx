@@ -1,0 +1,134 @@
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { Card } from "@/components/ui/card";
+
+const TermsOfService = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
+          <p className="text-muted-foreground mb-8">Last Updated: January 2025</p>
+
+          <Card className="p-8 space-y-8">
+            <section>
+              <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
+              <p className="text-muted-foreground">
+                By accessing and using Finityo's services, you agree to be bound by these Terms of Service 
+                and all applicable laws and regulations. If you do not agree with any of these terms, you 
+                are prohibited from using our services.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">2. Services Description</h2>
+              <p className="text-muted-foreground mb-4">
+                Finityo provides business formation, compliance, and related services including:
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                <li>LLC and Corporation formation services</li>
+                <li>Registered agent services</li>
+                <li>Annual report filing</li>
+                <li>DBA name registration</li>
+                <li>EIN application assistance</li>
+                <li>Business compliance services</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">3. User Obligations</h2>
+              <p className="text-muted-foreground mb-4">You agree to:</p>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                <li>Provide accurate, complete, and current information</li>
+                <li>Maintain the security of your account credentials</li>
+                <li>Notify us immediately of any unauthorized account access</li>
+                <li>Comply with all applicable federal, state, and local laws</li>
+                <li>Not use our services for any unlawful purpose</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">4. Fees and Payment</h2>
+              <p className="text-muted-foreground mb-4">
+                All fees are stated in U.S. dollars and are non-refundable except as expressly stated in 
+                our Refund Policy. You agree to pay all fees associated with services you order, including:
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                <li>Finityo service fees</li>
+                <li>State filing fees</li>
+                <li>Any additional add-on services you select</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">5. Service Processing Times</h2>
+              <p className="text-muted-foreground">
+                Processing times are estimates based on state filing times and are not guaranteed. Actual 
+                processing times may vary depending on state processing volumes, accuracy of submitted 
+                information, and other factors beyond our control.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">6. Limitation of Liability</h2>
+              <p className="text-muted-foreground">
+                Finityo provides document preparation and filing services. We are not a law firm and do not 
+                provide legal advice. In no event shall Finityo be liable for any indirect, incidental, 
+                special, consequential, or punitive damages arising from your use of our services.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">7. Intellectual Property</h2>
+              <p className="text-muted-foreground">
+                All content on the Finityo website, including text, graphics, logos, and software, is the 
+                property of Finityo and is protected by copyright, trademark, and other intellectual 
+                property laws.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">8. Privacy</h2>
+              <p className="text-muted-foreground">
+                Your use of our services is also governed by our Privacy Policy. Please review our Privacy 
+                Policy to understand our practices regarding your personal information.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">9. Modifications to Terms</h2>
+              <p className="text-muted-foreground">
+                Finityo reserves the right to modify these Terms of Service at any time. We will notify 
+                users of any material changes via email or through our website. Continued use of our 
+                services after changes constitutes acceptance of the modified terms.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">10. Governing Law</h2>
+              <p className="text-muted-foreground">
+                These Terms of Service shall be governed by and construed in accordance with the laws of 
+                the United States and the state in which Finityo is registered, without regard to conflict 
+                of law provisions.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">11. Contact Information</h2>
+              <p className="text-muted-foreground">
+                If you have any questions about these Terms of Service, please contact us through our 
+                website or customer support channels.
+              </p>
+            </section>
+          </Card>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default TermsOfService;
