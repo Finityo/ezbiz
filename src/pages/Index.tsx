@@ -315,7 +315,7 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="accent-line mb-6"></div>
                 <h2 className="text-3xl md:text-4xl font-bold font-display">
-                  Why Entrepreneurs Choose Finityo
+                  Why Entrepreneurs Choose EZ BIZ
                 </h2>
                 <p className="text-xl text-muted-foreground font-body leading-relaxed">
                   We combine legal expertise with personalized service to ensure your 
@@ -392,7 +392,7 @@ const Index = () => {
               Ready to Start Your Business?
             </h2>
             <p className="text-xl opacity-90 max-w-2xl mx-auto font-body">
-              Join thousands of entrepreneurs who trust Finityo to handle their 
+              Join thousands of entrepreneurs who trust EZ BIZ FILE SERVICE to handle their 
               business formation. Get started today with our simple, fast, and reliable process.
             </p>
           </div>
