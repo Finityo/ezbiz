@@ -5,6 +5,7 @@ import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-business.jpg";
+import logoImage from "@/assets/logo-ezbiz-v2.png";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -110,9 +111,18 @@ const Index = () => {
       <Navigation />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      <section className="relative py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="container mx-auto px-4 relative z-10">
+          {/* Centered Logo */}
+          <div className="flex justify-center mb-12 md:mb-16">
+            <img 
+              src={logoImage} 
+              alt="EZ BIZ FILE SERVICE" 
+              className="h-32 md:h-40 lg:h-48 w-auto object-contain drop-shadow-lg"
+            />
+          </div>
+
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-6">
