@@ -50,45 +50,102 @@ export type Database = {
         }
         Relationships: []
       }
-      consultation_requests: {
+      click_analytics: {
         Row: {
-          business_type: string
-          consultation_type: string
+          button_label: string
+          button_type: string
+          clicked_at: string
+          destination_url: string
+          id: string
+          page_location: string
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          button_label: string
+          button_type: string
+          clicked_at?: string
+          destination_url: string
+          id?: string
+          page_location: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          button_label?: string
+          button_type?: string
+          clicked_at?: string
+          destination_url?: string
+          id?: string
+          page_location?: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      email_list: {
+        Row: {
           created_at: string
           email: string
           id: string
           name: string
-          phone: string | null
-          questions: string | null
-          status: string
+          source: string
           updated_at: string
-          user_id: string | null
         }
         Insert: {
-          business_type: string
-          consultation_type: string
           created_at?: string
           email: string
           id?: string
           name: string
-          phone?: string | null
-          questions?: string | null
-          status?: string
+          source?: string
           updated_at?: string
-          user_id?: string | null
         }
         Update: {
-          business_type?: string
-          consultation_type?: string
           created_at?: string
           email?: string
           id?: string
           name?: string
-          phone?: string | null
-          questions?: string | null
-          status?: string
+          source?: string
           updated_at?: string
-          user_id?: string | null
+        }
+        Relationships: []
+      }
+      heatmap_analytics: {
+        Row: {
+          created_at: string | null
+          element_label: string | null
+          element_type: string
+          id: string
+          interaction_type: string
+          page_location: string
+          position_x: number | null
+          position_y: number | null
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          element_label?: string | null
+          element_type: string
+          id?: string
+          interaction_type: string
+          page_location: string
+          position_x?: number | null
+          position_y?: number | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          element_label?: string | null
+          element_type?: string
+          id?: string
+          interaction_type?: string
+          page_location?: string
+          position_x?: number | null
+          position_y?: number | null
+          session_id?: string | null
+          user_agent?: string | null
         }
         Relationships: []
       }
@@ -122,6 +179,39 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      scroll_analytics: {
+        Row: {
+          created_at: string | null
+          id: string
+          max_scroll_reached: number
+          page_location: string
+          scroll_depth: number
+          session_id: string | null
+          time_on_page: number
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          max_scroll_reached: number
+          page_location: string
+          scroll_depth: number
+          session_id?: string | null
+          time_on_page: number
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          max_scroll_reached?: number
+          page_location?: string
+          scroll_depth?: number
+          session_id?: string | null
+          time_on_page?: number
+          user_agent?: string | null
         }
         Relationships: []
       }

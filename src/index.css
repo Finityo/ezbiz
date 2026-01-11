@@ -1,132 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Finityo Design System - Professional Business Formation Platform
-All colors MUST be HSL for consistency and theme support.
+/* Finityo Executive Design System V2
+   A sophisticated, contemporary business formation platform
+   Color palette: Slate Navy, Warm Bronze, Cool Grays
+   All colors MUST be HSL for consistency and theme support.
 */
 
 @layer base {
   :root {
-    /* Core Background & Text */
-    --background: 0 0% 100%;
-    --foreground: 225 15% 15%;
+    /* Core Background & Text - Warm Professional Whites */
+    --background: 40 20% 99%;
+    --foreground: 220 25% 12%;
 
-    /* Card Surfaces */
+    /* Card Surfaces - Clean with subtle warmth */
     --card: 0 0% 100%;
-    --card-foreground: 225 15% 15%;
-    --card-elevated: 220 20% 98%;
+    --card-foreground: 220 25% 12%;
+    --card-elevated: 40 15% 98%;
 
     /* Popover Surfaces */
     --popover: 0 0% 100%;
-    --popover-foreground: 225 15% 15%;
+    --popover-foreground: 220 25% 12%;
 
-    /* Brand Colors - Deep Blue for Trust */
-    --primary: 220 70% 25%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 220 60% 35%;
-    --primary-dark: 220 80% 15%;
+    /* Primary - Slate Navy (Executive & Trustworthy) */
+    --primary: 220 30% 18%;
+    --primary-foreground: 40 20% 98%;
+    --primary-light: 220 25% 28%;
+    --primary-dark: 220 35% 12%;
 
-    /* Success & Growth - Emerald Green */
-    --secondary: 150 70% 40%;
-    --secondary-foreground: 0 0% 100%;
-    --secondary-light: 150 60% 50%;
+    /* Secondary - Warm Bronze (Executive Accent) */
+    --secondary: 38 45% 52%;
+    --secondary-foreground: 40 20% 98%;
+    --secondary-light: 38 40% 62%;
 
-    /* Neutral Tones */
-    --muted: 220 15% 96%;
-    --muted-foreground: 220 10% 45%;
+    /* Accent - Sage/Teal (Subtle sophistication) */
+    --accent: 168 25% 45%;
+    --accent-foreground: 40 20% 98%;
 
-    --accent: 220 15% 94%;
-    --accent-foreground: 220 15% 15%;
+    /* Neutral Tones - Cool Grays */
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 12% 42%;
 
     /* Status Colors */
-    --destructive: 0 75% 55%;
+    --destructive: 0 65% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 150 70% 40%;
+    --success: 158 55% 38%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 45 90% 55%;
-    --warning-foreground: 45 15% 15%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 20% 12%;
 
     /* Interactive Elements */
     --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 220 70% 25%;
+    --input: 220 15% 90%;
+    --ring: 220 30% 18%;
 
-    /* Business Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220, 70%, 25%) 0%, hsl(220, 60%, 35%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(150, 70%, 40%) 0%, hsl(150, 60%, 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(220, 70%, 25%) 0%, hsl(150, 70%, 40%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(220, 20%, 98%) 0%, hsl(220, 15%, 96%) 100%);
+    /* Executive Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220, 30%, 18%) 0%, hsl(220, 25%, 28%) 100%);
+    --gradient-bronze: linear-gradient(135deg, hsl(38, 45%, 52%) 0%, hsl(38, 40%, 62%) 100%);
+    --gradient-hero: linear-gradient(145deg, hsl(220, 30%, 15%) 0%, hsl(220, 28%, 22%) 50%, hsl(38, 35%, 45%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(40, 20%, 99%) 0%, hsl(220, 15%, 97%) 100%);
+    --gradient-executive: linear-gradient(135deg, hsl(220, 30%, 18%) 0%, hsl(220, 25%, 25%) 100%);
 
-    /* Professional Shadows */
-    --shadow-sm: 0 2px 4px hsl(220, 70%, 25% / 0.05);
-    --shadow-md: 0 4px 12px hsl(220, 70%, 25% / 0.1);
-    --shadow-lg: 0 8px 24px hsl(220, 70%, 25% / 0.15);
-    --shadow-hero: 0 20px 40px hsl(220, 70%, 25% / 0.2);
+    /* Professional Shadows - Softer, more elegant */
+    --shadow-sm: 0 1px 3px hsl(220, 25%, 12% / 0.04), 0 1px 2px hsl(220, 25%, 12% / 0.06);
+    --shadow-md: 0 4px 6px -1px hsl(220, 25%, 12% / 0.07), 0 2px 4px -1px hsl(220, 25%, 12% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(220, 25%, 12% / 0.08), 0 4px 6px -2px hsl(220, 25%, 12% / 0.04);
+    --shadow-hero: 0 25px 50px -12px hsl(220, 25%, 12% / 0.15);
+    --shadow-elegant: 0 4px 20px hsl(220, 25%, 12% / 0.08);
 
     /* Animation & Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-elegant: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-    /* Border Radius */
-    --radius: 0.75rem;
-    --radius-sm: 0.5rem;
-    --radius-lg: 1rem;
+    /* Border Radius - Refined */
+    --radius: 0.625rem;
+    --radius-sm: 0.375rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.25rem;
   }
 
   .dark {
-    /* Dark Mode - Professional Dark Theme */
-    --background: 225 25% 8%;
-    --foreground: 220 15% 92%;
+    /* Dark Mode - Executive Dark Theme */
+    --background: 220 25% 7%;
+    --foreground: 40 15% 92%;
 
-    --card: 225 20% 12%;
-    --card-foreground: 220 15% 92%;
-    --card-elevated: 225 15% 15%;
+    --card: 220 22% 10%;
+    --card-foreground: 40 15% 92%;
+    --card-elevated: 220 18% 13%;
 
-    --popover: 225 20% 12%;
-    --popover-foreground: 220 15% 92%;
+    --popover: 220 22% 10%;
+    --popover-foreground: 40 15% 92%;
 
-    --primary: 220 60% 55%;
-    --primary-foreground: 225 25% 8%;
-    --primary-light: 220 50% 65%;
-    --primary-dark: 220 70% 45%;
+    --primary: 38 45% 55%;
+    --primary-foreground: 220 25% 7%;
+    --primary-light: 38 40% 65%;
+    --primary-dark: 38 50% 45%;
 
-    --secondary: 150 60% 50%;
-    --secondary-foreground: 225 25% 8%;
-    --secondary-light: 150 50% 60%;
+    --secondary: 220 25% 50%;
+    --secondary-foreground: 40 15% 92%;
+    --secondary-light: 220 20% 60%;
 
-    --muted: 225 15% 18%;
-    --muted-foreground: 220 10% 55%;
+    --accent: 168 20% 50%;
+    --accent-foreground: 220 25% 7%;
 
-    --accent: 225 15% 20%;
-    --accent-foreground: 220 15% 92%;
+    --muted: 220 18% 15%;
+    --muted-foreground: 220 12% 55%;
 
-    --destructive: 0 65% 55%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 150 60% 50%;
-    --success-foreground: 225 25% 8%;
+    --success: 158 50% 45%;
+    --success-foreground: 220 25% 7%;
 
-    --warning: 45 85% 60%;
-    --warning-foreground: 45 25% 8%;
+    --warning: 38 85% 55%;
+    --warning-foreground: 38 25% 8%;
 
-    --border: 225 15% 22%;
-    --input: 225 15% 22%;
-    --ring: 220 60% 55%;
+    --border: 220 18% 20%;
+    --input: 220 18% 20%;
+    --ring: 38 45% 55%;
 
     /* Dark Mode Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220, 60%, 55%) 0%, hsl(220, 50%, 65%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(150, 60%, 50%) 0%, hsl(150, 50%, 60%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(220, 60%, 55%) 0%, hsl(150, 60%, 50%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(225, 20%, 12%) 0%, hsl(225, 15%, 18%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(38, 45%, 55%) 0%, hsl(38, 40%, 65%) 100%);
+    --gradient-bronze: linear-gradient(135deg, hsl(38, 45%, 55%) 0%, hsl(38, 40%, 65%) 100%);
+    --gradient-hero: linear-gradient(145deg, hsl(220, 25%, 10%) 0%, hsl(220, 22%, 15%) 50%, hsl(38, 40%, 50%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220, 25%, 7%) 0%, hsl(220, 22%, 10%) 100%);
+    --gradient-executive: linear-gradient(135deg, hsl(38, 45%, 55%) 0%, hsl(38, 40%, 60%) 100%);
 
     /* Dark Mode Shadows */
-    --shadow-sm: 0 2px 4px hsl(225, 25%, 0% / 0.1);
-    --shadow-md: 0 4px 12px hsl(225, 25%, 0% / 0.2);
-    --shadow-lg: 0 8px 24px hsl(225, 25%, 0% / 0.3);
-    --shadow-hero: 0 20px 40px hsl(225, 25%, 0% / 0.4);
+    --shadow-sm: 0 1px 3px hsl(0, 0%, 0% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(0, 0%, 0% / 0.15);
+    --shadow-lg: 0 10px 15px -3px hsl(0, 0%, 0% / 0.2);
+    --shadow-hero: 0 25px 50px -12px hsl(0, 0%, 0% / 0.35);
+    --shadow-elegant: 0 4px 20px hsl(0, 0%, 0% / 0.15);
   }
 }
 
@@ -136,19 +147,22 @@ All colors MUST be HSL for consistency and theme support.
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
     @apply font-semibold tracking-tight;
   }
 
+  /* Executive Gradient Utilities */
   .gradient-primary {
     background: var(--gradient-primary);
   }
 
-  .gradient-success {
-    background: var(--gradient-success);
+  .gradient-bronze {
+    background: var(--gradient-bronze);
   }
 
   .gradient-hero {
@@ -159,6 +173,11 @@ All colors MUST be HSL for consistency and theme support.
     background: var(--gradient-subtle);
   }
 
+  .gradient-executive {
+    background: var(--gradient-executive);
+  }
+
+  /* Shadow Utilities */
   .shadow-smooth {
     box-shadow: var(--shadow-md);
   }
@@ -167,11 +186,76 @@ All colors MUST be HSL for consistency and theme support.
     box-shadow: var(--shadow-hero);
   }
 
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  /* Transition Utilities */
   .transition-smooth {
     transition: var(--transition-smooth);
   }
 
   .transition-fast {
     transition: var(--transition-fast);
+  }
+
+  .transition-elegant {
+    transition: var(--transition-elegant);
+  }
+
+  /* Executive Typography */
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Text gradient utility */
+  .text-gradient-executive {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Bronze accent text */
+  .text-bronze {
+    color: hsl(38, 45%, 52%);
+  }
+
+  /* Decorative line accent */
+  .accent-line {
+    @apply w-16 h-1 bg-secondary rounded-full;
+  }
+
+  .accent-line-center {
+    @apply w-16 h-1 bg-secondary rounded-full mx-auto;
+  }
+}
+
+/* Custom scrollbar for executive feel */
+@layer utilities {
+  .scrollbar-executive {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(220, 15%, 75%) transparent;
+  }
+
+  .scrollbar-executive::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-executive::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-executive::-webkit-scrollbar-thumb {
+    background-color: hsl(220, 15%, 75%);
+    border-radius: 3px;
+  }
+
+  .scrollbar-executive::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(220, 15%, 60%);
   }
 }
