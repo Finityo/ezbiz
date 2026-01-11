@@ -12,6 +12,7 @@ export default {
         "2xl": "1400px",
       },
     },
+    extend: {
       fontFamily: {
         'display': ['Playfair Display', 'Georgia', 'serif'],
         'body': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -22,6 +23,7 @@ export default {
           light: "hsl(38, 40%, 62%)",
           dark: "hsl(38, 50%, 42%)",
         },
+        border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -77,10 +79,6 @@ export default {
         'hero': 'var(--shadow-hero)',
         'elegant': 'var(--shadow-elegant)',
         'lg': 'var(--shadow-lg)',
-      },
-      transitionProperty: {
-        'smooth': 'var(--transition-smooth)',
-        'fast': 'var(--transition-fast)',
       },
       keyframes: {
         "accordion-down": {
