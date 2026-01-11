@@ -5,7 +5,7 @@ import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-business.jpg";
-import logoImage from "@/assets/logo-ezbiz-v2.png";
+import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -119,7 +119,7 @@ const Index = () => {
             <img 
               src={logoImage} 
               alt="EZ BIZ FILE SERVICE" 
-              className="h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl mix-blend-multiply"
+              className="h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl"
             />
           </div>
 
