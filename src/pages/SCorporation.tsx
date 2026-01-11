@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import RelatedStructures from "@/components/RelatedStructures";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -484,6 +485,12 @@ const SCorporation = () => {
             </div>
           </div>
         </section>
+
+        {/* Related Structures */}
+        <RelatedStructures 
+          currentStructureId="s-corp"
+          relatedIds={["llc", "c-corp", "professional-corp", "partnership"]}
+        />
 
         {/* CTA Section */}
         <section className="py-16 lg:py-20 gradient-hero text-primary-foreground">

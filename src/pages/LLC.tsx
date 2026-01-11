@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import RelatedStructures from "@/components/RelatedStructures";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -593,6 +594,12 @@ const LLC = () => {
             </div>
           </div>
         </section>
+
+        {/* Related Structures */}
+        <RelatedStructures 
+          currentStructureId="llc"
+          relatedIds={["s-corp", "c-corp", "sole-proprietorship", "partnership"]}
+        />
 
         {/* CTA Section */}
         <section className="py-16 lg:py-20 gradient-hero text-primary-foreground">

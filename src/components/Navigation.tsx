@@ -52,21 +52,33 @@ const Navigation = () => {
     checkAdminStatus();
   }, [user]);
 
-  const businessStructures = [
-    { title: "Limited Liability Company (LLC)", href: "/form-llc", description: "Most popular choice for small businesses" },
+  // Business Structures - organized by category
+  const businessStructuresLLC = [
+    { title: "LLC Formation", href: "/form-llc", description: "Most popular choice for small businesses", badge: "Popular" },
+  ];
+
+  const businessStructuresCorporations = [
     { title: "C Corporation", href: "/c-corporation", description: "Best for raising capital and going public" },
-    { title: "S Corporation", href: "/s-corporation", description: "Avoid double taxation" },
+    { title: "S Corporation", href: "/s-corporation", description: "Avoid double taxation with pass-through" },
     { title: "Professional Corporation", href: "/professional-corporation", description: "For licensed professionals" },
     { title: "Nonprofit Corporation", href: "/nonprofit-corporation", description: "For charitable organizations" },
-    { title: "Partnership", href: "/partnership", description: "For multi-owner businesses" },
+  ];
+
+  const businessStructuresOther = [
+    { title: "Partnership", href: "/partnership", description: "General, Limited, and LLP structures" },
     { title: "Sole Proprietorship", href: "/sole-proprietorship", description: "Simplest business structure" },
+    { title: "DBA / Trade Name", href: "/dba-filing", description: "Doing Business As registration" },
   ];
 
   const services = [
     { title: "Business Filings", href: "/business-filings", description: "Comprehensive filing and compliance services" },
     { title: "Registered Agent", href: "/registered-agent", description: "Professional registered agent services" },
+    { title: "Annual Reports", href: "/annual-report", description: "Annual report filing services" },
+    { title: "Compliance Services", href: "/compliance", description: "Stay compliant with state requirements" },
+  ];
+
+  const businessDocuments = [
     { title: "Business Name Search", href: "/name-search", description: "Check name availability" },
-    { title: "DBA Filing", href: "/dba-filing", description: "Doing Business As registration" },
     { title: "EIN Number", href: "/ein-number", description: "Federal tax ID number" },
     { title: "Operating Agreement", href: "/operating-agreement", description: "LLC operating agreements" },
     { title: "Corporate Bylaws", href: "/corporate-bylaws", description: "Corporation bylaws" },
@@ -77,13 +89,16 @@ const Navigation = () => {
     { title: "State Requirements", href: "/state-requirements", description: "Requirements by state" },
     { title: "Pricing", href: "/pricing", description: "Transparent pricing for all services" },
     { title: "Free Consultation", href: "/consultation", description: "Speak with a business expert" },
-    { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true },
-    // Downloadable PDFs
+  ];
+
+  const downloads = [
     { title: "LLC Formation Guide", href: "/LLC-Formation-Guide.pdf", description: "Comprehensive LLC formation guide", isDownload: true },
     { title: "Corporation Handbook", href: "/Corporation-Handbook.pdf", description: "Complete corporation handbook", isDownload: true },
     { title: "Business License Checklist", href: "/Business-License-Checklist.pdf", description: "Essential business license checklist", isDownload: true },
     { title: "Tax Election Guide", href: "/Tax-Election-Guide.pdf", description: "Understanding tax elections", isDownload: true },
   ];
+
+  const adminLink = { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true };
 
   return (
     <nav className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-50">
@@ -97,26 +112,65 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-8">
             <NavigationMenu>
               <NavigationMenuList>
-                {/* Business Structures Dropdown */}
+              {/* Business Structures Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="text-muted-foreground hover:text-foreground transition-fast bg-transparent">
                     Business Structures
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid w-[600px] gap-3 p-6 md:grid-cols-2">
-                      {businessStructures.map((item) => (
-                        <NavigationMenuLink key={item.href} asChild>
-                          <Link
-                            to={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      ))}
+                    <div className="w-[650px] p-6">
+                      <div className="grid grid-cols-3 gap-6">
+                        {/* LLC Column */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center">
+                            LLC Formation
+                            <span className="ml-2 text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded">Popular</span>
+                          </h4>
+                          {businessStructuresLLC.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                        
+                        {/* Corporations Column */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Corporations</h4>
+                          {businessStructuresCorporations.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                        
+                        {/* Other Structures Column */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Other Structures</h4>
+                          {businessStructuresOther.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -127,20 +181,40 @@ const Navigation = () => {
                     Services
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid w-[500px] gap-3 p-6 md:grid-cols-2">
-                      {services.map((item) => (
-                        <NavigationMenuLink key={item.href} asChild>
-                          <Link
-                            to={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      ))}
+                    <div className="w-[550px] p-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        {/* Filing Services */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Filing Services</h4>
+                          {services.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                        
+                        {/* Business Documents */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Business Documents</h4>
+                          {businessDocuments.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -151,50 +225,59 @@ const Navigation = () => {
                     Resources
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-[400px] gap-3 p-6">
-                      {resources.map((item) => (
-                        <NavigationMenuLink key={item.href} asChild>
-                          {item.isDownload ? (
-                            <a
-                              href={item.href}
-                              download
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                {item.title}
-                                <span className="ml-2 text-xs bg-success text-success-foreground px-2 py-1 rounded">PDF</span>
-                              </div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {item.description}
-                              </p>
-                            </a>
-                          ) : item.isAdminLogin ? (
-                            <Link
-                              to={item.href}
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                <Shield className="h-4 w-4 mr-2" />
-                                {item.title}
-                                <span className="ml-2 text-xs bg-destructive text-destructive-foreground px-2 py-1 rounded">ADMIN</span>
-                              </div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {item.description}
-                              </p>
-                            </Link>
-                          ) : (
-                            <Link
-                              to={item.href}
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none">{item.title}</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {item.description}
-                              </p>
-                            </Link>
-                          )}
-                        </NavigationMenuLink>
-                      ))}
+                    <div className="w-[500px] p-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        {/* Guides & Info */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Guides & Info</h4>
+                          {resources.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <Link
+                                to={item.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none">{item.title}</div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                        
+                        {/* Downloads */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Free Downloads</h4>
+                          {downloads.map((item) => (
+                            <NavigationMenuLink key={item.href} asChild>
+                              <a
+                                href={item.href}
+                                download
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none flex items-center">
+                                  {item.title}
+                                  <span className="ml-2 text-xs bg-success/20 text-success px-1.5 py-0.5 rounded">PDF</span>
+                                </div>
+                                <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
+                              </a>
+                            </NavigationMenuLink>
+                          ))}
+                          
+                          {/* Admin Link */}
+                          <div className="mt-4 pt-4 border-t border-border">
+                            <NavigationMenuLink asChild>
+                              <Link
+                                to={adminLink.href}
+                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                <div className="text-sm font-medium leading-none flex items-center">
+                                  <Shield className="h-3 w-3 mr-1.5" />
+                                  {adminLink.title}
+                                </div>
+                              </Link>
+                            </NavigationMenuLink>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -278,10 +361,10 @@ const Navigation = () => {
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm text-foreground">Business Structures</h3>
                 <div className="space-y-1 pl-4">
-                  {businessStructures.slice(0, 4).map((item) => (
-                    <a key={item.href} href={item.href} className="block text-sm text-muted-foreground hover:text-foreground py-1">
+                  {[...businessStructuresLLC, ...businessStructuresCorporations.slice(0, 2), ...businessStructuresOther.slice(0, 1)].map((item) => (
+                    <Link key={item.href} to={item.href} className="block text-sm text-muted-foreground hover:text-foreground py-1">
                       {item.title}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -290,10 +373,10 @@ const Navigation = () => {
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm text-foreground">Services</h3>
                 <div className="space-y-1 pl-4">
-                  {services.slice(0, 4).map((item) => (
-                    <a key={item.href} href={item.href} className="block text-sm text-muted-foreground hover:text-foreground py-1">
+                  {[...services, ...businessDocuments.slice(0, 2)].slice(0, 6).map((item) => (
+                    <Link key={item.href} to={item.href} className="block text-sm text-muted-foreground hover:text-foreground py-1">
                       {item.title}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
