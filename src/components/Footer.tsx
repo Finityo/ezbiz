@@ -57,7 +57,7 @@ const Footer = () => {
   ];
 
   const company = [
-    { name: "About Finityo", href: "/about" },
+    { name: "About EZ BIZ", href: "/about" },
     { name: "Our Process", href: "/about" },
     { name: "Pricing", href: "/pricing" },
     { name: "Customer Reviews", href: "/consultation" },
@@ -117,8 +117,8 @@ const Footer = () => {
                 Fast, reliable, and affordable incorporation services in all 50 states.
               </p>
               <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
-                <span>📞 1-888-FINITYO</span>
-                <span>✉️ support@finityo.com</span>
+                <span>📞 1-888-EZ-BIZ-FILE</span>
+                <span>✉️ support@ezbizfile.com</span>
                 <span>🕒 Mon-Fri 9AM-6PM EST</span>
               </div>
             </div>
@@ -219,7 +219,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-center md:text-left">
               <p className="text-sm text-muted-foreground">
-                &copy; 2024 Finityo. All rights reserved. Professional business formation services nationwide.
+                &copy; 2024 EZ BIZ FILE SERVICE. All rights reserved. Professional business formation services nationwide.
               </p>
             </div>
             <div className="flex items-center space-x-6 text-sm text-muted-foreground">
