@@ -115,11 +115,11 @@ const Index = () => {
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
-          <div className="flex justify-center mb-12 md:mb-16">
+          <div className="flex justify-center mb-16 md:mb-20">
             <img 
               src={logoImage} 
               alt="EZ BIZ FILE SERVICE" 
-              className="h-32 md:h-40 lg:h-48 w-auto object-contain drop-shadow-lg"
+              className="h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl mix-blend-multiply"
             />
           </div>
 
