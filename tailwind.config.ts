@@ -12,9 +12,16 @@ export default {
         "2xl": "1400px",
       },
     },
-    extend: {
+      fontFamily: {
+        'display': ['Playfair Display', 'Georgia', 'serif'],
+        'body': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
-        border: "hsl(var(--border))",
+        bronze: {
+          DEFAULT: "hsl(38, 45%, 52%)",
+          light: "hsl(38, 40%, 62%)",
+          dark: "hsl(38, 50%, 42%)",
+        },
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -68,7 +75,8 @@ export default {
       boxShadow: {
         'smooth': 'var(--shadow-md)',
         'hero': 'var(--shadow-hero)',
-        'elegant': 'var(--shadow-lg)',
+        'elegant': 'var(--shadow-elegant)',
+        'lg': 'var(--shadow-lg)',
       },
       transitionProperty: {
         'smooth': 'var(--transition-smooth)',

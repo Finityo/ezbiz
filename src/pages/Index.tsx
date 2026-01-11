@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, ArrowRight, Shield, Clock, Users, Star } from "lucide-react";
-import Logo from "@/components/ui/logo";
+import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText, TrendingUp, Award } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-business.jpg";
@@ -10,200 +9,263 @@ import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-  const businessTypes = [
+
+  // Business structures ordered from simple to complex
+  const businessStructures = [
     {
-      title: "Limited Liability Company (LLC)",
-      description: "Perfect for small businesses seeking flexibility and protection",
-      price: "Starting at $149",
-      popular: true,
-      features: ["Limited liability protection", "Tax flexibility", "Simple management structure", "Credibility with customers"]
+      title: "Sole Proprietorship",
+      description: "Simplest structure for solo entrepreneurs",
+      href: "/sole-proprietorship",
+      complexity: "Simple",
+      icon: <Users className="h-6 w-6" />
     },
     {
-      title: "C Corporation", 
-      description: "Ideal for businesses planning to raise capital or go public",
-      price: "Starting at $199",
-      features: ["Stock issuance capability", "Separate tax entity", "Unlimited growth potential", "Attract investors easily"]
+      title: "DBA Filing",
+      description: "Operate under a trade name",
+      href: "/dba-filing",
+      complexity: "Simple",
+      icon: <FileText className="h-6 w-6" />
+    },
+    {
+      title: "Partnership",
+      description: "Shared ownership with partners",
+      href: "/partnership",
+      complexity: "Moderate",
+      icon: <Users className="h-6 w-6" />
+    },
+    {
+      title: "LLC",
+      description: "Limited liability with tax flexibility",
+      href: "/form-llc",
+      complexity: "Moderate",
+      popular: true,
+      icon: <Shield className="h-6 w-6" />
     },
     {
       title: "S Corporation",
-      description: "Great for small businesses wanting to avoid double taxation", 
-      price: "Starting at $199",
-      features: ["Pass-through taxation", "Limited liability protection", "Salary and dividend options", "Up to 100 shareholders"]
+      description: "Pass-through taxation, limited shareholders",
+      href: "/s-corporation",
+      complexity: "Complex",
+      icon: <Building className="h-6 w-6" />
+    },
+    {
+      title: "C Corporation",
+      description: "Unlimited growth potential, raise capital",
+      href: "/c-corporation",
+      complexity: "Complex",
+      icon: <TrendingUp className="h-6 w-6" />
     }
   ];
 
-  const whyChooseUs = [
+  const capabilities = [
     {
-      icon: <Clock className="h-8 w-8" />,
-      title: "Fast & Reliable",
-      description: "Most filings completed within 24-48 hours with our express service"
+      icon: <FileText className="h-8 w-8" />,
+      title: "Complete Formation Services",
+      description: "From Articles of Organization to Operating Agreements, we handle every document your business needs."
     },
     {
       icon: <Shield className="h-8 w-8" />,
-      title: "100% Satisfaction Guaranteed", 
-      description: "We stand behind our work with a complete satisfaction guarantee"
+      title: "Registered Agent Services",
+      description: "Professional representation in all 50 states, ensuring you never miss critical legal correspondence."
     },
     {
-      icon: <Users className="h-8 w-8" />,
-      title: "Expert Support",
-      description: "Live business formation experts ready to guide you through the process"
+      icon: <Award className="h-8 w-8" />,
+      title: "Compliance & Ongoing Support",
+      description: "Annual reports, tax filings, and compliance monitoring to keep your business in good standing."
     }
   ];
 
   const processSteps = [
     {
-      step: "1",
-      title: "Choose Your Business Type",
-      description: "Select the business structure that best fits your needs and goals"
+      step: "01",
+      title: "Choose Your Structure",
+      description: "Select the business entity that aligns with your goals, liability needs, and tax preferences."
     },
     {
-      step: "2", 
-      title: "Complete Your Order",
-      description: "Provide your business information through our secure, easy-to-use form"
+      step: "02", 
+      title: "Provide Your Details",
+      description: "Complete our streamlined form with your business information. Takes less than 15 minutes."
     },
     {
-      step: "3",
-      title: "We Handle the Filings",
-      description: "Our experts prepare and file all required documents with the state"
+      step: "03",
+      title: "We Handle the Filing",
+      description: "Our experts prepare and submit all documents to the appropriate state authorities."
     },
     {
-      step: "4",
-      title: "Start Your Business", 
-      description: "Receive your official documents and begin operating your new business"
+      step: "04",
+      title: "Launch Your Business", 
+      description: "Receive your official documents and begin operating your legally formed business."
     }
+  ];
+
+  const trustIndicators = [
+    { value: "50,000+", label: "Businesses Formed" },
+    { value: "15+", label: "Years of Experience" },
+    { value: "50", label: "States Served" },
+    { value: "4.9★", label: "Customer Rating" }
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      {/* Hero Section - Executive Style */}
+      <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="text-sm">
-                  Trusted by 50,000+ Entrepreneurs
-                </Badge>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Turn Your <span className="gradient-hero bg-clip-text text-transparent">Business Ideas</span> Into Reality
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+                  <Star className="h-4 w-4 fill-current" />
+                  <span className="text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
+                  Build Your Business on a{" "}
+                  <span className="text-bronze">Solid Foundation</span>
                 </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Professional business formation services made simple. Start your LLC, Corporation, or other business entity quickly and affordably with expert guidance every step of the way.
+                <p className="text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
+                  Professional business formation services that combine legal expertise with 
+                  personalized guidance. From sole proprietorship to corporation, we make 
+                  entity formation simple and reliable.
                 </p>
               </div>
+              
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
-                  variant="hero" 
                   size="lg" 
-                  className="group touch-manipulation" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigate('/order-now');
-                  }}
-                  onTouchStart={(e) => e.stopPropagation()}
-                  style={{ 
-                    minHeight: '44px',
-                    WebkitTapHighlightColor: 'transparent'
-                  }}
+                  className="group text-lg px-8 h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
+                  onClick={() => navigate('/order-now')}
                 >
-                  Start Your Business Today
+                  Start Your Business
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button 
-                  variant="professional" 
+                  variant="outline" 
                   size="lg" 
-                  className="touch-manipulation"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigate('/consultation');
-                  }}
-                  onTouchStart={(e) => e.stopPropagation()}
-                  style={{ 
-                    minHeight: '44px',
-                    WebkitTapHighlightColor: 'transparent'
-                  }}
+                  className="text-lg px-8 h-14 border-2 hover:bg-muted"
+                  onClick={() => navigate('/consultation')}
                 >
                   Free Consultation
                 </Button>
               </div>
-              <div className="flex items-center space-x-6 text-sm text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  <CheckCircle className="h-4 w-4 text-success" />
+
+              <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground font-body">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
                   <span>No Hidden Fees</span>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <CheckCircle className="h-4 w-4 text-success" />
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
                   <span>24-48 Hour Filing</span>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <CheckCircle className="h-4 w-4 text-success" />
-                  <span>100% Satisfaction</span>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <span>100% Satisfaction Guarantee</span>
                 </div>
               </div>
             </div>
-            <div className="relative">
+
+            <div className="relative lg:pl-8">
+              <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
               <img 
                 src={heroImage} 
-                alt="Professional entrepreneurs collaborating on business formation"
-                className="rounded-2xl shadow-hero w-full h-auto"
+                alt="Professional business consultation"
+                className="relative rounded-2xl shadow-hero w-full h-auto object-cover"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-card">
+      {/* Trust Indicators Bar */}
+      <section className="py-8 border-y border-border bg-card">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {trustIndicators.map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary font-display">{item.value}</div>
+                <div className="text-sm text-muted-foreground font-body mt-1">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Company Capabilities Section */}
+      <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">Choose Your Business Structure</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Select the business entity that best fits your goals and provides the protection you need
+            <div className="accent-line-center mb-6"></div>
+            <h2 className="text-3xl md:text-4xl font-bold font-display">What We Do</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              Comprehensive business formation and compliance services designed for 
+              entrepreneurs who value expertise and reliability.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {businessTypes.map((type, index) => (
-              <Card key={index} className={`relative ${type.popular ? 'border-primary shadow-elegant' : 'shadow-smooth'} hover:shadow-elegant transition-all duration-300`}>
-                {type.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-success text-success-foreground">
+            {capabilities.map((capability, index) => (
+              <Card key={index} className="border-0 shadow-smooth hover:shadow-elegant transition-all duration-300 bg-card">
+                <CardHeader className="space-y-4">
+                  <div className="inline-flex p-3 rounded-xl bg-primary/5 text-primary w-fit">
+                    {capability.icon}
+                  </div>
+                  <CardTitle className="text-xl font-display">{capability.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base font-body leading-relaxed">
+                    {capability.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Business Structures Section */}
+      <section className="py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <div className="accent-line-center mb-6"></div>
+            <h2 className="text-3xl md:text-4xl font-bold font-display">Choose Your Business Structure</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              From simple to sophisticated, we help you select and form the right entity 
+              for your business goals.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {businessStructures.map((structure, index) => (
+              <Card 
+                key={index} 
+                className={`relative cursor-pointer transition-all duration-300 hover:shadow-elegant hover:-translate-y-1 ${
+                  structure.popular ? 'border-secondary shadow-lg ring-1 ring-secondary/20' : 'border-border shadow-smooth'
+                }`}
+                onClick={() => navigate(structure.href)}
+              >
+                {structure.popular && (
+                  <Badge className="absolute -top-3 left-6 bg-secondary text-secondary-foreground">
                     Most Popular
                   </Badge>
                 )}
-                <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-xl">{type.title}</CardTitle>
-                  <CardDescription className="text-base">{type.description}</CardDescription>
-                  <div className="text-3xl font-bold text-primary mt-4">{type.price}</div>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-2 rounded-lg bg-primary/5 text-primary">
+                      {structure.icon}
+                    </div>
+                    <Badge variant="outline" className="text-xs font-body">
+                      {structure.complexity}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg font-display">{structure.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <ul className="space-y-3">
-                    {type.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button 
-                    variant={type.popular ? "hero" : "default"} 
-                    className="w-full mt-6 touch-manipulation"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      navigate('/pricing');
-                    }}
-                    onTouchStart={(e) => e.stopPropagation()}
-                    style={{ 
-                      minHeight: '44px',
-                      WebkitTapHighlightColor: 'transparent'
-                    }}
-                  >
-                    Get Started
+                <CardContent>
+                  <CardDescription className="font-body">{structure.description}</CardDescription>
+                  <Button variant="link" className="px-0 mt-4 text-primary font-body group">
+                    Learn More 
+                    <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </CardContent>
               </Card>
@@ -212,70 +274,32 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20">
+      {/* Simple Steps Process */}
+      <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">Why Choose Finityo?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We make business formation simple, fast, and affordable with expert support every step of the way
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {whyChooseUs.map((item, index) => (
-              <div key={index} className="text-center space-y-4">
-                <div className="inline-flex p-4 rounded-full gradient-primary text-primary-foreground">
-                  {item.icon}
-                </div>
-                <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center border-t border-border pt-16">
-            <div>
-              <div className="text-3xl font-bold text-primary">50,000+</div>
-              <div className="text-sm text-muted-foreground">Businesses Formed</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-primary">24-48hr</div>
-              <div className="text-sm text-muted-foreground">Average Filing Time</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-primary">50 States</div>
-              <div className="text-sm text-muted-foreground">Nationwide Service</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-primary">4.9★</div>
-              <div className="text-sm text-muted-foreground">Customer Rating</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">How It Works</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Starting your business is easier than you think. Follow these simple steps to get started today
+            <div className="accent-line-center mb-6"></div>
+            <h2 className="text-3xl md:text-4xl font-bold font-display">How It Works</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              A straightforward process designed to get your business legally formed 
+              quickly and correctly.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {processSteps.map((step, index) => (
-              <div key={index} className="text-center space-y-4 relative">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full gradient-primary text-primary-foreground text-xl font-bold">
-                  {step.step}
+              <div key={index} className="relative">
+                <div className="text-center space-y-4">
+                  <div className="text-5xl font-display font-bold text-primary/15">
+                    {step.step}
+                  </div>
+                  <h3 className="text-xl font-semibold font-display -mt-8 relative">{step.title}</h3>
+                  <p className="text-muted-foreground font-body">{step.description}</p>
                 </div>
-                <h3 className="text-lg font-semibold">{step.title}</h3>
-                <p className="text-muted-foreground text-sm">{step.description}</p>
                 {index < processSteps.length - 1 && (
-                  <ArrowRight className="hidden lg:block absolute -right-4 top-8 h-6 w-6 text-muted-foreground" />
+                  <div className="hidden lg:block absolute top-8 -right-4 w-8">
+                    <ArrowRight className="h-5 w-5 text-border" />
+                  </div>
                 )}
               </div>
             ))}
@@ -283,55 +307,116 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Why Choose Us Section */}
+      <section className="py-24 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="accent-line mb-6"></div>
+                <h2 className="text-3xl md:text-4xl font-bold font-display">
+                  Why Entrepreneurs Choose Finityo
+                </h2>
+                <p className="text-xl text-muted-foreground font-body leading-relaxed">
+                  We combine legal expertise with personalized service to ensure your 
+                  business formation is handled correctly from day one.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 rounded-xl bg-success/10 text-success">
+                    <Clock className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg font-display">Fast & Reliable</h3>
+                    <p className="text-muted-foreground font-body">
+                      Most filings completed within 24-48 hours with our express service.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 rounded-xl bg-secondary/10 text-secondary">
+                    <Shield className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg font-display">100% Satisfaction Guaranteed</h3>
+                    <p className="text-muted-foreground font-body">
+                      We stand behind our work with a complete satisfaction guarantee.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 text-primary">
+                    <Users className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg font-display">Expert Support</h3>
+                    <p className="text-muted-foreground font-body">
+                      Live business formation experts ready to guide you through the process.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
+                <div className="text-4xl font-bold text-primary font-display mb-2">$0</div>
+                <div className="text-sm text-muted-foreground font-body">State Filing Fee Markup</div>
+              </Card>
+              <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
+                <div className="text-4xl font-bold text-primary font-display mb-2">24hr</div>
+                <div className="text-sm text-muted-foreground font-body">Average Response Time</div>
+              </Card>
+              <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
+                <div className="text-4xl font-bold text-primary font-display mb-2">A+</div>
+                <div className="text-sm text-muted-foreground font-body">BBB Rating</div>
+              </Card>
+              <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
+                <div className="text-4xl font-bold text-primary font-display mb-2">100%</div>
+                <div className="text-sm text-muted-foreground font-body">Accuracy Rate</div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-20 gradient-hero text-primary-foreground">
+      <section className="py-24 gradient-executive text-primary-foreground">
         <div className="container mx-auto px-4 text-center space-y-8">
-          <h2 className="text-3xl md:text-4xl font-bold">Ready to Start Your Business?</h2>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            Join thousands of entrepreneurs who trust Finityo to handle their business formation needs. 
-            Get started today with our simple, fast, and affordable process.
-          </p>
+          <div className="space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold font-display">
+              Ready to Start Your Business?
+            </h2>
+            <p className="text-xl opacity-90 max-w-2xl mx-auto font-body">
+              Join thousands of entrepreneurs who trust Finityo to handle their 
+              business formation. Get started today with our simple, fast, and reliable process.
+            </p>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
-              variant="secondary" 
               size="lg" 
-              className="shadow-lg hover:shadow-xl touch-manipulation"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                navigate('/order-now');
-              }}
-              onTouchStart={(e) => e.stopPropagation()}
-              style={{ 
-                minHeight: '44px',
-                WebkitTapHighlightColor: 'transparent'
-              }}
+              className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-lg px-8 h-14"
+              onClick={() => navigate('/order-now')}
             >
-              Start Your LLC - $149
+              Form Your Business — Starting at $149
             </Button>
             <Button 
-              variant="professional" 
               size="lg" 
-              className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary touch-manipulation"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                navigate('/consultation');
-              }}
-              onTouchStart={(e) => e.stopPropagation()}
-              style={{ 
-                minHeight: '44px',
-                WebkitTapHighlightColor: 'transparent'
-              }}
+              variant="outline"
+              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-lg px-8 h-14"
+              onClick={() => navigate('/consultation')}
             >
-              Free Consultation
+              Schedule Free Consultation
             </Button>
           </div>
         </div>
       </section>
 
-
-      {/* Footer */}
       <Footer />
     </div>
   );

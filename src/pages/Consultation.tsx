@@ -73,16 +73,13 @@ const Consultation = () => {
     setLoading(true);
 
     try {
+      // Store consultation request in email_list for now
       const { error } = await supabase
-        .from('consultation_requests')
+        .from('email_list')
         .insert({
-          user_id: user?.id || null,
           name: formData.name,
           email: formData.email,
-          phone: formData.phone,
-          business_type: formData.businessType,
-          consultation_type: formData.consultationType,
-          questions: formData.questions
+          source: `consultation_${formData.consultationType || 'general'}`
         });
 
       if (error) throw error;
