@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import RelatedStructures from "@/components/RelatedStructures";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -589,6 +590,12 @@ const Partnership = () => {
             </div>
           </div>
         </section>
+
+        {/* Related Structures */}
+        <RelatedStructures 
+          currentStructureId="partnership"
+          relatedIds={["llc", "sole-proprietorship", "s-corp", "c-corp"]}
+        />
 
         {/* CTA Section */}
         <section className="py-16 lg:py-20 gradient-hero text-primary-foreground">
