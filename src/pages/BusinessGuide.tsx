@@ -8,9 +8,11 @@ import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
 import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
+import { useToast } from "@/hooks/use-toast";
 
 const BusinessGuide = () => {
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const guideSteps = [
     {
@@ -127,14 +129,28 @@ const BusinessGuide = () => {
   const handleDownload = async (resource: typeof resources[0]) => {
     setGeneratingId(resource.id);
     
+    toast({
+      title: "Generating PDF...",
+      description: `Creating your ${resource.title}`,
+    });
+    
     // Small delay for UI feedback
     await new Promise(resolve => setTimeout(resolve, 100));
     
     try {
       const doc = resource.generator();
       doc.save(resource.filename);
+      toast({
+        title: "Download Complete!",
+        description: `${resource.title} has been downloaded successfully.`,
+      });
     } catch (error) {
       console.error("Error generating PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setGeneratingId(null);
     }
@@ -143,15 +159,27 @@ const BusinessGuide = () => {
   const handleDownloadAll = async () => {
     setGeneratingId("all");
     
+    toast({
+      title: "Generating All Guides...",
+      description: "This may take a few seconds.",
+    });
+    
+    let successCount = 0;
     for (const resource of resources) {
       try {
         const doc = resource.generator();
         doc.save(resource.filename);
+        successCount++;
         await new Promise(resolve => setTimeout(resolve, 300));
       } catch (error) {
         console.error("Error generating PDF:", error);
       }
     }
+    
+    toast({
+      title: "All Downloads Complete!",
+      description: `Successfully downloaded ${successCount} guides.`,
+    });
     
     setGeneratingId(null);
   };
