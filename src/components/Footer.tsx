@@ -30,11 +30,11 @@ const Footer = () => {
   ];
 
   const templates = [
-    { name: "LLC Operating Agreement", href: "/LLC-Formation-Guide.pdf", isDownload: true },
-    { name: "Corporate Bylaws Template", href: "/Corporation-Handbook.pdf", isDownload: true },
+    { name: "LLC Operating Agreement", href: "/business-guide" },
+    { name: "Corporate Bylaws Template", href: "/business-guide" },
     { name: "Meeting Minutes Template", href: "/consultation" },
-    { name: "Business License Checklist", href: "/Business-License-Checklist.pdf", isDownload: true },
-    { name: "Tax Election Forms", href: "/Tax-Election-Guide.pdf", isDownload: true },
+    { name: "Business License Checklist", href: "/business-guide" },
+    { name: "Tax Election Forms", href: "/business-guide" },
     { name: "Articles of Amendment", href: "/consultation" },
   ];
 
