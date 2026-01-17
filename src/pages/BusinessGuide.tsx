@@ -1,9 +1,17 @@
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Download, FileText, Users, Building, Shield } from "lucide-react";
+import { Check, Download, FileText, Users, Building, Shield, Loader2 } from "lucide-react";
+import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
+import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
+import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
+import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
 
 const BusinessGuide = () => {
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+
   const guideSteps = [
     {
       step: 1,
@@ -75,38 +83,78 @@ const BusinessGuide = () => {
 
   const resources = [
     {
+      id: "llc-guide",
       title: "LLC Formation Guide",
       description: "Complete guide to forming your LLC",
       type: "PDF",
-      pages: "24 pages",
+      pages: "~15 pages",
       icon: FileText,
-      downloadUrl: "/LLC-Formation-Guide.pdf"
+      generator: generateLLCGuide,
+      filename: "LLC-Formation-Guide.pdf"
     },
     {
+      id: "corporation-handbook",
       title: "Corporation Handbook",
       description: "Everything you need to know about corporations",
       type: "PDF", 
-      pages: "32 pages",
+      pages: "~16 pages",
       icon: Building,
-      downloadUrl: "/Corporation-Handbook.pdf"
+      generator: generateCorporationHandbook,
+      filename: "Corporation-Handbook.pdf"
     },
     {
+      id: "tax-guide",
       title: "Tax Election Guide",
       description: "Understanding business tax elections",
       type: "PDF",
-      pages: "16 pages", 
+      pages: "~12 pages", 
       icon: Shield,
-      downloadUrl: "/Tax-Election-Guide.pdf"
+      generator: generateTaxGuide,
+      filename: "Tax-Election-Guide.pdf"
     },
     {
+      id: "license-checklist",
       title: "Business License Checklist",
       description: "State-by-state license requirements",
       type: "PDF",
-      pages: "28 pages",
+      pages: "~12 pages",
       icon: Users,
-      downloadUrl: "/Business-License-Checklist.pdf"
+      generator: generateLicenseChecklist,
+      filename: "Business-License-Checklist.pdf"
     }
   ];
+
+  const handleDownload = async (resource: typeof resources[0]) => {
+    setGeneratingId(resource.id);
+    
+    // Small delay for UI feedback
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    try {
+      const doc = resource.generator();
+      doc.save(resource.filename);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setGeneratingId(null);
+    }
+  };
+
+  const handleDownloadAll = async () => {
+    setGeneratingId("all");
+    
+    for (const resource of resources) {
+      try {
+        const doc = resource.generator();
+        doc.save(resource.filename);
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+      }
+    }
+    
+    setGeneratingId(null);
+  };
 
   const businessTypes = [
     {
@@ -144,9 +192,24 @@ const BusinessGuide = () => {
               <p className="text-xl mb-8 text-white/90">
                 Everything you need to know to start your business the right way
               </p>
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-                <Download className="h-5 w-5 mr-2" />
-                Download Complete Guide
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="text-lg px-8 py-4"
+                onClick={handleDownloadAll}
+                disabled={generatingId !== null}
+              >
+                {generatingId === "all" ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Generating All Guides...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-5 w-5 mr-2" />
+                    Download All Guides
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -225,10 +288,11 @@ const BusinessGuide = () => {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12">Free Resources & Guides</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                {resources.map((resource, index) => {
+                {resources.map((resource) => {
                   const IconComponent = resource.icon;
+                  const isGenerating = generatingId === resource.id;
                   return (
-                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                    <Card key={resource.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
                           <div className="bg-primary/10 p-3 rounded-lg">
@@ -242,12 +306,20 @@ const BusinessGuide = () => {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                asChild
+                                onClick={() => handleDownload(resource)}
+                                disabled={generatingId !== null}
                               >
-                                <a href={resource.downloadUrl} download>
-                                  <Download className="h-4 w-4 mr-2" />
-                                  Download
-                                </a>
+                                {isGenerating ? (
+                                  <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Download
+                                  </>
+                                )}
                               </Button>
                             </div>
                           </div>
@@ -388,12 +460,7 @@ const BusinessGuide = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-muted py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
