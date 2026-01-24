@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Download, FileText, Users, Building, Shield, Loader2 } from "lucide-react";
+import { Check, Download, FileText, Users, Building, Shield, Loader2, ArrowRight, ClipboardList } from "lucide-react";
 import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
@@ -357,6 +358,30 @@ const BusinessGuide = () => {
                   );
                 })}
               </div>
+              
+              {/* Link to Business Templates */}
+              <Card className="mt-8 border-warm-bronze/30 bg-warm-bronze/5">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-warm-bronze/20 p-3 rounded-lg">
+                        <ClipboardList className="h-8 w-8 text-warm-bronze" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Legal Document Templates</h3>
+                        <p className="text-muted-foreground">
+                          Download fillable templates for Operating Agreements, Corporate Bylaws, and Meeting Minutes.
+                        </p>
+                      </div>
+                    </div>
+                    <Button asChild className="ml-4 shrink-0">
+                      <Link to="/business-templates">
+                        View Templates <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
