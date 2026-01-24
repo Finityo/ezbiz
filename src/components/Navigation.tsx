@@ -86,6 +86,7 @@ const Navigation = () => {
 
   const resources = [
     { title: "Business Formation Guide", href: "/business-guide", description: "Complete guide to starting a business" },
+    { title: "Business Templates", href: "/business-templates", description: "Free fillable document templates" },
     { title: "State Requirements", href: "/state-requirements", description: "Requirements by state" },
     { title: "Pricing", href: "/pricing", description: "Transparent pricing for all services" },
     { title: "Free Consultation", href: "/consultation", description: "Speak with a business expert" },
