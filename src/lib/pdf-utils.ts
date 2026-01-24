@@ -392,3 +392,48 @@ export const createDocument = (): jsPDF => {
     format: 'a4',
   });
 };
+
+// Add table of contents
+export const addTableOfContents = (
+  doc: jsPDF, 
+  items: Array<{ title: string; page: number }>
+): number => {
+  const { marginLeft, contentWidth } = PDF_LAYOUT;
+  let y = 50;
+  
+  // Title
+  doc.setFontSize(PDF_FONTS.h1);
+  doc.setFont('helvetica', 'bold');
+  setColor(doc, PDF_COLORS.slateNavy);
+  doc.text('Table of Contents', marginLeft, y);
+  
+  // Bronze underline
+  setDrawColor(doc, PDF_COLORS.warmBronze);
+  doc.setLineWidth(1);
+  doc.line(marginLeft, y + 3, marginLeft + 60, y + 3);
+  
+  y += 20;
+  
+  items.forEach((item) => {
+    doc.setFontSize(PDF_FONTS.body);
+    doc.setFont('helvetica', 'normal');
+    setColor(doc, PDF_COLORS.darkText);
+    doc.text(item.title, marginLeft, y);
+    
+    // Page number aligned right
+    const pageText = String(item.page);
+    const pageWidth = doc.getTextWidth(pageText);
+    doc.text(pageText, marginLeft + contentWidth - pageWidth, y);
+    
+    // Dotted line between title and page
+    setDrawColor(doc, PDF_COLORS.mediumText);
+    const titleWidth = doc.getTextWidth(item.title);
+    doc.setLineDashPattern([1, 2], 0);
+    doc.line(marginLeft + titleWidth + 5, y - 1, marginLeft + contentWidth - pageWidth - 5, y - 1);
+    doc.setLineDashPattern([], 0);
+    
+    y += 8;
+  });
+  
+  return y;
+};

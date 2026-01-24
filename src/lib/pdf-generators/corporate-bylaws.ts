@@ -1,8 +1,18 @@
 import jsPDF from "jspdf";
-import { addCoverPage, addHeader, addFooter, BRAND_COLORS, addTableOfContents } from "../pdf-utils";
+import { 
+  addCoverPage, 
+  addPageHeader, 
+  addFooter, 
+  addTableOfContents,
+  PDF_COLORS,
+  setColor,
+  setDrawColor,
+  setFillColor
+} from "../pdf-utils";
 
 export const generateCorporateBylaws = (): jsPDF => {
   const doc = new jsPDF();
+  const totalPages = 13;
   let currentPage = 1;
 
   // Cover Page
@@ -11,7 +21,7 @@ export const generateCorporateBylaws = (): jsPDF => {
   // Table of Contents
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Table of Contents");
+  addPageHeader(doc, "Table of Contents");
   
   const tocItems = [
     { title: "Article I: Offices", page: 3 },
@@ -26,15 +36,15 @@ export const generateCorporateBylaws = (): jsPDF => {
   ];
   
   addTableOfContents(doc, tocItems);
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article I: Offices
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article I: Offices");
+  addPageHeader(doc, "Article I: Offices");
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   let y = 50;
   
@@ -47,10 +57,10 @@ export const generateCorporateBylaws = (): jsPDF => {
   y += 10;
   
   // Fillable fields
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Street Address)", 90, y + 4);
   y += 15;
   
@@ -65,7 +75,7 @@ export const generateCorporateBylaws = (): jsPDF => {
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("Section 1.2 - Other Offices", 20, y);
   y += 8;
@@ -81,12 +91,12 @@ export const generateCorporateBylaws = (): jsPDF => {
   // Article II begins on same page
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.setTextColor(...BRAND_COLORS.navy);
+  setColor(doc, PDF_COLORS.slateNavy);
   doc.text("ARTICLE II: SHAREHOLDERS", 20, y);
   y += 12;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("Section 2.1 - Annual Meeting", 20, y);
   y += 8;
@@ -95,31 +105,31 @@ export const generateCorporateBylaws = (): jsPDF => {
   doc.text("The annual meeting of shareholders shall be held on:", 20, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 120, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Day and Month - e.g., \"the third Tuesday of March\")", 30, y + 4);
   y += 15;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("at the hour of:", 20, y);
   doc.line(55, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Time)", 72, y + 4);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article II continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article II: Shareholders (continued)");
+  addPageHeader(doc, "Article II: Shareholders (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 2.2 - Special Meetings", 20, y);
@@ -168,16 +178,16 @@ export const generateCorporateBylaws = (): jsPDF => {
   );
   doc.text(votingText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article III: Board of Directors
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article III: Board of Directors");
+  addPageHeader(doc, "Article III: Board of Directors");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 3.1 - General Powers", 20, y);
@@ -199,15 +209,15 @@ export const generateCorporateBylaws = (): jsPDF => {
   doc.text("The number of directors shall be:", 20, y);
   y += 8;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 50, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Number)", 30, y + 4);
   y += 12;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   const termText = doc.splitTextToSize(
     "Directors shall be elected at the annual meeting of shareholders and shall hold office until the next annual meeting and until their successors are elected and qualified.",
     170
@@ -224,8 +234,8 @@ export const generateCorporateBylaws = (): jsPDF => {
   y += 12;
   
   // Director table
-  doc.setDrawColor(...BRAND_COLORS.navy);
-  doc.setFillColor(240, 240, 240);
+  setDrawColor(doc, PDF_COLORS.slateNavy);
+  setFillColor(doc, { r: 240, g: 240, b: 240 });
   doc.rect(20, y, 170, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Director Name", 25, y + 7);
@@ -238,16 +248,16 @@ export const generateCorporateBylaws = (): jsPDF => {
     y += 12;
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article III continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article III: Board of Directors (continued)");
+  addPageHeader(doc, "Article III: Board of Directors (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 3.4 - Regular Meetings", 20, y);
@@ -296,16 +306,16 @@ export const generateCorporateBylaws = (): jsPDF => {
   );
   doc.text(compText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article IV: Officers
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article IV: Officers");
+  addPageHeader(doc, "Article IV: Officers");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 4.1 - Officers", 20, y);
@@ -333,13 +343,14 @@ export const generateCorporateBylaws = (): jsPDF => {
   officerPositions.forEach((position) => {
     doc.setFont("helvetica", "bold");
     doc.text(`${position}:`, 20, y);
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(65, y, 180, y);
     y += 12;
   });
   y += 10;
   
   doc.setFont("helvetica", "bold");
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("Section 4.3 - President", 20, y);
   y += 8;
   
@@ -350,16 +361,16 @@ export const generateCorporateBylaws = (): jsPDF => {
   );
   doc.text(presidentText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article IV continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article IV: Officers (continued)");
+  addPageHeader(doc, "Article IV: Officers (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 4.4 - Secretary", 20, y);
@@ -396,16 +407,16 @@ export const generateCorporateBylaws = (): jsPDF => {
   );
   doc.text(removalText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article V: Stock Certificates
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article V: Stock Certificates");
+  addPageHeader(doc, "Article V: Stock Certificates");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 5.1 - Certificates", 20, y);
@@ -427,25 +438,25 @@ export const generateCorporateBylaws = (): jsPDF => {
   doc.text("The Corporation is authorized to issue:", 20, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 80, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Number)", 45, y + 4);
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("shares of Common Stock, par value $", 85, y);
   doc.line(175, y, 190, y);
   y += 15;
   
   doc.line(20, y, 80, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Number)", 45, y + 4);
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("shares of Preferred Stock, par value $", 85, y);
   doc.line(180, y, 190, y);
   y += 20;
@@ -461,16 +472,16 @@ export const generateCorporateBylaws = (): jsPDF => {
   );
   doc.text(transferText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VI: Corporate Records
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VI: Corporate Records");
+  addPageHeader(doc, "Article VI: Corporate Records");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 6.1 - Records to be Kept", 20, y);
@@ -502,21 +513,21 @@ export const generateCorporateBylaws = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const inspectionText = doc.splitTextToSize(
-    "Any shareholder may inspect and copy the corporate records upon written request and for any proper purpose.",
+    "Any shareholder may inspect and copy corporate records upon written demand during regular business hours at the Corporation's principal office.",
     170
   );
   doc.text(inspectionText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VII: Indemnification
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VII: Indemnification");
+  addPageHeader(doc, "Article VII: Indemnification");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 7.1 - Indemnification of Directors and Officers", 20, y);
@@ -524,7 +535,7 @@ export const generateCorporateBylaws = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const indemnText = doc.splitTextToSize(
-    "The Corporation shall indemnify any director or officer who was or is a party to any proceeding by reason of the fact that such person is or was a director or officer of the Corporation, against expenses, judgments, fines, and amounts paid in settlement actually and reasonably incurred, if such person acted in good faith and in a manner reasonably believed to be in the best interests of the Corporation.",
+    "The Corporation shall indemnify any director or officer who was or is a party to any proceeding by reason of the fact that such person is or was a director or officer of the Corporation, to the fullest extent permitted by law.",
     170
   );
   doc.text(indemnText, 20, y);
@@ -536,114 +547,104 @@ export const generateCorporateBylaws = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const advanceText = doc.splitTextToSize(
-    "Expenses incurred by a director or officer in defending any proceeding may be paid by the Corporation in advance of the final disposition of such proceeding upon receipt of an undertaking to repay such amount if it shall be determined that such person is not entitled to indemnification.",
+    "The Corporation may advance expenses incurred by a director or officer in defending a proceeding upon receipt of an undertaking to repay such amounts if it is ultimately determined that such person is not entitled to indemnification.",
     170
   );
   doc.text(advanceText, 20, y);
-  y += advanceText.length * 6 + 10;
   
-  doc.setFont("helvetica", "bold");
-  doc.text("Section 7.3 - Insurance", 20, y);
-  y += 8;
-  
-  doc.setFont("helvetica", "normal");
-  const insuranceText = doc.splitTextToSize(
-    "The Corporation may purchase and maintain insurance on behalf of any person who is or was a director, officer, employee, or agent of the Corporation against any liability asserted against such person.",
-    170
-  );
-  doc.text(insuranceText, 20, y);
-  
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VIII: Amendments
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VIII: Amendments");
+  addPageHeader(doc, "Article VIII: Amendments");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
-  doc.text("Section 8.1 - Amendment by Board", 20, y);
+  doc.text("Section 8.1 - Amendment by Directors", 20, y);
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  const boardAmendText = doc.splitTextToSize(
-    "These Bylaws may be altered, amended, or repealed, and new Bylaws may be adopted, by the Board of Directors at any regular or special meeting of the Board.",
+  const dirAmendText = doc.splitTextToSize(
+    "These Bylaws may be amended or repealed by the Board of Directors at any regular or special meeting, unless the shareholders have expressly reserved such power to themselves.",
     170
   );
-  doc.text(boardAmendText, 20, y);
-  y += boardAmendText.length * 6 + 10;
+  doc.text(dirAmendText, 20, y);
+  y += dirAmendText.length * 6 + 10;
   
   doc.setFont("helvetica", "bold");
   doc.text("Section 8.2 - Amendment by Shareholders", 20, y);
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  const shareAmendText = doc.splitTextToSize(
-    "Shareholders may also alter, amend, or repeal these Bylaws at any annual or special meeting of shareholders, provided that notice of the proposed amendment is included in the notice of the meeting.",
+  const shAmendText = doc.splitTextToSize(
+    "These Bylaws may be amended or repealed by the shareholders at any regular or special meeting called for that purpose.",
     170
   );
-  doc.text(shareAmendText, 20, y);
+  doc.text(shAmendText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Adoption Certificate
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Certificate of Adoption");
+  addPageHeader(doc, "Certificate of Adoption");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
-  const adoptionIntro = doc.splitTextToSize(
-    "The undersigned, being all of the initial directors of the Corporation, hereby adopt the foregoing Bylaws as the Bylaws of the Corporation.",
-    170
-  );
-  doc.text(adoptionIntro, 20, y);
-  y += adoptionIntro.length * 6 + 10;
-  
-  doc.text("Corporation Name:", 20, y);
-  doc.setDrawColor(...BRAND_COLORS.bronze);
-  doc.line(60, y, 180, y);
+  doc.setFont("helvetica", "bold");
+  doc.text("CERTIFICATE OF ADOPTION OF BYLAWS", 20, y);
   y += 15;
   
-  doc.text("Date of Adoption:", 20, y);
-  doc.line(60, y, 120, y);
+  doc.setFont("helvetica", "normal");
+  const adoptionText = doc.splitTextToSize(
+    "The undersigned, being the duly elected directors of the Corporation, hereby certify that the foregoing Bylaws were adopted as the Bylaws of the Corporation by unanimous written consent effective as of:",
+    170
+  );
+  doc.text(adoptionText, 20, y);
+  y += adoptionText.length * 6 + 10;
+  
+  setDrawColor(doc, PDF_COLORS.warmBronze);
+  doc.line(20, y, 100, y);
+  doc.setFontSize(8);
+  setColor(doc, PDF_COLORS.warmBronze);
+  doc.text("(Date of Adoption)", 50, y + 4);
   y += 25;
   
-  // Signature blocks
+  doc.setFontSize(11);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("DIRECTORS:", 20, y);
   y += 15;
   
-  for (let i = 1; i <= 5; i++) {
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+  // Signature blocks
+  for (let i = 0; i < 3; i++) {
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
+    setColor(doc, PDF_COLORS.warmBronze);
     doc.text("Signature", 55, y + 4);
     
     doc.line(120, y, 180, y);
     doc.text("Date", 145, y + 4);
-    y += 12;
+    y += 15;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
-    doc.setFont("helvetica", "normal");
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
-    doc.text("Print Name", 55, y + 4);
-    y += 20;
+    doc.text("Printed Name", 50, y + 4);
+    y += 25;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
+    setColor(doc, PDF_COLORS.darkText);
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   return doc;
 };

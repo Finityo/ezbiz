@@ -1,8 +1,19 @@
 import jsPDF from "jspdf";
-import { addCoverPage, addHeader, addFooter, BRAND_COLORS, addTableOfContents } from "../pdf-utils";
+import { 
+  addCoverPage, 
+  addPageHeader, 
+  addFooter, 
+  addTableOfContents,
+  PDF_COLORS,
+  PDF_LAYOUT,
+  setColor,
+  setDrawColor,
+  setFillColor
+} from "../pdf-utils";
 
 export const generateLLCOperatingAgreement = (): jsPDF => {
   const doc = new jsPDF();
+  const totalPages = 12;
   let currentPage = 1;
 
   // Cover Page
@@ -11,7 +22,7 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   // Table of Contents
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Table of Contents");
+  addPageHeader(doc, "Table of Contents");
   
   const tocItems = [
     { title: "Article I: Formation", page: 3 },
@@ -29,15 +40,15 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   ];
   
   addTableOfContents(doc, tocItems);
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article I: Formation
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article I: Formation");
+  addPageHeader(doc, "Article I: Formation");
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   let y = 50;
   
@@ -51,16 +62,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 10;
   
   // Fillable field
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.setLineWidth(0.5);
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Date)", 55, y + 4);
   y += 15;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("by and among the Members listed in Exhibit A attached hereto.", 20, y);
   y += 15;
   
@@ -79,29 +90,29 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   // State fillable field
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(State of Formation)", 50, y + 4);
   y += 15;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("on the following date:", 20, y);
   y += 8;
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Filing Date)", 55, y + 4);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article II: Name and Principal Office
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article II: Name and Principal Office");
+  addPageHeader(doc, "Article II: Name and Principal Office");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("2.1 Name", 20, y);
@@ -111,15 +122,15 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   doc.text("The name of the Company shall be:", 20, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Company Name, LLC)", 90, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("2.2 Principal Office", 20, y);
   y += 8;
@@ -131,7 +142,7 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   // Address fields
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Street Address)", 90, y + 4);
   y += 15;
   
@@ -146,7 +157,7 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("2.3 Registered Agent", 20, y);
   y += 8;
@@ -155,26 +166,26 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   doc.text("The Registered Agent for service of process shall be:", 20, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Registered Agent Name)", 85, y + 4);
   y += 15;
   
   doc.line(20, y, 180, y);
   doc.text("(Registered Agent Address)", 85, y + 4);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article III: Purpose
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article III: Purpose");
+  addPageHeader(doc, "Article III: Purpose");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("3.1 Purpose", 20, y);
@@ -189,15 +200,15 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += purposeText.length * 6 + 10;
   
   // Purpose description field
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.rect(20, y, 170, 40);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Describe the primary business purpose)", 75, y + 20);
   y += 55;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("3.2 Powers", 20, y);
   y += 8;
@@ -209,16 +220,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   );
   doc.text(powersText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article IV: Members
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article IV: Members");
+  addPageHeader(doc, "Article IV: Members");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("4.1 Initial Members", 20, y);
@@ -229,8 +240,8 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 15;
   
   // Member table
-  doc.setDrawColor(...BRAND_COLORS.navy);
-  doc.setFillColor(240, 240, 240);
+  setDrawColor(doc, PDF_COLORS.slateNavy);
+  setFillColor(doc, { r: 240, g: 240, b: 240 });
   doc.rect(20, y, 170, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Member Name", 25, y + 7);
@@ -258,16 +269,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   );
   doc.text(admissionText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article V: Capital Contributions
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article V: Capital Contributions");
+  addPageHeader(doc, "Article V: Capital Contributions");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("5.1 Initial Capital Contributions", 20, y);
@@ -278,8 +289,8 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 15;
   
   // Capital contribution table
-  doc.setDrawColor(...BRAND_COLORS.navy);
-  doc.setFillColor(240, 240, 240);
+  setDrawColor(doc, PDF_COLORS.slateNavy);
+  setFillColor(doc, { r: 240, g: 240, b: 240 });
   doc.rect(20, y, 170, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Member Name", 25, y + 7);
@@ -318,16 +329,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   );
   doc.text(capitalText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VI: Profits and Losses
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VI: Profits and Losses");
+  addPageHeader(doc, "Article VI: Profits and Losses");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("6.1 Allocation of Profits and Losses", 20, y);
@@ -377,16 +388,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   doc.rect(25, y - 4, 5, 5);
   doc.text("C Corporation (Form 8832 election)", 35, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VII: Management
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VII: Management");
+  addPageHeader(doc, "Article VII: Management");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("7.1 Management Structure", 20, y);
@@ -413,10 +424,10 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 10;
   
   // Manager fields
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Manager Name)", 90, y + 4);
   y += 15;
   
@@ -425,7 +436,7 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("7.3 Voting", 20, y);
   y += 8;
@@ -437,16 +448,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   );
   doc.text(votingText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article VIII: Meetings
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article VIII: Meetings");
+  addPageHeader(doc, "Article VIII: Meetings");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("8.1 Annual Meeting", 20, y);
@@ -460,15 +471,15 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   doc.text(annualText, 20, y);
   y += annualText.length * 6 + 8;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Annual Meeting Date)", 50, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("8.2 Special Meetings", 20, y);
   y += 8;
@@ -492,16 +503,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   );
   doc.text(actionText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article IX: Transfer of Interests
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article IX: Transfer of Interests");
+  addPageHeader(doc, "Article IX: Transfer of Interests");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("9.1 Restrictions on Transfer", 20, y);
@@ -509,7 +520,7 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const transferText = doc.splitTextToSize(
-    "No Member may sell, assign, transfer, or encumber all or any part of their membership interest without the prior written consent of all other Members.",
+    "No Member may sell, assign, transfer, or otherwise dispose of all or any portion of their membership interest without the prior written consent of all other Members.",
     170
   );
   doc.text(transferText, 20, y);
@@ -521,33 +532,33 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const rofrText = doc.splitTextToSize(
-    "If a Member receives a bona fide offer to purchase their interest and wishes to accept it, they must first offer to sell their interest to the remaining Members on the same terms and conditions.",
+    "Before any Member may transfer their interest, they must first offer it to the other Members at the same price and on the same terms as any bona fide third-party offer.",
     170
   );
   doc.text(rofrText, 20, y);
   y += rofrText.length * 6 + 10;
   
   doc.setFont("helvetica", "bold");
-  doc.text("9.3 Death or Incapacity", 20, y);
+  doc.text("9.3 Permitted Transfers", 20, y);
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  const deathText = doc.splitTextToSize(
-    "Upon the death or incapacity of a Member, their interest shall pass to their estate or legal representative. The remaining Members shall have the option to purchase such interest at fair market value.",
+  const permittedText = doc.splitTextToSize(
+    "Notwithstanding the foregoing, a Member may transfer their interest to a trust for the benefit of the Member's family members without consent of other Members, provided the transferee agrees to be bound by this Agreement.",
     170
   );
-  doc.text(deathText, 20, y);
+  doc.text(permittedText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article X: Dissolution
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article X: Dissolution");
+  addPageHeader(doc, "Article X: Dissolution");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("10.1 Events of Dissolution", 20, y);
@@ -558,10 +569,10 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   y += 10;
   
   const dissolutionEvents = [
-    "The unanimous written agreement of all Members to dissolve the Company",
-    "The sale or disposition of all or substantially all of the Company's assets",
+    "The unanimous written consent of all Members",
     "The entry of a decree of judicial dissolution",
-    "Any other event causing dissolution under state law"
+    "Any event that makes it unlawful to continue the business",
+    "The death, retirement, or bankruptcy of a Member (unless continued by remaining Members)"
   ];
   
   dissolutionEvents.forEach((event, index) => {
@@ -576,84 +587,87 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   const windingText = doc.splitTextToSize(
-    "Upon dissolution, the Company's affairs shall be wound up and its assets liquidated. The proceeds shall be applied first to pay creditors, then to Members in proportion to their capital accounts.",
+    "Upon dissolution, the Company shall be wound up and its assets distributed in the following order: first, to creditors; second, to Members for their capital contributions; and third, to Members in proportion to their ownership percentages.",
     170
   );
   doc.text(windingText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Article XI: General Provisions
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Article XI: General Provisions");
+  addPageHeader(doc, "Article XI: General Provisions");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
-  const generalProvisions = [
-    {
-      title: "11.1 Amendments",
-      text: "This Agreement may be amended only by a written instrument signed by all Members."
-    },
-    {
-      title: "11.2 Governing Law",
-      text: "This Agreement shall be governed by and construed in accordance with the laws of the State of formation."
-    },
-    {
-      title: "11.3 Entire Agreement",
-      text: "This Agreement constitutes the entire agreement among the Members and supersedes all prior agreements and understandings."
-    },
-    {
-      title: "11.4 Severability",
-      text: "If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions shall continue in full force and effect."
-    },
-    {
-      title: "11.5 Counterparts",
-      text: "This Agreement may be executed in counterparts, each of which shall be deemed an original."
-    }
-  ];
+  doc.setFont("helvetica", "bold");
+  doc.text("11.1 Entire Agreement", 20, y);
+  y += 8;
   
-  generalProvisions.forEach((provision) => {
-    doc.setFont("helvetica", "bold");
-    doc.text(provision.title, 20, y);
-    y += 8;
-    
-    doc.setFont("helvetica", "normal");
-    const lines = doc.splitTextToSize(provision.text, 170);
-    doc.text(lines, 20, y);
-    y += lines.length * 6 + 10;
-  });
+  doc.setFont("helvetica", "normal");
+  const entireText = doc.splitTextToSize(
+    "This Agreement constitutes the entire agreement among the Members and supersedes all prior agreements and understandings.",
+    170
+  );
+  doc.text(entireText, 20, y);
+  y += entireText.length * 6 + 10;
   
-  addFooter(doc, currentPage);
+  doc.setFont("helvetica", "bold");
+  doc.text("11.2 Amendments", 20, y);
+  y += 8;
+  
+  doc.setFont("helvetica", "normal");
+  const amendText = doc.splitTextToSize(
+    "This Agreement may be amended only by a written instrument signed by all Members.",
+    170
+  );
+  doc.text(amendText, 20, y);
+  y += amendText.length * 6 + 10;
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("11.3 Governing Law", 20, y);
+  y += 8;
+  
+  doc.setFont("helvetica", "normal");
+  doc.text("This Agreement shall be governed by the laws of the State of:", 20, y);
+  y += 10;
+  
+  setDrawColor(doc, PDF_COLORS.warmBronze);
+  doc.line(20, y, 100, y);
+  doc.setFontSize(8);
+  setColor(doc, PDF_COLORS.warmBronze);
+  doc.text("(State)", 55, y + 4);
+  
+  addFooter(doc, currentPage, totalPages);
 
   // Signature Page
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Signature Page");
+  addPageHeader(doc, "Signature Page");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
-  const sigIntro = doc.splitTextToSize(
-    "IN WITNESS WHEREOF, the undersigned Members have executed this Operating Agreement as of the date first written above.",
-    170
-  );
-  doc.text(sigIntro, 20, y);
-  y += sigIntro.length * 6 + 20;
+  doc.setFont("helvetica", "bold");
+  doc.text("IN WITNESS WHEREOF, the undersigned Members have executed this", 20, y);
+  y += 6;
+  doc.text("Operating Agreement as of the date first written above.", 20, y);
+  y += 20;
   
   // Signature blocks
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 0; i < 3; i++) {
     doc.setFont("helvetica", "bold");
-    doc.text(`MEMBER ${i}:`, 20, y);
+    doc.text(`Member ${i + 1}:`, 20, y);
     y += 15;
     
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
+    setColor(doc, PDF_COLORS.warmBronze);
     doc.text("Signature", 55, y + 4);
     
     doc.line(120, y, 180, y);
@@ -661,22 +675,16 @@ export const generateLLCOperatingAgreement = (): jsPDF => {
     y += 15;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
-    doc.setFont("helvetica", "normal");
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
-    doc.text("Print Name", 55, y + 4);
-    
-    doc.line(120, y, 180, y);
-    doc.text("Ownership %", 140, y + 4);
+    doc.text("Printed Name", 50, y + 4);
     y += 25;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
+    setColor(doc, PDF_COLORS.darkText);
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   return doc;
 };
