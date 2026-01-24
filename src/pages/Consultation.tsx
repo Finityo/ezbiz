@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -6,13 +6,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, Clock, Users, MessageCircle, Phone, Video, Calendar } from "lucide-react"
+import { CheckCircle, Users, MessageCircle, Phone, Video } from "lucide-react"
 import Navigation from "@/components/Navigation"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
-import consultationMeeting from "@/assets/consultation-meeting.jpg"
+import ConsultationTypeCard from "@/components/consultation/ConsultationTypeCard"
+import CalendlyEmbed from "@/components/consultation/CalendlyEmbed"
+
+const CALENDLY_USERNAME = "christian-r-t";
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
@@ -29,24 +32,46 @@ const Consultation = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Load Calendly widget script
+  useEffect(() => {
+    const head = document.querySelector("head");
+    const link = document.createElement("link");
+    link.href = "https://assets.calendly.com/assets/external/widget.css";
+    link.rel = "stylesheet";
+    head?.appendChild(link);
+
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    head?.appendChild(script);
+
+    return () => {
+      head?.removeChild(link);
+      head?.removeChild(script);
+    };
+  }, []);
+
   const consultationTypes = [
     {
       title: "Business Structure Consultation",
       description: "Get personalized advice on choosing the right business entity (LLC, Corporation, etc.) for your specific needs and goals.",
       icon: <Users className="h-8 w-8" />,
-      duration: "30 minutes"
+      duration: "30 minutes",
+      calendlyEvent: "business-structure-consultation"
     },
     {
       title: "State-Specific Guidance", 
       description: "Learn about the requirements, benefits, and considerations for forming your business in your preferred state.",
       icon: <MessageCircle className="h-8 w-8" />,
-      duration: "20 minutes"
+      duration: "20 minutes",
+      calendlyEvent: "state-specific-guidance"
     },
     {
       title: "Tax Strategy Discussion",
       description: "Understand the tax implications of different business structures and strategies to minimize your tax burden.",
       icon: <CheckCircle className="h-8 w-8" />,
-      duration: "45 minutes"
+      duration: "45 minutes",
+      calendlyEvent: "tax-strategy-discussion"
     }
   ];
 
@@ -166,18 +191,11 @@ const Consultation = () => {
             
             <div className="grid md:grid-cols-3 gap-8 mb-16">
               {consultationTypes.map((type, index) => (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="inline-flex p-4 rounded-full bg-primary/10 text-primary mb-4 mx-auto">
-                      {type.icon}
-                    </div>
-                    <CardTitle className="text-xl">{type.title}</CardTitle>
-                    <Badge variant="outline">{type.duration}</Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{type.description}</p>
-                  </CardContent>
-                </Card>
+                <ConsultationTypeCard 
+                  key={index} 
+                  type={type} 
+                  calendlyUsername={CALENDLY_USERNAME} 
+                />
               ))}
             </div>
 
