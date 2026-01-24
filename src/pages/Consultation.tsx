@@ -56,22 +56,19 @@ const Consultation = () => {
       title: "Business Structure Consultation",
       description: "Get personalized advice on choosing the right business entity (LLC, Corporation, etc.) for your specific needs and goals.",
       icon: <Users className="h-8 w-8" />,
-      duration: "30 minutes",
-      calendlyEvent: "business-structure-consultation"
+      duration: "30 minutes"
     },
     {
       title: "State-Specific Guidance", 
       description: "Learn about the requirements, benefits, and considerations for forming your business in your preferred state.",
       icon: <MessageCircle className="h-8 w-8" />,
-      duration: "20 minutes",
-      calendlyEvent: "state-specific-guidance"
+      duration: "20 minutes"
     },
     {
       title: "Tax Strategy Discussion",
       description: "Understand the tax implications of different business structures and strategies to minimize your tax burden.",
       icon: <CheckCircle className="h-8 w-8" />,
-      duration: "45 minutes",
-      calendlyEvent: "tax-strategy-discussion"
+      duration: "45 minutes"
     }
   ];
 

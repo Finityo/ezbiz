@@ -8,7 +8,7 @@ interface ConsultationType {
   description: string;
   icon: React.ReactNode;
   duration: string;
-  calendlyEvent: string;
+  calendlyEvent?: string;
 }
 
 interface ConsultationTypeCardProps {
@@ -27,9 +27,10 @@ declare global {
 const ConsultationTypeCard = ({ type, calendlyUsername }: ConsultationTypeCardProps) => {
   const handleSchedule = () => {
     if (window.Calendly) {
-      window.Calendly.initPopupWidget({
-        url: `https://calendly.com/${calendlyUsername}/${type.calendlyEvent}`
-      });
+      const url = type.calendlyEvent 
+        ? `https://calendly.com/${calendlyUsername}/${type.calendlyEvent}`
+        : `https://calendly.com/${calendlyUsername}`;
+      window.Calendly.initPopupWidget({ url });
     }
   };
 
