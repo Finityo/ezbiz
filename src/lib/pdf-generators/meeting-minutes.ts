@@ -1,8 +1,17 @@
 import jsPDF from "jspdf";
-import { addCoverPage, addHeader, addFooter, BRAND_COLORS } from "../pdf-utils";
+import { 
+  addCoverPage, 
+  addPageHeader, 
+  addFooter, 
+  PDF_COLORS,
+  setColor,
+  setDrawColor,
+  setFillColor
+} from "../pdf-utils";
 
 export const generateMeetingMinutes = (): jsPDF => {
   const doc = new jsPDF();
+  const totalPages = 10;
   let currentPage = 1;
 
   // Cover Page
@@ -11,10 +20,10 @@ export const generateMeetingMinutes = (): jsPDF => {
   // Organizational Meeting Minutes
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Organizational Meeting Minutes");
+  addPageHeader(doc, "Organizational Meeting Minutes");
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   let y = 50;
   
@@ -28,15 +37,15 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text("of", 95, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Corporation Name)", 90, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Meeting details
   doc.setFont("helvetica", "bold");
@@ -67,7 +76,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 10;
   
   for (let i = 0; i < 4; i++) {
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(25, y, 180, y);
     y += 12;
   }
@@ -85,16 +94,16 @@ export const generateMeetingMinutes = (): jsPDF => {
   );
   doc.text(callText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Organizational Meeting continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Organizational Meeting Minutes (continued)");
+  addPageHeader(doc, "Organizational Meeting Minutes (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Election of Officers
   doc.setFont("helvetica", "bold");
@@ -120,7 +129,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   officers.forEach((officer) => {
     doc.setFont("helvetica", "bold");
     doc.text(`${officer.position}:`, 25, y);
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(70, y, 180, y);
     y += 12;
   });
@@ -128,6 +137,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   
   // Banking Resolution
   doc.setFont("helvetica", "bold");
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("BANKING RESOLUTION:", 20, y);
   y += 8;
   
@@ -139,15 +149,15 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text(bankingText, 20, y);
   y += bankingText.length * 6 + 8;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Bank Name and Address)", 85, y + 4);
   y += 15;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   const signatoryText = doc.splitTextToSize(
     "and that the following officers be authorized as signatories on the account:",
     170
@@ -160,16 +170,16 @@ export const generateMeetingMinutes = (): jsPDF => {
     y += 12;
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Organizational Meeting continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Organizational Meeting Minutes (continued)");
+  addPageHeader(doc, "Organizational Meeting Minutes (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Fiscal Year
   doc.setFont("helvetica", "bold");
@@ -182,16 +192,16 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text("that the fiscal year of the Corporation shall end on:", 20, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Month and Day)", 50, y + 4);
   y += 20;
   
   // Stock Issuance
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("ISSUANCE OF STOCK:", 20, y);
   y += 8;
@@ -205,8 +215,8 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += stockText.length * 6 + 10;
   
   // Stock table
-  doc.setDrawColor(...BRAND_COLORS.navy);
-  doc.setFillColor(240, 240, 240);
+  setDrawColor(doc, PDF_COLORS.slateNavy);
+  setFillColor(doc, { r: 240, g: 240, b: 240 });
   doc.rect(20, y, 170, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Shareholder Name", 25, y + 7);
@@ -224,6 +234,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   
   // S Corporation Election
   doc.setFont("helvetica", "bold");
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("S CORPORATION ELECTION (if applicable):", 20, y);
   y += 8;
   
@@ -235,16 +246,16 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 6;
   doc.text("for federal income tax purposes by filing IRS Form 2553.", 35, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Annual Meeting Minutes Template
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Annual Meeting Minutes Template");
+  addPageHeader(doc, "Annual Meeting Minutes Template");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("MINUTES OF THE ANNUAL MEETING OF SHAREHOLDERS", 20, y);
@@ -254,15 +265,15 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text("of", 95, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Corporation Name)", 90, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Meeting details
   doc.setFont("helvetica", "bold");
@@ -281,8 +292,8 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 10;
   
   doc.setFont("helvetica", "normal");
-  doc.setDrawColor(...BRAND_COLORS.navy);
-  doc.setFillColor(240, 240, 240);
+  setDrawColor(doc, PDF_COLORS.slateNavy);
+  setFillColor(doc, { r: 240, g: 240, b: 240 });
   doc.rect(20, y, 170, 10, "F");
   doc.setFont("helvetica", "bold");
   doc.text("Name", 25, y + 7);
@@ -300,6 +311,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   
   // Quorum
   doc.setFont("helvetica", "bold");
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("QUORUM:", 20, y);
   y += 8;
   
@@ -310,16 +322,16 @@ export const generateMeetingMinutes = (): jsPDF => {
   );
   doc.text(quorumText, 20, y);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Annual Meeting continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Annual Meeting Minutes (continued)");
+  addPageHeader(doc, "Annual Meeting Minutes (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Previous Minutes
   doc.setFont("helvetica", "bold");
@@ -348,7 +360,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += finText.length * 6 + 8;
   
   doc.text("Total Revenue: $", 25, y);
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(70, y, 130, y);
   y += 10;
   
@@ -362,6 +374,7 @@ export const generateMeetingMinutes = (): jsPDF => {
   
   // Election of Directors
   doc.setFont("helvetica", "bold");
+  setColor(doc, PDF_COLORS.darkText);
   doc.text("ELECTION OF DIRECTORS:", 20, y);
   y += 8;
   
@@ -385,22 +398,22 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.rect(20, y, 170, 30);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Describe any other business discussed)", 70, y + 15);
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Special Meeting Minutes Template
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Special Meeting Minutes Template");
+  addPageHeader(doc, "Special Meeting Minutes Template");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
   doc.text("MINUTES OF A SPECIAL MEETING OF THE BOARD OF DIRECTORS", 20, y);
@@ -410,15 +423,15 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text("of", 95, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Corporation Name)", 90, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Meeting details
   doc.setFont("helvetica", "bold");
@@ -437,15 +450,15 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.rect(20, y, 170, 25);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(State the specific purpose for which the meeting was called)", 50, y + 12);
   y += 35;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Notice
   doc.setFont("helvetica", "bold");
@@ -467,21 +480,21 @@ export const generateMeetingMinutes = (): jsPDF => {
   
   doc.setFont("helvetica", "normal");
   for (let i = 0; i < 3; i++) {
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(25, y, 180, y);
     y += 10;
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   // Special Meeting continued
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Special Meeting Minutes (continued)");
+  addPageHeader(doc, "Special Meeting Minutes (continued)");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   // Resolutions
   doc.setFont("helvetica", "bold");
@@ -498,50 +511,51 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  doc.setDrawColor(...BRAND_COLORS.bronze);
-  doc.rect(20, y, 170, 50);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
+  doc.rect(20, y, 170, 40);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
-  doc.text("(State the resolution in detail)", 75, y + 25);
-  y += 65;
+  setColor(doc, PDF_COLORS.warmBronze);
+  doc.text("(State the resolution)", 80, y + 20);
+  y += 55;
   
   // Adjournment
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   doc.setFont("helvetica", "bold");
   doc.text("ADJOURNMENT:", 20, y);
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  doc.text("There being no further business, the meeting was adjourned at _______ o'clock.", 20, y);
-  y += 25;
+  const adjournText = doc.splitTextToSize(
+    "There being no further business, upon motion duly made, seconded, and unanimously carried, the meeting was adjourned at _______ o'clock.",
+    170
+  );
+  doc.text(adjournText, 20, y);
+  y += adjournText.length * 6 + 15;
   
   // Signature
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  doc.text("Respectfully submitted,", 20, y);
+  y += 20;
+  
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 100, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("Secretary", 55, y + 4);
-  y += 15;
   
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
-  doc.text("Date:", 20, y);
-  doc.line(35, y, 100, y);
-  
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
-  // Written Consent in Lieu of Meeting
+  // Written Consent Template
   doc.addPage();
   currentPage++;
-  addHeader(doc, "Written Consent in Lieu of Meeting");
+  addPageHeader(doc, "Written Consent in Lieu of Meeting");
   
   y = 50;
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
+  setColor(doc, PDF_COLORS.darkText);
   
   doc.setFont("helvetica", "bold");
-  doc.text("UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS", 20, y);
+  doc.text("WRITTEN CONSENT OF DIRECTORS", 20, y);
   y += 8;
   doc.text("IN LIEU OF A MEETING", 20, y);
   y += 15;
@@ -550,18 +564,17 @@ export const generateMeetingMinutes = (): jsPDF => {
   doc.text("of", 95, y);
   y += 10;
   
-  doc.setDrawColor(...BRAND_COLORS.bronze);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
   doc.line(20, y, 180, y);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
+  setColor(doc, PDF_COLORS.warmBronze);
   doc.text("(Corporation Name)", 90, y + 4);
   y += 20;
   
   doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
-  
+  setColor(doc, PDF_COLORS.darkText);
   const consentIntro = doc.splitTextToSize(
-    "The undersigned, being all of the directors of the above-named Corporation, hereby consent to and adopt the following resolutions without a meeting, pursuant to the Bylaws of the Corporation and applicable state law:",
+    "The undersigned, being all of the directors of the Corporation, hereby consent to the adoption of the following resolutions without a meeting, pursuant to the bylaws of the Corporation:",
     170
   );
   doc.text(consentIntro, 20, y);
@@ -572,45 +585,64 @@ export const generateMeetingMinutes = (): jsPDF => {
   y += 8;
   
   doc.setFont("helvetica", "normal");
-  doc.setDrawColor(...BRAND_COLORS.bronze);
-  doc.rect(20, y, 170, 40);
+  setDrawColor(doc, PDF_COLORS.warmBronze);
+  doc.rect(20, y, 170, 50);
   doc.setFontSize(8);
-  doc.setTextColor(...BRAND_COLORS.bronze);
-  doc.text("(State the resolution)", 80, y + 20);
-  y += 55;
+  setColor(doc, PDF_COLORS.warmBronze);
+  doc.text("(State the resolution)", 80, y + 25);
+  y += 65;
+  
+  doc.setFontSize(11);
+  setColor(doc, PDF_COLORS.darkText);
+  doc.text("Effective Date:", 20, y);
+  doc.line(55, y, 120, y);
+  
+  addFooter(doc, currentPage, totalPages);
+
+  // Written Consent Signature Page
+  doc.addPage();
+  currentPage++;
+  addPageHeader(doc, "Written Consent - Signatures");
+  
+  y = 50;
+  doc.setFontSize(11);
+  setColor(doc, PDF_COLORS.darkText);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("SIGNATURES OF DIRECTORS", 20, y);
+  y += 15;
+  
+  doc.setFont("helvetica", "normal");
+  const sigIntro = doc.splitTextToSize(
+    "IN WITNESS WHEREOF, the undersigned directors have executed this Written Consent as of the dates set forth below:",
+    170
+  );
+  doc.text(sigIntro, 20, y);
+  y += sigIntro.length * 6 + 15;
   
   // Signature blocks
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND_COLORS.text);
-  doc.setFont("helvetica", "bold");
-  doc.text("DIRECTORS:", 20, y);
-  y += 12;
-  
-  for (let i = 1; i <= 3; i++) {
-    doc.setDrawColor(...BRAND_COLORS.bronze);
+  for (let i = 0; i < 4; i++) {
+    setDrawColor(doc, PDF_COLORS.warmBronze);
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
+    setColor(doc, PDF_COLORS.warmBronze);
     doc.text("Signature", 55, y + 4);
     
     doc.line(120, y, 180, y);
     doc.text("Date", 145, y + 4);
-    y += 12;
+    y += 15;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
-    doc.setFont("helvetica", "normal");
     doc.line(20, y, 100, y);
     doc.setFontSize(8);
-    doc.setTextColor(...BRAND_COLORS.bronze);
-    doc.text("Print Name", 55, y + 4);
-    y += 18;
+    doc.text("Printed Name", 50, y + 4);
+    y += 30;
     
     doc.setFontSize(11);
-    doc.setTextColor(...BRAND_COLORS.text);
+    setColor(doc, PDF_COLORS.darkText);
   }
   
-  addFooter(doc, currentPage);
+  addFooter(doc, currentPage, totalPages);
 
   return doc;
 };
