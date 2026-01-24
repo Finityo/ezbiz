@@ -22,6 +22,7 @@ import OperatingAgreement from "./pages/OperatingAgreement";
 import CorporateBylaws from "./pages/CorporateBylaws";
 import Pricing from "./pages/Pricing";
 import BusinessGuide from "./pages/BusinessGuide";
+import BusinessTemplates from "./pages/BusinessTemplates";
 import StateRequirements from "./pages/StateRequirements";
 import BusinessFilings from "./pages/BusinessFilings";
 import Consultation from "./pages/Consultation";
@@ -83,6 +84,7 @@ function App() {
             <Route path="/corporate-bylaws" element={<CorporateBylaws />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/business-guide" element={<BusinessGuide />} />
+            <Route path="/business-templates" element={<BusinessTemplates />} />
             <Route path="/state-requirements" element={<StateRequirements />} />
             <Route path="/business-filings" element={<BusinessFilings />} />
             <Route path="/consultation" element={<Consultation />} />
