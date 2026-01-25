@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
+import AnimatedSection from "@/components/AnimatedSection";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import { useNavigate } from "react-router-dom";
@@ -208,7 +209,7 @@ const Index = () => {
       </section>
 
       {/* Company Capabilities Section */}
-      <section className="py-24">
+      <AnimatedSection className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
             <div className="accent-line-center mb-6"></div>
@@ -237,10 +238,10 @@ const Index = () => {
             ))}
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Business Structures Section */}
-      <section className="py-24 bg-muted/30">
+      <AnimatedSection className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
             <div className="accent-line-center mb-6"></div>
@@ -287,10 +288,10 @@ const Index = () => {
             ))}
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Simple Steps Process */}
-      <section className="py-24">
+      <AnimatedSection className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
             <div className="accent-line-center mb-6"></div>
@@ -320,10 +321,10 @@ const Index = () => {
             ))}
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Why Choose Us Section */}
-      <section className="py-24 bg-card">
+      <AnimatedSection className="py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
@@ -397,7 +398,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* CTA Section */}
       <section className="py-24 gradient-executive text-primary-foreground">
