@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
+import StaggeredGrid from "@/components/StaggeredGrid";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import { useNavigate } from "react-router-dom";
@@ -220,7 +221,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <StaggeredGrid className="grid md:grid-cols-3 gap-8" staggerDelay={150}>
             {capabilities.map((capability, index) => (
               <Card key={index} className="border-0 shadow-smooth hover:shadow-elegant transition-all duration-300 bg-card">
                 <CardHeader className="space-y-4">
@@ -236,7 +237,7 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </AnimatedSection>
 
@@ -252,7 +253,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
             {businessStructures.map((structure, index) => (
               <Card 
                 key={index} 
@@ -286,7 +287,7 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </AnimatedSection>
 
@@ -302,7 +303,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={120}>
             {processSteps.map((step, index) => (
               <div key={index} className="relative">
                 <div className="text-center space-y-4">
@@ -319,7 +320,7 @@ const Index = () => {
                 )}
               </div>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </AnimatedSection>
 
