@@ -2,6 +2,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
+import AnimatedSection from "@/components/AnimatedSection";
+import StaggeredGrid from "@/components/StaggeredGrid";
 import RelatedStructures from "@/components/RelatedStructures";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -220,7 +222,7 @@ const LLC = () => {
         </section>
 
         {/* What Is Section */}
-        <section className="py-16 lg:py-20">
+        <AnimatedSection className="py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="accent-line-center mb-6" />
@@ -239,7 +241,7 @@ const LLC = () => {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-6 mt-12">
+              <StaggeredGrid className="grid md:grid-cols-3 gap-6 mt-12" staggerDelay={150}>
                 <Card className="text-center border-border/50">
                   <CardHeader>
                     <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -275,13 +277,13 @@ const LLC = () => {
                     <CardDescription>Choose your tax treatment: pass-through, S-Corp, or C-Corp</CardDescription>
                   </CardContent>
                 </Card>
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Benefits Section */}
-        <section className="py-16 lg:py-20 bg-muted/30">
+        <AnimatedSection className="py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
@@ -292,7 +294,7 @@ const LLC = () => {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
                 {benefits.map((benefit, index) => (
                   <Card key={index} className="border-border/50 hover:shadow-elegant transition-smooth">
                     <CardHeader>
@@ -308,13 +310,13 @@ const LLC = () => {
                     </CardHeader>
                   </Card>
                 ))}
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Drawbacks Section */}
-        <section className="py-16 lg:py-20">
+        <AnimatedSection className="py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
@@ -325,7 +327,7 @@ const LLC = () => {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <StaggeredGrid className="grid md:grid-cols-2 gap-6" staggerDelay={120}>
                 {drawbacks.map((drawback, index) => (
                   <Card key={index} className={`border-l-4 ${
                     drawback.severity === 'medium' ? 'border-l-warning' : 'border-l-muted-foreground'
@@ -347,13 +349,13 @@ const LLC = () => {
                     </CardHeader>
                   </Card>
                 ))}
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Tax Options Section */}
-        <section className="py-16 lg:py-20 bg-muted/30">
+        <AnimatedSection className="py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
@@ -364,7 +366,7 @@ const LLC = () => {
                 </p>
               </div>
               
-              <div className="grid lg:grid-cols-3 gap-6">
+              <StaggeredGrid className="grid lg:grid-cols-3 gap-6" staggerDelay={150}>
                 {taxOptions.map((option, index) => (
                   <Card key={index} className="border-border/50 h-full">
                     <CardHeader>
@@ -381,14 +383,14 @@ const LLC = () => {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+              </StaggeredGrid>
               
               <p className="text-sm text-muted-foreground mt-6 text-center">
                 Consult a tax professional to determine the best election for your situation.
               </p>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Who Should Choose Section */}
         <section className="py-16 lg:py-20">
