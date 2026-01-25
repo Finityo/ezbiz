@@ -111,8 +111,9 @@ const Index = () => {
       <Navigation />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
+      <section className="relative py-16 md:py-24 overflow-hidden hero-pattern">
         <div className="absolute inset-0 gradient-subtle"></div>
+        <div className="absolute inset-0 pattern-dots"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
           <div className="flex justify-center mb-16 md:mb-20">

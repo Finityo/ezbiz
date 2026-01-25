@@ -151,8 +151,9 @@ const Pricing = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="relative bg-gradient-primary text-white overflow-hidden">
+        <section className="relative bg-gradient-primary text-white overflow-hidden pattern-geometric">
           <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute inset-0 pattern-dots opacity-40"></div>
           <div className="container mx-auto px-4 py-20 relative z-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="max-w-2xl">

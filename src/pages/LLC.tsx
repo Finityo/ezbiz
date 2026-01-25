@@ -171,8 +171,9 @@ const LLC = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="gradient-hero text-primary-foreground py-20 lg:py-28">
-          <div className="container mx-auto px-4">
+        <section className="gradient-hero text-primary-foreground py-20 lg:py-28 relative overflow-hidden pattern-geometric">
+          <div className="absolute inset-0 pattern-dots opacity-30"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <Badge className="mb-6 bg-white/20 text-primary-foreground hover:bg-white/30">
                 Most Popular Business Structure
