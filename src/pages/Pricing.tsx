@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import FloatingCTA from "@/components/FloatingCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star, Shield, Users, FileText } from "lucide-react";
@@ -148,6 +149,7 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA />
       
       <main>
         {/* Hero Section */}
