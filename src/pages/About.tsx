@@ -82,8 +82,9 @@ const About = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="gradient-executive text-primary-foreground py-20">
-          <div className="container mx-auto px-4">
+        <section className="gradient-executive text-primary-foreground py-20 relative overflow-hidden pattern-geometric">
+          <div className="absolute inset-0 pattern-grid opacity-30"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <div className="accent-line-center mb-6 bg-secondary"></div>
               <h1 className="text-5xl font-bold mb-6 font-display">About EZ BIZ FILE SERVICE</h1>
