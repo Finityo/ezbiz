@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
 import RelatedStructures from "@/components/RelatedStructures";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -168,6 +169,7 @@ const LLC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA text="Form Your LLC" />
       
       <main>
         {/* Hero Section */}
