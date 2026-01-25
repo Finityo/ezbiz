@@ -5,6 +5,7 @@ import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
+import BackToTop from "@/components/BackToTop";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import { useNavigate } from "react-router-dom";
@@ -111,6 +112,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <FloatingCTA />
+      <BackToTop />
 
       {/* Hero Section - Executive Style */}
       <section className="relative py-16 md:py-24 overflow-hidden hero-pattern">
