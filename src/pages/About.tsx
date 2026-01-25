@@ -2,6 +2,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
+import AnimatedSection from "@/components/AnimatedSection";
+import StaggeredGrid from "@/components/StaggeredGrid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Users, Shield, Clock, Star, Award, Heart, Zap, FileText, Scale } from "lucide-react";
@@ -148,7 +150,7 @@ const About = () => {
         </section>
 
         {/* Our Values */}
-        <section className="py-24">
+        <AnimatedSection className="py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
@@ -158,7 +160,7 @@ const About = () => {
                   The principles that guide every document we file
                 </p>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={100}>
                 {values.map((value, index) => {
                   const IconComponent = value.icon;
                   return (
@@ -175,13 +177,13 @@ const About = () => {
                     </Card>
                   );
                 })}
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Team Section */}
-        <section className="py-24 bg-muted/30">
+        <AnimatedSection className="py-24 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
@@ -191,7 +193,7 @@ const About = () => {
                   Dedicated professionals committed to your success
                 </p>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={120}>
                 {teamMembers.map((member, index) => (
                   <Card key={index} className="text-center border-0 shadow-smooth hover:shadow-elegant transition-all">
                     <CardHeader>
@@ -207,30 +209,30 @@ const About = () => {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Why Choose Us */}
-        <section className="py-24">
+        <AnimatedSection className="py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <div className="accent-line-center mb-6"></div>
                 <h2 className="text-3xl font-bold font-display">Why Choose EZ BIZ?</h2>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
+              <StaggeredGrid className="grid md:grid-cols-2 gap-6" staggerDelay={80}>
                 {whyChooseUs.map((reason, index) => (
                   <div key={index} className="flex items-start space-x-3 p-4 rounded-lg bg-card shadow-smooth border border-border">
                     <Check className="h-5 w-5 text-success mt-1 flex-shrink-0" />
                     <span className="text-foreground font-body">{reason}</span>
                   </div>
                 ))}
-              </div>
+              </StaggeredGrid>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Awards & Recognition */}
         <section className="py-24 bg-muted/30">

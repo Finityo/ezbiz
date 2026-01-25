@@ -1,6 +1,8 @@
 import Navigation from "@/components/Navigation";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
+import AnimatedSection from "@/components/AnimatedSection";
+import StaggeredGrid from "@/components/StaggeredGrid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star, Shield, Users, FileText } from "lucide-react";
@@ -193,7 +195,7 @@ const Pricing = () => {
         </section>
 
         {/* Trust Indicators */}
-        <section className="py-16 bg-muted/30">
+        <AnimatedSection className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -240,10 +242,10 @@ const Pricing = () => {
               </div>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* LLC Packages */}
-        <section className="py-16">
+        <AnimatedSection className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <div className="accent-line-center mb-6"></div>
@@ -251,7 +253,7 @@ const Pricing = () => {
               <p className="text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {llcPackages.map((pkg, index) => (
                 <Card key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`}>
                   {pkg.popular && (
@@ -295,12 +297,12 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Corporation Packages */}
-        <section className="py-16 bg-muted/50">
+        <AnimatedSection className="py-16 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <div className="accent-line-center mb-6"></div>
@@ -308,7 +310,7 @@ const Pricing = () => {
               <p className="text-xl text-muted-foreground">Establish your corporation with professional service</p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {corpPackages.map((pkg, index) => (
                 <Card key={index}>
                   <CardHeader className="text-center">
@@ -345,9 +347,9 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Process Overview */}
         <section className="py-16 bg-muted/30">
