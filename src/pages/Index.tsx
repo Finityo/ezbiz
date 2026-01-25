@@ -10,6 +10,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
+import ParallaxImage from "@/components/ParallaxImage";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -185,10 +186,12 @@ const Index = () => {
 
             <div className="relative lg:pl-8">
               <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
-              <img 
+              <ParallaxImage 
                 src={heroImage} 
                 alt="Professional business consultation"
-                className="relative rounded-2xl shadow-hero w-full h-auto object-cover"
+                className="relative shadow-hero w-full h-auto object-cover scale-110"
+                speed={0.2}
+                maxOffset={80}
               />
             </div>
           </div>
