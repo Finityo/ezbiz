@@ -43,6 +43,7 @@ const StateTemplate = ({
         {/* Overview Section */}
         <div className="max-w-4xl mx-auto mb-12">
           <Card className="p-8">
+            <div className="accent-line mb-6"></div>
             <h2 className="text-3xl font-bold mb-4">
               Why Form a {stateName} {entityLabel}?
             </h2>
@@ -88,9 +89,12 @@ const StateTemplate = ({
 
         {/* Process Section */}
         <div className="max-w-4xl mx-auto mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            How to Form Your {stateName} {entityLabel}
-          </h2>
+          <div className="text-center mb-8">
+            <div className="accent-line-center mb-6"></div>
+            <h2 className="text-3xl font-bold">
+              How to Form Your {stateName} {entityLabel}
+            </h2>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
@@ -113,6 +117,7 @@ const StateTemplate = ({
         {/* Cost Breakdown */}
         <div className="max-w-4xl mx-auto">
           <Card className="p-8">
+            <div className="accent-line mb-6"></div>
             <h2 className="text-2xl font-bold mb-6">Cost Breakdown</h2>
             
             <div className="space-y-4">

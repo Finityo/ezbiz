@@ -241,6 +241,7 @@ const Pricing = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
+              <div className="accent-line-center mb-6"></div>
               <h2 className="text-3xl font-bold mb-4">LLC Formation Packages</h2>
               <p className="text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
             </div>
@@ -297,6 +298,7 @@ const Pricing = () => {
         <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
+              <div className="accent-line-center mb-6"></div>
               <h2 className="text-3xl font-bold mb-4">Corporation Formation Packages</h2>
               <p className="text-xl text-muted-foreground">Establish your corporation with professional service</p>
             </div>
@@ -390,6 +392,7 @@ const Pricing = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
+              <div className="accent-line-center mb-6"></div>
               <h2 className="text-3xl font-bold mb-4">Additional Services</h2>
               <p className="text-xl text-muted-foreground">Add-on services to complement your business formation</p>
             </div>

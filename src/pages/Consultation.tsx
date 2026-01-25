@@ -180,6 +180,7 @@ const Consultation = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
+              <div className="accent-line-center mb-6"></div>
               <h2 className="text-3xl font-bold mb-4">What We Can Help You With</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Our experienced consultants can provide guidance on a wide range of business formation topics
@@ -223,6 +224,7 @@ const Consultation = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-8">
+                <div className="accent-line-center mb-6"></div>
                 <h2 className="text-3xl font-bold mb-4">Request Your Free Consultation</h2>
                 <p className="text-muted-foreground">
                   Fill out the form below and we'll get back to you within 24 hours to schedule your consultation
@@ -331,6 +333,7 @@ const Consultation = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
+                <div className="accent-line-center mb-6"></div>
                 <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
                 <p className="text-muted-foreground">
                   Common questions about our free consultation service
