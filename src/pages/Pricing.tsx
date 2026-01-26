@@ -14,6 +14,7 @@ import businessSuccess from "@/assets/business-success.jpg";
 import pricingHero from "@/assets/pricing-hero.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
 import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
+import ParallaxImage from "@/components/ParallaxImage";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -183,12 +184,15 @@ const Pricing = () => {
                 </div>
               </div>
               <div className="relative">
-                <img 
+                <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
+                <ParallaxImage 
                   src={pricingHero} 
                   alt="Professional business team celebrating success" 
-                  className="rounded-lg shadow-2xl w-full h-auto"
+                  className="relative shadow-2xl w-full h-auto object-cover scale-110"
+                  speed={0.2}
+                  maxOffset={80}
                 />
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent rounded-lg"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent rounded-2xl pointer-events-none"></div>
               </div>
             </div>
           </div>
