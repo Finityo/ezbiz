@@ -8,6 +8,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
+import TiltCard from "@/components/TiltCard";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import ParallaxImage from "@/components/ParallaxImage";
@@ -258,15 +259,17 @@ const Index = () => {
           
           <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
             {businessStructures.map((structure, index) => (
-              <Card 
+              <TiltCard 
                 key={index} 
-                className={`relative cursor-pointer transition-all duration-300 hover:shadow-elegant hover:-translate-y-1 ${
+                className={`relative ${
                   structure.popular ? 'border-secondary shadow-lg ring-1 ring-secondary/20' : 'border-border shadow-smooth'
                 }`}
                 onClick={() => navigate(structure.href)}
+                tiltMax={8}
+                scale={1.02}
               >
                 {structure.popular && (
-                  <Badge className="absolute -top-3 left-6 bg-secondary text-secondary-foreground">
+                  <Badge className="absolute -top-3 left-6 bg-secondary text-secondary-foreground z-20">
                     Most Popular
                   </Badge>
                 )}
@@ -288,7 +291,7 @@ const Index = () => {
                     <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </CardContent>
-              </Card>
+              </TiltCard>
             ))}
           </StaggeredGrid>
         </div>
