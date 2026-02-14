@@ -399,6 +399,26 @@ const Navigation = () => {
                 </div>
               </div>
 
+              {/* Mobile Free Downloads */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm text-foreground">Free Downloads</h3>
+                <div className="space-y-1 pl-4">
+                  {downloads.map((item) => (
+                    <button
+                      key={item.filename}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handlePDFDownload(item.title, item.generator, item.filename);
+                      }}
+                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground py-1 w-full text-left"
+                    >
+                      {item.title}
+                      <span className="text-xs bg-success/20 text-success px-1.5 py-0.5 rounded">PDF</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Mobile Action Buttons */}
               <div className="flex flex-col space-y-2 pt-4 border-t border-border">
                 {user ? (
