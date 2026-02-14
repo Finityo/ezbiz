@@ -5,6 +5,11 @@ import Logo from "@/components/ui/logo"
 import { useAuth } from "@/hooks/useAuth"
 import { Link, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
+import { useToast } from "@/hooks/use-toast"
+import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide"
+import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook"
+import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist"
+import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -27,6 +32,19 @@ const Navigation = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handlePDFDownload = async (title: string, generator: () => any, filename: string) => {
+    toast({ title: "Generating PDF...", description: `Creating your ${title}.` });
+    try {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const doc = generator();
+      doc.save(filename);
+      toast({ title: "Download Complete!", description: `${title} has been downloaded.` });
+    } catch (error) {
+      toast({ title: "Download Failed", description: "Please try again.", variant: "destructive" });
+    }
+  };
 
   // Check if user is admin
   useEffect(() => {
@@ -93,10 +111,10 @@ const Navigation = () => {
   ];
 
   const downloads = [
-    { title: "LLC Formation Guide", href: "/LLC-Formation-Guide.pdf", description: "Comprehensive LLC formation guide", isDownload: true },
-    { title: "Corporation Handbook", href: "/Corporation-Handbook.pdf", description: "Complete corporation handbook", isDownload: true },
-    { title: "Business License Checklist", href: "/Business-License-Checklist.pdf", description: "Essential business license checklist", isDownload: true },
-    { title: "Tax Election Guide", href: "/Tax-Election-Guide.pdf", description: "Understanding tax elections", isDownload: true },
+    { title: "LLC Formation Guide", description: "Comprehensive LLC formation guide", generator: generateLLCGuide, filename: "LLC-Formation-Guide.pdf" },
+    { title: "Corporation Handbook", description: "Complete corporation handbook", generator: generateCorporationHandbook, filename: "Corporation-Handbook.pdf" },
+    { title: "Business License Checklist", description: "Essential business license checklist", generator: generateLicenseChecklist, filename: "Business-License-Checklist.pdf" },
+    { title: "Tax Election Guide", description: "Understanding tax elections", generator: generateTaxGuide, filename: "Tax-Election-Guide.pdf" },
   ];
 
   const adminLink = { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true };
@@ -248,18 +266,17 @@ const Navigation = () => {
                         <div>
                           <h4 className="text-sm font-semibold text-foreground mb-3">Free Downloads</h4>
                           {downloads.map((item) => (
-                            <NavigationMenuLink key={item.href} asChild>
-                              <a
-                                href={item.href}
-                                download
-                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                            <NavigationMenuLink key={item.filename} asChild>
+                              <button
+                                onClick={() => handlePDFDownload(item.title, item.generator, item.filename)}
+                                className="block w-full text-left select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
                               >
                                 <div className="text-sm font-medium leading-none flex items-center">
                                   {item.title}
                                   <span className="ml-2 text-xs bg-success/20 text-success px-1.5 py-0.5 rounded">PDF</span>
                                 </div>
                                 <p className="text-xs leading-snug text-muted-foreground mt-1">{item.description}</p>
-                              </a>
+                              </button>
                             </NavigationMenuLink>
                           ))}
                           
