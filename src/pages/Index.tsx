@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -124,43 +125,34 @@ const Index = () => {
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="absolute inset-0 pattern-dots"></div>
         <div className="container mx-auto px-4 relative z-10">
-          {/* Centered Logo with Leather Backdrop */}
+          {/* Centered Logo with Shadow Glow */}
           <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute -inset-6 md:-inset-10 rounded-full bg-gradient-to-br from-secondary/25 via-secondary/10 to-primary/15 blur-2xl"></div>
-              {/* Secondary warm glow */}
-              <div className="absolute -inset-3 md:-inset-6 rounded-full bg-gradient-to-t from-secondary/20 to-transparent blur-xl"></div>
-              {/* Leather-textured backdrop circle */}
-              <div 
-                className="relative rounded-full p-4 md:p-6 lg:p-8"
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Outer warm glow */}
+              <div className="absolute -inset-8 md:-inset-14 rounded-full bg-gradient-to-br from-secondary/20 via-secondary/8 to-primary/10 blur-3xl"></div>
+              {/* Inner bronze glow */}
+              <div className="absolute -inset-4 md:-inset-8 rounded-full bg-secondary/12 blur-2xl"></div>
+              {/* Logo container */}
+              <div className="relative h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-[22rem] lg:w-[22rem] rounded-full overflow-hidden flex items-center justify-center"
                 style={{
-                  background: 'radial-gradient(ellipse at 30% 20%, hsl(30, 20%, 28%) 0%, hsl(25, 18%, 20%) 40%, hsl(20, 15%, 14%) 100%)',
-                  boxShadow: 'inset 0 2px 8px hsl(30, 15%, 35% / 0.4), inset 0 -3px 6px hsl(20, 20%, 8% / 0.6), 0 8px 32px hsl(220, 25%, 12% / 0.3), 0 2px 8px hsl(38, 45%, 52% / 0.15)',
+                  filter: 'drop-shadow(0 0 30px hsl(38, 45%, 52% / 0.25)) drop-shadow(0 8px 24px hsl(220, 25%, 12% / 0.3))',
                 }}
               >
-                {/* Subtle leather grain overlay */}
-                <div 
-                  className="absolute inset-0 rounded-full opacity-[0.06] pointer-events-none"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                  }}
-                ></div>
-                {/* Inner bevel highlight */}
-                <div className="absolute inset-[3px] md:inset-1 rounded-full border border-secondary/10 pointer-events-none"></div>
-                {/* Logo - cropped tighter with overflow hidden */}
-                <div className="relative h-36 w-36 sm:h-52 sm:w-52 md:h-72 md:w-72 lg:h-[22rem] lg:w-[22rem] rounded-full overflow-hidden flex items-center justify-center">
-                  <img 
-                    src={logoImage} 
-                    alt="EZ BIZ FILE SERVICE" 
-                    className="w-[115%] h-[115%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
-                    style={{ imageRendering: 'auto', filter: 'contrast(1.03) saturate(1.05)' }}
-                  />
-                </div>
+                <img 
+                  src={logoImage} 
+                  alt="EZ BIZ FILE SERVICE" 
+                  className="w-[115%] h-[115%] object-contain"
+                  style={{ filter: 'contrast(1.03) saturate(1.05)' }}
+                />
               </div>
-              {/* Bottom reflection glow */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-4 md:h-6 bg-secondary/15 blur-xl rounded-full"></div>
-            </div>
+              {/* Bottom reflection */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-4 md:h-6 bg-secondary/12 blur-xl rounded-full"></div>
+            </motion.div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
