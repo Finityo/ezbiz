@@ -134,7 +134,7 @@ const Index = () => {
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
-                className="h-48 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain mx-auto mix-blend-multiply"
+                className="h-56 sm:h-72 md:h-96 lg:h-[30rem] w-auto object-contain mx-auto mix-blend-multiply"
                 style={{ filter: 'contrast(1.03) saturate(1.05)' }}
               />
             </motion.div>
