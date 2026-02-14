@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Users, MessageCircle, Phone, Video } from "lucide-react"
 import Navigation from "@/components/Navigation"
+import Footer from "@/components/Footer"
+import FloatingCTA from "@/components/FloatingCTA"
+import BackToTop from "@/components/BackToTop"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
 import { useToast } from "@/hooks/use-toast"
@@ -144,6 +147,8 @@ const Consultation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA />
+      <BackToTop />
       
       <main>
         {/* Hero Section */}
@@ -392,12 +397,7 @@ const Consultation = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-muted py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

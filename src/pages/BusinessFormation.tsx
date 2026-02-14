@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
+import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -72,12 +74,15 @@ const BusinessFormation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA />
+      <BackToTop />
 
       {/* Header Section */}
-      <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-8">
+      <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-8 relative overflow-hidden pattern-geometric">
+        <div className="absolute inset-0 pattern-dots opacity-30"></div>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 font-display">
               Form Your {selectedState} {selectedBusinessType}
             </h1>
             <p className="text-lg text-muted-foreground mb-6">
@@ -124,7 +129,7 @@ const BusinessFormation = () => {
                 </Select>
               </div>
 
-              <Button size="lg" className="h-12 bg-orange-500 hover:bg-orange-600">
+              <Button size="lg" className="h-12 bg-primary hover:bg-primary-light">
                 Update
               </Button>
             </div>
@@ -132,14 +137,14 @@ const BusinessFormation = () => {
 
           {/* Trustpilot Widget */}
           <div className="flex justify-center mb-8">
-            <div className="bg-white p-4 rounded-lg shadow-md border">
+            <div className="bg-card p-4 rounded-lg shadow-smooth border border-border">
               <div className="flex items-center mb-2">
-                <div className="flex text-green-500 mr-3">
+                <div className="flex text-success mr-3">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-current" />
                   ))}
                 </div>
-                <span className="font-bold text-green-600">Trustpilot</span>
+                <span className="font-bold text-success">Trustpilot</span>
               </div>
               <div className="text-sm">
                 <span className="font-bold">TrustScore 4.9</span> | <span className="font-bold">1,157</span> reviews
@@ -160,7 +165,7 @@ const BusinessFormation = () => {
                 )}
                 
                 <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold mb-2">{pkg.name}</h3>
+                  <h3 className="text-xl font-bold mb-2 font-display">{pkg.name}</h3>
                   <div className="text-3xl font-bold text-primary mb-1">{pkg.price}</div>
                   <div className="text-sm text-muted-foreground">+ state fees</div>
                 </div>
@@ -168,14 +173,14 @@ const BusinessFormation = () => {
                 <ul className="space-y-3 mb-6">
                   {pkg.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
-                      <CheckCircle className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-success mr-3 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Button 
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold"
+                  className="w-full bg-primary hover:bg-primary-light text-primary-foreground font-bold"
                   size="lg"
                 >
                   Continue
