@@ -1,5 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
+import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -171,11 +173,14 @@ const CCorporation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA />
+      <BackToTop />
       
       <main>
         {/* Hero Section */}
-        <section className="gradient-hero text-primary-foreground py-20 lg:py-28">
-          <div className="container mx-auto px-4">
+        <section className="gradient-hero text-primary-foreground py-20 lg:py-28 relative overflow-hidden pattern-geometric">
+          <div className="absolute inset-0 pattern-dots opacity-30"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <Badge className="mb-6 bg-white/20 text-primary-foreground hover:bg-white/30">
                 Best for Growth & Investment

@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -603,12 +604,7 @@ const Pricing = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-muted py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

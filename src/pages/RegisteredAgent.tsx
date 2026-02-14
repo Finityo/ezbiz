@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, Shield, Clock, MapPin, FileText } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
+import BackToTop from "@/components/BackToTop";
 
 const RegisteredAgent = () => {
   const benefits = [
@@ -87,9 +90,12 @@ const RegisteredAgent = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <FloatingCTA />
+      <BackToTop />
       
       {/* Hero Section */}
-      <section className="py-16 md:py-24 gradient-subtle">
+      <section className="py-16 md:py-24 gradient-subtle relative overflow-hidden pattern-geometric">
+        <div className="absolute inset-0 pattern-dots opacity-30"></div>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <Badge variant="secondary" className="text-sm">
@@ -103,11 +109,11 @@ const RegisteredAgent = () => {
               We accept legal documents and maintain your business in good standing.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="lg" className="group">
+              <Button size="lg" className="group bg-primary hover:bg-primary-light text-primary-foreground">
                 Get Started - $149/year
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="professional" size="lg">
+              <Button variant="outline" size="lg" className="border-2 hover:bg-muted">
                 Learn More
               </Button>
             </div>
@@ -159,7 +165,7 @@ const RegisteredAgent = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="hero" size="lg">
+              <Button size="lg" className="bg-primary hover:bg-primary-light text-primary-foreground">
                 Choose Professional Service
               </Button>
             </div>
@@ -287,8 +293,7 @@ const RegisteredAgent = () => {
                     ))}
                   </ul>
                   <Button 
-                    variant={pkg.popular ? "hero" : "default"} 
-                    className="w-full mt-6"
+                    className={`w-full mt-6 ${pkg.popular ? 'bg-primary hover:bg-primary-light text-primary-foreground' : ''}`}
                   >
                     Select Service
                   </Button>
@@ -328,15 +333,17 @@ const RegisteredAgent = () => {
             Choose professional registered agent service.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl">
+            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl text-lg px-8 h-14">
               Get Started - $149/year
             </Button>
-            <Button variant="professional" size="lg" className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary">
+            <Button variant="outline" size="lg" className="text-lg px-8 h-14 border-2 border-white/30 text-white hover:bg-white/10">
               Free Consultation
             </Button>
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };
