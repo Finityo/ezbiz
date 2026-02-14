@@ -121,13 +121,12 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden hero-pattern">
-        <div className="absolute inset-0 gradient-subtle"></div>
-        <div className="absolute inset-0 pattern-dots"></div>
+      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden" style={{ backgroundColor: '#fff' }}>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
           <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
             <motion.div
+              className="relative"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -135,7 +134,7 @@ const Index = () => {
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
-                className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain"
+                className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain mix-blend-multiply"
                 style={{ filter: 'contrast(1.03) saturate(1.05)' }}
               />
             </motion.div>
