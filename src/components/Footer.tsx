@@ -105,9 +105,9 @@ const Footer = () => {
   return (
     <footer className="border-t border-border bg-card">
       {/* Main Footer Content */}
-      <div className="py-16">
+      <div className="py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-6 md:gap-8">
             
             {/* Company Info */}
             <div className="col-span-2 space-y-4">
@@ -216,13 +216,13 @@ const Footer = () => {
       {/* Bottom Footer */}
       <div className="py-6">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
             <div className="text-center md:text-left">
               <p className="text-sm text-muted-foreground">
-                &copy; 2024 EZ BIZ FILE SERVICE. All rights reserved. Professional business formation services nationwide.
+                &copy; 2024 EZ BIZ FILE SERVICE. All rights reserved.
               </p>
             </div>
-            <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-muted-foreground">
               <span className="flex items-center space-x-1">
                 <span className="text-success">✓</span>
                 <span>100% Satisfaction Guaranteed</span>

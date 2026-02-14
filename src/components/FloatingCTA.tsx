@@ -37,7 +37,7 @@ const FloatingCTA = ({
   return (
     <div
       className={cn(
-        "fixed bottom-6 right-6 z-50 transition-all duration-300 ease-out",
+        "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 transition-all duration-300 ease-out",
         isVisible 
           ? "opacity-100 translate-y-0" 
           : "opacity-0 translate-y-4 pointer-events-none"
@@ -49,7 +49,7 @@ const FloatingCTA = ({
         className={cn(
           "group shadow-hero hover:shadow-elegant",
           "bg-secondary hover:bg-secondary-light text-secondary-foreground",
-          "font-semibold text-base px-6 py-6 rounded-full",
+          "font-semibold text-sm md:text-base px-4 md:px-6 py-4 md:py-6 rounded-full",
           "transition-all duration-300"
         )}
       >

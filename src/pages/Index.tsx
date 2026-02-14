@@ -119,41 +119,41 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-16 md:py-24 overflow-hidden hero-pattern">
+      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden hero-pattern">
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="absolute inset-0 pattern-dots"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
-          <div className="flex justify-center mb-16 md:mb-20">
+          <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
             <img 
               src={logoImage} 
               alt="EZ BIZ FILE SERVICE" 
-              className="h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl"
+              className="h-32 sm:h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl"
             />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+            <div className="space-y-6 md:space-y-8">
+              <div className="space-y-4 md:space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
                   <Star className="h-4 w-4 fill-current" />
-                  <span className="text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
+                  <span className="text-xs md:text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
                   Build Your Business on a{" "}
                   <span className="text-bronze">Solid Foundation</span>
                 </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
+                <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
                   Professional business formation services that combine legal expertise with 
                   personalized guidance. From sole proprietorship to corporation, we make 
                   entity formation simple and reliable.
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <Button 
                   size="lg" 
-                  className="group text-lg px-8 h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
+                  className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
                   onClick={() => navigate('/order-now')}
                 >
                   Start Your Business
@@ -162,30 +162,30 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="text-lg px-8 h-14 border-2 hover:bg-muted"
+                  className="text-base md:text-lg px-6 md:px-8 h-12 md:h-14 border-2 hover:bg-muted"
                   onClick={() => navigate('/consultation')}
                 >
                   Free Consultation
                 </Button>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground font-body">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3 sm:gap-6 pt-2 md:pt-4 text-sm text-muted-foreground font-body">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success" />
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                   <span>No Hidden Fees</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success" />
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                   <span>24-48 Hour Filing</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success" />
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                   <span>100% Satisfaction Guarantee</span>
                 </div>
               </div>
             </div>
 
-            <div className="relative lg:pl-8">
+            <div className="relative lg:pl-8 hidden md:block">
               <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
               <ParallaxImage 
                 src={heroImage} 
@@ -200,13 +200,13 @@ const Index = () => {
       </section>
 
       {/* Trust Indicators Bar */}
-      <section className="py-8 border-y border-border bg-card">
+      <section className="py-6 md:py-8 border-y border-border bg-card">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {trustIndicators.map((item, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary font-display">{item.value}</div>
-                <div className="text-sm text-muted-foreground font-body mt-1">{item.label}</div>
+                <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display">{item.value}</div>
+                <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">{item.label}</div>
               </div>
             ))}
           </div>
@@ -214,11 +214,11 @@ const Index = () => {
       </section>
 
       {/* Company Capabilities Section */}
-      <AnimatedSection className="py-24">
+      <AnimatedSection className="py-12 md:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <div className="accent-line-center mb-6"></div>
-            <h2 className="text-3xl md:text-4xl font-bold font-display">What We Do</h2>
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">What We Do</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
               Comprehensive business formation and compliance services designed for 
               entrepreneurs who value expertise and reliability.
@@ -246,11 +246,11 @@ const Index = () => {
       </AnimatedSection>
 
       {/* Business Structures Section */}
-      <AnimatedSection className="py-24 bg-muted/30">
+      <AnimatedSection className="py-12 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <div className="accent-line-center mb-6"></div>
-            <h2 className="text-3xl md:text-4xl font-bold font-display">Choose Your Business Structure</h2>
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Choose Your Business Structure</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
               From simple to sophisticated, we help you select and form the right entity 
               for your business goals.
@@ -298,11 +298,11 @@ const Index = () => {
       </AnimatedSection>
 
       {/* Simple Steps Process */}
-      <AnimatedSection className="py-24">
+      <AnimatedSection className="py-12 md:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <div className="accent-line-center mb-6"></div>
-            <h2 className="text-3xl md:text-4xl font-bold font-display">How It Works</h2>
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">How It Works</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
               A straightforward process designed to get your business legally formed 
               quickly and correctly.
@@ -331,13 +331,13 @@ const Index = () => {
       </AnimatedSection>
 
       {/* Why Choose Us Section */}
-      <AnimatedSection className="py-24 bg-card">
+      <AnimatedSection className="py-12 md:py-24 bg-card">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="accent-line mb-6"></div>
-                <h2 className="text-3xl md:text-4xl font-bold font-display">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
                   Why Entrepreneurs Choose EZ BIZ
                 </h2>
                 <p className="text-xl text-muted-foreground font-body leading-relaxed">
@@ -408,30 +408,30 @@ const Index = () => {
       </AnimatedSection>
 
       {/* CTA Section */}
-      <section className="py-24 gradient-executive text-primary-foreground">
-        <div className="container mx-auto px-4 text-center space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold font-display">
+      <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
+        <div className="container mx-auto px-4 text-center space-y-6 md:space-y-8">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
               Ready to Start Your Business?
             </h2>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto font-body">
+            <p className="text-base md:text-xl opacity-90 max-w-2xl mx-auto font-body">
               Join thousands of entrepreneurs who trust EZ BIZ FILE SERVICE to handle their 
               business formation. Get started today with our simple, fast, and reliable process.
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-lg px-8 h-14"
+              <Button 
+                size="lg" 
+                className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
               onClick={() => navigate('/order-now')}
             >
               Form Your Business — Starting at $149
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-lg px-8 h-14"
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
               onClick={() => navigate('/consultation')}
             >
               Schedule Free Consultation
