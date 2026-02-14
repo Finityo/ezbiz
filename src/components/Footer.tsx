@@ -1,7 +1,31 @@
 import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
+import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
+import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
+import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
 
 const Footer = () => {
+  const { toast } = useToast();
+
+  const handlePDFDownload = (title: string, generator: () => any, filename: string) => {
+    toast({ title: "Generating PDF...", description: `Creating your ${title}.` });
+    try {
+      const doc = generator();
+      doc.save(filename);
+      toast({ title: "Download Complete!", description: `${title} has been downloaded.` });
+    } catch (error) {
+      toast({ title: "Download Failed", description: "Please try again.", variant: "destructive" });
+    }
+  };
+
+  const pdfDownloads = [
+    { name: "LLC Formation Guide", generator: generateLLCGuide, filename: "LLC-Formation-Guide.pdf" },
+    { name: "Corporation Handbook", generator: generateCorporationHandbook, filename: "Corporation-Handbook.pdf" },
+    { name: "Business License Checklist", generator: generateLicenseChecklist, filename: "Business-License-Checklist.pdf" },
+    { name: "Tax Election Guide", generator: generateTaxGuide, filename: "Tax-Election-Guide.pdf" },
+  ];
   const businessStructures = [
     { name: "LLC Formation", href: "/form-llc" },
     { name: "C Corporation", href: "/c-corporation" },
@@ -179,6 +203,23 @@ const Footer = () => {
               <ul className="space-y-2">
                 {tools.map((item) => (
                   <FooterLink key={item.name} item={item} />
+                ))}
+              </ul>
+            </div>
+            {/* Free Downloads */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Free Downloads</h4>
+              <ul className="space-y-2">
+                {pdfDownloads.map((item) => (
+                  <li key={item.filename}>
+                    <button
+                      onClick={() => handlePDFDownload(item.name, item.generator, item.filename)}
+                      className="text-muted-foreground hover:text-foreground transition-colors text-sm flex items-center gap-1 cursor-pointer"
+                    >
+                      {item.name}
+                      <span className="text-xs bg-success/20 text-success px-1 py-0.5 rounded">PDF</span>
+                    </button>
+                  </li>
                 ))}
               </ul>
             </div>
