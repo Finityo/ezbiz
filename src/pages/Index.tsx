@@ -124,13 +124,43 @@ const Index = () => {
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="absolute inset-0 pattern-dots"></div>
         <div className="container mx-auto px-4 relative z-10">
-          {/* Centered Logo */}
+          {/* Centered Logo with Leather Backdrop */}
           <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
-            <img 
-              src={logoImage} 
-              alt="EZ BIZ FILE SERVICE" 
-              className="h-32 sm:h-48 md:h-64 lg:h-80 w-auto object-contain drop-shadow-2xl"
-            />
+            <div className="relative">
+              {/* Outer glow ring */}
+              <div className="absolute -inset-6 md:-inset-10 rounded-full bg-gradient-to-br from-secondary/25 via-secondary/10 to-primary/15 blur-2xl"></div>
+              {/* Secondary warm glow */}
+              <div className="absolute -inset-3 md:-inset-6 rounded-full bg-gradient-to-t from-secondary/20 to-transparent blur-xl"></div>
+              {/* Leather-textured backdrop circle */}
+              <div 
+                className="relative rounded-full p-4 md:p-6 lg:p-8"
+                style={{
+                  background: 'radial-gradient(ellipse at 30% 20%, hsl(30, 20%, 28%) 0%, hsl(25, 18%, 20%) 40%, hsl(20, 15%, 14%) 100%)',
+                  boxShadow: 'inset 0 2px 8px hsl(30, 15%, 35% / 0.4), inset 0 -3px 6px hsl(20, 20%, 8% / 0.6), 0 8px 32px hsl(220, 25%, 12% / 0.3), 0 2px 8px hsl(38, 45%, 52% / 0.15)',
+                }}
+              >
+                {/* Subtle leather grain overlay */}
+                <div 
+                  className="absolute inset-0 rounded-full opacity-[0.06] pointer-events-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                  }}
+                ></div>
+                {/* Inner bevel highlight */}
+                <div className="absolute inset-[3px] md:inset-1 rounded-full border border-secondary/10 pointer-events-none"></div>
+                {/* Logo - cropped tighter with overflow hidden */}
+                <div className="relative h-36 w-36 sm:h-52 sm:w-52 md:h-72 md:w-72 lg:h-[22rem] lg:w-[22rem] rounded-full overflow-hidden flex items-center justify-center">
+                  <img 
+                    src={logoImage} 
+                    alt="EZ BIZ FILE SERVICE" 
+                    className="w-[115%] h-[115%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                    style={{ imageRendering: 'auto', filter: 'contrast(1.03) saturate(1.05)' }}
+                  />
+                </div>
+              </div>
+              {/* Bottom reflection glow */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-4 md:h-6 bg-secondary/15 blur-xl rounded-full"></div>
+            </div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
