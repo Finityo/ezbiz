@@ -59,7 +59,7 @@ const TiltCard = ({
     <Card
       ref={cardRef}
       className={cn(
-        'relative overflow-hidden cursor-pointer transition-shadow duration-300',
+        'relative overflow-visible cursor-pointer transition-shadow duration-300',
         className
       )}
       style={{
@@ -75,7 +75,7 @@ const TiltCard = ({
       {/* Glare effect overlay */}
       {glare && (
         <div
-          className="absolute inset-0 pointer-events-none transition-opacity duration-300 z-10"
+          className="absolute inset-0 pointer-events-none transition-opacity duration-300 z-10 overflow-hidden rounded-[inherit]"
           style={{
             background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
             opacity: isHovered ? 1 : 0,
