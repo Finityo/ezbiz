@@ -3,6 +3,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
+import TiltCard from "@/components/TiltCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star, Shield, Users, FileText } from "lucide-react";
@@ -259,9 +260,9 @@ const Pricing = () => {
             
             <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {llcPackages.map((pkg, index) => (
-                <Card key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`}>
+                <TiltCard key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
                   {pkg.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
                       <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center">
                         <Star className="h-4 w-4 mr-1" />
                         Most Popular
@@ -299,7 +300,7 @@ const Pricing = () => {
                       Choose {pkg.name}
                     </Button>
                   </CardContent>
-                </Card>
+                </TiltCard>
               ))}
             </StaggeredGrid>
           </div>
@@ -316,7 +317,7 @@ const Pricing = () => {
             
             <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {corpPackages.map((pkg, index) => (
-                <Card key={index}>
+                <TiltCard key={index} tiltMax={6} scale={1.02}>
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
@@ -349,7 +350,7 @@ const Pricing = () => {
                       Choose {pkg.name}
                     </Button>
                   </CardContent>
-                </Card>
+                </TiltCard>
               ))}
             </StaggeredGrid>
           </div>

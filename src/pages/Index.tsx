@@ -227,7 +227,7 @@ const Index = () => {
           
           <StaggeredGrid className="grid md:grid-cols-3 gap-8" staggerDelay={150}>
             {capabilities.map((capability, index) => (
-              <Card key={index} className="border-0 shadow-smooth hover:shadow-elegant transition-all duration-300 bg-card">
+              <TiltCard key={index} className="border-0 shadow-smooth bg-card" tiltMax={6} scale={1.02}>
                 <CardHeader className="space-y-4">
                   <div className="inline-flex p-3 rounded-xl bg-primary/5 text-primary w-fit">
                     {capability.icon}
@@ -239,7 +239,7 @@ const Index = () => {
                     {capability.description}
                   </CardDescription>
                 </CardContent>
-              </Card>
+              </TiltCard>
             ))}
           </StaggeredGrid>
         </div>
