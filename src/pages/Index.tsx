@@ -126,17 +126,15 @@ const Index = () => {
           {/* Centered Logo */}
           <div className="flex justify-center items-center mb-8 md:mb-16 lg:mb-20">
             <motion.div
-              className="relative"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              style={{ filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.15)) drop-shadow(0 2px 6px rgba(0,0,0,0.1))' }}
             >
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
                 className="h-48 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain mix-blend-multiply mx-auto"
-                style={{ filter: 'contrast(1.03) saturate(1.05)' }}
+                style={{ filter: 'contrast(1.03) saturate(1.05) drop-shadow(0 6px 16px rgba(0,0,0,0.12)) drop-shadow(0 2px 4px rgba(0,0,0,0.08))' }}
               />
             </motion.div>
           </div>
