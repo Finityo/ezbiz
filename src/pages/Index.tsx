@@ -124,17 +124,18 @@ const Index = () => {
       <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden" style={{ backgroundColor: '#fff' }}>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
-          <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
+          <div className="flex justify-center items-center mb-8 md:mb-16 lg:mb-20">
             <motion.div
               className="relative"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              style={{ filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.15)) drop-shadow(0 2px 6px rgba(0,0,0,0.1))' }}
             >
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
-                className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain mix-blend-multiply"
+                className="h-48 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain mix-blend-multiply mx-auto"
                 style={{ filter: 'contrast(1.03) saturate(1.05)' }}
               />
             </motion.div>
