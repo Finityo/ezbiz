@@ -341,8 +341,84 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* Why Choose Us Section */}
+      {/* Testimonials Section */}
       <AnimatedSection className="py-12 md:py-24 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">What Our Clients Say</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              Thousands of entrepreneurs trust EZ BIZ to launch their businesses.
+            </p>
+          </div>
+
+          <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={120}>
+            {[
+              {
+                name: "Sarah M.",
+                role: "LLC Owner, Texas",
+                stars: 5,
+                quote: "EZ BIZ made forming my LLC incredibly simple. The whole process took less than a week and their team was responsive every step of the way."
+              },
+              {
+                name: "James T.",
+                role: "S-Corp Founder, Florida",
+                stars: 5,
+                quote: "I compared several services before choosing EZ BIZ. Their pricing transparency and expert guidance set them apart. Highly recommend!"
+              },
+              {
+                name: "Maria L.",
+                role: "Nonprofit Director, California",
+                stars: 5,
+                quote: "As a first-time founder, I had so many questions. The free consultation was invaluable and they handled all the paperwork flawlessly."
+              },
+              {
+                name: "David K.",
+                role: "C-Corp CEO, Delaware",
+                stars: 5,
+                quote: "Professional, fast, and accurate. My corporation was formed in 48 hours. The registered agent service gives me peace of mind."
+              },
+              {
+                name: "Priya N.",
+                role: "Partnership, New York",
+                stars: 4,
+                quote: "Great experience overall. The team helped us understand the differences between entity types and choose the right structure for our business."
+              },
+              {
+                name: "Robert W.",
+                role: "LLC Owner, Wyoming",
+                stars: 5,
+                quote: "Second time using EZ BIZ for a new venture. Consistent quality and they remembered my preferences. That's real customer service."
+              }
+            ].map((testimonial, index) => (
+              <TiltCard key={index} className="border-border shadow-smooth" tiltMax={5} scale={1.01}>
+                <CardHeader className="pb-2">
+                  <div className="flex gap-0.5 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < testimonial.stars ? 'text-secondary fill-secondary' : 'text-muted'}`}
+                      />
+                    ))}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground font-body leading-relaxed italic">
+                    "{testimonial.quote}"
+                  </p>
+                  <div>
+                    <div className="font-semibold font-display">{testimonial.name}</div>
+                    <div className="text-sm text-muted-foreground font-body">{testimonial.role}</div>
+                  </div>
+                </CardContent>
+              </TiltCard>
+            ))}
+          </StaggeredGrid>
+        </div>
+      </AnimatedSection>
+
+      {/* Why Choose Us Section */}
+      <AnimatedSection className="py-12 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div className="space-y-8">
