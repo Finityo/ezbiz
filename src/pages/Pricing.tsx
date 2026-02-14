@@ -162,29 +162,29 @@ const Pricing = () => {
         <section className="relative bg-gradient-primary text-white overflow-hidden pattern-geometric">
           <div className="absolute inset-0 bg-black/20"></div>
           <div className="absolute inset-0 pattern-dots opacity-40"></div>
-          <div className="container mx-auto px-4 py-20 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
               <div className="max-w-2xl">
-                <h1 className="text-5xl font-bold mb-6">Transparent Pricing</h1>
-                <p className="text-xl mb-8 text-white/90">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">Transparent Pricing</h1>
+                <p className="text-base md:text-xl mb-6 md:mb-8 text-white/90">
                   No hidden fees. No surprises. Choose the package that's right for your business.
                 </p>
-                <div className="flex items-center space-x-6 text-white/80">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-white/80 text-sm">
                   <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5" />
+                    <Check className="h-5 w-5 flex-shrink-0" />
                     <span>No Hidden Fees</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5" />
+                    <Check className="h-5 w-5 flex-shrink-0" />
                     <span>Money-Back Guarantee</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5" />
+                    <Check className="h-5 w-5 flex-shrink-0" />
                     <span>Expert Support</span>
                   </div>
                 </div>
               </div>
-              <div className="relative">
+              <div className="relative hidden md:block">
                 <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
                 <ParallaxImage 
                   src={pricingHero} 
@@ -200,12 +200,12 @@ const Pricing = () => {
         </section>
 
         {/* Trust Indicators */}
-        <AnimatedSection className="py-16 bg-muted/30">
+        <AnimatedSection className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-3xl font-bold mb-6">Why Choose Finityo?</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Why Choose Finityo?</h2>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-4">
                       <div className="bg-primary/10 p-3 rounded-lg">
@@ -250,15 +250,15 @@ const Pricing = () => {
         </AnimatedSection>
 
         {/* LLC Packages */}
-        <AnimatedSection className="py-16">
+        <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <div className="accent-line-center mb-6"></div>
-              <h2 className="text-3xl font-bold mb-4">LLC Formation Packages</h2>
-              <p className="text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
+            <div className="text-center mb-8 md:mb-12">
+              <div className="accent-line-center mb-4 md:mb-6"></div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">LLC Formation Packages</h2>
+              <p className="text-base md:text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
             </div>
             
-            <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
+            <StaggeredGrid className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {llcPackages.map((pkg, index) => (
                 <TiltCard key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
                   {pkg.popular && (
@@ -307,15 +307,15 @@ const Pricing = () => {
         </AnimatedSection>
 
         {/* Corporation Packages */}
-        <AnimatedSection className="py-16 bg-muted/50">
+        <AnimatedSection className="py-10 md:py-16 bg-muted/50">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <div className="accent-line-center mb-6"></div>
-              <h2 className="text-3xl font-bold mb-4">Corporation Formation Packages</h2>
-              <p className="text-xl text-muted-foreground">Establish your corporation with professional service</p>
+            <div className="text-center mb-8 md:mb-12">
+              <div className="accent-line-center mb-4 md:mb-6"></div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Corporation Formation Packages</h2>
+              <p className="text-base md:text-xl text-muted-foreground">Establish your corporation with professional service</p>
             </div>
             
-            <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" staggerDelay={150}>
+            <StaggeredGrid className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {corpPackages.map((pkg, index) => (
                 <TiltCard key={index} tiltMax={6} scale={1.02}>
                   <CardHeader className="text-center">
@@ -357,10 +357,10 @@ const Pricing = () => {
         </AnimatedSection>
 
         {/* Process Overview */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div className="relative order-2 lg:order-1">
                   <img 
                     src={businessDocuments} 
@@ -401,15 +401,15 @@ const Pricing = () => {
         </section>
 
         {/* Additional Services */}
-        <section className="py-16">
+        <section className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <div className="accent-line-center mb-6"></div>
-              <h2 className="text-3xl font-bold mb-4">Additional Services</h2>
-              <p className="text-xl text-muted-foreground">Add-on services to complement your business formation</p>
+            <div className="text-center mb-8 md:mb-12">
+              <div className="accent-line-center mb-4 md:mb-6"></div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Additional Services</h2>
+              <p className="text-base md:text-xl text-muted-foreground">Add-on services to complement your business formation</p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
               {additionalServices.map((service, index) => (
                 <Card key={index} className="text-center">
                   <CardHeader>
@@ -442,10 +442,10 @@ const Pricing = () => {
         </section>
 
         {/* State Fees Info */}
-        <section className="py-16 bg-muted/50">
+        <section className="py-10 md:py-16 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8">State Filing Fees</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">State Filing Fees</h2>
               <Card>
                 <CardContent className="p-8">
                   <div className="grid md:grid-cols-2 gap-8">
@@ -521,12 +521,12 @@ const Pricing = () => {
         </section>
 
         {/* Money Back Guarantee */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-3xl font-bold mb-6">100% Satisfaction Guarantee</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">100% Satisfaction Guarantee</h2>
                   <Card className="border-success">
                     <CardContent className="p-8">
                       <div className="flex items-center justify-center mb-6">
@@ -573,11 +573,11 @@ const Pricing = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-primary text-white">
+        <section className="py-10 md:py-16 bg-gradient-primary text-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6">Ready to Start Your Business?</h2>
-              <p className="text-xl text-white/90 mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Ready to Start Your Business?</h2>
+              <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">
                 Choose your package and get started today. Our experts are here to help you every step of the way.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
