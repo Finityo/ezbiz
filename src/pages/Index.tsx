@@ -123,6 +123,15 @@ const Index = () => {
       {/* Hero Section - Executive Style */}
       <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-white"></div>
+        {/* Decorative dot pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+        {/* Geometric grid lines */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(hsl(var(--secondary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--secondary)) 1px, transparent 1px)', backgroundSize: '80px 80px' }}></div>
+        {/* Warm gradient glow behind content area */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[60%] bg-gradient-to-t from-secondary/[0.04] via-secondary/[0.02] to-transparent rounded-full blur-3xl pointer-events-none"></div>
+        {/* Subtle corner accents */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/[0.03] to-transparent pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/[0.03] to-transparent pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
           <div className="flex justify-center items-center mb-8 md:mb-16 lg:mb-20">
