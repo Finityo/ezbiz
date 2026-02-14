@@ -121,7 +121,8 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden" style={{ backgroundColor: '#fff' }}>
+      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-white"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
           <div className="flex justify-center items-center mb-8 md:mb-16 lg:mb-20">
@@ -133,8 +134,8 @@ const Index = () => {
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
-                className="h-48 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain mix-blend-multiply mx-auto"
-                style={{ filter: 'contrast(1.03) saturate(1.05) drop-shadow(0 6px 16px rgba(0,0,0,0.12)) drop-shadow(0 2px 4px rgba(0,0,0,0.08))' }}
+                className="h-48 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain mx-auto mix-blend-multiply"
+                style={{ filter: 'contrast(1.03) saturate(1.05)' }}
               />
             </motion.div>
           </div>
