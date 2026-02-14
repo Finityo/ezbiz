@@ -138,7 +138,7 @@ const Index = () => {
               {/* Inner bronze glow */}
               <div className="absolute -inset-4 md:-inset-8 rounded-full bg-secondary/12 blur-2xl"></div>
               {/* Logo container */}
-              <div className="relative h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-[22rem] lg:w-[22rem] rounded-full overflow-hidden flex items-center justify-center"
+              <div className="relative flex items-center justify-center"
                 style={{
                   filter: 'drop-shadow(0 0 30px hsl(38, 45%, 52% / 0.25)) drop-shadow(0 8px 24px hsl(220, 25%, 12% / 0.3))',
                 }}
@@ -146,7 +146,7 @@ const Index = () => {
                 <img 
                   src={logoImage} 
                   alt="EZ BIZ FILE SERVICE" 
-                  className="w-[115%] h-[115%] object-contain"
+                  className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain"
                   style={{ filter: 'contrast(1.03) saturate(1.05)' }}
                 />
               </div>
