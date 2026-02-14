@@ -125,33 +125,19 @@ const Index = () => {
         <div className="absolute inset-0 gradient-subtle"></div>
         <div className="absolute inset-0 pattern-dots"></div>
         <div className="container mx-auto px-4 relative z-10">
-          {/* Centered Logo with Shadow Glow */}
+          {/* Centered Logo */}
           <div className="flex justify-center mb-8 md:mb-16 lg:mb-20">
             <motion.div
-              className="relative"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              {/* Outer warm glow */}
-              <div className="absolute -inset-8 md:-inset-14 rounded-full bg-gradient-to-br from-secondary/20 via-secondary/8 to-primary/10 blur-3xl"></div>
-              {/* Inner bronze glow */}
-              <div className="absolute -inset-4 md:-inset-8 rounded-full bg-secondary/12 blur-2xl"></div>
-              {/* Logo container */}
-              <div className="relative flex items-center justify-center"
-                style={{
-                  filter: 'drop-shadow(0 0 30px hsl(38, 45%, 52% / 0.25)) drop-shadow(0 8px 24px hsl(220, 25%, 12% / 0.3))',
-                }}
-              >
-                <img 
-                  src={logoImage} 
-                  alt="EZ BIZ FILE SERVICE" 
-                  className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain"
-                  style={{ filter: 'contrast(1.03) saturate(1.05)' }}
-                />
-              </div>
-              {/* Bottom reflection */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-4 md:h-6 bg-secondary/12 blur-xl rounded-full"></div>
+              <img 
+                src={logoImage} 
+                alt="EZ BIZ FILE SERVICE" 
+                className="h-40 sm:h-56 md:h-72 lg:h-[22rem] w-auto object-contain"
+                style={{ filter: 'contrast(1.03) saturate(1.05)' }}
+              />
             </motion.div>
           </div>
 
