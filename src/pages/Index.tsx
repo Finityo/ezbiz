@@ -12,6 +12,7 @@ import TiltCard from "@/components/TiltCard";
 import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-nobg.png";
 import ParallaxImage from "@/components/ParallaxImage";
+import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -203,12 +204,22 @@ const Index = () => {
       <section className="py-6 md:py-8 border-y border-border bg-card">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {trustIndicators.map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display">{item.value}</div>
-                <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">{item.label}</div>
-              </div>
-            ))}
+            <div className="text-center">
+              <CountUpDisplay end={50000} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={2200} />
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Businesses Formed</div>
+            </div>
+            <div className="text-center">
+              <CountUpDisplay end={15} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1800} />
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Years of Experience</div>
+            </div>
+            <div className="text-center">
+              <CountUpDisplay end={50} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1600} />
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">States Served</div>
+            </div>
+            <div className="text-center">
+              <CountUpDisplay end={4.9} suffix="★" decimals={1} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1400} />
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Customer Rating</div>
+            </div>
           </div>
         </div>
       </section>
