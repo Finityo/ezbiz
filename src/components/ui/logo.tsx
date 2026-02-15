@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import logoImage from '@/assets/logo-ezbiz-transparent.png';
+import logoImage from '@/assets/logo-ezbiz-final.png';
 
 interface LogoProps {
   className?: string;
