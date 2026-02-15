@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -31,13 +31,17 @@ const US_STATES = [
 
 const EnhancedOrderFlow = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [searchParams] = useSearchParams();
+  const preselectedPackage = searchParams.get("package") || "";
+  const preselectedState = searchParams.get("state") || "";
+  
+  const [currentStep, setCurrentStep] = useState(preselectedPackage ? 1 : 1);
   const [submitting, setSubmitting] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState("");
-  const [selectedPackage, setSelectedPackage] = useState("");
+  const [selectedPackage, setSelectedPackage] = useState(preselectedPackage);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [formData, setFormData] = useState({
-    state: "",
+    state: preselectedState,
     businessName: "",
     firstName: "",
     lastName: "",
