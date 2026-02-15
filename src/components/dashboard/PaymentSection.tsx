@@ -8,17 +8,23 @@ interface LineItem {
   quantity?: number;
 }
 
+interface StateFee {
+  amount: number;
+  stateName: string;
+}
+
 interface PaymentSectionProps {
   amount: number;
   lineItems: LineItem[];
+  stateFee?: StateFee;
   onPaymentSuccess?: () => void;
 }
 
-const PaymentSection = ({ amount, lineItems, onPaymentSuccess }: PaymentSectionProps) => {
+const PaymentSection = ({ amount, lineItems, stateFee, onPaymentSuccess }: PaymentSectionProps) => {
   const { checkout, loading } = useStripeCheckout();
 
   const handleCheckout = async () => {
-    await checkout(lineItems);
+    await checkout(lineItems, { stateFee });
     onPaymentSuccess?.();
   };
 
