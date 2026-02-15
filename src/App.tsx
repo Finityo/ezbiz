@@ -32,7 +32,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 
-import BusinessFormation from "./pages/BusinessFormation";
+
 import EnhancedOrderFlow from "./pages/EnhancedOrderFlow";
 import CaliforniaLLC from "./pages/states/CaliforniaLLC";
 import DelawareLLC from "./pages/states/DelawareLLC";
@@ -90,7 +90,7 @@ function App() {
             <Route path="/consultation" element={<Consultation />} />
             <Route path="/about" element={<About />} />
             
-            <Route path="/business-formation" element={<BusinessFormation />} />
+            
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
