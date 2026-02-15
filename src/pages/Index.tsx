@@ -175,7 +175,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-                  onClick={() => navigate('/order-now')}
+onClick={() => navigate('/pricing')}
                 >
                   Start Your Business
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -531,7 +531,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
-              onClick={() => navigate('/order-now')}
+              onClick={() => navigate('/pricing')}
             >
               Form Your Business — Starting at $149
             </Button>
