@@ -141,6 +141,14 @@ const EnhancedOrderFlow = () => {
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mb-4 text-muted-foreground hover:text-foreground"
+              onClick={() => navigate('/pricing')}
+            >
+              ← Back to Pricing
+            </Button>
             <h1 className="text-3xl font-bold text-center mb-2">
               Start Your Business Formation
             </h1>
