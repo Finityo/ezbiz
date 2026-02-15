@@ -121,7 +121,7 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative pt-10 md:pt-12 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden">
+      <section className="relative pt-4 md:pt-10 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-white"></div>
         {/* Decorative dot pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
