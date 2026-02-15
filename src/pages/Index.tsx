@@ -175,7 +175,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-onClick={() => navigate('/pricing')}
+onClick={() => navigate('/order-flow')}
                 >
                   Start My Business
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -587,7 +587,7 @@ onClick={() => navigate('/pricing')}
               <Button 
                 size="lg" 
                 className="group bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant"
-                onClick={() => navigate('/pricing')}
+                onClick={() => navigate('/order-flow')}
               >
                 See Our Packages
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -666,7 +666,7 @@ onClick={() => navigate('/pricing')}
               <Button 
                 size="lg" 
                 className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
-              onClick={() => navigate('/pricing')}
+              onClick={() => navigate('/order-flow')}
             >
               Start My Business — From $99
             </Button>

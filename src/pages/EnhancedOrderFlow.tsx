@@ -1,332 +1,241 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import OrderStepIndicator from "@/components/order/OrderStepIndicator";
+import StateSelector from "@/components/order/StateSelector";
 import EntityTypeSelector from "@/components/order/EntityTypeSelector";
 import PackageSelector from "@/components/order/PackageSelector";
 import AddOnServices from "@/components/order/AddOnServices";
-import PaymentSection from "@/components/dashboard/PaymentSection";
+import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
+import AccountStep from "@/components/order/AccountStep";
+import ReviewStep from "@/components/order/ReviewStep";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
 import { getStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const steps = ['Entity Type', 'Package', 'Information', 'Payment'];
-const US_STATES = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", 
-  "Delaware", "District Of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", 
-  "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", 
-  "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", 
-  "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
-  "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", 
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", 
-  "Wisconsin", "Wyoming"
-];
+const steps = ["State", "Package", "Details", "Account", "Review"];
 
 const EnhancedOrderFlow = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const preselectedPackage = searchParams.get("package") || "";
-  const preselectedState = searchParams.get("state") || "";
-  
-  const [currentStep, setCurrentStep] = useState(preselectedPackage ? 1 : 1);
-  const [submitting, setSubmitting] = useState(false);
-  const [selectedEntity, setSelectedEntity] = useState("");
-  const [selectedPackage, setSelectedPackage] = useState(preselectedPackage);
+  const { user } = useAuth();
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
+  const [selectedEntity, setSelectedEntity] = useState(searchParams.get("entity") || "llc");
+  const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
-  const [formData, setFormData] = useState({
-    state: preselectedState,
+  const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
     businessName: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    designator: "",
     address: "",
     city: "",
-    zipCode: ""
+    zipCode: "",
+    managementStructure: "",
   });
 
-  const isStepComplete = (step: number): boolean => {
-    switch (step) {
-      case 1: return selectedEntity !== "";
-      case 2: return selectedPackage !== "";
-      case 3: return !!(formData.state && formData.businessName && formData.firstName && 
-                       formData.lastName && formData.email && formData.phone);
-      default: return false;
-    }
-  };
+  const stateFee = selectedState ? getStateFee(selectedState) : 0;
 
-  const stateFee = formData.state ? getStateFee(formData.state) : 0;
-
+  // Running total for sticky bar
   const calculateTotal = () => {
     const pkg = selectedPackage ? STRIPE_PACKAGES[selectedPackage as PackageId] : null;
     const basePrice = pkg?.price || 0;
-    const addonsTotal = selectedAddOns.reduce((sum, addonId) => {
-      const addon = STRIPE_ADDONS[addonId as AddonId];
+    const addonsTotal = selectedAddOns.reduce((sum, id) => {
+      const addon = STRIPE_ADDONS[id as AddonId];
       return sum + (addon?.price || 0);
     }, 0);
     return basePrice + addonsTotal + stateFee;
   };
 
-  const buildLineItems = () => {
-    const items: { priceId: string; quantity?: number }[] = [];
-    if (selectedPackage && STRIPE_PACKAGES[selectedPackage as PackageId]) {
-      items.push({ priceId: STRIPE_PACKAGES[selectedPackage as PackageId].priceId });
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1: return !!selectedState;
+      case 2: return !!selectedPackage && !!selectedEntity;
+      case 3: return !!(businessDetails.businessName && businessDetails.designator &&
+        businessDetails.address && businessDetails.city && businessDetails.zipCode &&
+        (selectedEntity !== "llc" || businessDetails.managementStructure));
+      case 4: return !!user;
+      default: return false;
     }
-    selectedAddOns.forEach((addonId) => {
-      const addon = STRIPE_ADDONS[addonId as AddonId];
-      if (addon) items.push({ priceId: addon.priceId });
-    });
-    return items;
   };
 
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    
+  const goNext = () => {
+    // If user is already logged in and we're going to step 4, skip to 5
+    if (currentStep === 3 && user) {
+      setCurrentStep(5);
+    } else {
+      setCurrentStep((s) => Math.min(s + 1, 5));
+    }
+  };
+
+  const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1));
+
+  const handleToggleAddon = (addonId: string) => {
+    setSelectedAddOns((prev) =>
+      prev.includes(addonId) ? prev.filter((id) => id !== addonId) : [...prev, addonId]
+    );
+  };
+
+  const saveOrderToDb = async () => {
+    if (!user) return;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast.error("Please sign in to submit your order");
-        navigate('/auth');
-        return;
-      }
-
-      // First create the order
-      const response = await supabase.functions.invoke('corpnet-api', {
-        body: {
-          entityType: selectedEntity,
+      await supabase.from("business_applications").insert([{
+        user_id: user.id,
+        business_name: `${businessDetails.businessName} ${businessDetails.designator}`.trim(),
+        business_type: selectedEntity,
+        state: selectedState,
+        status: "pending",
+        application_data: {
           package: selectedPackage,
-          state: formData.state,
-          businessName: formData.businessName,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          zipCode: formData.zipCode,
-          addOns: selectedAddOns
-        }
-      });
-
-      if (response.error) throw response.error;
-
-      // Move to payment step
-      setCurrentStep(4);
-      
-    } catch (error) {
-      console.error('Error submitting order:', error);
-      toast.error("Failed to submit order. Please try again.");
-      setSubmitting(false);
+          addOns: selectedAddOns,
+          businessDetails,
+          stateFee,
+        } as any,
+      }]);
+    } catch (err) {
+      console.error("Failed to save order:", err);
     }
   };
 
-  const handlePaymentSuccess = () => {
-    setSubmitting(false);
-    toast.success("Payment processed! Your order has been submitted.");
-    navigate('/dashboard');
+  const handleCheckoutStarted = async () => {
+    await saveOrderToDb();
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      
+
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6 sm:py-8">
           <div className="max-w-4xl mx-auto">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mb-4 text-muted-foreground hover:text-foreground"
-              onClick={() => navigate('/pricing')}
-            >
-              ← Back to Pricing
-            </Button>
-            <h1 className="text-3xl font-bold text-center mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-1">
               Start Your Business Formation
             </h1>
-            <p className="text-center text-muted-foreground mb-8">
+            <p className="text-center text-muted-foreground mb-6">
               Complete your order in {steps.length} simple steps
             </p>
 
             <OrderStepIndicator currentStep={currentStep} steps={steps} />
 
-            <Card className="mt-8 p-6">
-              {/* Step 1: Entity Type */}
+            {/* Running Total Bar (steps 2+) */}
+            {currentStep >= 2 && selectedPackage && (
+              <div className="mt-4 p-3 rounded-lg bg-card border flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="font-medium">{selectedState}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span>{STRIPE_PACKAGES[selectedPackage as PackageId]?.name}</span>
+                  {selectedAddOns.length > 0 && (
+                    <>
+                      <span className="text-muted-foreground">•</span>
+                      <span>{selectedAddOns.length} add-on{selectedAddOns.length > 1 ? "s" : ""}</span>
+                    </>
+                  )}
+                </div>
+                <span className="font-bold text-primary text-lg">${calculateTotal()}</span>
+              </div>
+            )}
+
+            <Card className="mt-6 p-4 sm:p-6">
+              {/* Step 1: State Selection */}
               {currentStep === 1 && (
                 <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-semibold mb-2">Choose Your Entity Type</h2>
-                    <p className="text-muted-foreground">Select the business structure that fits your needs</p>
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Where are you forming your business?</h2>
+                    <p className="text-muted-foreground">Select the state where you'd like to register</p>
                   </div>
-                  
-                  <EntityTypeSelector
-                    selected={selectedEntity}
-                    onSelect={setSelectedEntity}
-                  />
-                  
+                  <StateSelector selected={selectedState} onSelect={setSelectedState} />
                   <div className="flex justify-end">
-                    <Button 
-                      onClick={() => setCurrentStep(2)}
-                      disabled={!isStepComplete(1)}
-                    >
-                      Continue
-                    </Button>
+                    <Button onClick={goNext} disabled={!isStepValid(1)}>Continue</Button>
                   </div>
                 </div>
               )}
 
-              {/* Step 2: Package Selection */}
+              {/* Step 2: Entity + Package + Add-ons */}
               {currentStep === 2 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-semibold mb-2">Select Your Package</h2>
-                    <p className="text-muted-foreground">Choose the service level that matches your requirements</p>
+                <div className="space-y-8">
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Choose Your Entity & Package</h2>
+                    <p className="text-muted-foreground">Select your business structure and service level</p>
                   </div>
-                  
-                  <PackageSelector
-                    selected={selectedPackage}
-                    onSelect={setSelectedPackage}
-                    stateFees={stateFee}
-                  />
-                  
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Entity Type</h3>
+                    <EntityTypeSelector selected={selectedEntity} onSelect={setSelectedEntity} />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Service Package</h3>
+                    <PackageSelector selected={selectedPackage} onSelect={setSelectedPackage} stateFees={stateFee} />
+                  </div>
+
+                  <div className="border-t pt-6">
+                    <AddOnServices selected={selectedAddOns} onToggle={handleToggleAddon} />
+                  </div>
+
                   <div className="flex justify-between">
-                    <Button onClick={() => setCurrentStep(1)} variant="outline">
-                      Back
-                    </Button>
-                    <Button 
-                      onClick={() => setCurrentStep(3)}
-                      disabled={!isStepComplete(2)}
-                    >
-                      Continue
-                    </Button>
+                    <Button onClick={goBack} variant="outline">Back</Button>
+                    <Button onClick={goNext} disabled={!isStepValid(2)}>Continue</Button>
                   </div>
                 </div>
               )}
 
-              {/* Step 3: Information & Add-ons */}
+              {/* Step 3: Business Details */}
               {currentStep === 3 && (
                 <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-semibold mb-2">Business Information</h2>
-                    <p className="text-muted-foreground">Tell us about your business</p>
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Tell Us About Your Business</h2>
+                    <p className="text-muted-foreground">Provide the details for your formation documents</p>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="state">State *</Label>
-                        <Select value={formData.state} onValueChange={(value) => setFormData({ ...formData, state: value })}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select state" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state} value={state}>{state}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="businessName">Business Name *</Label>
-                        <Input
-                          id="businessName"
-                          value={formData.businessName}
-                          onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                          placeholder="Enter business name"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="firstName">First Name *</Label>
-                        <Input
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="lastName">Last Name *</Label>
-                        <Input
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="email">Email *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="phone">Phone *</Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-semibold mb-4">Optional Add-on Services</h3>
-                    <AddOnServices
-                      selected={selectedAddOns}
-                      onToggle={(addonId) => {
-                        setSelectedAddOns(prev =>
-                          prev.includes(addonId)
-                            ? prev.filter(id => id !== addonId)
-                            : [...prev, addonId]
-                        );
-                      }}
-                    />
-                  </div>
-                  
+                  <BusinessDetailsForm
+                    data={businessDetails}
+                    entityType={selectedEntity}
+                    state={selectedState}
+                    onChange={setBusinessDetails}
+                  />
                   <div className="flex justify-between">
-                    <Button onClick={() => setCurrentStep(2)} variant="outline">
-                      Back
-                    </Button>
-                    <Button 
-                      onClick={handleSubmit}
-                      disabled={!isStepComplete(3) || submitting}
-                    >
-                      {submitting ? "Processing..." : "Continue to Payment"}
-                    </Button>
+                    <Button onClick={goBack} variant="outline">Back</Button>
+                    <Button onClick={goNext} disabled={!isStepValid(3)}>Continue</Button>
                   </div>
                 </div>
               )}
 
-              {/* Step 4: Payment */}
+              {/* Step 4: Account */}
               {currentStep === 4 && (
                 <div className="space-y-6">
-                  <PaymentSection
-                    amount={calculateTotal()}
-                    lineItems={buildLineItems()}
-                    stateFee={formData.state ? { amount: stateFee, stateName: formData.state } : undefined}
-                    onPaymentSuccess={handlePaymentSuccess}
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Create Your Account</h2>
+                    <p className="text-muted-foreground">Sign up to track your order progress</p>
+                  </div>
+                  <AccountStep onAuthenticated={() => setCurrentStep(5)} />
+                  <div className="flex justify-start">
+                    <Button onClick={goBack} variant="outline">Back</Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 5: Review & Checkout */}
+              {currentStep === 5 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Review Your Order</h2>
+                    <p className="text-muted-foreground">Confirm your details before checkout</p>
+                  </div>
+                  <ReviewStep
+                    state={selectedState}
+                    entityType={selectedEntity}
+                    selectedPackage={selectedPackage}
+                    selectedAddOns={selectedAddOns}
+                    businessDetails={businessDetails}
+                    onEdit={(step) => setCurrentStep(step)}
+                    onCheckoutStarted={handleCheckoutStarted}
                   />
-                  
-                  <div className="flex justify-between">
-                    <Button onClick={() => setCurrentStep(3)} variant="outline" disabled={submitting}>
-                      Back
-                    </Button>
+                  <div className="flex justify-start">
+                    <Button onClick={() => setCurrentStep(user ? 3 : 4)} variant="outline">Back</Button>
                   </div>
                 </div>
               )}
