@@ -13,6 +13,7 @@ import PackageSelector from "@/components/order/PackageSelector";
 import AddOnServices from "@/components/order/AddOnServices";
 import PaymentSection from "@/components/dashboard/PaymentSection";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
+import { getStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -57,6 +58,8 @@ const EnhancedOrderFlow = () => {
     }
   };
 
+  const stateFee = formData.state ? getStateFee(formData.state) : 0;
+
   const calculateTotal = () => {
     const pkg = selectedPackage ? STRIPE_PACKAGES[selectedPackage as PackageId] : null;
     const basePrice = pkg?.price || 0;
@@ -64,7 +67,7 @@ const EnhancedOrderFlow = () => {
       const addon = STRIPE_ADDONS[addonId as AddonId];
       return sum + (addon?.price || 0);
     }, 0);
-    return basePrice + addonsTotal;
+    return basePrice + addonsTotal + stateFee;
   };
 
   const buildLineItems = () => {
@@ -179,7 +182,7 @@ const EnhancedOrderFlow = () => {
                   <PackageSelector
                     selected={selectedPackage}
                     onSelect={setSelectedPackage}
-                    stateFees={100}
+                    stateFees={stateFee}
                   />
                   
                   <div className="flex justify-between">
@@ -304,6 +307,7 @@ const EnhancedOrderFlow = () => {
                   <PaymentSection
                     amount={calculateTotal()}
                     lineItems={buildLineItems()}
+                    stateFee={formData.state ? { amount: stateFee, stateName: formData.state } : undefined}
                     onPaymentSuccess={handlePaymentSuccess}
                   />
                   

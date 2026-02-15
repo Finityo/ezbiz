@@ -19,7 +19,7 @@ serve(async (req) => {
   );
 
   try {
-    const { lineItems, successPath = "/dashboard", cancelPath = "/pricing" } = await req.json();
+    const { lineItems, stateFee, successPath = "/dashboard", cancelPath = "/pricing" } = await req.json();
 
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
       throw new Error("lineItems array is required");
@@ -50,13 +50,34 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://ezbiz.lovable.app";
 
+    // Build Stripe line items
+    const stripeLineItems: any[] = lineItems.map((item: { priceId: string; quantity?: number; description?: string }) => {
+      const lineItem: any = {
+        price: item.priceId,
+        quantity: item.quantity || 1,
+      };
+      return lineItem;
+    });
+
+    // Add state filing fee as a dynamic line item if provided
+    if (stateFee && stateFee.amount > 0) {
+      stripeLineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `${stateFee.stateName || "State"} Filing Fee`,
+            description: `Government filing fee for ${stateFee.stateName || "your state"}`,
+          },
+          unit_amount: Math.round(stateFee.amount * 100), // Convert dollars to cents
+        },
+        quantity: 1,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
-      line_items: lineItems.map((item: { priceId: string; quantity?: number }) => ({
-        price: item.priceId,
-        quantity: item.quantity || 1,
-      })),
+      line_items: stripeLineItems,
       mode: "payment",
       success_url: `${origin}${successPath}`,
       cancel_url: `${origin}${cancelPath}`,
