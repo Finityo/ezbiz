@@ -144,6 +144,9 @@ const Index = () => {
               <img 
                 src={logoImage} 
                 alt="EZ BIZ FILE SERVICE" 
+                width={1024}
+                height={1024}
+                fetchPriority="high"
                 className="w-full max-w-[20rem] sm:max-w-[28rem] md:max-w-[36rem] lg:max-w-[44rem] h-auto object-contain mx-auto mix-blend-multiply"
                 style={{ filter: 'contrast(1.03) saturate(1.05)' }}
               />
