@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OrderStatusCard from "@/components/dashboard/OrderStatusCard";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
-import { User, FileText, CreditCard, Settings } from "lucide-react";
+import { User, FileText, CreditCard, Settings, CheckCircle, PartyPopper, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Order {
@@ -28,10 +28,14 @@ interface Order {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [profile, setProfile] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const isCheckoutSuccess = searchParams.get("checkout") === "success";
 
   useEffect(() => {
     if (!user) {
@@ -40,6 +44,16 @@ const Dashboard = () => {
       fetchUserData();
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (isCheckoutSuccess) {
+      setShowSuccess(true);
+      // Remove query param from URL without reload
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete("checkout");
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [isCheckoutSuccess]);
 
   const fetchUserData = async () => {
     try {
@@ -109,6 +123,38 @@ const Dashboard = () => {
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          {/* Checkout Success Banner */}
+          {showSuccess && (
+            <div className="mb-6 relative rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-800 p-6 animate-in fade-in slide-in-from-top-4 duration-500">
+              <button
+                onClick={() => setShowSuccess(false)}
+                className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-green-800 dark:text-green-200 flex items-center gap-2">
+                    Payment Successful! <PartyPopper className="h-5 w-5" />
+                  </h2>
+                  <p className="text-green-700 dark:text-green-300 mt-1">
+                    Your order has been received and is now being processed. You can track its progress below.
+                  </p>
+                  {orders.length > 0 && (
+                    <div className="mt-3 text-sm text-green-600 dark:text-green-400 space-y-1">
+                      <p><strong>Business:</strong> {orders[0].businessName}</p>
+                      <p><strong>State:</strong> {orders[0].state} • <strong>Package:</strong> {orders[0].package}</p>
+                      <p><strong>Status:</strong> {orders[0].status}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-foreground">
