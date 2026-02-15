@@ -12,6 +12,7 @@ import EntityTypeSelector from "@/components/order/EntityTypeSelector";
 import PackageSelector from "@/components/order/PackageSelector";
 import AddOnServices from "@/components/order/AddOnServices";
 import PaymentSection from "@/components/dashboard/PaymentSection";
+import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -57,25 +58,25 @@ const EnhancedOrderFlow = () => {
   };
 
   const calculateTotal = () => {
-    const packagePrices: { [key: string]: number } = {
-      'starter': 49,
-      'standard': 99,
-      'premium': 299
-    };
-    
-    const addonPrices: { [key: string]: number } = {
-      'ein': 49,
-      'operating-agreement': 99,
-      'registered-agent': 149,
-      'business-license': 99,
-      'compliance-alert': 79
-    };
+    const pkg = selectedPackage ? STRIPE_PACKAGES[selectedPackage as PackageId] : null;
+    const basePrice = pkg?.price || 0;
+    const addonsTotal = selectedAddOns.reduce((sum, addonId) => {
+      const addon = STRIPE_ADDONS[addonId as AddonId];
+      return sum + (addon?.price || 0);
+    }, 0);
+    return basePrice + addonsTotal;
+  };
 
-    const basePrice = packagePrices[selectedPackage] || 0;
-    const addonsTotal = selectedAddOns.reduce((sum, addon) => sum + (addonPrices[addon] || 0), 0);
-    const stateFee = 100; // Mock state fee
-
-    return basePrice + addonsTotal + stateFee;
+  const buildLineItems = () => {
+    const items: { priceId: string; quantity?: number }[] = [];
+    if (selectedPackage && STRIPE_PACKAGES[selectedPackage as PackageId]) {
+      items.push({ priceId: STRIPE_PACKAGES[selectedPackage as PackageId].priceId });
+    }
+    selectedAddOns.forEach((addonId) => {
+      const addon = STRIPE_ADDONS[addonId as AddonId];
+      if (addon) items.push({ priceId: addon.priceId });
+    });
+    return items;
   };
 
   const handleSubmit = async () => {
@@ -302,7 +303,7 @@ const EnhancedOrderFlow = () => {
                 <div className="space-y-6">
                   <PaymentSection
                     amount={calculateTotal()}
-                    orderId="temp-order-id"
+                    lineItems={buildLineItems()}
                     onPaymentSuccess={handlePaymentSuccess}
                   />
                   

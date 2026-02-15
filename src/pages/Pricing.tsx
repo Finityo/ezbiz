@@ -7,12 +7,11 @@ import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star, Shield, Users, FileText } from "lucide-react";
+import { Check, Star, Shield, Users, FileText, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import businessConsultation from "@/assets/business-consultation.jpg";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
 import businessDocuments from "@/assets/business-documents.jpg";
-import businessSuccess from "@/assets/business-success.jpg";
 import pricingHero from "@/assets/pricing-hero.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
 import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
@@ -20,40 +19,23 @@ import ParallaxImage from "@/components/ParallaxImage";
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { checkout, loading: checkoutLoading } = useStripeCheckout();
 
-  const handlePackageSelect = (packageName: string, packageType: string) => {
-    // Prevent event bubbling on mobile
-    console.log(`Package selected: ${packageName} (${packageType})`);
-    
-    toast({
-      title: "Package Selected!",
-      description: `You selected ${packageName}. Redirecting to order form...`,
-    });
-    
-    // Navigate to consultation page for now, can be updated to specific order page later
-    setTimeout(() => {
-      navigate("/consultation", { 
-        state: { 
-          selectedPackage: packageName, 
-          packageType: packageType 
-        } 
-      });
-    }, 1500);
+  const handlePackageCheckout = (priceId: string) => {
+    checkout([{ priceId }]);
   };
 
-  const handleServiceAdd = (serviceName: string) => {
-    console.log(`Service added: ${serviceName}`);
-    
-    toast({
-      title: "Service Added!",
-      description: `${serviceName} has been noted. Contact us to add this service.`,
-    });
+  const handleServiceCheckout = (addonKey: string) => {
+    const addon = STRIPE_ADDONS[addonKey as AddonId];
+    if (addon) {
+      checkout([{ priceId: addon.priceId }]);
+    }
   };
   const llcPackages = [
     {
-      name: "Basic LLC",
-      price: "$49",
+      name: "Basic",
+      price: `$${STRIPE_PACKAGES.basic.price}`,
+      priceId: STRIPE_PACKAGES.basic.priceId,
       period: "+ State Fee",
       description: "Essential LLC formation service",
       features: [
@@ -66,8 +48,9 @@ const Pricing = () => {
       popular: false
     },
     {
-      name: "Standard LLC", 
-      price: "$149",
+      name: "Deluxe", 
+      price: `$${STRIPE_PACKAGES.standard.price}`,
+      priceId: STRIPE_PACKAGES.standard.priceId,
       period: "+ State Fee",
       description: "Most popular LLC package",
       features: [
@@ -81,12 +64,13 @@ const Pricing = () => {
       popular: true
     },
     {
-      name: "Premium LLC",
-      price: "$299", 
+      name: "Complete",
+      price: `$${STRIPE_PACKAGES.premium.price}`, 
+      priceId: STRIPE_PACKAGES.premium.priceId,
       period: "+ State Fee",
       description: "Complete LLC formation with extras",
       features: [
-        "Everything in Standard",
+        "Everything in Deluxe",
         "Custom Operating Agreement",
         "Business license research",
         "Domain name consultation", 
@@ -100,7 +84,8 @@ const Pricing = () => {
   const corpPackages = [
     {
       name: "Basic Corporation",
-      price: "$99",
+      price: `$${STRIPE_PACKAGES.basic.price}`,
+      priceId: STRIPE_PACKAGES.basic.priceId,
       period: "+ State Fee", 
       description: "Essential corporation formation",
       features: [
@@ -113,7 +98,8 @@ const Pricing = () => {
     },
     {
       name: "Standard Corporation",
-      price: "$199",
+      price: `$${STRIPE_PACKAGES.standard.price}`,
+      priceId: STRIPE_PACKAGES.standard.priceId,
       period: "+ State Fee",
       description: "Complete corporation package", 
       features: [
@@ -127,7 +113,8 @@ const Pricing = () => {
     },
     {
       name: "Premium Corporation", 
-      price: "$399",
+      price: `$${STRIPE_PACKAGES.premium.price}`,
+      priceId: STRIPE_PACKAGES.premium.priceId,
       period: "+ State Fee",
       description: "Full-service corporation formation",
       features: [
@@ -142,14 +129,14 @@ const Pricing = () => {
   ];
 
   const additionalServices = [
-    { name: "Registered Agent Service", price: "$199/year" },
-    { name: "Business Name Search", price: "$49" },
-    { name: "DBA Filing", price: "$99" },
-    { name: "EIN Application", price: "$79" },
-    { name: "Operating Agreement", price: "$199" },
-    { name: "Corporate Bylaws", price: "$299" },
-    { name: "Business License Research", price: "$149" },
-    { name: "Trademark Search", price: "$99" }
+    { name: "Registered Agent Service", price: `$${STRIPE_ADDONS["registered-agent"].price}`, addonKey: "registered-agent" },
+    { name: "EIN Application", price: `$${STRIPE_ADDONS.ein.price}`, addonKey: "ein" },
+    { name: "DBA Filing", price: `$${STRIPE_ADDONS.dba.price}`, addonKey: "dba" },
+    { name: "Operating Agreement", price: `$${STRIPE_ADDONS["operating-agreement"].price}`, addonKey: "operating-agreement" },
+    { name: "S-Corp Election", price: `$${STRIPE_ADDONS["s-corp-election"].price}`, addonKey: "s-corp-election" },
+    { name: "Business License Research", price: `$${STRIPE_ADDONS["business-license"].price}`, addonKey: "business-license" },
+    { name: "BOI Reporting", price: `$${STRIPE_ADDONS["boi-reporting"].price}`, addonKey: "boi-reporting" },
+    { name: "Compliance Alert", price: `$${STRIPE_ADDONS["compliance-alert"].price}`, addonKey: "compliance-alert" }
   ];
 
   return (
@@ -290,7 +277,7 @@ const Pricing = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handlePackageSelect(pkg.name, 'LLC');
+                        handlePackageCheckout(pkg.priceId);
                       }}
                       onTouchStart={(e) => e.stopPropagation()}
                       style={{ 
@@ -340,7 +327,7 @@ const Pricing = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handlePackageSelect(pkg.name, 'Corporation');
+                        handlePackageCheckout(pkg.priceId);
                       }}
                       onTouchStart={(e) => e.stopPropagation()}
                       style={{ 
@@ -425,7 +412,7 @@ const Pricing = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleServiceAdd(service.name);
+                        handleServiceCheckout(service.addonKey);
                       }}
                       onTouchStart={(e) => e.stopPropagation()}
                       style={{ 
