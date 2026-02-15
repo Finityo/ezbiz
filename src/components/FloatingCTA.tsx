@@ -12,7 +12,7 @@ interface FloatingCTAProps {
 
 const FloatingCTA = ({ 
   text = "Start Your Business", 
-  href = "/order-now",
+  href = "/pricing",
   threshold = 600 
 }: FloatingCTAProps) => {
   const [isVisible, setIsVisible] = useState(false);
