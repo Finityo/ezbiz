@@ -11,7 +11,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
 import heroImage from "@/assets/hero-business.jpg";
-import logoImage from "@/assets/logo-ezbiz-cropped.png";
+import logoImage from "@/assets/logo-ezbiz-final.png";
 import ParallaxImage from "@/components/ParallaxImage";
 import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate } from "react-router-dom";
