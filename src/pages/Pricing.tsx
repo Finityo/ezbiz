@@ -390,6 +390,47 @@ const Pricing = () => {
           </div>
         </AnimatedSection>
 
+        {/* Additional Services */}
+        <section className="py-10 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8 md:mb-12">
+              <div className="accent-line-center mb-4 md:mb-6"></div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Additional Services</h2>
+              <p className="text-base md:text-xl text-muted-foreground">Add-on services to complement your business formation</p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+              {additionalServices.map((service, index) => (
+                <Card key={index} className="text-center">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{service.name}</CardTitle>
+                    <div className="text-2xl font-bold text-primary">{service.price}</div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full touch-manipulation"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleServiceCheckout(service.addonKey);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      style={{ 
+                        minHeight: '44px',
+                        WebkitTapHighlightColor: 'transparent'
+                      }}
+                    >
+                      Add Service
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Process Overview */}
         <section className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
@@ -430,47 +471,6 @@ const Pricing = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Additional Services */}
-        <section className="py-10 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12">
-              <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Additional Services</h2>
-              <p className="text-base md:text-xl text-muted-foreground">Add-on services to complement your business formation</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
-              {additionalServices.map((service, index) => (
-                <Card key={index} className="text-center">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{service.name}</CardTitle>
-                    <div className="text-2xl font-bold text-primary">{service.price}</div>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full touch-manipulation"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleServiceCheckout(service.addonKey);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      style={{ 
-                        minHeight: '44px',
-                        WebkitTapHighlightColor: 'transparent'
-                      }}
-                    >
-                      Add Service
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
           </div>
         </section>
