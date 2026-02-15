@@ -121,7 +121,7 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative py-10 md:py-16 lg:py-24 overflow-hidden">
+      <section className="relative pt-10 md:pt-12 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-white"></div>
         {/* Decorative dot pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
@@ -134,7 +134,7 @@ const Index = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/[0.03] to-transparent pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
-          <div className="flex justify-center items-center mb-8 md:mb-16 lg:mb-20">
+          <div className="flex justify-center items-center mb-10 md:mb-12 lg:mb-16">
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -149,13 +149,17 @@ const Index = () => {
             </motion.div>
           </div>
 
+          {/* Trusted Badge - Centered */}
+          <div className="flex justify-center mb-8 md:mb-10 lg:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+              <Star className="h-4 w-4 fill-current" />
+              <span className="text-xs md:text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
+            </div>
+          </div>
+
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
-                  <Star className="h-4 w-4 fill-current" />
-                  <span className="text-xs md:text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
-                </div>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
                   Build Your Business on a{" "}
                   <span className="text-bronze">Solid Foundation</span>
