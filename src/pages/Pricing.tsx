@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
@@ -7,10 +8,12 @@ import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star, Shield, Users, FileText, ExternalLink } from "lucide-react";
+import { Check, Star, Shield, Users, FileText, ExternalLink, MapPin } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
+import { getStateFee, STATE_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
 import pricingHero from "@/assets/pricing-hero.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
@@ -20,9 +23,14 @@ import ParallaxImage from "@/components/ParallaxImage";
 const Pricing = () => {
   const navigate = useNavigate();
   const { checkout, loading: checkoutLoading } = useStripeCheckout();
+  const [selectedState, setSelectedState] = useState("");
+  const stateFee = selectedState ? getStateFee(selectedState) : 0;
 
   const handlePackageCheckout = (priceId: string) => {
-    checkout([{ priceId }]);
+    checkout(
+      [{ priceId }],
+      selectedState ? { stateFee: { amount: stateFee, stateName: selectedState } } : undefined
+    );
   };
 
   const handleServiceCheckout = (addonKey: string) => {
@@ -237,6 +245,36 @@ const Pricing = () => {
           </div>
         </AnimatedSection>
 
+        {/* State Selector */}
+        <AnimatedSection className="py-8 md:py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-xl mx-auto text-center">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <MapPin className="h-5 w-5 text-primary" />
+                <h2 className="text-xl md:text-2xl font-bold">Select Your State</h2>
+              </div>
+              <p className="text-muted-foreground mb-5 text-sm">Choose your formation state to see the total cost including state filing fees.</p>
+              <Select value={selectedState} onValueChange={setSelectedState}>
+                <SelectTrigger className="w-full max-w-xs mx-auto">
+                  <SelectValue placeholder="Select a state" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(STATE_FILING_FEES).map((state) => (
+                    <SelectItem key={state} value={state}>
+                      {state} — ${STATE_FILING_FEES[state]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedState && (
+                <p className="mt-3 text-sm font-medium text-primary">
+                  {selectedState} state filing fee: <span className="font-bold">${stateFee}</span>
+                </p>
+              )}
+            </div>
+          </div>
+        </AnimatedSection>
+
         {/* LLC Packages */}
         <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
@@ -260,7 +298,11 @@ const Pricing = () => {
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
-                    <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    {selectedState ? (
+                      <div className="text-sm text-muted-foreground">+ ${stateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + stateFee} total</span></div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    )}
                     <CardDescription>{pkg.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -309,7 +351,11 @@ const Pricing = () => {
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
-                    <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    {selectedState ? (
+                      <div className="text-sm text-muted-foreground">+ ${stateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + stateFee} total</span></div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">{pkg.period}</div>
+                    )}
                     <CardDescription>{pkg.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
