@@ -201,7 +201,7 @@ const Pricing = () => {
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Why Choose Finityo?</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Why Choose EZ BIZ?</h2>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-4">
                       <div className="bg-primary/10 p-3 rounded-lg">
@@ -284,7 +284,7 @@ const Pricing = () => {
               <p className="text-base md:text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
             </div>
             
-            <StaggeredGrid className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
+            <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {llcPackages.map((pkg, index) => (
                 <TiltCard key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
                   {pkg.popular && (
@@ -345,7 +345,7 @@ const Pricing = () => {
               <p className="text-base md:text-xl text-muted-foreground">Establish your corporation with professional service</p>
             </div>
             
-            <StaggeredGrid className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
+            <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {corpPackages.map((pkg, index) => (
                 <TiltCard key={index} tiltMax={6} scale={1.02}>
                   <CardHeader className="text-center">
@@ -404,7 +404,7 @@ const Pricing = () => {
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-lg"></div>
                 </div>
                 <div className="order-1 lg:order-2">
-                  <h2 className="text-3xl font-bold mb-6">Simple 3-Step Process</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Simple 3-Step Process</h2>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-4">
                       <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</div>
@@ -443,7 +443,7 @@ const Pricing = () => {
               <p className="text-base md:text-xl text-muted-foreground">Add-on services to complement your business formation</p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
               {additionalServices.map((service, index) => (
                 <Card key={index} className="text-center">
                   <CardHeader>
@@ -481,8 +481,8 @@ const Pricing = () => {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">State Filing Fees</h2>
               <Card>
-                <CardContent className="p-8">
-                  <div className="grid md:grid-cols-2 gap-8">
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                     <div>
                       <h3 className="text-xl font-semibold mb-4">LLC State Fees</h3>
                       <div className="space-y-2 text-sm">
@@ -562,7 +562,7 @@ const Pricing = () => {
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">100% Satisfaction Guarantee</h2>
                   <Card className="border-success">
-                    <CardContent className="p-8">
+                    <CardContent className="p-4 sm:p-6 md:p-8">
                       <div className="flex items-center justify-center mb-6">
                         <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
                           <Check className="h-8 w-8 text-white" />
@@ -573,7 +573,7 @@ const Pricing = () => {
                         We're so confident in our services that we offer a 100% money-back guarantee. 
                         If you're not completely satisfied with our service, we'll refund your money within 60 days.
                       </p>
-                      <div className="grid md:grid-cols-3 gap-4 text-sm">
+                      <div className="grid grid-cols-3 gap-3 md:gap-4 text-sm text-center">
                         <div>
                           <Check className="h-5 w-5 text-success mx-auto mb-2" />
                           <div className="font-semibold">Fast Processing</div>
