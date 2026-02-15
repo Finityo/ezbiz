@@ -2,12 +2,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { STRIPE_PACKAGES, type PackageId } from "@/lib/stripe-config";
 
 interface Package {
-  id: string;
+  id: PackageId;
   name: string;
   price: number;
-  stateFees: number;
   features: string[];
   badge?: string;
   processingTime: string;
@@ -16,9 +16,8 @@ interface Package {
 const packages: Package[] = [
   {
     id: "basic",
-    name: "Basic",
-    price: 99,
-    stateFees: 0,
+    name: STRIPE_PACKAGES.basic.name,
+    price: STRIPE_PACKAGES.basic.price,
     processingTime: "15-20 business days",
     features: [
       "Name availability check",
@@ -31,9 +30,8 @@ const packages: Package[] = [
   },
   {
     id: "standard",
-    name: "Standard",
-    price: 219,
-    stateFees: 0,
+    name: STRIPE_PACKAGES.standard.name,
+    price: STRIPE_PACKAGES.standard.price,
     badge: "Most Popular",
     processingTime: "10-15 business days",
     features: [
@@ -48,13 +46,12 @@ const packages: Package[] = [
   },
   {
     id: "premium",
-    name: "Premium",
-    price: 349,
-    stateFees: 0,
+    name: STRIPE_PACKAGES.premium.name,
+    price: STRIPE_PACKAGES.premium.price,
     badge: "Best Value",
     processingTime: "5-7 business days",
     features: [
-      "Everything in Standard",
+      "Everything in Deluxe",
       "Rush processing",
       "S-Corp tax election filing",
       "Business license research",

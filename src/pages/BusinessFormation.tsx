@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -7,12 +7,15 @@ import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, CheckCircle } from "lucide-react";
+import { Star, CheckCircle, ExternalLink } from "lucide-react";
+import { STRIPE_PACKAGES } from "@/lib/stripe-config";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 
 const BusinessFormation = () => {
   const [searchParams] = useSearchParams();
   const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
   const [selectedBusinessType, setSelectedBusinessType] = useState(searchParams.get("entityType") || "");
+  const { checkout, loading: checkoutLoading } = useStripeCheckout();
 
   const states = [
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", 
@@ -35,8 +38,9 @@ const BusinessFormation = () => {
 
   const packages = [
     {
-      name: "Basic",
-      price: "$99",
+      name: STRIPE_PACKAGES.basic.name,
+      price: `$${STRIPE_PACKAGES.basic.price}`,
+      priceId: STRIPE_PACKAGES.basic.priceId,
       features: [
         "Name Availability Check",
         "Official Filed Articles of Incorporation",
@@ -46,8 +50,9 @@ const BusinessFormation = () => {
       ]
     },
     {
-      name: "Deluxe", 
-      price: "$219",
+      name: STRIPE_PACKAGES.standard.name, 
+      price: `$${STRIPE_PACKAGES.standard.price}`,
+      priceId: STRIPE_PACKAGES.standard.priceId,
       features: [
         "Everything in Basic",
         "Expedited Processing",
@@ -58,8 +63,9 @@ const BusinessFormation = () => {
       ]
     },
     {
-      name: "Complete",
-      price: "$269",
+      name: STRIPE_PACKAGES.premium.name,
+      price: `$${STRIPE_PACKAGES.premium.price}`,
+      priceId: STRIPE_PACKAGES.premium.priceId,
       badge: "Best Value",
       features: [
         "Everything in Deluxe",
@@ -182,8 +188,10 @@ const BusinessFormation = () => {
                 <Button 
                   className="w-full bg-primary hover:bg-primary-light text-primary-foreground font-bold"
                   size="lg"
+                  disabled={checkoutLoading}
+                  onClick={() => checkout([{ priceId: pkg.priceId }])}
                 >
-                  Continue
+                  {checkoutLoading ? "Processing..." : "Continue"}
                 </Button>
               </Card>
             ))}

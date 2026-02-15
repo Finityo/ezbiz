@@ -2,9 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InfoIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
 
 interface AddOn {
-  id: string;
+  id: AddonId;
   name: string;
   price: number;
   description: string;
@@ -14,52 +15,52 @@ interface AddOn {
 const addOns: AddOn[] = [
   {
     id: "ein",
-    name: "Federal Tax ID (EIN)",
-    price: 0,
+    name: STRIPE_ADDONS.ein.name,
+    price: STRIPE_ADDONS.ein.price,
     description: "Required for hiring employees and opening business bank accounts",
     recommended: true
   },
   {
     id: "operating-agreement",
-    name: "Custom Operating Agreement",
-    price: 49,
+    name: STRIPE_ADDONS["operating-agreement"].name,
+    price: STRIPE_ADDONS["operating-agreement"].price,
     description: "Detailed agreement outlining ownership and operating procedures"
   },
   {
     id: "s-corp-election",
-    name: "S-Corp Tax Election",
-    price: 99,
+    name: STRIPE_ADDONS["s-corp-election"].name,
+    price: STRIPE_ADDONS["s-corp-election"].price,
     description: "IRS Form 2553 filing for potential tax savings",
     recommended: true
   },
   {
     id: "business-license",
-    name: "Business License Research",
-    price: 79,
+    name: STRIPE_ADDONS["business-license"].name,
+    price: STRIPE_ADDONS["business-license"].price,
     description: "Comprehensive research of required licenses for your industry"
   },
   {
     id: "boi-reporting",
-    name: "FinCEN BOI Reporting",
-    price: 99,
+    name: STRIPE_ADDONS["boi-reporting"].name,
+    price: STRIPE_ADDONS["boi-reporting"].price,
     description: "Beneficial Ownership Information reporting compliance"
   },
   {
     id: "annual-report",
-    name: "Annual Report Filing (1 Year)",
-    price: 149,
+    name: STRIPE_ADDONS["annual-report"].name,
+    price: STRIPE_ADDONS["annual-report"].price,
     description: "State compliance report filing service for one year"
   },
   {
     id: "corporate-kit",
-    name: "Corporate Kit & Seal",
-    price: 59,
+    name: STRIPE_ADDONS["corporate-kit"].name,
+    price: STRIPE_ADDONS["corporate-kit"].price,
     description: "Professional binder with stock certificates, minutes, and embosser"
   },
   {
     id: "dba",
-    name: "DBA / Fictitious Name Filing",
-    price: 99,
+    name: STRIPE_ADDONS.dba.name,
+    price: STRIPE_ADDONS.dba.price,
     description: "File a 'Doing Business As' name for your company"
   }
 ];
@@ -129,9 +130,7 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
                   
                   <p className="text-sm text-muted-foreground mb-2">{addon.description}</p>
                   
-                  <p className="text-lg font-bold text-primary">
-                    {addon.price === 0 ? "Included" : `$${addon.price}`}
-                  </p>
+                  <p className="text-lg font-bold text-primary">${addon.price}</p>
                 </div>
               </div>
             </Card>
