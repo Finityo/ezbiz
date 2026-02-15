@@ -71,9 +71,13 @@ const EnhancedOrderFlow = () => {
     } else {
       setCurrentStep((s) => Math.min(s + 1, 5));
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1));
+  const goBack = () => {
+    setCurrentStep((s) => Math.max(s - 1, 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleToggleAddon = (addonId: string) => {
     setSelectedAddOns((prev) =>
