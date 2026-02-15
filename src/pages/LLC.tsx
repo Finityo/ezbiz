@@ -169,6 +169,24 @@ const LLC = () => {
     }
   ];
 
+  const comparisonData = [
+    { feature: "Liability Protection", soleProp: false, llc: true, sCorp: true, cCorp: true },
+    { feature: "Pass-Through Taxation", soleProp: true, llc: true, sCorp: true, cCorp: false },
+    { feature: "Tax Flexibility", soleProp: false, llc: true, sCorp: false, cCorp: false },
+    { feature: "Ownership Restrictions", soleProp: "None", llc: "None", sCorp: "Limited", cCorp: "None" },
+    { feature: "Formation Complexity", soleProp: "Simple", llc: "Moderate", sCorp: "Complex", cCorp: "Complex" },
+  ];
+
+  const ComparisonValue = ({ value }: { value: boolean | string }) => {
+    if (typeof value === "boolean") {
+      return value 
+        ? <Check className="h-5 w-5 text-success mx-auto" /> 
+        : <X className="h-5 w-5 text-destructive mx-auto" />;
+    }
+    const colorClass = value === "None" ? "text-success" : value === "Limited" ? "text-warning" : value === "Simple" ? "text-success" : value === "Moderate" ? "text-success" : "text-destructive";
+    return <span className={colorClass}>{value}</span>;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -177,33 +195,33 @@ const LLC = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="gradient-hero text-primary-foreground py-20 lg:py-28 relative overflow-hidden pattern-geometric">
+        <section className="gradient-hero text-primary-foreground py-12 sm:py-16 lg:py-28 relative overflow-hidden pattern-geometric">
           <div className="absolute inset-0 pattern-dots opacity-30"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-6 bg-white/20 text-primary-foreground hover:bg-white/30">
+              <Badge className="mb-4 sm:mb-6 bg-white/20 text-primary-foreground hover:bg-white/30 text-xs sm:text-sm">
                 Most Popular Business Structure
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
                 Form Your LLC Today
               </h1>
-              <p className="text-xl md:text-2xl mb-4 text-primary-foreground/90">
+              <p className="text-base sm:text-xl md:text-2xl mb-3 sm:mb-4 text-primary-foreground/90">
                 Limited Liability Company — the perfect blend of protection and simplicity
               </p>
-              <p className="text-lg mb-8 text-primary-foreground/80 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-lg mb-6 sm:mb-8 text-primary-foreground/80 max-w-2xl mx-auto">
                 LLCs are the most popular business structure in America, offering liability protection, tax flexibility, and simple management requirements.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
                   <Link to="/order">
-                    Start Your LLC - $149 <ArrowRight className="ml-2 h-5 w-5" />
+                    Start Your LLC - $149 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
+                <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation">Free LLC Guide</Link>
                 </Button>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-primary-foreground/80">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-primary-foreground/80">
                 <div className="flex items-center gap-2">
                   <Check className="h-4 w-4" />
                   <span>Fast 24-48 Hour Filing</span>
@@ -222,59 +240,59 @@ const LLC = () => {
         </section>
 
         {/* What Is Section */}
-        <AnimatedSection className="py-16 lg:py-20">
+        <AnimatedSection className="py-10 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="accent-line-center mb-6" />
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+              <div className="accent-line-center mb-4 sm:mb-6" />
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6">
                 What Is an LLC?
               </h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+              <div className="prose prose-sm sm:prose-lg max-w-none text-muted-foreground space-y-3 sm:space-y-4">
                 <p>
                   A <strong className="text-foreground">Limited Liability Company (LLC)</strong> is a business structure that combines the liability protection of a corporation with the simplicity and tax benefits of a sole proprietorship or partnership. LLCs are formed under state law and are recognized in all 50 states.
                 </p>
                 <p>
                   The key feature of an LLC is <strong className="text-foreground">limited liability protection</strong>. This means that the LLC is a separate legal entity from its owners (called "members"), and members' personal assets are generally protected from business debts and lawsuits against the company.
                 </p>
-                <p>
+                <p className="hidden sm:block">
                   LLCs are "pass-through" entities for tax purposes by default, meaning business income passes through to members' personal tax returns and is taxed only once. However, LLCs can also elect to be taxed as S-Corporations or C-Corporations if that provides tax advantages.
                 </p>
               </div>
               
-              <StaggeredGrid className="grid md:grid-cols-3 gap-6 mt-12" staggerDelay={150}>
+              <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12" staggerDelay={150}>
                 <Card className="text-center border-border/50">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Shield className="h-6 w-6 text-secondary" />
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                     </div>
-                    <CardTitle className="text-lg">Liability Shield</CardTitle>
+                    <CardTitle className="text-base sm:text-lg">Liability Shield</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription>Personal assets protected from business debts and legal claims</CardDescription>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs sm:text-sm">Personal assets protected from business debts and legal claims</CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="text-center border-border/50">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Scale className="h-6 w-6 text-secondary" />
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <Scale className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                     </div>
-                    <CardTitle className="text-lg">Separate Entity</CardTitle>
+                    <CardTitle className="text-base sm:text-lg">Separate Entity</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription>Legally distinct from its owners with its own rights and obligations</CardDescription>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs sm:text-sm">Legally distinct from its owners with its own rights and obligations</CardDescription>
                   </CardContent>
                 </Card>
                 
                 <Card className="text-center border-border/50">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <DollarSign className="h-6 w-6 text-secondary" />
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
                     </div>
-                    <CardTitle className="text-lg">Tax Flexibility</CardTitle>
+                    <CardTitle className="text-base sm:text-lg">Tax Flexibility</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription>Choose your tax treatment: pass-through, S-Corp, or C-Corp</CardDescription>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs sm:text-sm">Choose your tax treatment: pass-through, S-Corp, or C-Corp</CardDescription>
                   </CardContent>
                 </Card>
               </StaggeredGrid>
@@ -283,28 +301,28 @@ const LLC = () => {
         </AnimatedSection>
 
         {/* Benefits Section */}
-        <AnimatedSection className="py-16 lg:py-20 bg-muted/30">
+        <AnimatedSection className="py-10 sm:py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Benefits of an LLC</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Benefits of an LLC</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   Discover why millions of business owners choose the LLC structure
                 </p>
               </div>
               
-              <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
+              <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" staggerDelay={100}>
                 {benefits.map((benefit, index) => (
                   <Card key={index} className="border-border/50 hover:shadow-elegant transition-smooth">
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <benefit.icon className="h-5 w-5 text-success" />
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <benefit.icon className="h-4 w-4 sm:h-5 sm:w-5 text-success" />
                         </div>
                         <div>
-                          <CardTitle className="text-lg mb-2">{benefit.title}</CardTitle>
-                          <CardDescription className="text-sm leading-relaxed">{benefit.description}</CardDescription>
+                          <CardTitle className="text-base sm:text-lg mb-1.5 sm:mb-2">{benefit.title}</CardTitle>
+                          <CardDescription className="text-xs sm:text-sm leading-relaxed">{benefit.description}</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -316,34 +334,34 @@ const LLC = () => {
         </AnimatedSection>
 
         {/* Drawbacks Section */}
-        <AnimatedSection className="py-16 lg:py-20">
+        <AnimatedSection className="py-10 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Considerations</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Considerations</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   A few things to keep in mind when forming an LLC
                 </p>
               </div>
               
-              <StaggeredGrid className="grid md:grid-cols-2 gap-6" staggerDelay={120}>
+              <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" staggerDelay={120}>
                 {drawbacks.map((drawback, index) => (
                   <Card key={index} className={`border-l-4 ${
                     drawback.severity === 'medium' ? 'border-l-warning' : 'border-l-muted-foreground'
                   }`}>
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                           drawback.severity === 'medium' ? 'bg-warning/10' : 'bg-muted'
                         }`}>
-                          <AlertTriangle className={`h-5 w-5 ${
+                          <AlertTriangle className={`h-4 w-4 sm:h-5 sm:w-5 ${
                             drawback.severity === 'medium' ? 'text-warning' : 'text-muted-foreground'
                           }`} />
                         </div>
                         <div>
-                          <CardTitle className="text-lg mb-2">{drawback.title}</CardTitle>
-                          <CardDescription className="text-sm leading-relaxed">{drawback.description}</CardDescription>
+                          <CardTitle className="text-base sm:text-lg mb-1.5 sm:mb-2">{drawback.title}</CardTitle>
+                          <CardDescription className="text-xs sm:text-sm leading-relaxed">{drawback.description}</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -355,27 +373,27 @@ const LLC = () => {
         </AnimatedSection>
 
         {/* Tax Options Section */}
-        <AnimatedSection className="py-16 lg:py-20 bg-muted/30">
+        <AnimatedSection className="py-10 sm:py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">LLC Tax Options</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">LLC Tax Options</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   One of the biggest advantages of an LLC is tax flexibility
                 </p>
               </div>
               
-              <StaggeredGrid className="grid lg:grid-cols-3 gap-6" staggerDelay={150}>
+              <StaggeredGrid className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6" staggerDelay={150}>
                 {taxOptions.map((option, index) => (
                   <Card key={index} className="border-border/50 h-full">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{option.election}</CardTitle>
+                    <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                      <CardTitle className="text-base sm:text-lg">{option.election}</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground">{option.description}</p>
-                      <div className="pt-4 border-t border-border/50">
-                        <p className="text-sm">
+                    <CardContent className="p-4 sm:p-6 pt-0 space-y-3 sm:space-y-4">
+                      <p className="text-xs sm:text-sm text-muted-foreground">{option.description}</p>
+                      <div className="pt-3 sm:pt-4 border-t border-border/50">
+                        <p className="text-xs sm:text-sm">
                           <span className="font-medium text-foreground">Best For:</span>{" "}
                           <span className="text-muted-foreground">{option.bestFor}</span>
                         </p>
@@ -385,7 +403,7 @@ const LLC = () => {
                 ))}
               </StaggeredGrid>
               
-              <p className="text-sm text-muted-foreground mt-6 text-center">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-4 sm:mt-6 text-center">
                 Consult a tax professional to determine the best election for your situation.
               </p>
             </div>
@@ -393,31 +411,31 @@ const LLC = () => {
         </AnimatedSection>
 
         {/* Who Should Choose Section */}
-        <section className="py-16 lg:py-20">
+        <section className="py-10 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Is an LLC Right for You?</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Is an LLC Right for You?</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   LLCs are ideal for many businesses, but not all
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                 <Card className="border-success/30">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-success">
-                      <Check className="h-5 w-5" />
+                  <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-success text-base sm:text-xl">
+                      <Check className="h-4 w-4 sm:h-5 sm:w-5" />
                       Ideal For
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <ul className="space-y-2 sm:space-y-3">
                       {idealFor.map((item, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <Check className="h-4 w-4 text-success mt-1 flex-shrink-0" />
-                          <span className="text-muted-foreground">{item}</span>
+                        <li key={index} className="flex items-start gap-2 sm:gap-3">
+                          <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success mt-0.5 sm:mt-1 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-muted-foreground">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -425,18 +443,18 @@ const LLC = () => {
                 </Card>
                 
                 <Card className="border-destructive/30">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-destructive">
-                      <X className="h-5 w-5" />
+                  <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-destructive text-base sm:text-xl">
+                      <X className="h-4 w-4 sm:h-5 sm:w-5" />
                       Consider Alternatives
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <ul className="space-y-2 sm:space-y-3">
                       {notIdealFor.map((item, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                          <span className="text-muted-foreground">{item}</span>
+                        <li key={index} className="flex items-start gap-2 sm:gap-3">
+                          <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive mt-0.5 sm:mt-1 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-muted-foreground">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -448,44 +466,44 @@ const LLC = () => {
         </section>
 
         {/* Formation Steps Section */}
-        <section className="py-16 lg:py-20 bg-muted/30">
+        <section className="py-10 sm:py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">How to Form an LLC</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">How to Form an LLC</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   Our simple 6-step process gets your LLC up and running quickly
                 </p>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {formationSteps.map((step, index) => (
-                  <div key={index} className="flex gap-6 items-start">
-                    <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+                  <div key={index} className="flex gap-3 sm:gap-6 items-start">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm sm:text-lg font-bold flex-shrink-0">
                       {step.step}
                     </div>
                     <Card className="flex-1 border-border/50">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-lg">{step.title}</CardTitle>
-                          <span className="text-xs bg-secondary/10 text-secondary px-3 py-1 rounded-full font-medium">
+                      <CardHeader className="p-3 sm:p-6 pb-1 sm:pb-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+                          <CardTitle className="text-sm sm:text-lg">{step.title}</CardTitle>
+                          <span className="text-[10px] sm:text-xs bg-secondary/10 text-secondary px-2 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium self-start sm:self-auto">
                             {step.timeline}
                           </span>
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <CardDescription>{step.description}</CardDescription>
+                      <CardContent className="p-3 sm:p-6 pt-0">
+                        <CardDescription className="text-xs sm:text-sm">{step.description}</CardDescription>
                       </CardContent>
                     </Card>
                   </div>
                 ))}
               </div>
               
-              <div className="mt-12 text-center">
-                <Button size="lg" className="px-8" asChild>
+              <div className="mt-8 sm:mt-12 text-center">
+                <Button size="lg" className="px-6 sm:px-8" asChild>
                   <Link to="/order">
-                    Start Your LLC <ArrowRight className="ml-2 h-5 w-5" />
+                    Start Your LLC <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
               </div>
@@ -493,77 +511,83 @@ const LLC = () => {
           </div>
         </section>
 
-        {/* Comparison Table */}
-        <section className="py-16 lg:py-20">
+        {/* Comparison Table - Desktop */}
+        <section className="py-10 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">LLC vs. Other Structures</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">LLC vs. Other Structures</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                   See how LLCs compare to other business entity options
                 </p>
               </div>
               
-              <div className="overflow-x-auto">
+              {/* Desktop Table */}
+              <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full bg-card rounded-xl border border-border/50 overflow-hidden">
                   <thead>
                     <tr className="bg-primary text-primary-foreground">
-                      <th className="px-6 py-4 text-left font-semibold">Feature</th>
-                      <th className="px-6 py-4 text-center font-semibold">Sole Prop</th>
-                      <th className="px-6 py-4 text-center font-semibold bg-secondary/20">LLC</th>
-                      <th className="px-6 py-4 text-center font-semibold">S-Corp</th>
-                      <th className="px-6 py-4 text-center font-semibold">C-Corp</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left font-semibold text-sm">Feature</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-center font-semibold text-sm">Sole Prop</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-center font-semibold text-sm bg-secondary/20">LLC</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-center font-semibold text-sm">S-Corp</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-center font-semibold text-sm">C-Corp</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/50">
-                    <tr>
-                      <td className="px-6 py-4 font-medium">Liability Protection</td>
-                      <td className="px-6 py-4 text-center"><X className="h-5 w-5 text-destructive mx-auto" /></td>
-                      <td className="px-6 py-4 text-center bg-secondary/5"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="px-6 py-4 font-medium">Pass-Through Taxation</td>
-                      <td className="px-6 py-4 text-center"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center bg-secondary/5"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><X className="h-5 w-5 text-destructive mx-auto" /></td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-medium">Tax Flexibility</td>
-                      <td className="px-6 py-4 text-center"><X className="h-5 w-5 text-destructive mx-auto" /></td>
-                      <td className="px-6 py-4 text-center bg-secondary/5"><Check className="h-5 w-5 text-success mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><X className="h-5 w-5 text-destructive mx-auto" /></td>
-                      <td className="px-6 py-4 text-center"><X className="h-5 w-5 text-destructive mx-auto" /></td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="px-6 py-4 font-medium">Ownership Restrictions</td>
-                      <td className="px-6 py-4 text-center text-success">None</td>
-                      <td className="px-6 py-4 text-center bg-secondary/5 text-success">None</td>
-                      <td className="px-6 py-4 text-center text-warning">Limited</td>
-                      <td className="px-6 py-4 text-center text-success">None</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-medium">Formation Complexity</td>
-                      <td className="px-6 py-4 text-center text-success">Simple</td>
-                      <td className="px-6 py-4 text-center bg-secondary/5 text-success">Moderate</td>
-                      <td className="px-6 py-4 text-center text-warning">Complex</td>
-                      <td className="px-6 py-4 text-center text-destructive">Complex</td>
-                    </tr>
+                    {comparisonData.map((row, i) => (
+                      <tr key={i} className={i % 2 === 1 ? "bg-muted/30" : ""}>
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 font-medium text-sm">{row.feature}</td>
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 text-center text-sm"><ComparisonValue value={row.soleProp} /></td>
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 text-center text-sm bg-secondary/5"><ComparisonValue value={row.llc} /></td>
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 text-center text-sm"><ComparisonValue value={row.sCorp} /></td>
+                        <td className="px-4 sm:px-6 py-3 sm:py-4 text-center text-sm"><ComparisonValue value={row.cCorp} /></td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
+
+              {/* Mobile Cards */}
+              <div className="sm:hidden space-y-3">
+                {comparisonData.map((row, i) => (
+                  <Card key={i} className="border-border/50">
+                    <CardHeader className="p-3 pb-2">
+                      <CardTitle className="text-sm font-semibold">{row.feature}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-3 pt-0">
+                      <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                        <div>
+                          <div className="text-muted-foreground mb-1">Sole Prop</div>
+                          <ComparisonValue value={row.soleProp} />
+                        </div>
+                        <div className="bg-secondary/5 rounded-md py-1">
+                          <div className="text-secondary font-medium mb-1">LLC</div>
+                          <ComparisonValue value={row.llc} />
+                        </div>
+                        <div>
+                          <div className="text-muted-foreground mb-1">S-Corp</div>
+                          <ComparisonValue value={row.sCorp} />
+                        </div>
+                        <div>
+                          <div className="text-muted-foreground mb-1">C-Corp</div>
+                          <ComparisonValue value={row.cCorp} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
               
-              <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <Button variant="outline" asChild>
+              <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-3 sm:gap-4">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/sole-proprietorship">Sole Proprietorships</Link>
                 </Button>
-                <Button variant="outline" asChild>
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/s-corporation">S Corporations</Link>
                 </Button>
-                <Button variant="outline" asChild>
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/c-corporation">C Corporations</Link>
                 </Button>
               </div>
@@ -572,27 +596,27 @@ const LLC = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 lg:py-20 bg-muted/30">
+        <section className="py-10 sm:py-16 lg:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <div className="accent-line-center mb-6" />
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-                <p className="text-lg text-muted-foreground">
+              <div className="text-center mb-8 sm:mb-12">
+                <div className="accent-line-center mb-4 sm:mb-6" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Frequently Asked Questions</h2>
+                <p className="text-sm sm:text-lg text-muted-foreground">
                   Get answers to common questions about LLCs
                 </p>
               </div>
               
-              <Accordion type="single" collapsible className="space-y-4">
+              <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
                 {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className="bg-card border border-border/50 rounded-lg px-6">
-                    <AccordionTrigger className="text-left hover:no-underline py-6">
-                      <span className="flex items-start gap-3 pr-4">
-                        <HelpCircle className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
-                        <span className="font-medium">{faq.question}</span>
+                  <AccordionItem key={index} value={`item-${index}`} className="bg-card border border-border/50 rounded-lg px-4 sm:px-6">
+                    <AccordionTrigger className="text-left hover:no-underline py-4 sm:py-6">
+                      <span className="flex items-start gap-2 sm:gap-3 pr-4">
+                        <HelpCircle className="h-4 w-4 sm:h-5 sm:w-5 text-secondary flex-shrink-0 mt-0.5" />
+                        <span className="font-medium text-sm sm:text-base">{faq.question}</span>
                       </span>
                     </AccordionTrigger>
-                    <AccordionContent className="pb-6 pl-8 text-muted-foreground leading-relaxed">
+                    <AccordionContent className="pb-4 sm:pb-6 pl-6 sm:pl-8 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -609,24 +633,24 @@ const LLC = () => {
         />
 
         {/* CTA Section */}
-        <section className="py-16 lg:py-20 gradient-hero text-primary-foreground">
+        <section className="py-10 sm:py-16 lg:py-20 gradient-hero text-primary-foreground">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Form Your LLC?</h2>
-              <p className="text-xl text-primary-foreground/90 mb-8">
-                Join thousands of entrepreneurs who have started their LLC with Finityo. Get liability protection and tax benefits today.
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">Ready to Form Your LLC?</h2>
+              <p className="text-base sm:text-xl text-primary-foreground/90 mb-6 sm:mb-8">
+                Join thousands of entrepreneurs who have started their LLC with EZ BIZ. Get liability protection and tax benefits today.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
                   <Link to="/order">
-                    Start Your LLC - $149 <ArrowRight className="ml-2 h-5 w-5" />
+                    Start Your LLC - $149 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
+                <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation">Schedule Free Consultation</Link>
                 </Button>
               </div>
-              <p className="mt-6 text-sm text-primary-foreground/70">
+              <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-primary-foreground/70">
                 Includes registered agent service for the first year
               </p>
             </div>
