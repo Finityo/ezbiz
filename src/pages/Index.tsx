@@ -134,7 +134,7 @@ const Index = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/[0.03] to-transparent pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10">
           {/* Centered Logo */}
-          <div className="flex justify-center items-center mb-10 md:mb-12 lg:mb-16">
+          <div className="flex justify-center items-center mb-6 md:mb-12 lg:mb-16">
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
