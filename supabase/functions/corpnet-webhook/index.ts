@@ -47,18 +47,21 @@ serve(async (req) => {
     
     // Verify webhook signature
     const webhookSecret = Deno.env.get('CORPNET_WEBHOOK_SECRET');
-    if (webhookSecret) {
-      const signature = req.headers.get('X-CorpNet-Signature');
-      const isValid = await verifyWebhookSignature(body, signature, webhookSecret);
-      if (!isValid) {
-        console.error('Invalid webhook signature');
-        return new Response(JSON.stringify({ success: false, error: 'Invalid signature' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 401,
-        });
-      }
-    } else {
-      console.warn('CORPNET_WEBHOOK_SECRET not set — skipping signature verification');
+    if (!webhookSecret) {
+      console.error('CORPNET_WEBHOOK_SECRET not configured');
+      return new Response(JSON.stringify({ success: false, error: 'Webhook not configured' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      });
+    }
+    const signature = req.headers.get('X-CorpNet-Signature');
+    const isValid = await verifyWebhookSignature(body, signature, webhookSecret);
+    if (!isValid) {
+      console.error('Invalid webhook signature');
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
     }
 
     const payload: CorpNetWebhookPayload = JSON.parse(body);
