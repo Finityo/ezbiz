@@ -15,7 +15,7 @@ import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
 import { getStateFee, STATE_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
-import pricingHero from "@/assets/pricing-hero.jpg";
+import pricingHero from "@/assets/business-success.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
 import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
 import ParallaxImage from "@/components/ParallaxImage";
