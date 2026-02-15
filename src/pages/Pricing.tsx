@@ -26,11 +26,11 @@ const Pricing = () => {
   const [selectedState, setSelectedState] = useState("");
   const stateFee = selectedState ? getStateFee(selectedState) : 0;
 
-  const handlePackageCheckout = (priceId: string) => {
-    checkout(
-      [{ priceId }],
-      selectedState ? { stateFee: { amount: stateFee, stateName: selectedState } } : undefined
-    );
+  const handlePackageCheckout = (packageKey: string) => {
+    const params = new URLSearchParams();
+    params.set('package', packageKey);
+    if (selectedState) params.set('state', selectedState);
+    navigate(`/order-flow?${params.toString()}`);
   };
 
   const handleServiceCheckout = (addonKey: string) => {
@@ -43,7 +43,7 @@ const Pricing = () => {
     {
       name: "Basic",
       price: `$${STRIPE_PACKAGES.basic.price}`,
-      priceId: STRIPE_PACKAGES.basic.priceId,
+      packageKey: "basic",
       period: "+ State Fee",
       description: "Essential LLC formation service",
       features: [
@@ -58,7 +58,7 @@ const Pricing = () => {
     {
       name: "Deluxe", 
       price: `$${STRIPE_PACKAGES.standard.price}`,
-      priceId: STRIPE_PACKAGES.standard.priceId,
+      packageKey: "standard",
       period: "+ State Fee",
       description: "Most popular LLC package",
       features: [
@@ -74,7 +74,7 @@ const Pricing = () => {
     {
       name: "Complete",
       price: `$${STRIPE_PACKAGES.premium.price}`, 
-      priceId: STRIPE_PACKAGES.premium.priceId,
+      packageKey: "premium",
       period: "+ State Fee",
       description: "Complete LLC formation with extras",
       features: [
@@ -93,7 +93,7 @@ const Pricing = () => {
     {
       name: "Basic Corporation",
       price: `$${STRIPE_PACKAGES.basic.price}`,
-      priceId: STRIPE_PACKAGES.basic.priceId,
+      packageKey: "basic",
       period: "+ State Fee", 
       description: "Essential corporation formation",
       features: [
@@ -107,7 +107,7 @@ const Pricing = () => {
     {
       name: "Standard Corporation",
       price: `$${STRIPE_PACKAGES.standard.price}`,
-      priceId: STRIPE_PACKAGES.standard.priceId,
+      packageKey: "standard",
       period: "+ State Fee",
       description: "Complete corporation package", 
       features: [
@@ -122,7 +122,7 @@ const Pricing = () => {
     {
       name: "Premium Corporation", 
       price: `$${STRIPE_PACKAGES.premium.price}`,
-      priceId: STRIPE_PACKAGES.premium.priceId,
+      packageKey: "premium",
       period: "+ State Fee",
       description: "Full-service corporation formation",
       features: [
@@ -319,7 +319,7 @@ const Pricing = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handlePackageCheckout(pkg.priceId);
+                        handlePackageCheckout(pkg.packageKey);
                       }}
                       onTouchStart={(e) => e.stopPropagation()}
                       style={{ 
@@ -373,7 +373,7 @@ const Pricing = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handlePackageCheckout(pkg.priceId);
+                        handlePackageCheckout(pkg.packageKey);
                       }}
                       onTouchStart={(e) => e.stopPropagation()}
                       style={{ 
