@@ -11,7 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Check, Star, Shield, Users, FileText, ExternalLink, MapPin } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
 import { getStateFee, STATE_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
@@ -22,7 +21,6 @@ import ParallaxImage from "@/components/ParallaxImage";
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const { checkout, loading: checkoutLoading } = useStripeCheckout();
   const [selectedState, setSelectedState] = useState("");
   const stateFee = selectedState ? getStateFee(selectedState) : 0;
 
@@ -33,11 +31,8 @@ const Pricing = () => {
     navigate(`/order-flow?${params.toString()}`);
   };
 
-  const handleServiceCheckout = (addonKey: string) => {
-    const addon = STRIPE_ADDONS[addonKey as AddonId];
-    if (addon) {
-      checkout([{ priceId: addon.priceId }]);
-    }
+  const handleAddOnClick = () => {
+    navigate('/order-flow');
   };
   const llcPackages = [
     {
@@ -411,18 +406,13 @@ const Pricing = () => {
                       variant="outline" 
                       size="sm" 
                       className="w-full touch-manipulation"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleServiceCheckout(service.addonKey);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
+                      onClick={() => handleAddOnClick()}
                       style={{ 
                         minHeight: '44px',
                         WebkitTapHighlightColor: 'transparent'
                       }}
                     >
-                      Add Service
+                      Get Started
                     </Button>
                   </CardContent>
                 </Card>
@@ -614,24 +604,14 @@ const Pricing = () => {
               <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">
                 Choose your package and get started today. Our experts are here to help you every step of the way.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
-                  className="text-lg px-8 py-4"
-                  onClick={() => navigate("/llc")}
-                >
-                  Start Your LLC
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary"
-                  onClick={() => navigate("/c-corporation")}
-                >
-                  Start Your Corporation
-                </Button>
-              </div>
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="text-lg px-8 py-4"
+                onClick={() => navigate("/order-flow")}
+              >
+                Start Your Business Now
+              </Button>
             </div>
           </div>
         </section>
