@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText, TrendingUp, Award } from "lucide-react";
+import { CheckCircle, ArrowRight, Shield, Clock, Users, Star, Building, FileText, TrendingUp, Award, Download, Lock, Zap, X, Minus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
@@ -161,13 +162,12 @@ const Index = () => {
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
-                  Build Your Business on a{" "}
-                  <span className="text-bronze">Solid Foundation</span>
+                  Start Your LLC or Corporation{" "}
+                  <span className="text-bronze">Today</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
-                  Professional business formation services that combine legal expertise with 
-                  personalized guidance. From sole proprietorship to corporation, we make 
-                  entity formation simple and reliable.
+                  Choose your state, pick a package, and we handle the rest — from filing 
+                  your documents to getting your EIN. Fast, affordable, and backed by experts.
                 </p>
               </div>
               
@@ -177,7 +177,7 @@ const Index = () => {
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
 onClick={() => navigate('/pricing')}
                 >
-                  Start Your Business
+                  Start My Business
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button 
@@ -514,6 +514,141 @@ onClick={() => navigate('/pricing')}
         </div>
       </AnimatedSection>
 
+      {/* Competitor Comparison Table */}
+      <AnimatedSection className="py-12 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">How We Compare</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              See why thousands of entrepreneurs choose EZ BIZ over the competition.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <Card className="border-border shadow-smooth overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-primary/5">
+                      <TableHead className="font-display text-base w-[200px]">Feature</TableHead>
+                      <TableHead className="font-display text-base text-center bg-secondary/10 border-x border-secondary/20">
+                        <span className="text-secondary font-bold">EZ BIZ</span>
+                      </TableHead>
+                      <TableHead className="font-display text-base text-center">LegalZoom</TableHead>
+                      <TableHead className="font-display text-base text-center">ZenBusiness</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      { feature: "LLC Formation", ezbiz: "From $99", legalzoom: "From $0 + upsells", zenbusiness: "From $0 + upsells" },
+                      { feature: "Registered Agent (1yr)", ezbiz: true, legalzoom: "$249/yr", zenbusiness: "$199/yr" },
+                      { feature: "Operating Agreement", ezbiz: true, legalzoom: "$99 extra", zenbusiness: "Paid plans only" },
+                      { feature: "EIN Filing", ezbiz: "$49", legalzoom: "$79", zenbusiness: "$99" },
+                      { feature: "Transparent Pricing", ezbiz: true, legalzoom: false, zenbusiness: false },
+                      { feature: "Free Consultation", ezbiz: true, legalzoom: false, zenbusiness: false },
+                      { feature: "24–48hr Filing", ezbiz: true, legalzoom: "7–30 days", zenbusiness: "2–3 weeks" },
+                      { feature: "Dedicated Support", ezbiz: true, legalzoom: "Chatbot first", zenbusiness: "Email only" },
+                    ].map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium font-body">{row.feature}</TableCell>
+                        <TableCell className="text-center bg-secondary/5 border-x border-secondary/10">
+                          {row.ezbiz === true ? (
+                            <CheckCircle className="h-5 w-5 text-success mx-auto" />
+                          ) : (
+                            <span className="font-semibold text-primary font-body">{row.ezbiz}</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {row.legalzoom === false ? (
+                            <X className="h-5 w-5 text-destructive/60 mx-auto" />
+                          ) : row.legalzoom === true ? (
+                            <CheckCircle className="h-5 w-5 text-success mx-auto" />
+                          ) : (
+                            <span className="text-muted-foreground text-sm font-body">{row.legalzoom}</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {row.zenbusiness === false ? (
+                            <X className="h-5 w-5 text-destructive/60 mx-auto" />
+                          ) : row.zenbusiness === true ? (
+                            <CheckCircle className="h-5 w-5 text-success mx-auto" />
+                          ) : (
+                            <span className="text-muted-foreground text-sm font-body">{row.zenbusiness}</span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+            <div className="text-center mt-8">
+              <Button 
+                size="lg" 
+                className="group bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant"
+                onClick={() => navigate('/pricing')}
+              >
+                See Our Packages
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Lead Magnet Section */}
+      <AnimatedSection className="py-12 md:py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-secondary/20 shadow-elegant overflow-hidden">
+              <div className="grid md:grid-cols-5">
+                <div className="md:col-span-3 p-6 md:p-10 space-y-5">
+                  <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
+                    Free Download
+                  </Badge>
+                  <h3 className="text-2xl md:text-3xl font-bold font-display">
+                    Business Startup Checklist
+                  </h3>
+                  <p className="text-muted-foreground font-body leading-relaxed">
+                    Not sure which structure is right for you? Download our free checklist covering 
+                    LLC vs. Corporation, tax implications, state requirements, and everything you 
+                    need before you file.
+                  </p>
+                  <div className="space-y-2 text-sm font-body">
+                    {["Entity type comparison guide", "State-by-state filing fee reference", "Post-formation compliance timeline", "Tax election decision tree"].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Button 
+                    size="lg"
+                    className="group bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg"
+                    onClick={() => navigate('/business-guide')}
+                  >
+                    <Download className="mr-2 h-5 w-5" />
+                    Get Your Free Checklist
+                  </Button>
+                </div>
+                <div className="md:col-span-2 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5 flex items-center justify-center p-8">
+                  <div className="text-center space-y-4">
+                    <div className="inline-flex p-5 rounded-2xl bg-primary/10">
+                      <FileText className="h-16 w-16 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-display font-bold text-lg">Free Guide</p>
+                      <p className="text-sm text-muted-foreground font-body">PDF • No email required</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </AnimatedSection>
+
       {/* CTA Section */}
       <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
         <div className="container mx-auto px-4 text-center space-y-6 md:space-y-8">
@@ -533,7 +668,7 @@ onClick={() => navigate('/pricing')}
                 className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
               onClick={() => navigate('/pricing')}
             >
-              Form Your Business — Starting at $149
+              Start My Business — From $99
             </Button>
               <Button 
                 size="lg" 
