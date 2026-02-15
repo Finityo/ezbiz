@@ -18,20 +18,64 @@ interface CorpNetWebhookPayload {
   updatedAt: string;
 }
 
+const VALID_STATUSES = ['pending', 'processing', 'filed', 'completed', 'rejected'];
+
+async function verifyWebhookSignature(body: string, signature: string | null, secret: string): Promise<boolean> {
+  if (!signature || !secret) return false;
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
+  const expectedSig = Array.from(new Uint8Array(sig))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+  return signature === expectedSig;
+}
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // TODO: Add webhook signature verification when CorpNet provides it
-    // const signature = req.headers.get('X-CorpNet-Signature');
-    // if (!verifySignature(signature, body)) {
-    //   throw new Error('Invalid webhook signature');
-    // }
+    const body = await req.text();
+    
+    // Verify webhook signature
+    const webhookSecret = Deno.env.get('CORPNET_WEBHOOK_SECRET');
+    if (webhookSecret) {
+      const signature = req.headers.get('X-CorpNet-Signature');
+      const isValid = await verifyWebhookSignature(body, signature, webhookSecret);
+      if (!isValid) {
+        console.error('Invalid webhook signature');
+        return new Response(JSON.stringify({ success: false, error: 'Invalid signature' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        });
+      }
+    } else {
+      console.warn('CORPNET_WEBHOOK_SECRET not set — skipping signature verification');
+    }
 
-    const payload: CorpNetWebhookPayload = await req.json();
+    const payload: CorpNetWebhookPayload = JSON.parse(body);
+
+    // Validate required fields
+    if (!payload.orderId || typeof payload.orderId !== 'string') {
+      throw new Error('Missing or invalid orderId');
+    }
+    if (!payload.status || !VALID_STATUSES.includes(payload.status)) {
+      throw new Error(`Invalid status: ${payload.status}`);
+    }
+
+    // Validate orderId format (UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(payload.orderId)) {
+      throw new Error('Invalid orderId format');
+    }
 
     console.log('Received CorpNet webhook:', {
       orderId: payload.orderId,
@@ -43,16 +87,26 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // Verify the order exists before updating
+    const { data: existingOrder, error: fetchError } = await supabaseClient
+      .from('business_applications')
+      .select('id, status')
+      .eq('id', payload.orderId)
+      .single();
+
+    if (fetchError || !existingOrder) {
+      console.error('Order not found:', payload.orderId);
+      return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404,
+      });
+    }
+
     // Update the business application status
     const { error: updateError } = await supabaseClient
       .from('business_applications')
       .update({
         status: payload.status,
-        application_data: supabaseClient.rpc('jsonb_set', {
-          target: 'application_data',
-          path: '{corpnetOrderId}',
-          new_value: JSON.stringify(payload.corpnetOrderId)
-        }),
         updated_at: new Date().toISOString()
       })
       .eq('id', payload.orderId);
@@ -62,16 +116,10 @@ serve(async (req) => {
       throw updateError;
     }
 
-    // TODO: Send email notification to user about status change
-    // This can be done by calling another edge function or using Resend
-
     console.log('Application updated successfully:', payload.orderId);
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Webhook processed successfully'
-      }),
+      JSON.stringify({ success: true, message: 'Webhook processed successfully' }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -80,12 +128,8 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error processing webhook:', error);
-    
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message
-      }),
+      JSON.stringify({ success: false, error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
