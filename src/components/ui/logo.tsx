@@ -21,6 +21,8 @@ const Logo = ({ className, size = 'md', showText = false }: LogoProps) => {
         <img 
           src={logoImage} 
           alt="EZ BIZ FILE SERVICE" 
+          width={1024}
+          height={1024}
           className={cn(sizeClasses[size], "w-auto object-contain mix-blend-multiply")}
         />
       </div>
