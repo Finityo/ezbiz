@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import logoImage from '@/assets/logo-ezbiz-nobg.png';
+import logoImage from '@/assets/logo-ezbiz-transparent.png';
 
 interface LogoProps {
   className?: string;
@@ -17,11 +17,13 @@ const Logo = ({ className, size = 'md', showText = false }: LogoProps) => {
 
   return (
     <div className={cn("flex items-center", className)}>
-      <img 
-        src={logoImage} 
-        alt="EZ BIZ FILE SERVICE" 
-        className={cn(sizeClasses[size], "w-auto object-contain")}
-      />
+      <div className="bg-white rounded-md overflow-hidden">
+        <img 
+          src={logoImage} 
+          alt="EZ BIZ FILE SERVICE" 
+          className={cn(sizeClasses[size], "w-auto object-contain mix-blend-multiply")}
+        />
+      </div>
     </div>
   );
 };
