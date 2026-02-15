@@ -353,7 +353,7 @@ const Navigation = () => {
                 <Button variant="ghost" onClick={() => navigate('/auth')}>
                   Sign In
                 </Button>
-                <Button variant="hero" size="sm" onClick={() => navigate('/pricing')}>
+                <Button variant="hero" size="sm" onClick={() => navigate('/order-flow')}>
                   Get Started
                 </Button>
               </>
@@ -442,7 +442,7 @@ const Navigation = () => {
                     <Button variant="ghost" className="justify-start" onClick={() => navigate('/auth')}>
                       Sign In
                     </Button>
-                    <Button variant="hero" size="sm" onClick={() => navigate('/pricing')}>
+                    <Button variant="hero" size="sm" onClick={() => navigate('/order-flow')}>
                       Get Started
                     </Button>
                   </>

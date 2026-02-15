@@ -302,7 +302,7 @@ const About = () => {
                 <Button 
                   size="lg" 
                   className="bg-secondary hover:bg-secondary-light text-secondary-foreground text-lg px-8 h-14"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => navigate('/order-flow')}
                 >
                   Get Started Today
                 </Button>
