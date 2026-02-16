@@ -25,6 +25,7 @@ const ParallaxImage = ({
         src={src} 
         alt={alt}
         className={className}
+        loading="lazy"
         style={parallaxStyle}
       />
     </div>
