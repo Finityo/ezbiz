@@ -232,6 +232,7 @@ const Pricing = () => {
                     src={transparentPricing} 
                     alt="Business calculator and financial documents showing transparent pricing" 
                     className="rounded-lg shadow-lg w-full h-auto"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-lg"></div>
                 </div>
@@ -431,6 +432,7 @@ const Pricing = () => {
                     src={businessDocuments} 
                     alt="Business formation documents and legal paperwork" 
                     className="rounded-lg shadow-lg w-full h-auto"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-lg"></div>
                 </div>
@@ -588,6 +590,7 @@ const Pricing = () => {
                     src={customerSatisfaction} 
                     alt="Satisfied customers reviewing business services with happy expressions" 
                     className="rounded-lg shadow-lg w-full h-auto"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-tl from-success/20 to-transparent rounded-lg"></div>
                 </div>
