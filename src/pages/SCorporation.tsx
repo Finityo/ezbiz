@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -172,6 +173,7 @@ const SCorporation = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="S Corporation Formation" description="Form your S Corporation to enjoy pass-through taxation and self-employment tax savings with corporate liability protection." url="/s-corporation" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

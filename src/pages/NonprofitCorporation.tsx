@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -201,6 +202,7 @@ const NonprofitCorporation = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="Nonprofit Corporation Formation" description="Form your 501(c)(3) nonprofit corporation. Tax-exempt status, charitable organization formation services nationwide." url="/nonprofit-corporation" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       
       <main>

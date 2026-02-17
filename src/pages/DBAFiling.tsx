@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -164,6 +165,7 @@ const DBAFiling = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="DBA Filing Service" description="File your Doing Business As (DBA) name professionally. Operate under a trade name with proper legal registration." url="/dba-filing" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

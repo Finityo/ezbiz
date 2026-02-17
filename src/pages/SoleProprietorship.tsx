@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -165,6 +166,7 @@ const SoleProprietorship = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="Sole Proprietorship Registration" description="Start your sole proprietorship with expert guidance. The simplest business structure for solo entrepreneurs." url="/sole-proprietorship" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA />
       <BackToTop />
