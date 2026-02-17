@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -193,6 +194,7 @@ const Partnership = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="Partnership Formation" description="Form your business partnership with expert guidance. General and limited partnership formation services in all 50 states." url="/partnership" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

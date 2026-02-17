@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -174,6 +175,7 @@ const CCorporation = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="C Corporation Formation" description="Incorporate your C Corporation for unlimited growth potential, investor attraction, and IPO readiness. Professional formation in all 50 states." url="/c-corporation" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

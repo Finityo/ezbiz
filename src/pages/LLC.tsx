@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -191,6 +192,7 @@ const LLC = () => {
   return (
     <div className="min-h-screen bg-background">
       <ServiceJsonLd serviceName="LLC Formation Services" description="Form your Limited Liability Company quickly and affordably. Expert LLC formation in all 50 states with liability protection and tax flexibility." url="/form-llc" />
+      <FaqJsonLd faqs={faqs} />
       <Navigation />
       <FloatingCTA text="Form Your LLC" />
       <BackToTop />
