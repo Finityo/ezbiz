@@ -12,7 +12,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
 import heroImage from "@/assets/hero-business.jpg";
-import logoImage from "@/assets/logo-ezbiz-final.png";
+import logoImage from "@/assets/logo-ezbiz-final.webp";
 import ParallaxImage from "@/components/ParallaxImage";
 import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate } from "react-router-dom";
@@ -122,7 +122,7 @@ const Index = () => {
       <BackToTop />
 
       {/* Hero Section - Executive Style */}
-      <section className="relative pt-4 md:pt-10 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden">
+      <section className="relative pt-4 md:pt-10 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
         <div className="absolute inset-0 bg-white"></div>
         {/* Decorative dot pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
@@ -161,10 +161,10 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-h-[350px] md:min-h-[400px]">
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display min-h-[2.4em]">
                   Start Your LLC or Corporation{" "}
                   <span className="text-bronze">Today</span>
                 </h1>
@@ -228,19 +228,19 @@ onClick={() => navigate('/order-flow')}
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             <div className="text-center">
-              <CountUpDisplay end={50000} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={2200} />
+              <CountUpDisplay end={50000} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={2200} />
               <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Businesses Formed</div>
             </div>
             <div className="text-center">
-              <CountUpDisplay end={15} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1800} />
+              <CountUpDisplay end={15} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1800} />
               <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Years of Experience</div>
             </div>
             <div className="text-center">
-              <CountUpDisplay end={50} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1600} />
+              <CountUpDisplay end={50} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1600} />
               <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">States Served</div>
             </div>
             <div className="text-center">
-              <CountUpDisplay end={4.9} suffix="★" decimals={1} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display" duration={1400} />
+              <CountUpDisplay end={4.9} suffix="★" decimals={1} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1400} />
               <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Customer Rating</div>
             </div>
           </div>
