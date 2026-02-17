@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import ServiceJsonLd from "@/components/ServiceJsonLd";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -193,6 +194,7 @@ const ProfessionalCorporation = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ServiceJsonLd serviceName="Professional Corporation Formation" description="Form your Professional Corporation for licensed professionals. Liability protection for doctors, lawyers, accountants, and more." url="/professional-corporation" />
       <Navigation />
       
       <main>
