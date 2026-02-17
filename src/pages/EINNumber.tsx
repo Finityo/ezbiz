@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import ServiceJsonLd from "@/components/ServiceJsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Shield, Clock, Building } from "lucide-react";
@@ -32,6 +33,7 @@ const EINNumber = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ServiceJsonLd serviceName="EIN Number Filing" description="Get your Employer Identification Number (EIN) from the IRS. Required for business bank accounts, hiring employees, and tax filing." url="/ein-number" />
       <Navigation />
       
       <main>

@@ -1,3 +1,4 @@
+import ServiceJsonLd from "@/components/ServiceJsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -89,6 +90,7 @@ const RegisteredAgent = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ServiceJsonLd serviceName="Registered Agent Service" description="Professional registered agent service in all 50 states. Privacy protection, compliance assurance, and reliable document handling." url="/registered-agent" />
       <Navigation />
       <FloatingCTA />
       <BackToTop />
