@@ -358,36 +358,29 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* Simple Steps Process */}
+      {/* How It Works */}
       <AnimatedSection className="py-12 md:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
             <div className="accent-line-center mb-4 md:mb-6"></div>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">How It Works</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-              A straightforward process designed to get your business legally formed 
-              quickly and correctly.
-            </p>
           </div>
 
-          <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={120}>
-            {processSteps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="text-center space-y-4">
-                  <div className="text-5xl font-display font-bold text-primary/15">
-                    {step.step}
-                  </div>
-                  <h3 className="text-xl font-semibold font-display -mt-8 relative">{step.title}</h3>
-                  <p className="text-muted-foreground font-body">{step.description}</p>
+          <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
+            {[
+              "Submit your business details.",
+              "We prepare your formation documents.",
+              "We file with the state.",
+              "You receive confirmation and next-step guidance."
+            ].map((step, index) => (
+              <div key={index} className="flex items-start gap-4 md:gap-6">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-lg md:text-xl font-bold text-primary font-display">{index + 1}</span>
                 </div>
-                {index < processSteps.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 -right-4 w-8">
-                    <ArrowRight className="h-5 w-5 text-border" />
-                  </div>
-                )}
+                <p className="text-base md:text-lg text-foreground font-body pt-2 md:pt-2.5">{step}</p>
               </div>
             ))}
-          </StaggeredGrid>
+          </div>
         </div>
       </AnimatedSection>
 
