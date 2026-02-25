@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { trackClick } from "@/hooks/useAnalytics";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
 import Footer from "@/components/Footer";

@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { trackClick } from "@/hooks/useAnalytics";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ const ComplianceServices = () => {
             <Button 
               size="lg"
               className="bg-white text-primary hover:bg-white/90 font-bold text-lg px-8 py-6"
-              onClick={() => window.location.href = '/consultation'}
+              onClick={() => { trackClick('Get Compliance Consultation', 'compliance_hero_cta', '/consultation'); window.location.href = '/consultation'; }}
             >
               Get Compliance Consultation
             </Button>
@@ -156,7 +157,7 @@ const ComplianceServices = () => {
             </p>
             <Button 
               size="lg"
-              onClick={() => window.location.href = '/consultation'}
+              onClick={() => { trackClick('Schedule Free Consultation', 'compliance_bottom_cta', '/consultation'); window.location.href = '/consultation'; }}
             >
               Schedule Free Consultation
             </Button>

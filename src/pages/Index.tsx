@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { trackClick } from "@/hooks/useAnalytics";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -182,7 +183,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-                  onClick={() => navigate('/order-flow')}
+                  onClick={() => { trackClick('Start My LLC', 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
                 >
                   Start My LLC
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -653,7 +654,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="group bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant"
-                onClick={() => navigate('/order-flow')}
+                onClick={() => { trackClick('See Our Packages', 'comparison_cta', '/order-flow'); navigate('/order-flow'); }}
               >
                 See Our Packages
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -692,7 +693,7 @@ const Index = () => {
                   <Button 
                     size="lg"
                     className="group bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg"
-                    onClick={() => navigate('/business-guide')}
+                    onClick={() => { trackClick('Get Your Free Checklist', 'lead_magnet_cta', '/business-guide'); navigate('/business-guide'); }}
                   >
                     <Download className="mr-2 h-5 w-5" />
                     Get Your Free Checklist
@@ -724,8 +725,8 @@ const Index = () => {
           <div>
             <Button 
               size="lg" 
-              className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
-              onClick={() => navigate('/order-flow')}
+               className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
+              onClick={() => { trackClick('Get Started Today', 'final_cta', '/order-flow'); navigate('/order-flow'); }}
             >
               Get Started Today
               <ArrowRight className="ml-2 h-5 w-5" />

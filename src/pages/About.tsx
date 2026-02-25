@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { trackClick } from "@/hooks/useAnalytics";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
@@ -302,7 +303,7 @@ const About = () => {
                 <Button 
                   size="lg" 
                   className="bg-secondary hover:bg-secondary-light text-secondary-foreground text-lg px-8 h-14"
-                  onClick={() => navigate('/order-flow')}
+                  onClick={() => { trackClick('Get Started Today', 'about_cta', '/order-flow'); navigate('/order-flow'); }}
                 >
                   Get Started Today
                 </Button>
@@ -310,7 +311,7 @@ const About = () => {
                   size="lg" 
                   variant="outline" 
                   className="text-lg px-8 h-14 border-2 border-white/30 text-white hover:bg-white/10"
-                  onClick={() => navigate('/consultation')}
+                  onClick={() => { trackClick('Free Consultation', 'about_cta', '/consultation'); navigate('/consultation'); }}
                 >
                   Free Consultation
                 </Button>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { trackClick } from "@/hooks/useAnalytics";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -324,7 +325,7 @@ const Consultation = () => {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                    <Button type="submit" size="lg" className="w-full" disabled={loading} onClick={() => trackClick('Request Free Consultation', 'consultation_form', '/consultation')}>
                       {loading ? "Submitting..." : "Request Free Consultation"}
                     </Button>
                   </form>
