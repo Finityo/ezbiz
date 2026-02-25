@@ -715,34 +715,20 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* CTA Section */}
+      {/* Final CTA */}
       <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
         <div className="container mx-auto px-4 text-center space-y-6 md:space-y-8">
-          <div className="space-y-3 md:space-y-4">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
-              Ready to Start Your Business?
-            </h2>
-            <p className="text-base md:text-xl opacity-90 max-w-2xl mx-auto font-body">
-              Join thousands of entrepreneurs who trust EZ BIZ FILE SERVICE to handle their 
-              business formation. Get started today with our simple, fast, and reliable process.
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
+            Ready to Form Your Business the Right Way?
+          </h2>
+          <div>
+            <Button 
+              size="lg" 
+              className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
               onClick={() => navigate('/order-flow')}
             >
-              Start My Business — From $99
-            </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
-              onClick={() => navigate('/consultation')}
-            >
-              Schedule Free Consultation
+              Get Started Today
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>
