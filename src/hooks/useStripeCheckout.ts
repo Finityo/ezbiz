@@ -19,27 +19,9 @@ export const useStripeCheckout = () => {
     lineItems: LineItem[],
     options?: { stateFee?: StateFee; successPath?: string; cancelPath?: string }
   ) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: {
-          lineItems,
-          stateFee: options?.stateFee,
-          successPath: options?.successPath || "/dashboard",
-          cancelPath: options?.cancelPath || "/pricing",
-        },
-      });
-
-      if (error) throw error;
-      if (!data?.url) throw new Error("No checkout URL returned");
-
-      window.open(data.url, "_blank");
-    } catch (err: any) {
-      console.error("Checkout error:", err);
-      toast.error("Failed to start checkout. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    // Stripe checkout temporarily disabled for analytics testing
+    toast.info("Checkout is temporarily unavailable. Please check back soon!");
+    return;
   };
 
   return { checkout, loading };
