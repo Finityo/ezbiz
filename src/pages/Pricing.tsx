@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackClick } from "@/hooks/useAnalytics";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
@@ -28,10 +29,12 @@ const Pricing = () => {
     const params = new URLSearchParams();
     params.set('package', packageKey);
     if (selectedState) params.set('state', selectedState);
+    trackClick(`Choose ${packageKey}`, 'package_cta', `/order-flow?${params.toString()}`);
     navigate(`/order-flow?${params.toString()}`);
   };
 
   const handleAddOnClick = () => {
+    trackClick('Get Started Add-on', 'addon_cta', '/order-flow');
     navigate('/order-flow');
   };
   const llcPackages = [
@@ -611,7 +614,7 @@ const Pricing = () => {
                 size="lg" 
                 variant="secondary" 
                 className="text-lg px-8 py-4"
-                onClick={() => navigate("/order-flow")}
+                onClick={() => { trackClick('Start Your Business Now', 'pricing_final_cta', '/order-flow'); navigate("/order-flow"); }}
               >
                 Start Your Business Now
               </Button>
