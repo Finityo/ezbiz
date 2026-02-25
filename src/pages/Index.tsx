@@ -227,6 +227,41 @@ const Index = () => {
         </div>
       </section>
 
+      {/* 3-Point Clarity Block */}
+      <AnimatedSection className="py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
+            <div className="accent-line-center mb-4 md:mb-6"></div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
+              Simple. Transparent. Done Correctly.
+            </h2>
+          </div>
+
+          <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto" staggerDelay={120}>
+            {[
+              {
+                title: "Accurate State Filing",
+                description: "Your formation documents are prepared and submitted properly the first time."
+              },
+              {
+                title: "Clear Pricing",
+                description: "No surprise upsells after checkout. You see what you're paying for."
+              },
+              {
+                title: "Real Support",
+                description: "Direct communication — not outsourced ticket systems."
+              }
+            ].map((point, index) => (
+              <div key={index} className="text-center space-y-3 p-6">
+                <CheckCircle className="h-8 w-8 text-success mx-auto" />
+                <h3 className="text-lg md:text-xl font-semibold font-display">{point.title}</h3>
+                <p className="text-muted-foreground font-body leading-relaxed">{point.description}</p>
+              </div>
+            ))}
+          </StaggeredGrid>
+        </div>
+      </AnimatedSection>
+
       {/* Company Capabilities Section */}
       <AnimatedSection className="py-12 md:py-24">
         <div className="container mx-auto px-4">
