@@ -127,7 +127,7 @@ const StateTemplate = ({
               </div>
               
               <div className="flex justify-between items-center pb-4 border-b">
-                <span className="font-medium">Finityo Service Fee</span>
+                <span className="font-medium">EZ BIZ File Service Fee</span>
                 <span className="text-xl font-bold text-primary">From $99</span>
               </div>
               
