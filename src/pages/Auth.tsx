@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,7 @@ const Auth = () => {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -146,6 +148,24 @@ const Auth = () => {
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Signing in...' : 'Sign In'}
                   </Button>
+
+                  {resetSent ? (
+                    <p className="text-sm text-center text-primary">Reset email sent! Check your inbox.</p>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      onClick={async () => {
+                        if (!email) return;
+                        await supabase.auth.resetPasswordForEmail(email, {
+                          redirectTo: `${window.location.origin}/reset-password`,
+                        });
+                        setResetSent(true);
+                      }}
+                    >
+                      Forgot Password?
+                    </button>
+                  )}
                 </form>
               </CardContent>
             </Card>
