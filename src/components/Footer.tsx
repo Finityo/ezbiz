@@ -87,7 +87,7 @@ const Footer = () => {
     { name: "Customer Reviews", href: "/consultation" },
     { name: "Contact Us", href: "/consultation" },
     { name: "Support Center", href: "/consultation" },
-    { name: "Admin Access", href: "/auth" },
+    { name: "Admin Access", href: "/admin/login" },
   ];
 
   const legal = [
