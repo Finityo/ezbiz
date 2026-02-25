@@ -126,7 +126,7 @@ const BusinessNameSearch = () => {
         {/* Search Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto -mt-48">
+            <div className="max-w-2xl mx-auto -mt-64">
               <div className="flex justify-center mb-8">
                 <img 
                   src={logoImage} 
