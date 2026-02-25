@@ -262,30 +262,42 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* Company Capabilities Section */}
+      {/* Differentiation Section */}
       <AnimatedSection className="py-12 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">What We Do</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-              Comprehensive business formation and compliance services designed for 
-              entrepreneurs who value expertise and reliability.
-            </p>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Why Clients Choose EZ BIZ</h2>
           </div>
           
-          <StaggeredGrid className="grid md:grid-cols-3 gap-8" staggerDelay={150}>
-            {capabilities.map((capability, index) => (
+          <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto" staggerDelay={150}>
+            {[
+              {
+                icon: <Shield className="h-8 w-8" />,
+                title: "Transparent Service",
+                description: "You know exactly what's included and what state fees apply."
+              },
+              {
+                icon: <Award className="h-8 w-8" />,
+                title: "Founder-Led Oversight",
+                description: "Your filing isn't processed anonymously through automation pipelines."
+              },
+              {
+                icon: <Zap className="h-8 w-8" />,
+                title: "Straightforward Process",
+                description: "Clear steps. No confusion. No buried add-ons."
+              }
+            ].map((item, index) => (
               <TiltCard key={index} className="border-0 shadow-smooth bg-card" tiltMax={6} scale={1.02}>
                 <CardHeader className="space-y-4">
                   <div className="inline-flex p-3 rounded-xl bg-primary/5 text-primary w-fit">
-                    {capability.icon}
+                    {item.icon}
                   </div>
-                  <CardTitle className="text-xl font-display">{capability.title}</CardTitle>
+                  <CardTitle className="text-xl font-display">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base font-body leading-relaxed">
-                    {capability.description}
+                    {item.description}
                   </CardDescription>
                 </CardContent>
               </TiltCard>
