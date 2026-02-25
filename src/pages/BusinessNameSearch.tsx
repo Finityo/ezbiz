@@ -1,5 +1,5 @@
 import Navigation from "@/components/Navigation";
-import Logo from "@/components/ui/logo";
+import logoImage from "@/assets/logo-ezbiz-final.webp";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -126,9 +126,14 @@ const BusinessNameSearch = () => {
         {/* Search Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto -mt-24">
               <div className="flex justify-center mb-8">
-                <Logo size="lg" className="scale-[2.5]" />
+                <img 
+                  src={logoImage} 
+                  alt="EZ BIZ FILE SERVICE" 
+                  className="w-full max-w-[18rem] sm:max-w-[24rem] md:max-w-[32rem] h-auto object-contain mx-auto mix-blend-multiply"
+                  style={{ filter: 'contrast(1.03) saturate(1.05)' }}
+                />
               </div>
               <Card>
                 <CardHeader className="text-center">
