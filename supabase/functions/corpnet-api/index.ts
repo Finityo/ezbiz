@@ -116,7 +116,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message
+        error: 'Unable to process your order. Please try again.'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
