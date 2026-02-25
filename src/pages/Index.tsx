@@ -165,47 +165,27 @@ const Index = () => {
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display min-h-[2.4em]">
-                  Start Your LLC or Corporation{" "}
-                  <span className="text-bronze">Today</span>
+                  Start Your LLC the Right Way —{" "}
+                  <span className="text-bronze">Filed Fast. No Hidden Fees.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
-                  Choose your state, pick a package, and we handle the rest — from filing 
-                  your documents to getting your EIN. Fast, affordable, and backed by experts.
+                  EZ BIZ File Service prepares and submits your business formation accurately 
+                  and efficiently so you can focus on building, not paperwork.
+                </p>
+                <p className="text-xs md:text-sm text-muted-foreground/70 font-body">
+                  Founded by Christian Rene Talavera, MBA, MSL (USC Gould School of Law)
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+              <div>
                 <Button 
                   size="lg" 
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-onClick={() => navigate('/order-flow')}
+                  onClick={() => navigate('/order-flow')}
                 >
-                  Start My Business
+                  Start My LLC
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="text-base md:text-lg px-6 md:px-8 h-12 md:h-14 border-2 hover:bg-muted"
-                  onClick={() => navigate('/consultation')}
-                >
-                  Free Consultation
-                </Button>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3 sm:gap-6 pt-2 md:pt-4 text-sm text-muted-foreground font-body">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>No Hidden Fees</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>24-48 Hour Filing</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span>100% Satisfaction Guarantee</span>
-                </div>
               </div>
             </div>
 
