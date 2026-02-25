@@ -1,13 +1,1 @@
-project_id = "fpclrbfqlyghdyitisox"
-
-[functions.corpnet-api]
-verify_jwt = true
-
-[functions.corpnet-webhook]
-verify_jwt = false
-
-[functions.send-order-email]
-verify_jwt = true
-
-[functions.create-checkout]
-verify_jwt = false
+project_id = "umzyxzhqlrykygjbeusu"

@@ -10,250 +10,20 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
-      business_applications: {
-        Row: {
-          application_data: Json
-          business_name: string
-          business_type: string
-          created_at: string
-          id: string
-          state: string
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          application_data?: Json
-          business_name: string
-          business_type: string
-          created_at?: string
-          id?: string
-          state: string
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          application_data?: Json
-          business_name?: string
-          business_type?: string
-          created_at?: string
-          id?: string
-          state?: string
-          status?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      click_analytics: {
-        Row: {
-          button_label: string
-          button_type: string
-          clicked_at: string
-          destination_url: string
-          id: string
-          page_location: string
-          session_id: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          button_label: string
-          button_type: string
-          clicked_at?: string
-          destination_url: string
-          id?: string
-          page_location: string
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          button_label?: string
-          button_type?: string
-          clicked_at?: string
-          destination_url?: string
-          id?: string
-          page_location?: string
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
-      email_list: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          name: string
-          source: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          name: string
-          source?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string
-          source?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      heatmap_analytics: {
-        Row: {
-          created_at: string | null
-          element_label: string | null
-          element_type: string
-          id: string
-          interaction_type: string
-          page_location: string
-          position_x: number | null
-          position_y: number | null
-          session_id: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          element_label?: string | null
-          element_type: string
-          id?: string
-          interaction_type: string
-          page_location: string
-          position_x?: number | null
-          position_y?: number | null
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          element_label?: string | null
-          element_type?: string
-          id?: string
-          interaction_type?: string
-          page_location?: string
-          position_x?: number | null
-          position_y?: number | null
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          company_name: string | null
-          created_at: string
-          first_name: string | null
-          id: string
-          last_name: string | null
-          phone: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          company_name?: string | null
-          created_at?: string
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          company_name?: string | null
-          created_at?: string
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      scroll_analytics: {
-        Row: {
-          created_at: string | null
-          id: string
-          max_scroll_reached: number
-          page_location: string
-          scroll_depth: number
-          session_id: string | null
-          time_on_page: number
-          user_agent: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          max_scroll_reached: number
-          page_location: string
-          scroll_depth: number
-          session_id?: string | null
-          time_on_page: number
-          user_agent?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          max_scroll_reached?: number
-          page_location?: string
-          scroll_depth?: number
-          session_id?: string | null
-          time_on_page?: number
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -380,8 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const
