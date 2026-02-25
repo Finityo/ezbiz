@@ -168,21 +168,14 @@ const BusinessNameSearch = () => {
                   <Button 
                     size="lg" 
                     className="w-full text-lg p-4"
-                    onClick={handleNameSearch}
-                    disabled={isSearching}
+                    disabled={true}
                   >
-                    {isSearching ? (
-                      <>
-                        <Loader className="h-5 w-5 mr-2 animate-spin" />
-                        Searching...
-                      </>
-                    ) : (
-                      <>
-                        <Search className="h-5 w-5 mr-2" />
-                        Search Name Availability
-                      </>
-                    )}
+                    <Search className="h-5 w-5 mr-2" />
+                    Coming Soon
                   </Button>
+                  <p className="text-sm text-muted-foreground text-center mt-2">
+                    Business name search is currently under maintenance. Please check back soon.
+                  </p>
                 </CardContent>
               </Card>
             </div>
