@@ -57,6 +57,7 @@ const ComplianceServices = lazy(() => import("./pages/ComplianceServices"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
@@ -124,6 +125,7 @@ function App() {
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

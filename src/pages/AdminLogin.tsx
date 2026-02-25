@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resetSent, setResetSent] = useState(false);
   
   const { user, signIn } = useAuth();
   const { isAdmin } = useAdminAuth();
@@ -109,6 +111,27 @@ const AdminLogin = () => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Signing In...' : 'Sign In to Admin Portal'}
               </Button>
+
+              {resetSent ? (
+                <p className="text-sm text-center text-primary">Password reset email sent! Check your inbox.</p>
+              ) : (
+                <button
+                  type="button"
+                  className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={async () => {
+                    if (!email) {
+                      setError('Enter your email first');
+                      return;
+                    }
+                    await supabase.auth.resetPasswordForEmail(email, {
+                      redirectTo: `${window.location.origin}/reset-password`,
+                    });
+                    setResetSent(true);
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              )}
             </form>
           </CardContent>
         </Card>
