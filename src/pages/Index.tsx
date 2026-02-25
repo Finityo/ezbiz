@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -380,6 +381,48 @@ const Index = () => {
                 <p className="text-base md:text-lg text-foreground font-body pt-2 md:pt-2.5">{step}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Objection Removal FAQ */}
+      <AnimatedSection className="py-12 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
+              <div className="accent-line-center mb-4 md:mb-6"></div>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Common Questions</h2>
+            </div>
+
+            <Accordion type="single" collapsible className="space-y-3">
+              {[
+                {
+                  q: "How long does filing take?",
+                  a: "Processing times depend on your state. We submit promptly after preparation."
+                },
+                {
+                  q: "Are state fees included?",
+                  a: "State filing fees are separate and vary by state. They are clearly shown before submission."
+                },
+                {
+                  q: "Do I need an EIN?",
+                  a: "Many businesses require one for banking and tax purposes. Guidance is provided after formation."
+                },
+                {
+                  q: "Will I be hit with add-ons later?",
+                  a: "No hidden upsells. You'll know exactly what you're purchasing."
+                }
+              ].map((item, index) => (
+                <AccordionItem key={index} value={`faq-${index}`} className="bg-card rounded-lg border px-6">
+                  <AccordionTrigger className="text-base md:text-lg font-semibold font-display hover:no-underline">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground font-body text-base leading-relaxed">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </AnimatedSection>
