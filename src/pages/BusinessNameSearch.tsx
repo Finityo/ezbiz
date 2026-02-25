@@ -127,8 +127,8 @@ const BusinessNameSearch = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
-              <div className="flex justify-center mb-6">
-                <Logo />
+              <div className="flex justify-center mb-8">
+                <Logo size="lg" className="scale-[2.5]" />
               </div>
               <Card>
                 <CardHeader className="text-center">
