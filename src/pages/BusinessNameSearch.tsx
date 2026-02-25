@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Logo from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,9 @@ const BusinessNameSearch = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
+              <div className="flex justify-center mb-6">
+                <Logo />
+              </div>
               <Card>
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">Search Business Name Availability</CardTitle>
