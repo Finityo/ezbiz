@@ -101,7 +101,7 @@ const Auth = () => {
           <Link to="/" className="inline-block">
             <Logo />
           </Link>
-          <h1 className="text-2xl font-bold mt-4">Welcome to Finityo</h1>
+          <h1 className="text-2xl font-bold mt-4">Welcome to EZ BIZ File Service</h1>
           <p className="text-muted-foreground">Sign in to manage your business formation</p>
         </div>
 
