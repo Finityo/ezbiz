@@ -338,7 +338,7 @@ const EINNumber = () => {
       {/* Footer */}
       <footer className="bg-muted py-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">© 2024 Finityo. All rights reserved.</p>
+          <p className="text-muted-foreground">© 2024 EZ BIZ File Service. All rights reserved.</p>
         </div>
       </footer>
     </div>

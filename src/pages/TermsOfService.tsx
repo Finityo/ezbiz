@@ -16,7 +16,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
               <p className="text-muted-foreground">
-                By accessing and using Finityo's services, you agree to be bound by these Terms of Service 
+                By accessing and using EZ BIZ File Service's services, you agree to be bound by these Terms of Service 
                 and all applicable laws and regulations. If you do not agree with any of these terms, you 
                 are prohibited from using our services.
               </p>
@@ -25,7 +25,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">2. Services Description</h2>
               <p className="text-muted-foreground mb-4">
-                Finityo provides business formation, compliance, and related services including:
+                EZ BIZ File Service provides business formation, compliance, and related services including:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
                 <li>LLC and Corporation formation services</li>
@@ -56,7 +56,7 @@ const TermsOfService = () => {
                 our Refund Policy. You agree to pay all fees associated with services you order, including:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                <li>Finityo service fees</li>
+                <li>EZ BIZ File Service fees</li>
                 <li>State filing fees</li>
                 <li>Any additional add-on services you select</li>
               </ul>
@@ -74,8 +74,8 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">6. Limitation of Liability</h2>
               <p className="text-muted-foreground">
-                Finityo provides document preparation and filing services. We are not a law firm and do not 
-                provide legal advice. In no event shall Finityo be liable for any indirect, incidental, 
+                EZ BIZ File Service provides document preparation and filing services. We are not a law firm and do not 
+                provide legal advice. In no event shall EZ BIZ File Service be liable for any indirect, incidental, 
                 special, consequential, or punitive damages arising from your use of our services.
               </p>
             </section>
@@ -83,8 +83,8 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">7. Intellectual Property</h2>
               <p className="text-muted-foreground">
-                All content on the Finityo website, including text, graphics, logos, and software, is the 
-                property of Finityo and is protected by copyright, trademark, and other intellectual 
+                All content on the EZ BIZ File Service website, including text, graphics, logos, and software, is the 
+                property of EZ BIZ File Service and is protected by copyright, trademark, and other intellectual 
                 property laws.
               </p>
             </section>
@@ -100,7 +100,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">9. Modifications to Terms</h2>
               <p className="text-muted-foreground">
-                Finityo reserves the right to modify these Terms of Service at any time. We will notify 
+                EZ BIZ File Service reserves the right to modify these Terms of Service at any time. We will notify 
                 users of any material changes via email or through our website. Continued use of our 
                 services after changes constitutes acceptance of the modified terms.
               </p>
@@ -110,7 +110,7 @@ const TermsOfService = () => {
               <h2 className="text-2xl font-bold mb-4">10. Governing Law</h2>
               <p className="text-muted-foreground">
                 These Terms of Service shall be governed by and construed in accordance with the laws of 
-                the United States and the state in which Finityo is registered, without regard to conflict 
+                the United States and the state in which EZ BIZ File Service is registered, without regard to conflict 
                 of law provisions.
               </p>
             </section>

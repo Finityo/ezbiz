@@ -27,14 +27,14 @@ const RefundPolicy = () => {
 
           <Card className="p-8 space-y-8">
             <section>
-              <h2 className="text-2xl font-bold mb-4">1. Finityo Service Fees</h2>
+              <h2 className="text-2xl font-bold mb-4">1. EZ BIZ File Service Fees</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-success mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold mb-2">Before Filing</h3>
                     <p className="text-sm text-muted-foreground">
-                      You may request a full refund of Finityo service fees if you cancel your order 
+                      You may request a full refund of EZ BIZ File Service fees if you cancel your order 
                       <strong> before</strong> we begin processing your documents or submitting them to the state.
                     </p>
                   </div>
@@ -44,7 +44,7 @@ const RefundPolicy = () => {
                   <div>
                     <h3 className="font-semibold mb-2">After Filing Begins</h3>
                     <p className="text-sm text-muted-foreground">
-                      Once we have begun preparing or submitting your documents, Finityo service fees are 
+                      Once we have begun preparing or submitting your documents, EZ BIZ File Service fees are 
                       <strong> non-refundable</strong> as work has already been performed.
                     </p>
                   </div>
@@ -144,7 +144,7 @@ const RefundPolicy = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">8. Changes to This Policy</h2>
               <p className="text-muted-foreground">
-                Finityo reserves the right to modify this Refund Policy at any time. Changes will be 
+                EZ BIZ File Service reserves the right to modify this Refund Policy at any time. Changes will be 
                 effective immediately upon posting to our website. Your continued use of our services 
                 after changes constitutes acceptance of the updated policy.
               </p>
