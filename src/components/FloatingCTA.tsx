@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { trackClick } from "@/hooks/useAnalytics";
 
 interface FloatingCTAProps {
   text?: string;
@@ -31,6 +32,7 @@ const FloatingCTA = ({
   }, [threshold]);
 
   const handleClick = () => {
+    trackClick(text, 'floating_cta', href);
     navigate(href);
   };
 

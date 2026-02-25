@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -57,6 +58,11 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 
+function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
+  useAnalytics();
+  return <>{children}</>;
+}
+
 function App() {
   const [queryClient] = React.useState(() => new QueryClient());
 
@@ -66,7 +72,8 @@ function App() {
         <Toaster />
         <Sonner />
         <AuthProvider>
-          <BrowserRouter>
+           <BrowserRouter>
+            <AnalyticsWrapper>
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
               <Routes>
               <Route path="/" element={<Index />} />
@@ -121,6 +128,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
+            </AnalyticsWrapper>
          </BrowserRouter>
        </AuthProvider>
      </TooltipProvider>
