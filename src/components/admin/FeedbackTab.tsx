@@ -54,6 +54,9 @@ const FeedbackTab = () => {
       .gte('created_at', since.toISOString())
       .order('created_at', { ascending: false });
 
+    if (error) {
+      console.error('Feedback fetch error:', error);
+    }
     if (!error && data) {
       setFeedback(data as any);
     }
