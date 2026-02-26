@@ -23,12 +23,22 @@ serve(async (req) => {
       paid_out_of_band: true,
     });
 
+    // Send the invoice receipt email via Stripe
+    if (invoice.status === "paid") {
+      try {
+        await stripe.invoices.sendInvoice(invoiceId);
+      } catch (sendErr) {
+        // Invoice may already have been sent or may not support sending — log but don't fail
+        console.warn("Could not send invoice email:", sendErr.message);
+      }
+    }
+
     return new Response(JSON.stringify({ success: true, status: invoice.status }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "Unable to process payment update." }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
