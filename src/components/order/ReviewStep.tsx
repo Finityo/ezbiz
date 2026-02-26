@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock, ExternalLink } from "lucide-react";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
-import { getStateFee } from "@/lib/state-fees";
+import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import type { BusinessDetails } from "./BusinessDetailsForm";
 import type { AddonQuantities } from "./AddOnServices";
@@ -40,7 +40,8 @@ const ReviewStep = ({
   const { checkout, loading } = useStripeCheckout();
 
   const pkg = STRIPE_PACKAGES[selectedPackage as PackageId];
-  const stateFee = getStateFee(state);
+  const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(entityType);
+  const stateFee = isCorpType ? getCorpStateFee(state) : getStateFee(state);
   const addonsTotal = selectedAddOns.reduce((sum, id) => {
     const addon = STRIPE_ADDONS[id as AddonId];
     const qty = addonQuantities[id] || 1;
