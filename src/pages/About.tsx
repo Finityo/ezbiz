@@ -291,6 +291,22 @@ const About = () => {
           </div>
         </section>
 
+        {/* Contact Info Section */}
+        <section className="py-16 bg-card border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-6 font-display">Our Office</h2>
+              <div className="text-muted-foreground space-y-1 font-body">
+                <p className="font-semibold text-foreground text-lg">EZ BIZ FILE SERVICE, LLC</p>
+                <p>1101 Thorpe Lane Ste 105-1028</p>
+                <p>San Marcos, TX 78666 United States</p>
+                <p>Phone: (830) 837-1955</p>
+                <p>Email: support@ezbizfile.com</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-24 gradient-executive text-primary-foreground">
           <div className="container mx-auto px-4">

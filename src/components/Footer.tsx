@@ -141,7 +141,9 @@ const Footer = () => {
                 Fast, reliable, and affordable incorporation services in all 50 states.
               </p>
               <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
-                <span>📞 1-888-EZ-BIZ-FILE</span>
+                <span>📍 1101 Thorpe Lane Ste 105-1028</span>
+                <span className="ml-5">San Marcos, TX 78666</span>
+                <span>📞 (830) 837-1955</span>
                 <span>✉️ support@ezbizfile.com</span>
                 <span>🕒 Mon-Fri 9AM-6PM EST</span>
               </div>
@@ -260,7 +262,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
             <div className="text-center md:text-left">
               <p className="text-sm text-muted-foreground">
-                &copy; 2024 EZ BIZ FILE SERVICE. All rights reserved.
+                &copy; 2024 EZ BIZ FILE SERVICE, LLC. All rights reserved.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-muted-foreground">

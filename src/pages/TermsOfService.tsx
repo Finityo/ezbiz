@@ -117,10 +117,16 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-2xl font-bold mb-4">11. Contact Information</h2>
-              <p className="text-muted-foreground">
-                If you have any questions about these Terms of Service, please contact us through our 
-                website or customer support channels.
+              <p className="text-muted-foreground mb-4">
+                If you have any questions about these Terms of Service, please contact us:
               </p>
+              <div className="text-muted-foreground space-y-1">
+                <p className="font-semibold text-foreground">EZ BIZ FILE SERVICE, LLC</p>
+                <p>1101 Thorpe Lane Ste 105-1028</p>
+                <p>San Marcos, TX 78666 United States</p>
+                <p>Phone: (830) 837-1955</p>
+                <p>Email: support@ezbizfile.com</p>
+              </div>
             </section>
           </Card>
         </div>
