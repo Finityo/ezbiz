@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, Download, MapPin, DollarSign, Clock, FileText } from "lucide-react";
 import { useState } from "react";
+import { STATE_FILING_FEES } from "@/lib/state-fees";
 
 const StateRequirements = () => {
   const [selectedState, setSelectedState] = useState("");
@@ -11,8 +12,8 @@ const StateRequirements = () => {
   const popularStates = [
     {
       state: "Delaware",
-      llcFee: "$90",
-      corpFee: "$89", 
+      llcFee: `$${STATE_FILING_FEES["Delaware"]}`,
+      corpFee: "$89",
       processingTime: "7-10 days",
       benefits: ["Business-friendly courts", "Strong corporate law", "Privacy protection", "No sales tax"],
       annualReport: "Required",
@@ -20,7 +21,7 @@ const StateRequirements = () => {
     },
     {
       state: "Wyoming",
-      llcFee: "$100",
+      llcFee: `$${STATE_FILING_FEES["Wyoming"]}`,
       corpFee: "$100",
       processingTime: "3-5 days", 
       benefits: ["Strong privacy laws", "No state income tax", "Low fees", "Asset protection"],
@@ -29,7 +30,7 @@ const StateRequirements = () => {
     },
     {
       state: "Nevada", 
-      llcFee: "$75",
+      llcFee: `$${STATE_FILING_FEES["Nevada"]}`,
       corpFee: "$75",
       processingTime: "5-7 days",
       benefits: ["No corporate income tax", "Strong privacy laws", "Flexible corporate structure", "Asset protection"],
@@ -38,7 +39,7 @@ const StateRequirements = () => {
     },
     {
       state: "Florida",
-      llcFee: "$125",
+      llcFee: `$${STATE_FILING_FEES["Florida"]}`,
       corpFee: "$70",
       processingTime: "5-7 days",
       benefits: ["No state income tax", "Strong economy", "Business incentives", "Growing market"],
@@ -47,7 +48,7 @@ const StateRequirements = () => {
     },
     {
       state: "Texas", 
-      llcFee: "$300",
+      llcFee: `$${STATE_FILING_FEES["Texas"]}`,
       corpFee: "$300",
       processingTime: "7-14 days",
       benefits: ["No state income tax", "Large market", "Business incentives", "Strong economy"],
@@ -56,7 +57,7 @@ const StateRequirements = () => {
     },
     {
       state: "California",
-      llcFee: "$70",
+      llcFee: `$${STATE_FILING_FEES["California"]}`,
       corpFee: "$100", 
       processingTime: "10-15 days",
       benefits: ["Large market", "Access to capital", "Innovation hub", "Diverse economy"],
@@ -84,58 +85,11 @@ const StateRequirements = () => {
     ]
   };
 
-  const stateFees = [
-    { state: "Alabama", llc: "$200", corp: "$100" },
-    { state: "Alaska", llc: "$250", corp: "$250" },
-    { state: "Arizona", llc: "$50", corp: "$60" },
-    { state: "Arkansas", llc: "$45", corp: "$50" },
-    { state: "California", llc: "$70", corp: "$100" },
-    { state: "Colorado", llc: "$50", corp: "$50" },
-    { state: "Connecticut", llc: "$120", corp: "$150" },
-    { state: "Delaware", llc: "$90", corp: "$89" },
-    { state: "Florida", llc: "$125", corp: "$70" },
-    { state: "Georgia", llc: "$100", corp: "$100" },
-    { state: "Hawaii", llc: "$50", corp: "$50" },
-    { state: "Idaho", llc: "$100", corp: "$100" },
-    { state: "Illinois", llc: "$150", corp: "$175" },
-    { state: "Indiana", llc: "$95", corp: "$90" },
-    { state: "Iowa", llc: "$50", corp: "$50" },
-    { state: "Kansas", llc: "$160", corp: "$90" },
-    { state: "Kentucky", llc: "$40", corp: "$40" },
-    { state: "Louisiana", llc: "$100", corp: "$75" },
-    { state: "Maine", llc: "$175", corp: "$145" },
-    { state: "Maryland", llc: "$100", corp: "$120" },
-    { state: "Massachusetts", llc: "$500", corp: "$275" },
-    { state: "Michigan", llc: "$50", corp: "$60" },
-    { state: "Minnesota", llc: "$135", corp: "$135" },
-    { state: "Mississippi", llc: "$50", corp: "$50" },
-    { state: "Missouri", llc: "$50", corp: "$58" },
-    { state: "Montana", llc: "$70", corp: "$70" },
-    { state: "Nebraska", llc: "$100", corp: "$60" },
-    { state: "Nevada", llc: "$75", corp: "$75" },
-    { state: "New Hampshire", llc: "$100", corp: "$100" },
-    { state: "New Jersey", llc: "$125", corp: "$125" },
-    { state: "New Mexico", llc: "$50", corp: "$100" },
-    { state: "New York", llc: "$200", corp: "$125" },
-    { state: "North Carolina", llc: "$125", corp: "$125" },
-    { state: "North Dakota", llc: "$135", corp: "$100" },
-    { state: "Ohio", llc: "$99", corp: "$99" },
-    { state: "Oklahoma", llc: "$100", corp: "$50" },
-    { state: "Oregon", llc: "$100", corp: "$100" },
-    { state: "Pennsylvania", llc: "$125", corp: "$125" },
-    { state: "Rhode Island", llc: "$150", corp: "$230" },
-    { state: "South Carolina", llc: "$110", corp: "$135" },
-    { state: "South Dakota", llc: "$150", corp: "$150" },
-    { state: "Tennessee", llc: "$300", corp: "$100" },
-    { state: "Texas", llc: "$300", corp: "$300" },
-    { state: "Utah", llc: "$70", corp: "$70" },
-    { state: "Vermont", llc: "$125", corp: "$125" },
-    { state: "Virginia", llc: "$100", corp: "$75" },
-    { state: "Washington", llc: "$200", corp: "$200" },
-    { state: "West Virginia", llc: "$100", corp: "$100" },
-    { state: "Wisconsin", llc: "$130", corp: "$100" },
-    { state: "Wyoming", llc: "$100", corp: "$100" }
-  ];
+  const stateFees = Object.keys(STATE_FILING_FEES).sort().map(state => ({
+    state,
+    llc: `$${STATE_FILING_FEES[state]}`,
+    corp: `$${STATE_FILING_FEES[state]}`
+  }));
 
   return (
     <div className="min-h-screen bg-background">
