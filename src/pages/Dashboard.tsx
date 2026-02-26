@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OrderStatusCard from "@/components/dashboard/OrderStatusCard";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
+import PaymentHistory from "@/components/dashboard/PaymentHistory";
 import { User, FileText, CreditCard, Settings, CheckCircle, PartyPopper, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -221,12 +222,7 @@ const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="billing" className="space-y-4">
-              <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Billing & Payments</h2>
-                <p className="text-muted-foreground">
-                  Payment history and invoices will appear here.
-                </p>
-              </div>
+              <PaymentHistory />
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-4">
