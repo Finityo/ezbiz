@@ -14,7 +14,7 @@ import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/Bu
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
-import { getStateFee } from "@/lib/state-fees";
+import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -41,7 +41,8 @@ const EnhancedOrderFlow = () => {
     managementStructure: "",
   });
 
-  const stateFee = selectedState ? getStateFee(selectedState) : 0;
+  const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(selectedEntity);
+  const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
   // Running total for sticky bar
   const calculateTotal = () => {
