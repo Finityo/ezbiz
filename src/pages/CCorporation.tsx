@@ -200,7 +200,7 @@ const CCorporation = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Incorporate Now - $199 <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -513,7 +513,7 @@ const CCorporation = () => {
               
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <Button variant="outline" asChild>
-                  <Link to="/llc">Learn About LLCs</Link>
+                  <Link to="/form-llc">Learn About LLCs</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/s-corporation">Learn About S-Corps</Link>
@@ -561,7 +561,7 @@ const CCorporation = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Incorporation - $199 <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
