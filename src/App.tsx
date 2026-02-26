@@ -9,6 +9,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FeedbackWidget from "./components/FeedbackWidget";
+import ExitIntentModal from "./components/ExitIntentModal";
 
 // Lazy-loaded routes for code splitting
 const LLC = lazy(() => import("./pages/LLC"));
@@ -132,6 +133,7 @@ function App() {
             </Routes>
             </Suspense>
             <FeedbackWidget />
+            <ExitIntentModal />
             </AnalyticsWrapper>
          </BrowserRouter>
        </AuthProvider>

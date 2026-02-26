@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Star, MessageSquare, TrendingUp, Filter } from 'lucide-react';
+import { Star, MessageSquare, TrendingUp, Filter, Download } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface FeedbackRecord {
@@ -31,6 +32,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   services: 'Services',
   design: 'Design',
   suggestion: 'Feature Request',
+  exit_intent: 'Exit Intent',
 };
 
 const FeedbackTab = () => {
@@ -95,6 +97,28 @@ const FeedbackTab = () => {
     );
   }
 
+  const exportFeedbackToCSV = () => {
+    const headers = ['Rating', 'Category', 'Comment', 'Page', 'Date'];
+    const csvContent = [
+      headers.join(','),
+      ...filtered.map(f => [
+        f.rating,
+        `"${CATEGORY_LABELS[f.category] || f.category}"`,
+        `"${(f.message || '').replace(/"/g, '""')}"`,
+        `"${f.page_visited}"`,
+        `"${new Date(f.created_at).toLocaleString()}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `feedback-export-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Controls */}
@@ -124,6 +148,10 @@ const FeedbackTab = () => {
               <SelectItem value="90">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
+          <Button onClick={exportFeedbackToCSV} variant="outline" size="sm" disabled={filtered.length === 0}>
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
         </div>
       </div>
 
