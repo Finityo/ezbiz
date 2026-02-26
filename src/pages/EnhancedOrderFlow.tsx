@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import type { AddonQuantities } from "@/components/order/AddOnServices";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -30,6 +31,7 @@ const EnhancedOrderFlow = () => {
   const [selectedEntity, setSelectedEntity] = useState(searchParams.get("entity") || "llc");
   const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
     businessName: "",
     designator: "",
@@ -47,7 +49,8 @@ const EnhancedOrderFlow = () => {
     const basePrice = pkg?.price || 0;
     const addonsTotal = selectedAddOns.reduce((sum, id) => {
       const addon = STRIPE_ADDONS[id as AddonId];
-      return sum + (addon?.price || 0);
+      const qty = addonQuantities[id] || 1;
+      return sum + (addon?.price || 0) * qty;
     }, 0);
     return basePrice + addonsTotal + stateFee;
   };
@@ -178,7 +181,7 @@ const EnhancedOrderFlow = () => {
                   </div>
 
                   <div className="border-t pt-6">
-                    <AddOnServices selected={selectedAddOns} onToggle={handleToggleAddon} />
+                    <AddOnServices selected={selectedAddOns} onToggle={handleToggleAddon} quantities={addonQuantities} onQuantityChange={(id, qty) => setAddonQuantities(prev => ({ ...prev, [id]: qty }))} />
                   </div>
 
                   <div className="flex justify-between">
@@ -234,6 +237,7 @@ const EnhancedOrderFlow = () => {
                     entityType={selectedEntity}
                     selectedPackage={selectedPackage}
                     selectedAddOns={selectedAddOns}
+                    addonQuantities={addonQuantities}
                     businessDetails={businessDetails}
                     onEdit={(step) => setCurrentStep(step)}
                     onCheckoutStarted={handleCheckoutStarted}

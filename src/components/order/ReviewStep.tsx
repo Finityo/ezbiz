@@ -6,12 +6,14 @@ import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/
 import { getStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import type { BusinessDetails } from "./BusinessDetailsForm";
+import type { AddonQuantities } from "./AddOnServices";
 
 interface ReviewStepProps {
   state: string;
   entityType: string;
   selectedPackage: string;
   selectedAddOns: string[];
+  addonQuantities: AddonQuantities;
   businessDetails: BusinessDetails;
   onEdit: (step: number) => void;
   onCheckoutStarted: () => void;
@@ -30,6 +32,7 @@ const ReviewStep = ({
   entityType,
   selectedPackage,
   selectedAddOns,
+  addonQuantities,
   businessDetails,
   onEdit,
   onCheckoutStarted,
@@ -40,16 +43,18 @@ const ReviewStep = ({
   const stateFee = getStateFee(state);
   const addonsTotal = selectedAddOns.reduce((sum, id) => {
     const addon = STRIPE_ADDONS[id as AddonId];
-    return sum + (addon?.price || 0);
+    const qty = addonQuantities[id] || 1;
+    return sum + (addon?.price || 0) * qty;
   }, 0);
   const total = (pkg?.price || 0) + addonsTotal + stateFee;
 
   const handleCheckout = async () => {
-    const lineItems: { priceId: string }[] = [];
+    const lineItems: { priceId: string; quantity?: number }[] = [];
     if (pkg) lineItems.push({ priceId: pkg.priceId });
     selectedAddOns.forEach((id) => {
       const addon = STRIPE_ADDONS[id as AddonId];
-      if (addon) lineItems.push({ priceId: addon.priceId });
+      const qty = addonQuantities[id] || 1;
+      if (addon) lineItems.push({ priceId: addon.priceId, quantity: qty });
     });
 
     onCheckoutStarted();
@@ -104,10 +109,11 @@ const ReviewStep = ({
             <ul className="space-y-1">
               {selectedAddOns.map((id) => {
                 const addon = STRIPE_ADDONS[id as AddonId];
+                const qty = addonQuantities[id] || 1;
                 return addon ? (
                   <li key={id} className="flex justify-between text-sm">
-                    <span>{addon.name}</span>
-                    <span className="font-medium">${addon.price}</span>
+                    <span>{addon.name}{qty > 1 ? ` × ${qty}` : ""}</span>
+                    <span className="font-medium">${addon.price * qty}</span>
                   </li>
                 ) : null;
               })}
@@ -126,10 +132,11 @@ const ReviewStep = ({
         </div>
         {selectedAddOns.map((id) => {
           const addon = STRIPE_ADDONS[id as AddonId];
+          const qty = addonQuantities[id] || 1;
           return addon ? (
             <div key={id} className="flex justify-between text-sm">
-              <span>{addon.name}</span>
-              <span>${addon.price}</span>
+              <span>{addon.name}{qty > 1 ? ` × ${qty}` : ""}</span>
+              <span>${addon.price * qty}</span>
             </div>
           ) : null;
         })}

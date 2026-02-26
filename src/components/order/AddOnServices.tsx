@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { InfoIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { InfoIcon, Minus, Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
 
@@ -77,24 +78,34 @@ const addOns: AddOn[] = [
   }
 ];
 
+export interface AddonQuantities {
+  [addonId: string]: number;
+}
+
 interface AddOnServicesProps {
   selected: string[];
   onToggle: (addOnId: string) => void;
+  quantities: AddonQuantities;
+  onQuantityChange: (addonId: string, quantity: number) => void;
 }
 
-const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
+const AddOnServices = ({ selected, onToggle, quantities, onQuantityChange }: AddOnServicesProps) => {
   const hasConsultation = selected.includes("consultation");
 
   const handleToggle = (addonId: string) => {
-    // If selecting extra hour without base consultation, select both
     if (addonId === "extra-consultation-hour" && !hasConsultation && !selected.includes(addonId)) {
       onToggle("consultation");
       onToggle(addonId);
+      onQuantityChange(addonId, 1);
       return;
     }
-    // If deselecting consultation, also deselect extra hour
     if (addonId === "consultation" && hasConsultation && selected.includes("extra-consultation-hour")) {
       onToggle("extra-consultation-hour");
+    }
+    if (addonId === "extra-consultation-hour") {
+      if (!selected.includes(addonId)) {
+        onQuantityChange(addonId, 1);
+      }
     }
     onToggle(addonId);
   };
@@ -102,7 +113,10 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
   const calculateTotal = () => {
     return addOns
       .filter(addon => selected.includes(addon.id))
-      .reduce((sum, addon) => sum + addon.price, 0);
+      .reduce((sum, addon) => {
+        const qty = quantities[addon.id] || 1;
+        return sum + addon.price * qty;
+      }, 0);
   };
 
   return (
@@ -122,6 +136,7 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
           const isSelected = selected.includes(addon.id);
           const isExtraHour = addon.id === "extra-consultation-hour";
           const isDisabled = isExtraHour && !hasConsultation;
+          const qty = quantities[addon.id] || 1;
           
           return (
             <Card
@@ -162,7 +177,47 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
                   
                   <p className="text-sm text-muted-foreground mb-2">{addon.description}</p>
                   
-                  <p className="text-lg font-bold text-primary">${addon.price}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg font-bold text-primary">
+                      ${isExtraHour && isSelected ? addon.price * qty : addon.price}
+                    </p>
+
+                    {isExtraHour && isSelected && (
+                      <div
+                        className="flex items-center gap-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => {
+                            if (qty > 1) {
+                              onQuantityChange(addon.id, qty - 1);
+                            }
+                          }}
+                          disabled={qty <= 1}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="w-6 text-center font-semibold text-sm">{qty}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => {
+                            if (qty < 10) {
+                              onQuantityChange(addon.id, qty + 1);
+                            }
+                          }}
+                          disabled={qty >= 10}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                        <span className="text-xs text-muted-foreground">hr{qty > 1 ? "s" : ""}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </Card>
