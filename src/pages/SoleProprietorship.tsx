@@ -192,7 +192,7 @@ const SoleProprietorship = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Your Business <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -346,7 +346,7 @@ const SoleProprietorship = () => {
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">Consider Liability Protection</h4>
                     <p className="text-muted-foreground text-sm">
-                      If unlimited personal liability is a concern, consider forming an <Link to="/llc" className="text-secondary hover:underline font-medium">LLC</Link> instead. 
+                      If unlimited personal liability is a concern, consider forming an <Link to="/form-llc" className="text-secondary hover:underline font-medium">LLC</Link> instead. 
                       An LLC provides personal asset protection while maintaining tax simplicity similar to a sole proprietorship.
                     </p>
                   </div>
@@ -597,7 +597,7 @@ const SoleProprietorship = () => {
                   Need help getting started? We can guide you through the process.
                 </p>
                 <Button size="lg" className="px-8" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Your Sole Proprietorship <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -677,7 +677,7 @@ const SoleProprietorship = () => {
               
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <Button variant="outline" asChild>
-                  <Link to="/llc">Learn About LLCs</Link>
+                  <Link to="/form-llc">Learn About LLCs</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/s-corporation">Learn About S Corps</Link>
@@ -731,7 +731,7 @@ const SoleProprietorship = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Get Started Today <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

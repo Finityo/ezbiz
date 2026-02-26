@@ -199,7 +199,7 @@ const SCorporation = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Form Your S-Corp <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -511,7 +511,7 @@ const SCorporation = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Form Your S-Corp <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

@@ -218,7 +218,7 @@ const LLC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Your LLC - $149 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
@@ -507,7 +507,7 @@ const LLC = () => {
               
               <div className="mt-8 sm:mt-12 text-center">
                 <Button size="lg" className="px-6 sm:px-8" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Your LLC <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
@@ -647,7 +647,7 @@ const LLC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Start Your LLC - $149 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>

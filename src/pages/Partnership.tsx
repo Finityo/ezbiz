@@ -220,7 +220,7 @@ const Partnership = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Form Your Partnership <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -381,7 +381,7 @@ const Partnership = () => {
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">Want Liability Protection?</h4>
                     <p className="text-muted-foreground text-sm">
-                      If unlimited liability concerns you, consider an <Link to="/llc" className="text-secondary hover:underline font-medium">LLC</Link> instead. 
+                      If unlimited liability concerns you, consider an <Link to="/form-llc" className="text-secondary hover:underline font-medium">LLC</Link> instead. 
                       LLCs provide liability protection while maintaining pass-through taxation, similar to a partnership.
                     </p>
                   </div>
@@ -559,7 +559,7 @@ const Partnership = () => {
               
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <Button variant="outline" asChild>
-                  <Link to="/llc">Learn About LLCs</Link>
+                  <Link to="/form-llc">Learn About LLCs</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/s-corporation">Learn About S Corps</Link>
@@ -616,7 +616,7 @@ const Partnership = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     Form Your Partnership <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

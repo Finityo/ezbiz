@@ -191,7 +191,7 @@ const DBAFiling = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     File Your DBA <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -407,7 +407,7 @@ const DBAFiling = () => {
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">Need Liability Protection?</h4>
                     <p className="text-muted-foreground text-sm">
-                      If personal liability protection is important for your business, consider forming an <Link to="/llc" className="text-secondary hover:underline font-medium">LLC</Link> first, 
+                      If personal liability protection is important for your business, consider forming an <Link to="/form-llc" className="text-secondary hover:underline font-medium">LLC</Link> first, 
                       then filing a DBA for the LLC if you want to operate under a different name.
                     </p>
                   </div>
@@ -565,7 +565,7 @@ const DBAFiling = () => {
                   <Link to="/sole-proprietorship">Learn About Sole Proprietorships</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link to="/llc">Learn About LLCs</Link>
+                  <Link to="/form-llc">Learn About LLCs</Link>
                 </Button>
               </div>
             </div>
@@ -613,7 +613,7 @@ const DBAFiling = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order">
+                  <Link to="/order-flow">
                     File Your DBA Today <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
