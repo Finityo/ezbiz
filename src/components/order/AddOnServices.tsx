@@ -67,7 +67,13 @@ const addOns: AddOn[] = [
     id: "consultation",
     name: STRIPE_ADDONS.consultation.name,
     price: STRIPE_ADDONS.consultation.price,
-    description: "2-hour remote consultation ($150/hr). $80/hr for each additional hour beyond the initial 2 hours."
+    description: "2-hour remote consultation. $80/hr for each additional hour beyond the initial 2 hours."
+  },
+  {
+    id: "extra-consultation-hour",
+    name: STRIPE_ADDONS["extra-consultation-hour"].name,
+    price: STRIPE_ADDONS["extra-consultation-hour"].price,
+    description: "Add extra consultation hours at $80/hr (requires the 2-hour consultation above)"
   }
 ];
 
