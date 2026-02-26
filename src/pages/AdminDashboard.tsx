@@ -14,7 +14,7 @@ import Navigation from '@/components/Navigation';
 import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star } from 'lucide-react';
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
-import * as XLSX from 'xlsx';
+
 
 interface ConsultationRequest {
   id: string;
@@ -278,28 +278,27 @@ const AdminDashboard = () => {
   };
 
   const exportApplicationsToExcel = () => {
-    const workbook = XLSX.utils.book_new();
-    
-    // Prepare data for Excel
-    const applicationData = filteredApplications.map(app => ({
-      'Business Name': app.business_name,
-      'Business Type': app.business_type,
-      'State': app.state,
-      'Status': app.status,
-      'User ID': app.user_id,
-      'Created Date': new Date(app.created_at).toLocaleDateString(),
-      'Updated Date': new Date(app.updated_at).toLocaleDateString(),
-      'Application Data': JSON.stringify(app.application_data)
-    }));
+    const headers = ['Business Name', 'Business Type', 'State', 'Status', 'User ID', 'Created Date', 'Updated Date'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredApplications.map(app => [
+        `"${app.business_name.replace(/"/g, '""')}"`,
+        `"${app.business_type}"`,
+        `"${app.state}"`,
+        `"${app.status}"`,
+        `"${app.user_id}"`,
+        `"${new Date(app.created_at).toLocaleDateString()}"`,
+        `"${new Date(app.updated_at).toLocaleDateString()}"`
+      ].join(','))
+    ].join('\n');
 
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(applicationData);
-    
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Business Applications');
-    
-    // Save the file
-    XLSX.writeFile(workbook, `business-applications-${new Date().toISOString().split('T')[0]}.xlsx`);
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `business-applications-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   if (loading) {
