@@ -13,7 +13,7 @@ import { Check, Star, Shield, Users, FileText, ExternalLink, MapPin } from "luci
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
-import { getStateFee, STATE_FILING_FEES } from "@/lib/state-fees";
+import { getStateFee, getCorpStateFee, STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
 import pricingHero from "@/assets/business-success.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
@@ -24,6 +24,7 @@ const Pricing = () => {
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState("");
   const stateFee = selectedState ? getStateFee(selectedState) : 0;
+  const corpStateFee = selectedState ? getCorpStateFee(selectedState) : 0;
 
   const handlePackageCheckout = (packageKey: string) => {
     const params = new URLSearchParams();
@@ -266,9 +267,10 @@ const Pricing = () => {
                 </SelectContent>
               </Select>
               {selectedState && (
-                <p className="mt-3 text-sm font-medium text-primary">
-                  {selectedState} state filing fee: <span className="font-bold">${stateFee}</span>
-                </p>
+                <div className="mt-3 text-sm font-medium text-primary flex flex-col sm:flex-row gap-1 sm:gap-4 justify-center">
+                  <span>LLC filing fee: <span className="font-bold">${stateFee}</span></span>
+                  <span>Corp filing fee: <span className="font-bold">${corpStateFee}</span></span>
+                </div>
               )}
             </div>
           </div>
@@ -351,7 +353,7 @@ const Pricing = () => {
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
                     {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${stateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + stateFee} total</span></div>
+                      <div className="text-sm text-muted-foreground">+ ${corpStateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + corpStateFee} total</span></div>
                     ) : (
                       <div className="text-sm text-muted-foreground">{pkg.period}</div>
                     )}
@@ -477,15 +479,28 @@ const Pricing = () => {
               <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">State Filing Fees</h2>
               <Card>
                 <CardContent className="p-4 sm:p-6 md:p-8">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-4">Popular State Filing Fees</h3>
-                    <div className="space-y-2 text-sm">
-                      {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
-                        <div key={state} className="flex justify-between">
-                          <span>{state}</span>
-                          <span className="font-medium">${STATE_FILING_FEES[state]}</span>
-                        </div>
-                      ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">LLC State Fees</h3>
+                      <div className="space-y-2 text-sm">
+                        {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
+                          <div key={state} className="flex justify-between">
+                            <span>{state}</span>
+                            <span className="font-medium">${STATE_FILING_FEES[state]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">Corporation State Fees</h3>
+                      <div className="space-y-2 text-sm">
+                        {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
+                          <div key={state} className="flex justify-between">
+                            <span>{state}</span>
+                            <span className="font-medium">${STATE_CORP_FILING_FEES[state]}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div className="mt-6 p-4 bg-muted rounded-lg">
