@@ -477,64 +477,15 @@ const Pricing = () => {
               <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">State Filing Fees</h2>
               <Card>
                 <CardContent className="p-4 sm:p-6 md:p-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">LLC State Fees</h3>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Delaware</span>
-                          <span>$90</span>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Popular State Filing Fees</h3>
+                    <div className="space-y-2 text-sm">
+                      {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
+                        <div key={state} className="flex justify-between">
+                          <span>{state}</span>
+                          <span className="font-medium">${STATE_FILING_FEES[state]}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Wyoming</span>
-                          <span>$100</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Nevada</span>
-                          <span>$75</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Florida</span>
-                          <span>$125</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Texas</span>
-                          <span>$300</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>California</span>
-                          <span>$70</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">Corporation State Fees</h3>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Delaware</span>
-                          <span>$89</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Wyoming</span>
-                          <span>$100</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Nevada</span>
-                          <span>$75</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Florida</span>
-                          <span>$70</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Texas</span>
-                          <span>$300</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>California</span>
-                          <span>$100</span>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                   <div className="mt-6 p-4 bg-muted rounded-lg">
