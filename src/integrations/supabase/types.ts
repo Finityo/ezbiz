@@ -110,6 +110,39 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          message: string | null
+          page_visited: string
+          rating: number
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          page_visited: string
+          rating: number
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          page_visited?: string
+          rating?: number
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       heatmap_analytics: {
         Row: {
           created_at: string | null

@@ -11,8 +11,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3 } from 'lucide-react';
+import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star } from 'lucide-react';
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
+import FeedbackTab from '@/components/admin/FeedbackTab';
 import * as XLSX from 'xlsx';
 
 interface ConsultationRequest {
@@ -331,7 +332,7 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="consultations" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="consultations">
               <MessageSquare className="h-4 w-4 mr-2" />
               Consultations ({filteredConsultations.length})
@@ -339,6 +340,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="applications">
               <FileText className="h-4 w-4 mr-2" />
               Applications ({filteredApplications.length})
+            </TabsTrigger>
+            <TabsTrigger value="feedback">
+              <Star className="h-4 w-4 mr-2" />
+              Feedback
             </TabsTrigger>
             <TabsTrigger value="analytics">
               <BarChart3 className="h-4 w-4 mr-2" />
@@ -787,6 +792,10 @@ const AdminDashboard = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="feedback" className="space-y-6">
+            <FeedbackTab />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">

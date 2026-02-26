@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import FeedbackWidget from "./components/FeedbackWidget";
 
 // Lazy-loaded routes for code splitting
 const LLC = lazy(() => import("./pages/LLC"));
@@ -130,6 +131,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
+            <FeedbackWidget />
             </AnalyticsWrapper>
          </BrowserRouter>
        </AuthProvider>
