@@ -89,6 +89,12 @@ export const STRIPE_ADDONS = {
     priceId: "price_1T5AQ3IUysiSR1zwXQnXw4YT",
     productId: "prod_U3Gx3Ri5LPlANX",
   },
+  "extra-consultation-hour": {
+    name: "Extra Consultation Hour",
+    price: 80,
+    priceId: "price_1T5AqJIUysiSR1zwKPl6BGCU",
+    productId: "prod_U3HP3yRkMhFyT1",
+  },
 } as const;
 
 export type PackageId = keyof typeof STRIPE_PACKAGES;
