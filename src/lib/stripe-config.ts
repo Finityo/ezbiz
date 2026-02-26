@@ -85,9 +85,9 @@ export const STRIPE_ADDONS = {
   },
   "consultation": {
     name: "Remote Business Consultation (2 Hours)",
-    price: 300,
-    priceId: "price_1T5ANwIUysiSR1zwHNJn3srk",
-    productId: "prod_U3GvRAXNt6Wei5",
+    price: 150,
+    priceId: "price_1T5AQ3IUysiSR1zwXQnXw4YT",
+    productId: "prod_U3Gx3Ri5LPlANX",
   },
 } as const;
 
