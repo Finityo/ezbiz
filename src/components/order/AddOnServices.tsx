@@ -83,6 +83,22 @@ interface AddOnServicesProps {
 }
 
 const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
+  const hasConsultation = selected.includes("consultation");
+
+  const handleToggle = (addonId: string) => {
+    // If selecting extra hour without base consultation, select both
+    if (addonId === "extra-consultation-hour" && !hasConsultation && !selected.includes(addonId)) {
+      onToggle("consultation");
+      onToggle(addonId);
+      return;
+    }
+    // If deselecting consultation, also deselect extra hour
+    if (addonId === "consultation" && hasConsultation && selected.includes("extra-consultation-hour")) {
+      onToggle("extra-consultation-hour");
+    }
+    onToggle(addonId);
+  };
+
   const calculateTotal = () => {
     return addOns
       .filter(addon => selected.includes(addon.id))
@@ -104,19 +120,22 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {addOns.map((addon) => {
           const isSelected = selected.includes(addon.id);
+          const isExtraHour = addon.id === "extra-consultation-hour";
+          const isDisabled = isExtraHour && !hasConsultation;
           
           return (
             <Card
               key={addon.id}
               className={`p-4 cursor-pointer transition-smooth hover:shadow-md ${
                 isSelected ? "border-primary bg-primary/5" : ""
-              }`}
-              onClick={() => onToggle(addon.id)}
+              } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              onClick={() => !isDisabled && handleToggle(addon.id)}
             >
               <div className="flex items-start gap-3">
                 <Checkbox
                   checked={isSelected}
-                  onCheckedChange={() => onToggle(addon.id)}
+                  disabled={isDisabled}
+                  onCheckedChange={() => !isDisabled && handleToggle(addon.id)}
                   className="mt-1"
                 />
                 
