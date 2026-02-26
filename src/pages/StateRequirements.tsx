@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, Download, MapPin, DollarSign, Clock, FileText } from "lucide-react";
 import { useState } from "react";
-import { STATE_FILING_FEES } from "@/lib/state-fees";
+import { STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
 
 const StateRequirements = () => {
   const [selectedState, setSelectedState] = useState("");
@@ -13,7 +13,7 @@ const StateRequirements = () => {
     {
       state: "Delaware",
       llcFee: `$${STATE_FILING_FEES["Delaware"]}`,
-      corpFee: "$89",
+      corpFee: `$${STATE_CORP_FILING_FEES["Delaware"]}`,
       processingTime: "7-10 days",
       benefits: ["Business-friendly courts", "Strong corporate law", "Privacy protection", "No sales tax"],
       annualReport: "Required",
@@ -22,7 +22,7 @@ const StateRequirements = () => {
     {
       state: "Wyoming",
       llcFee: `$${STATE_FILING_FEES["Wyoming"]}`,
-      corpFee: "$100",
+      corpFee: `$${STATE_CORP_FILING_FEES["Wyoming"]}`,
       processingTime: "3-5 days", 
       benefits: ["Strong privacy laws", "No state income tax", "Low fees", "Asset protection"],
       annualReport: "Required",
@@ -31,7 +31,7 @@ const StateRequirements = () => {
     {
       state: "Nevada", 
       llcFee: `$${STATE_FILING_FEES["Nevada"]}`,
-      corpFee: "$75",
+      corpFee: `$${STATE_CORP_FILING_FEES["Nevada"]}`,
       processingTime: "5-7 days",
       benefits: ["No corporate income tax", "Strong privacy laws", "Flexible corporate structure", "Asset protection"],
       annualReport: "Required", 
@@ -40,7 +40,7 @@ const StateRequirements = () => {
     {
       state: "Florida",
       llcFee: `$${STATE_FILING_FEES["Florida"]}`,
-      corpFee: "$70",
+      corpFee: `$${STATE_CORP_FILING_FEES["Florida"]}`,
       processingTime: "5-7 days",
       benefits: ["No state income tax", "Strong economy", "Business incentives", "Growing market"],
       annualReport: "Required",
@@ -49,7 +49,7 @@ const StateRequirements = () => {
     {
       state: "Texas", 
       llcFee: `$${STATE_FILING_FEES["Texas"]}`,
-      corpFee: "$300",
+      corpFee: `$${STATE_CORP_FILING_FEES["Texas"]}`,
       processingTime: "7-14 days",
       benefits: ["No state income tax", "Large market", "Business incentives", "Strong economy"],
       annualReport: "Required",
@@ -58,7 +58,7 @@ const StateRequirements = () => {
     {
       state: "California",
       llcFee: `$${STATE_FILING_FEES["California"]}`,
-      corpFee: "$100", 
+      corpFee: `$${STATE_CORP_FILING_FEES["California"]}`,
       processingTime: "10-15 days",
       benefits: ["Large market", "Access to capital", "Innovation hub", "Diverse economy"],
       annualReport: "Required + $800 minimum tax",
@@ -88,7 +88,7 @@ const StateRequirements = () => {
   const stateFees = Object.keys(STATE_FILING_FEES).sort().map(state => ({
     state,
     llc: `$${STATE_FILING_FEES[state]}`,
-    corp: `$${STATE_FILING_FEES[state]}`
+    corp: `$${STATE_CORP_FILING_FEES[state] || STATE_FILING_FEES[state]}`
   }));
 
   return (

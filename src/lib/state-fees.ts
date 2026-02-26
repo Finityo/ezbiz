@@ -56,6 +56,65 @@ export const STATE_FILING_FEES: Record<string, number> = {
   "Wyoming": 103,
 };
 
+// Corporation filing fees by state (2026)
+export const STATE_CORP_FILING_FEES: Record<string, number> = {
+  "Alabama": 200,
+  "Alaska": 250,
+  "Arizona": 60,
+  "Arkansas": 50,
+  "California": 100,
+  "Colorado": 50,
+  "Connecticut": 250,
+  "Delaware": 89,
+  "District Of Columbia": 220,
+  "Florida": 70,
+  "Georgia": 100,
+  "Hawaii": 50,
+  "Idaho": 100,
+  "Illinois": 175,
+  "Indiana": 90,
+  "Iowa": 50,
+  "Kansas": 90,
+  "Kentucky": 40,
+  "Louisiana": 75,
+  "Maine": 145,
+  "Maryland": 120,
+  "Massachusetts": 275,
+  "Michigan": 60,
+  "Minnesota": 160,
+  "Mississippi": 50,
+  "Missouri": 58,
+  "Montana": 70,
+  "Nebraska": 60,
+  "Nevada": 75,
+  "New Hampshire": 100,
+  "New Jersey": 125,
+  "New Mexico": 100,
+  "New York": 125,
+  "North Carolina": 125,
+  "North Dakota": 100,
+  "Ohio": 125,
+  "Oklahoma": 50,
+  "Oregon": 100,
+  "Pennsylvania": 125,
+  "Rhode Island": 230,
+  "South Carolina": 135,
+  "South Dakota": 150,
+  "Tennessee": 100,
+  "Texas": 300,
+  "Utah": 70,
+  "Vermont": 125,
+  "Virginia": 75,
+  "Washington": 200,
+  "West Virginia": 100,
+  "Wisconsin": 100,
+  "Wyoming": 100,
+};
+
 export const getStateFee = (state: string): number => {
   return STATE_FILING_FEES[state] || 100;
+};
+
+export const getCorpStateFee = (state: string): number => {
+  return STATE_CORP_FILING_FEES[state] || 100;
 };
