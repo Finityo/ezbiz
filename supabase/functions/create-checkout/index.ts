@@ -79,6 +79,12 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
+      invoice_creation: {
+        enabled: true,
+        invoice_data: {
+          description: "EZ BIZ File Service - Business Formation",
+        },
+      },
       success_url: `${origin}${successPath}`,
       cancel_url: `${origin}${cancelPath}`,
     });
