@@ -135,6 +135,7 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
                 <Checkbox
                   checked={isSelected}
                   disabled={isDisabled}
+                  onClick={(e) => e.stopPropagation()}
                   onCheckedChange={() => !isDisabled && handleToggle(addon.id)}
                   className="mt-1"
                 />
