@@ -62,6 +62,12 @@ const addOns: AddOn[] = [
     name: STRIPE_ADDONS.dba.name,
     price: STRIPE_ADDONS.dba.price,
     description: "File a 'Doing Business As' name for your company"
+  },
+  {
+    id: "consultation",
+    name: STRIPE_ADDONS.consultation.name,
+    price: STRIPE_ADDONS.consultation.price,
+    description: "2-hour remote consultation ($150/hr). $80/hr for each additional hour beyond the initial 2 hours."
   }
 ];
 

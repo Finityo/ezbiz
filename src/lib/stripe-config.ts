@@ -83,6 +83,12 @@ export const STRIPE_ADDONS = {
     priceId: "price_1T0yXMIUysiSR1zwV7ZYaYLh",
     productId: "prod_TywQmcxtBL8C31",
   },
+  "consultation": {
+    name: "Remote Business Consultation (2 Hours)",
+    price: 300,
+    priceId: "price_1T5ANwIUysiSR1zwHNJn3srk",
+    productId: "prod_U3GvRAXNt6Wei5",
+  },
 } as const;
 
 export type PackageId = keyof typeof STRIPE_PACKAGES;
