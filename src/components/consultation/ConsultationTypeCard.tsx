@@ -8,6 +8,7 @@ interface ConsultationType {
   description: string;
   icon: React.ReactNode;
   duration: string;
+  price?: string;
 }
 
 interface ConsultationTypeCardProps {
@@ -35,13 +36,20 @@ const ConsultationTypeCard = ({ type, acuityOwnerId }: ConsultationTypeCardProps
           {type.icon}
         </div>
         <CardTitle className="text-xl">{type.title}</CardTitle>
-        <Badge variant="outline">{type.duration}</Badge>
+        <div className="flex items-center justify-center gap-2 mt-1">
+          <Badge variant="outline">{type.duration}</Badge>
+          {type.price && (
+            <Badge variant={type.price === "Free" ? "default" : "secondary"} className="text-sm font-semibold">
+              {type.price}
+            </Badge>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <p className="text-muted-foreground mb-4 flex-1">{type.description}</p>
         <Button onClick={() => openAcuityPopup(acuityOwnerId)} className="w-full mt-auto">
           <Calendar className="h-4 w-4 mr-2" />
-          Schedule Now
+          {type.price === "Free" ? "Schedule Free Call" : "Book Now"}
         </Button>
       </CardContent>
     </Card>
