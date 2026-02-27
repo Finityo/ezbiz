@@ -39,22 +39,25 @@ const Consultation = () => {
 
   const consultationTypes = [
     {
-      title: "Business Structure Consultation",
-      description: "Get personalized advice on choosing the right business entity (LLC, Corporation, etc.) for your specific needs and goals.",
+      title: "Free 30-Minute Consultation",
+      description: "Get personalized advice on choosing the right business entity, state-specific requirements, and next steps — completely free, no obligations.",
+      icon: <Phone className="h-8 w-8" />,
+      duration: "30 minutes",
+      price: "Free"
+    },
+    {
+      title: "White-Glove Mobile Filing",
+      description: "We come to you! Get in-person, step-by-step guidance from a business formation expert at your location. Includes hands-on help with paperwork and filing.",
       icon: <Users className="h-8 w-8" />,
-      duration: "30 minutes"
+      duration: "2 hours",
+      price: "$150"
     },
     {
-      title: "State-Specific Guidance", 
-      description: "Learn about the requirements, benefits, and considerations for forming your business in your preferred state.",
+      title: "Extra Consultation Hours",
+      description: "Need more time? Add extra hours to your white-glove mobile session for continued in-person support beyond the initial 2-hour session.",
       icon: <MessageCircle className="h-8 w-8" />,
-      duration: "20 minutes"
-    },
-    {
-      title: "Tax Strategy Discussion",
-      description: "Understand the tax implications of different business structures and strategies to minimize your tax burden.",
-      icon: <CheckCircle className="h-8 w-8" />,
-      duration: "45 minutes"
+      duration: "Per hour",
+      price: "$80/hr"
     }
   ];
 
