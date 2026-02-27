@@ -8,32 +8,26 @@ interface ConsultationType {
   description: string;
   icon: React.ReactNode;
   duration: string;
-  calendlyEvent?: string;
 }
 
 interface ConsultationTypeCardProps {
   type: ConsultationType;
-  calendlyUsername: string;
+  acuityOwnerId: string;
 }
 
-declare global {
-  interface Window {
-    Calendly?: {
-      initPopupWidget: (options: { url: string }) => void;
-    };
-  }
-}
+const openAcuityPopup = (ownerId: string) => {
+  const width = 600;
+  const height = 800;
+  const left = (window.screen.width - width) / 2;
+  const top = (window.screen.height - height) / 2;
+  window.open(
+    `https://app.acuityscheduling.com/schedule.php?owner=${ownerId}`,
+    'acuity',
+    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
+  );
+};
 
-const ConsultationTypeCard = ({ type, calendlyUsername }: ConsultationTypeCardProps) => {
-  const handleSchedule = () => {
-    if (window.Calendly) {
-      const url = type.calendlyEvent 
-        ? `https://calendly.com/${calendlyUsername}/${type.calendlyEvent}`
-        : `https://calendly.com/${calendlyUsername}`;
-      window.Calendly.initPopupWidget({ url });
-    }
-  };
-
+const ConsultationTypeCard = ({ type, acuityOwnerId }: ConsultationTypeCardProps) => {
   return (
     <Card className="text-center hover:shadow-lg transition-shadow flex flex-col">
       <CardHeader>
@@ -45,7 +39,7 @@ const ConsultationTypeCard = ({ type, calendlyUsername }: ConsultationTypeCardPr
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <p className="text-muted-foreground mb-4 flex-1">{type.description}</p>
-        <Button onClick={handleSchedule} className="w-full mt-auto">
+        <Button onClick={() => openAcuityPopup(acuityOwnerId)} className="w-full mt-auto">
           <Calendar className="h-4 w-4 mr-2" />
           Schedule Now
         </Button>
@@ -54,4 +48,5 @@ const ConsultationTypeCard = ({ type, calendlyUsername }: ConsultationTypeCardPr
   );
 };
 
+export { openAcuityPopup };
 export default ConsultationTypeCard;
