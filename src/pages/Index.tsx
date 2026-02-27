@@ -110,53 +110,12 @@ const Index = () => {
     }
   ];
 
-  const capabilities = [
-    {
-      icon: <FileText className="h-8 w-8" />,
-      title: "Complete Formation Services",
-      description: "From Articles of Organization to Operating Agreements, we handle every document your business needs."
-    },
-    {
-      icon: <Shield className="h-8 w-8" />,
-      title: "Registered Agent Services",
-      description: "Professional representation in all 50 states, ensuring you never miss critical legal correspondence."
-    },
-    {
-      icon: <Award className="h-8 w-8" />,
-      title: "Compliance & Ongoing Support",
-      description: "Annual reports, tax filings, and compliance monitoring to keep your business in good standing."
-    }
-  ];
+  const capabilityIcons = [<FileText className="h-8 w-8" />, <Shield className="h-8 w-8" />, <Award className="h-8 w-8" />];
+  const capabilities = EZBIZ_COPY.capabilities.items.map((c, i) => ({ ...c, icon: capabilityIcons[i] }));
 
-  const processSteps = [
-    {
-      step: "01",
-      title: "Choose Your Structure",
-      description: "Select the business entity that aligns with your goals, liability needs, and tax preferences."
-    },
-    {
-      step: "02", 
-      title: "Provide Your Details",
-      description: "Complete our streamlined form with your business information. Takes less than 15 minutes."
-    },
-    {
-      step: "03",
-      title: "We Handle the Filing",
-      description: "Our experts prepare and submit all documents to the appropriate state authorities."
-    },
-    {
-      step: "04",
-      title: "Launch Your Business", 
-      description: "Receive your official documents and begin operating your legally formed business."
-    }
-  ];
+  const processSteps = EZBIZ_COPY.howItWorks.steps;
 
-  const trustIndicators = [
-    { value: "50,000+", label: "Businesses Formed" },
-    { value: "15+", label: "Years of Experience" },
-    { value: "50", label: "States Served" },
-    { value: "4.9★", label: "Customer Rating" }
-  ];
+  // trustIndicators kept as numeric data (not copy)
 
   return (
     <div className="min-h-screen bg-background">
@@ -261,20 +220,15 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-6">
-              <h2 className="text-xl md:text-2xl font-bold font-display flex items-center justify-center gap-2">
-                <span>🇺🇸</span> Texas Veteran Filing Benefits
-              </h2>
-              <p className="text-sm text-muted-foreground font-body mt-2 max-w-2xl mx-auto">
-                Eligible veteran-owned Texas businesses may qualify for relief from certain filing fees and franchise tax for up to five years.
-              </p>
+               <h2 className="text-xl md:text-2xl font-bold font-display flex items-center justify-center gap-2">
+                 <span>🇺🇸</span> {EZBIZ_COPY.veteranStrip.heading}
+               </h2>
+               <p className="text-sm text-muted-foreground font-body mt-2 max-w-2xl mx-auto">
+                 {EZBIZ_COPY.veteranStrip.subheading}
+               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3 md:gap-4 mb-6">
-              {[
-                "Possible Texas state filing fee waivers for qualifying Veterans",
-                "Structured, compliant business formation",
-                "Direct communication — no corporate runaround",
-                "Veteran-founded and Texas-focused"
-              ].map((item, i) => (
+               {EZBIZ_COPY.veteranStrip.benefits.map((item, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                   <span className="text-sm md:text-base font-body text-foreground">{item}</span>
@@ -287,7 +241,7 @@ const Index = () => {
                 className="border-primary text-primary hover:bg-primary/5"
                 onClick={() => { trackEvent('veteran_cta_click', { location: 'homepage' }); trackClick('Check Veteran Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
               >
-                Check Veteran Eligibility
+                 {EZBIZ_COPY.veteranStrip.cta}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -324,26 +278,13 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
-              Simple. Transparent. Done Correctly.
-            </h2>
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
+               {EZBIZ_COPY.clarityBlock.heading}
+             </h2>
           </div>
 
           <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto" staggerDelay={120}>
-            {[
-              {
-                title: "Accurate State Filing",
-                description: "Your formation documents are prepared and submitted properly the first time."
-              },
-              {
-                title: "Clear Pricing",
-                description: "No surprise upsells after checkout. You see what you're paying for."
-              },
-              {
-                title: "Real Support",
-                description: "Direct communication — not outsourced ticket systems."
-              }
-            ].map((point, index) => (
+             {EZBIZ_COPY.clarityBlock.points.map((point, index) => (
               <div key={index} className="text-center space-y-3 p-6">
                 <CheckCircle className="h-8 w-8 text-success mx-auto" />
                 <h3 className="text-lg md:text-xl font-semibold font-display">{point.title}</h3>
@@ -359,31 +300,17 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Why Clients Choose EZ BIZ</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.differentiation.heading}</h2>
           </div>
           
           <StaggeredGrid className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto" staggerDelay={150}>
-            {[
-              {
-                icon: <Shield className="h-8 w-8" />,
-                title: "Transparent Service",
-                description: "You know exactly what's included and what state fees apply."
-              },
-              {
-                icon: <Award className="h-8 w-8" />,
-                title: "Founder-Led Oversight",
-                description: "Your filing isn't processed anonymously through automation pipelines."
-              },
-              {
-                icon: <Zap className="h-8 w-8" />,
-                title: "Straightforward Process",
-                description: "Clear steps. No confusion. No buried add-ons."
-              }
-            ].map((item, index) => (
+             {EZBIZ_COPY.differentiation.items.map((item, index) => {
+               const icons = [<Shield className="h-8 w-8" key="s" />, <Award className="h-8 w-8" key="a" />, <Zap className="h-8 w-8" key="z" />];
+               return (
               <TiltCard key={index} className="border-0 shadow-smooth bg-card" tiltMax={6} scale={1.02}>
-                <CardHeader className="space-y-4">
-                  <div className="inline-flex p-3 rounded-xl bg-primary/5 text-primary w-fit">
-                    {item.icon}
+                 <CardHeader className="space-y-4">
+                   <div className="inline-flex p-3 rounded-xl bg-primary/5 text-primary w-fit">
+                     {icons[index]}
                   </div>
                   <CardTitle className="text-xl font-display">{item.title}</CardTitle>
                 </CardHeader>
@@ -393,7 +320,7 @@ const Index = () => {
                   </CardDescription>
                 </CardContent>
               </TiltCard>
-            ))}
+              );})}
           </StaggeredGrid>
         </div>
       </AnimatedSection>
@@ -403,50 +330,49 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Choose Your Business Structure</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-              From simple to sophisticated, we help you select and form the right entity 
-              for your business goals.
-            </p>
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.businessStructures.heading}</h2>
+             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+               {EZBIZ_COPY.businessStructures.subheading}
+             </p>
           </div>
           
-          <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
-            {businessStructures.map((structure, index) => (
-              <TiltCard 
-                key={index} 
-                className={`relative ${
-                  structure.popular ? 'border-secondary shadow-lg ring-1 ring-secondary/20' : 'border-border shadow-smooth'
-                }`}
-                onClick={() => navigate(structure.href)}
-                tiltMax={8}
-                scale={1.02}
-              >
-                {structure.popular && (
-                  <Badge className="absolute -top-3 left-6 bg-secondary text-secondary-foreground z-20">
-                    Most Popular
-                  </Badge>
-                )}
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="p-2 rounded-lg bg-primary/5 text-primary">
-                      {structure.icon}
-                    </div>
-                    <Badge variant="outline" className="text-xs font-body">
-                      {structure.complexity}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-lg font-display">{structure.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="font-body">{structure.description}</CardDescription>
-                  <Button variant="link" className="px-0 mt-4 text-primary font-body group">
-                    Learn More 
-                    <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </CardContent>
-              </TiltCard>
-            ))}
-          </StaggeredGrid>
+           <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={100}>
+             {businessStructures.map((structure, index) => (
+               <TiltCard 
+                 key={index} 
+                 className={`relative ${
+                   structure.popular ? 'border-secondary shadow-lg ring-1 ring-secondary/20' : 'border-border shadow-smooth'
+                 }`}
+                 onClick={() => navigate(structure.href)}
+                 tiltMax={8}
+                 scale={1.02}
+               >
+                 {structure.popular && (
+                   <Badge className="absolute -top-3 left-6 bg-secondary text-secondary-foreground z-20">
+                     Most Popular
+                   </Badge>
+                 )}
+                 <CardHeader className="pb-3">
+                   <div className="flex items-center justify-between mb-2">
+                     <div className="p-2 rounded-lg bg-primary/5 text-primary">
+                       {structure.icon}
+                     </div>
+                     <Badge variant="outline" className="text-xs font-body">
+                       {structure.complexity}
+                     </Badge>
+                   </div>
+                   <CardTitle className="text-lg font-display">{structure.title}</CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <CardDescription className="font-body">{structure.description}</CardDescription>
+                   <Button variant="link" className="px-0 mt-4 text-primary font-body group">
+                     Learn More 
+                     <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                   </Button>
+                 </CardContent>
+               </TiltCard>
+             ))}
+           </StaggeredGrid>
         </div>
       </AnimatedSection>
 
@@ -455,16 +381,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">How It Works</h2>
-          </div>
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.howItWorks.heading}</h2>
+           </div>
 
-          <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
-            {[
-              "Submit your business details.",
-              "We prepare your formation documents.",
-              "We file with the state.",
-              "You receive confirmation and next-step guidance."
-            ].map((step, index) => (
+           <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
+             {EZBIZ_COPY.howItWorks.steps.map((step, index) => (
               <div key={index} className="flex items-start gap-4 md:gap-6">
                 <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <span className="text-lg md:text-xl font-bold text-primary font-display">{index + 1}</span>
@@ -484,17 +405,16 @@ const Index = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-2">
               <Award className="h-8 w-8" />
             </div>
-            <h3 className="text-xl md:text-2xl font-bold font-display">Christian Talavera</h3>
-            <p className="text-sm text-muted-foreground font-body">
-              U.S. Marine Veteran · MBA · MSL
-            </p>
-            <p className="text-base text-secondary font-semibold font-display">
-              Founder, EZ BIZ File Service, LLC
-            </p>
-            <p className="text-muted-foreground font-body leading-relaxed max-w-lg mx-auto">
-              Built on structure, compliance, and clear execution — so your business 
-              starts correctly from day one.
-            </p>
+             <h3 className="text-xl md:text-2xl font-bold font-display">{EZBIZ_COPY.founder.name}</h3>
+             <p className="text-sm text-muted-foreground font-body">
+               {EZBIZ_COPY.founder.credentials}
+             </p>
+             <p className="text-base text-secondary font-semibold font-display">
+               {EZBIZ_COPY.founder.title}
+             </p>
+             <p className="text-muted-foreground font-body leading-relaxed max-w-lg mx-auto">
+               {EZBIZ_COPY.founder.bio}
+             </p>
           </div>
         </div>
       </AnimatedSection>
@@ -505,17 +425,15 @@ const Index = () => {
           <div className="max-w-3xl mx-auto">
             <Card className="border-secondary/20 shadow-elegant overflow-hidden">
               <div className="p-6 md:p-10 space-y-5">
-                <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
-                  Optional Add-On
-                </Badge>
-                <h3 className="text-2xl md:text-3xl font-bold font-display">
-                  White-Glove Mobile Filing
+                 <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
+                   {EZBIZ_COPY.mobileService.badge}
+                 </Badge>
+                 <h3 className="text-2xl md:text-3xl font-bold font-display">
+                   {EZBIZ_COPY.mobileService.heading}
                 </h3>
-                <p className="text-muted-foreground font-body leading-relaxed">
-                  Prefer in-person guidance? We can meet at your residence or public location 
-                  and complete your filing together in real time. This service is ideal for 
-                  first-time business owners who want structured, step-by-step support.
-                </p>
+                 <p className="text-muted-foreground font-body leading-relaxed">
+                   {EZBIZ_COPY.mobileService.description}
+                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-muted/50">
                   <div className="text-center sm:text-left">
                     <span className="text-2xl font-bold text-primary font-display">$150</span>
@@ -538,16 +456,16 @@ const Index = () => {
                     }}
                     className="h-5 w-5 rounded border-border text-primary focus:ring-primary"
                   />
-                  <label htmlFor="mobile-addon-toggle" className="text-sm font-medium font-body cursor-pointer">
-                    Add Mobile Filing to My Order
-                  </label>
+                   <label htmlFor="mobile-addon-toggle" className="text-sm font-medium font-body cursor-pointer">
+                     {EZBIZ_COPY.mobileService.checkboxLabel}
+                   </label>
                 </div>
                 <Button 
                   variant="outline"
                   className="border-secondary text-secondary hover:bg-secondary/5"
                   onClick={() => { trackEvent('mobile_service_addon_click', { location: 'homepage' }); trackClick('Learn More Mobile Service', 'mobile_service_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
                 >
-                  Learn More About Mobile Service
+                  {EZBIZ_COPY.mobileService.cta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -561,29 +479,12 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-14">
-              <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Common Questions</h2>
+               <div className="accent-line-center mb-4 md:mb-6"></div>
+               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.faq.heading}</h2>
             </div>
 
             <Accordion type="single" collapsible className="space-y-3">
-              {[
-                {
-                  q: "How long does filing take?",
-                  a: "Processing times depend on your state. We submit promptly after preparation."
-                },
-                {
-                  q: "Are state fees included?",
-                  a: "State filing fees are separate and vary by state. They are clearly shown before submission."
-                },
-                {
-                  q: "Do I need an EIN?",
-                  a: "Many businesses require one for banking and tax purposes. Guidance is provided after formation."
-                },
-                {
-                  q: "Will I be hit with add-ons later?",
-                  a: "No hidden upsells. You'll know exactly what you're purchasing."
-                }
-              ].map((item, index) => (
+               {EZBIZ_COPY.faq.items.map((item, index) => (
                 <AccordionItem key={index} value={`faq-${index}`} className="bg-card rounded-lg border px-6">
                   <AccordionTrigger className="text-base md:text-lg font-semibold font-display hover:no-underline">
                     {item.q}
@@ -603,10 +504,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">What Our Clients Say</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-              Thousands of entrepreneurs trust EZ BIZ to launch their businesses.
-            </p>
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.testimonials.heading}</h2>
+             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+               {EZBIZ_COPY.testimonials.subheading}
+             </p>
           </div>
 
           <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={120}>
@@ -681,13 +582,12 @@ const Index = () => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="accent-line mb-6"></div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
-                  Why Entrepreneurs Choose EZ BIZ
-                </h2>
-                <p className="text-xl text-muted-foreground font-body leading-relaxed">
-                  We combine legal expertise with personalized service to ensure your 
-                  business formation is handled correctly from day one.
-                </p>
+                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
+                   {EZBIZ_COPY.whyChooseUs.heading}
+                 </h2>
+                 <p className="text-xl text-muted-foreground font-body leading-relaxed">
+                   {EZBIZ_COPY.whyChooseUs.subheading}
+                 </p>
               </div>
 
               <div className="space-y-6">
@@ -696,10 +596,10 @@ const Index = () => {
                     <Clock className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg font-display">Fast & Reliable</h3>
-                    <p className="text-muted-foreground font-body">
-                      Most filings completed within 24-48 hours with our express service.
-                    </p>
+                     <h3 className="font-semibold text-lg font-display">{EZBIZ_COPY.whyChooseUs.features[0].title}</h3>
+                     <p className="text-muted-foreground font-body">
+                       {EZBIZ_COPY.whyChooseUs.features[0].description}
+                     </p>
                   </div>
                 </div>
 
@@ -708,10 +608,10 @@ const Index = () => {
                     <Shield className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg font-display">100% Satisfaction Guaranteed</h3>
-                    <p className="text-muted-foreground font-body">
-                      We stand behind our work with a complete satisfaction guarantee.
-                    </p>
+                     <h3 className="font-semibold text-lg font-display">{EZBIZ_COPY.whyChooseUs.features[1].title}</h3>
+                     <p className="text-muted-foreground font-body">
+                       {EZBIZ_COPY.whyChooseUs.features[1].description}
+                     </p>
                   </div>
                 </div>
 
@@ -720,10 +620,10 @@ const Index = () => {
                     <Users className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg font-display">Expert Support</h3>
-                    <p className="text-muted-foreground font-body">
-                      Live business formation experts ready to guide you through the process.
-                    </p>
+                     <h3 className="font-semibold text-lg font-display">{EZBIZ_COPY.whyChooseUs.features[2].title}</h3>
+                     <p className="text-muted-foreground font-body">
+                       {EZBIZ_COPY.whyChooseUs.features[2].description}
+                     </p>
                   </div>
                 </div>
               </div>
@@ -756,10 +656,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">How We Compare</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-              See why thousands of entrepreneurs choose EZ BIZ over the competition.
-            </p>
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.comparison.heading}</h2>
+             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+               {EZBIZ_COPY.comparison.subheading}
+             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -826,7 +726,7 @@ const Index = () => {
                 className="group bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant"
                 onClick={() => { trackClick('See Our Packages', 'comparison_cta', '/order-flow'); navigate('/order-flow'); }}
               >
-                See Our Packages
+                 {EZBIZ_COPY.comparison.cta}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -841,19 +741,17 @@ const Index = () => {
             <Card className="border-secondary/20 shadow-elegant overflow-hidden">
               <div className="grid md:grid-cols-5">
                 <div className="md:col-span-3 p-6 md:p-10 space-y-5">
-                  <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
-                    Free Download
-                  </Badge>
-                  <h3 className="text-2xl md:text-3xl font-bold font-display">
-                    Business Startup Checklist
-                  </h3>
-                  <p className="text-muted-foreground font-body leading-relaxed">
-                    Not sure which structure is right for you? Download our free checklist covering 
-                    LLC vs. Corporation, tax implications, state requirements, and everything you 
-                    need before you file.
-                  </p>
+                   <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
+                     {EZBIZ_COPY.leadMagnet.badge}
+                   </Badge>
+                   <h3 className="text-2xl md:text-3xl font-bold font-display">
+                     {EZBIZ_COPY.leadMagnet.heading}
+                   </h3>
+                   <p className="text-muted-foreground font-body leading-relaxed">
+                     {EZBIZ_COPY.leadMagnet.description}
+                   </p>
                   <div className="space-y-2 text-sm font-body">
-                    {["Entity type comparison guide", "State-by-state filing fee reference", "Post-formation compliance timeline", "Tax election decision tree"].map((item, i) => (
+                    {EZBIZ_COPY.leadMagnet.bullets.map((item, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
                         <span>{item}</span>
@@ -866,7 +764,7 @@ const Index = () => {
                     onClick={() => { trackClick('Get Your Free Checklist', 'lead_magnet_cta', '/business-guide'); navigate('/business-guide'); }}
                   >
                     <Download className="mr-2 h-5 w-5" />
-                    Get Your Free Checklist
+                     {EZBIZ_COPY.leadMagnet.cta}
                   </Button>
                 </div>
                 <div className="md:col-span-2 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5 flex items-center justify-center p-8">
@@ -889,16 +787,16 @@ const Index = () => {
       {/* Final CTA */}
       <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
         <div className="container mx-auto px-4 text-center space-y-6 md:space-y-8">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
-            Ready to Form Your Business the Right Way?
-          </h2>
+           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">
+             {EZBIZ_COPY.finalCta.heading}
+           </h2>
           <div>
             <Button 
               size="lg" 
                className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
               onClick={() => { trackClick('Get Started Today', 'final_cta', '/order-flow'); navigate('/order-flow'); }}
             >
-              Get Started Today
+               {EZBIZ_COPY.finalCta.cta}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
