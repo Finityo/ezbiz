@@ -254,7 +254,7 @@ const Index = () => {
       </section>
 
       {/* Veteran Benefits Strip */}
-      <section ref={veteranGateRef} className="py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10">
+      <section ref={veteranGateRef} className={`py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10 transition-all ${qpVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-6">
