@@ -13,9 +13,10 @@ const ALL_STATES = Object.keys(STATE_FILING_FEES).sort();
 interface StateSelectorProps {
   selected: string;
   onSelect: (state: string) => void;
+  slotAfterPopular?: React.ReactNode;
 }
 
-const StateSelector = ({ selected, onSelect }: StateSelectorProps) => {
+const StateSelector = ({ selected, onSelect, slotAfterPopular }: StateSelectorProps) => {
   const [search, setSearch] = useState("");
 
   const filteredStates = useMemo(() => {
@@ -74,6 +75,9 @@ const StateSelector = ({ selected, onSelect }: StateSelectorProps) => {
           </div>
         </div>
       )}
+
+      {/* Slot for veteran gate or other content */}
+      {slotAfterPopular}
 
       {/* All States / Search Results */}
       <div className="space-y-3">
