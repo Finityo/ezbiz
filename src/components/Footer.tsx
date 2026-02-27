@@ -1,4 +1,5 @@
 import Logo from "@/components/ui/logo";
+import { trackPhoneClick, trackEmailClick } from "@/lib/analytics";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
@@ -143,8 +144,8 @@ const Footer = () => {
               <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
                 <span>📍 1101 Thorpe Lane Ste 105-1028</span>
                 <span className="ml-5">San Marcos, TX 78666</span>
-                <span>📞 (830) 837-1955</span>
-                <span>✉️ support@ezbizfile.com</span>
+                <a href="tel:+18308371955" onClick={() => trackPhoneClick('(830) 837-1955')} className="hover:text-foreground transition-colors">📞 (830) 837-1955</a>
+                <a href="mailto:support@ezbizfile.com" onClick={() => trackEmailClick('support@ezbizfile.com')} className="hover:text-foreground transition-colors">✉️ support@ezbizfile.com</a>
                 <span>🕒 Mon-Fri 9AM-6PM EST</span>
               </div>
             </div>

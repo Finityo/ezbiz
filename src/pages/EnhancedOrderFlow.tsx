@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
@@ -18,6 +18,7 @@ import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { trackOrderFlowView, trackCheckoutStart, trackFormStart } from "@/lib/analytics";
 
 const steps = ["State", "Package", "Details", "Account", "Review"];
 
@@ -40,6 +41,9 @@ const EnhancedOrderFlow = () => {
     zipCode: "",
     managementStructure: "",
   });
+
+  // Track order_flow_view once on mount
+  useEffect(() => { trackOrderFlowView(); }, []);
 
   const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
@@ -69,6 +73,8 @@ const EnhancedOrderFlow = () => {
   };
 
   const goNext = () => {
+    // Track form_start when entering business details step
+    if (currentStep === 2) trackFormStart('order_business_details');
     // If user is already logged in and we're going to step 4, skip to 5
     if (currentStep === 3 && user) {
       setCurrentStep(5);

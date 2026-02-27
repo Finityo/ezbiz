@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { trackClick } from "@/hooks/useAnalytics";
+import { trackFormStart, trackFormSubmit, trackConsultationClick } from "@/lib/analytics";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -97,6 +98,7 @@ const Consultation = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    trackFormSubmit('consultation_request');
 
     try {
       // Store consultation request in email_list for now
@@ -142,7 +144,12 @@ const Consultation = () => {
   };
 
   const handleInputChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      // Track form_start on first interaction
+      const isEmpty = !prev.name && !prev.email && !prev.phone && !prev.businessType && !prev.consultationType && !prev.questions;
+      if (isEmpty && value) trackFormStart('consultation_request');
+      return { ...prev, [name]: value };
+    });
   };
 
   return (

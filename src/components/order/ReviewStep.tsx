@@ -5,6 +5,7 @@ import { Edit2, Lock, ExternalLink } from "lucide-react";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
 import type { AddonQuantities } from "./AddOnServices";
 
@@ -59,6 +60,7 @@ const ReviewStep = ({
     });
 
     onCheckoutStarted();
+    trackCheckoutStart(pkg?.name || selectedPackage, total);
     await checkout(lineItems, {
       stateFee: { amount: stateFee, stateName: state },
       successPath: "/dashboard?checkout=success",

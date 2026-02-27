@@ -11,6 +11,7 @@ import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import PaymentHistory from "@/components/dashboard/PaymentHistory";
 import { User, FileText, CreditCard, Settings, CheckCircle, PartyPopper, X } from "lucide-react";
 import { toast } from "sonner";
+import { trackPurchase } from "@/lib/analytics";
 
 interface Order {
   id: string;
@@ -49,6 +50,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (isCheckoutSuccess) {
       setShowSuccess(true);
+      // Fire GA4 purchase event on successful Stripe return
+      trackPurchase('stripe_checkout_' + Date.now(), 0, 'USD');
       // Remove query param from URL without reload
       const newParams = new URLSearchParams(searchParams);
       newParams.delete("checkout");
