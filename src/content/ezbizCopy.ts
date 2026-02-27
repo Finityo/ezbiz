@@ -505,3 +505,6 @@ export const EZBIZ_COPY = {
 
 // Re-export entity page copy from this central file
 export { SCORP_COPY, CCORP_COPY, SOLE_PROP_COPY, PARTNERSHIP_COPY, NONPROFIT_COPY } from "./entityPagesCopy";
+
+// Re-export service page copy from this central file
+export { DBA_COPY, EIN_COPY, REGISTERED_AGENT_COPY, ANNUAL_REPORT_COPY, COMPLIANCE_COPY } from "./servicePagesCopy";
