@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
+import { EZBIZ_COPY } from "@/content/ezbizCopy";
 
 interface FloatingCTAProps {
   text?: string;
@@ -12,7 +13,7 @@ interface FloatingCTAProps {
 }
 
 const FloatingCTA = ({ 
-  text = "Start Your Business", 
+  text = EZBIZ_COPY.hero.ctaPrimary, 
   href = "/order-flow",
   threshold = 600 
 }: FloatingCTAProps) => {
