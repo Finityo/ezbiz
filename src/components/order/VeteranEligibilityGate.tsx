@@ -15,6 +15,10 @@ const VeteranEligibilityGate = ({
   setIsFormedInTexas2022,
 }: VeteranEligibilityGateProps) => (
   <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4 space-y-4">
+    <div className="flex items-center justify-between mb-3">
+      <span className="text-sm font-semibold">🇺🇸 Veteran Benefits Check</span>
+      <span className="text-xs text-muted-foreground">Optional</span>
+    </div>
     <p className="font-semibold font-display text-sm">Are ALL owners honorably discharged U.S. veterans?</p>
     <div className="flex gap-3">
       <Button
