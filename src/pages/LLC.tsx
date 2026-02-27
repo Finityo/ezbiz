@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Check, X, Shield, DollarSign, Users, FileText, Building, AlertTriangle, TrendingUp, ArrowRight, HelpCircle, Scale, BadgeCheck } from "lucide-react";
+import { Check, X, Shield, DollarSign, Users, FileText, Building, AlertTriangle, TrendingUp, ArrowRight, HelpCircle, Scale } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EZBIZ_COPY } from "@/content/ezbizCopy";
 

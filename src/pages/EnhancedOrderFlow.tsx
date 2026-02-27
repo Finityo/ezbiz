@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
 import VeteranEligibilityGate from "@/components/order/VeteranEligibilityGate";
@@ -18,13 +18,11 @@ import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
 import { trackOrderFlowView, trackCheckoutStart, trackFormStart, trackEvent } from "@/lib/analytics";
 
 const steps = ["State", "Package", "Details", "Account", "Review"];
 
 const EnhancedOrderFlow = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
