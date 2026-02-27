@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackFormStart, trackFormSubmit, trackConsultationClick } from "@/lib/analytics";
 import { Button } from "@/components/ui/button"
@@ -17,10 +17,9 @@ import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
-import ConsultationTypeCard from "@/components/consultation/ConsultationTypeCard"
-import CalendlyEmbed from "@/components/consultation/CalendlyEmbed"
+import ConsultationTypeCard, { openAcuityPopup } from "@/components/consultation/ConsultationTypeCard"
 
-const CALENDLY_USERNAME = "christian-r-t";
+const ACUITY_OWNER_ID = "38549422";
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
@@ -37,24 +36,6 @@ const Consultation = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Load Calendly widget script
-  useEffect(() => {
-    const head = document.querySelector("head");
-    const link = document.createElement("link");
-    link.href = "https://assets.calendly.com/assets/external/widget.css";
-    link.rel = "stylesheet";
-    head?.appendChild(link);
-
-    const script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    head?.appendChild(script);
-
-    return () => {
-      head?.removeChild(link);
-      head?.removeChild(script);
-    };
-  }, []);
 
   const consultationTypes = [
     {
@@ -206,7 +187,7 @@ const Consultation = () => {
                 <ConsultationTypeCard 
                   key={index} 
                   type={type} 
-                  calendlyUsername={CALENDLY_USERNAME} 
+                  acuityOwnerId={ACUITY_OWNER_ID} 
                 />
               ))}
             </div>
@@ -397,7 +378,7 @@ const Consultation = () => {
                 Don't navigate business formation alone. Get personalized advice from our experts - completely free.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Schedule Free Consultation</Button>
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => openAcuityPopup(ACUITY_OWNER_ID)}>Schedule Free Consultation</Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Call (555) 123-4567</Button>
               </div>
             </div>
