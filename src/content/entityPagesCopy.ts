@@ -1,0 +1,553 @@
+export const SCORP_COPY = {
+  hero: {
+    badge: "Tax-Advantaged Structure",
+    headline: "S Corporation Formation",
+    subheadline: "Avoid double taxation while maintaining corporate structure",
+    description: "S Corporations combine pass-through taxation with liability protection, potentially saving thousands on self-employment taxes.",
+    ctaPrimary: "Form Your S-Corp",
+    ctaSecondary: "Free Consultation",
+  },
+  whatIs: {
+    heading: "What Is an S Corporation?",
+    paragraphs: [
+      'An <strong class="text-foreground">S Corporation</strong> is a special tax designation that a corporation or LLC can elect with the IRS. It is not a type of business entity—it is a tax election that allows a corporation to pass its income, losses, deductions, and credits through to shareholders\' personal tax returns.',
+      'The "S" in S Corporation refers to <strong class="text-foreground">Subchapter S</strong> of the Internal Revenue Code. Unlike C Corporations (which are taxed under Subchapter C and face double taxation), S Corporations only pay taxes once at the individual shareholder level.',
+      'The main advantage of S-Corp status is the potential to reduce <strong class="text-foreground">self-employment taxes</strong>. Shareholder-employees can pay themselves a reasonable salary (subject to payroll taxes) and take additional profits as distributions (not subject to self-employment tax).',
+    ],
+  },
+  taxSavings: {
+    heading: "Potential Tax Savings",
+    subheading: "See how S-Corp election can reduce self-employment taxes",
+    example: {
+      scenario: "Business with $150,000 net profit",
+      llcTax: "Self-employment tax on $150,000 = $21,195 (15.3% up to SS wage base + 2.9%)",
+      sCorpSalary: "$80,000 reasonable salary",
+      sCorpPayrollTax: "Payroll taxes on $80,000 = ~$12,240",
+      sCorpDistribution: "$70,000 distribution (no self-employment tax)",
+      savings: "Potential savings: ~$8,955 per year",
+    },
+  },
+  benefits: {
+    heading: "Benefits of S Corporations",
+    items: [
+      { title: "Pass-Through Taxation", description: "Profits and losses pass through to shareholders' personal tax returns, avoiding corporate-level taxation." },
+      { title: "Self-Employment Tax Savings", description: "Only salary is subject to payroll taxes. Distributions above reasonable salary avoid self-employment tax." },
+      { title: "Limited Liability Protection", description: "Shareholders' personal assets are protected from business debts and legal claims." },
+      { title: "Business Credibility", description: "Corporate structure enhances credibility with customers, vendors, and financial institutions." },
+      { title: "Perpetual Existence", description: "The corporation continues to exist regardless of changes in ownership or management." },
+      { title: "Employee Benefits", description: "Shareholders can be employees and receive benefits, with some limitations compared to C-Corps." },
+    ],
+  },
+  drawbacks: {
+    heading: "Limitations & Drawbacks",
+    items: [
+      { title: "Ownership Restrictions", description: "Limited to 100 shareholders, all of whom must be U.S. citizens or residents. No corporations, partnerships, or non-resident aliens.", severity: "high" as const },
+      { title: "One Class of Stock", description: "Can only have one class of stock, limiting flexibility for investors who want preferred shares or different voting rights.", severity: "high" as const },
+      { title: "Reasonable Salary Requirement", description: "Shareholder-employees must pay themselves a 'reasonable salary' before taking distributions, which the IRS scrutinizes.", severity: "medium" as const },
+      { title: "Formation Complexity", description: "Requires forming a corporation first, then filing Form 2553 with the IRS to elect S-Corp status.", severity: "medium" as const },
+      { title: "Corporate Formalities", description: "Must follow corporate formalities: board meetings, meeting minutes, bylaws, and annual reports.", severity: "medium" as const },
+      { title: "State Recognition Varies", description: "Some states do not recognize S-Corp election and tax S-Corps as regular corporations.", severity: "low" as const },
+    ],
+  },
+  eligibility: {
+    heading: "S-Corp Eligibility Requirements",
+    subheading: "To qualify for S-Corp status, your corporation must meet these IRS requirements",
+    items: [
+      "Must be a domestic corporation (formed in the U.S.)",
+      "Cannot have more than 100 shareholders",
+      "Shareholders must be individuals, certain trusts, or estates",
+      "Shareholders cannot be corporations, partnerships, or non-resident aliens",
+      "Only one class of stock is permitted (though voting rights can differ)",
+      "Cannot be an ineligible corporation (certain financial institutions, insurance companies)",
+    ],
+  },
+  taxForms: [
+    { form: "Form 1120-S", purpose: "U.S. Income Tax Return for an S Corporation" },
+    { form: "Schedule K-1", purpose: "Each shareholder's share of income, deductions, and credits" },
+    { form: "Form W-2", purpose: "Wages paid to shareholder-employees" },
+    { form: "Form 940/941", purpose: "Employer payroll tax returns" },
+    { form: "State S-Corp Returns", purpose: "Varies by state; some states tax S-Corps differently" },
+  ],
+  formationSteps: {
+    heading: "How to Form an S Corporation",
+    steps: [
+      { step: 1, title: "Form a Corporation", description: "First, form a regular C corporation by filing Articles of Incorporation with your state.", timeline: "1-2 weeks" },
+      { step: 2, title: "Meet Eligibility Requirements", description: "Ensure your corporation meets all S-Corp eligibility requirements (ownership, stock class, etc.).", timeline: "Same day" },
+      { step: 3, title: "File Form 2553", description: "Submit IRS Form 2553 (Election by a Small Business Corporation) signed by all shareholders.", timeline: "Immediately" },
+      { step: 4, title: "File Deadline", description: "Form 2553 must be filed within 75 days of formation or by March 15 for existing corporations.", timeline: "Critical deadline" },
+      { step: 5, title: "Set Up Payroll", description: "Establish payroll for shareholder-employees with reasonable salaries and proper tax withholding.", timeline: "1-2 weeks" },
+      { step: 6, title: "Maintain Compliance", description: "Follow corporate formalities: hold meetings, keep minutes, file annual reports.", timeline: "Ongoing" },
+    ],
+  },
+  comparison: {
+    heading: "S-Corp vs. Other Structures",
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    items: [
+      { question: "What is the difference between an S-Corp and a C-Corp?", answer: "The main difference is taxation. C-Corps pay corporate income tax on profits, and shareholders pay personal tax on dividends—'double taxation.' S-Corps avoid this because profits pass through to shareholders' personal returns. However, S-Corps have ownership restrictions (100 shareholders, one stock class, U.S. persons only) while C-Corps have none. C-Corps can go public and attract venture capital more easily." },
+      { question: "Should I form an S-Corp or an LLC with S-Corp election?", answer: "Both achieve similar tax results. An LLC with S-Corp election offers more flexibility (no corporate formalities required in the operating agreement) and simpler compliance in some states. A true S-Corp may be preferred for businesses planning to eventually become C-Corps or go public. Many small business owners choose the LLC + S-Corp election path for simplicity." },
+      { question: "What is a 'reasonable salary' for an S-Corp owner?", answer: "The IRS requires S-Corp shareholder-employees to pay themselves a salary that would be reasonable for someone doing their job at another company. Factors include: industry standards, experience level, time devoted to the business, and comparable salaries in your area. Setting salary too low to avoid payroll taxes is a red flag for IRS audits. Consult a CPA to determine an appropriate amount." },
+      { question: "When does it make sense to elect S-Corp status?", answer: "S-Corp election typically makes sense when your business has consistent net profits of $50,000 or more annually. At lower income levels, the payroll tax savings may not offset the additional complexity and costs (payroll processing, separate tax returns, reasonable salary requirements). Run the numbers with a tax professional for your specific situation." },
+      { question: "Can I convert my LLC to an S-Corp?", answer: "Yes, you can elect S-Corp tax treatment for an existing LLC by filing Form 2553 with the IRS. The LLC remains an LLC for legal purposes but is taxed as an S-Corp. This is a common strategy. You can also revoke S-Corp election later if it no longer makes sense. The election must be filed by March 15 of the year you want it to take effect, or within 75 days of forming a new entity." },
+      { question: "What happens if I miss the Form 2553 deadline?", answer: "If you miss the deadline, you can request late election relief from the IRS. The IRS grants relief for late elections if: less than 3 years and 75 days have passed since the intended effective date, you have reasonable cause, and you have consistently treated the entity as an S-Corp. Attach a statement explaining the delay when filing Form 2553." },
+    ],
+  },
+  cta: {
+    heading: "Ready to Save on Taxes?",
+    subheading: "Let our experts help you determine if S-Corp status is right for your business and guide you through the formation process.",
+    ctaPrimary: "Form Your S-Corp",
+    ctaSecondary: "Schedule Free Consultation",
+  },
+} as const;
+
+export const CCORP_COPY = {
+  hero: {
+    badge: "Best for Growth & Investment",
+    headline: "C Corporation Formation",
+    subheadline: "The ultimate structure for growth, investment, and going public",
+    description: "C Corporations offer unlimited growth potential with multiple stock classes, no ownership restrictions, and the ability to attract venture capital.",
+    ctaPrimary: "Incorporate Now - $199",
+    ctaSecondary: "Free Incorporation Guide",
+    badges: ["Delaware Incorporation Available", "Investor Ready", "IPO Ready"],
+  },
+  whatIs: {
+    heading: "What Is a C Corporation?",
+    paragraphs: [
+      'A <strong class="text-foreground">C Corporation</strong> (named after Subchapter C of the Internal Revenue Code) is the standard corporate structure in the United States. It is a separate legal entity from its owners (shareholders), providing strong liability protection and unlimited growth potential.',
+      'C Corporations are subject to <strong class="text-foreground">corporate income tax</strong> at the federal level (currently 21%) and may also pay state corporate taxes. When profits are distributed as dividends, shareholders pay tax again on their personal returns—this is often called "double taxation."',
+      'Despite the tax complexity, C Corporations are the preferred structure for companies seeking <strong class="text-foreground">venture capital</strong>, planning to <strong class="text-foreground">go public</strong>, or wanting to offer <strong class="text-foreground">stock options</strong> and multiple classes of stock.',
+    ],
+  },
+  doubleTaxation: {
+    heading: "Understanding Double Taxation",
+    subheading: "How corporate profits are taxed at two levels",
+    corporateRate: "21%",
+    qualifiedDividendRate: "0%, 15%, or 20%",
+    example: {
+      profit: "$100,000",
+      corpTax: "$21,000 (21% corporate tax)",
+      afterTax: "$79,000 available for dividends",
+      dividendTax: "$11,850 (15% qualified dividend rate)",
+      totalTax: "$32,850 (32.85% effective rate)",
+    },
+    note: "Note: Retained earnings (profits not distributed) are only taxed at the corporate level. This makes C Corporations advantageous for companies reinvesting profits for growth.",
+  },
+  benefits: {
+    heading: "Benefits of C Corporations",
+    items: [
+      { title: "Unlimited Growth Potential", description: "No limit on the number of shareholders or classes of stock. Issue common stock, preferred stock, and stock options." },
+      { title: "Attract Investors", description: "The preferred structure for venture capital, angel investors, and institutional investors seeking equity stakes." },
+      { title: "Limited Liability Protection", description: "Shareholders' personal assets are protected from corporate debts and legal liabilities." },
+      { title: "Go Public Ready", description: "Only C Corporations can conduct IPOs. Perfect structure for companies planning to go public eventually." },
+      { title: "Perpetual Existence", description: "The corporation continues indefinitely, unaffected by changes in ownership or management succession." },
+      { title: "Employee Benefits", description: "Offer tax-advantaged benefits: health insurance, retirement plans, stock options, and fringe benefits." },
+    ],
+  },
+  drawbacks: {
+    heading: "Considerations & Drawbacks",
+    items: [
+      { title: "Double Taxation", description: "Corporate profits are taxed at the corporate level, then again when distributed as dividends to shareholders.", severity: "high" as const },
+      { title: "Complex Compliance", description: "Extensive formalities required: board meetings, shareholder meetings, detailed minutes, and annual reports.", severity: "high" as const },
+      { title: "Higher Costs", description: "Formation and ongoing costs are higher than LLCs: legal fees, franchise taxes, and compliance requirements.", severity: "medium" as const },
+      { title: "Rigid Structure", description: "Must follow statutory requirements for board of directors, officers, and shareholder voting procedures.", severity: "medium" as const },
+      { title: "State Franchise Taxes", description: "Many states impose franchise taxes on corporations based on income, shares, or capital.", severity: "medium" as const },
+    ],
+  },
+  delaware: {
+    heading: "Why Incorporate in Delaware?",
+    intro: "Over 65% of Fortune 500 companies and most venture-backed startups are incorporated in Delaware. Here is why Delaware is the gold standard for incorporation:",
+    advantages: [
+      "Court of Chancery with corporate law expertise",
+      "Well-developed body of corporate case law",
+      "Business-friendly statutory framework",
+      "No state corporate income tax for companies not operating in Delaware",
+      "Privacy protections for shareholders",
+      "Preferred by investors and VCs",
+    ],
+    chooseDelaware: [
+      "Seeking venture capital or angel investment",
+      "Planning to go public eventually",
+      "Operating in multiple states",
+      "Want sophisticated corporate law protections",
+    ],
+    chooseHomeState: [
+      "Small business with local operations",
+      "Not seeking outside investors",
+      "Want to avoid registering in two states",
+      "Keeping costs minimal",
+    ],
+  },
+  formationSteps: {
+    heading: "How to Form a C Corporation",
+    steps: [
+      { step: 1, title: "Choose Your State of Incorporation", description: "Most businesses incorporate in their home state. Delaware is popular for larger companies seeking investor-friendly laws.", timeline: "Day 1" },
+      { step: 2, title: "Name Your Corporation", description: "Choose a unique name including 'Corporation,' 'Incorporated,' 'Company,' or abbreviation. Check availability.", timeline: "1-2 days" },
+      { step: 3, title: "Appoint Directors and Officers", description: "Designate initial board of directors and officers (President, Secretary, Treasurer at minimum).", timeline: "Day 1" },
+      { step: 4, title: "File Articles of Incorporation", description: "Submit formation documents to the state, including registered agent information and authorized shares.", timeline: "1-4 weeks" },
+      { step: 5, title: "Create Corporate Bylaws", description: "Draft bylaws governing operations: meeting procedures, officer duties, voting requirements, etc.", timeline: "1-2 weeks" },
+      { step: 6, title: "Hold Organizational Meeting", description: "Board adopts bylaws, elects officers, authorizes stock issuance, and handles initial business.", timeline: "Day 1 post-formation" },
+      { step: 7, title: "Issue Stock Certificates", description: "Issue stock to initial shareholders and record in stock ledger. Consider 83(b) elections for founders.", timeline: "1-2 weeks" },
+      { step: 8, title: "Obtain EIN and Open Accounts", description: "Apply for EIN, open corporate bank accounts, and set up accounting systems.", timeline: "Immediate" },
+    ],
+  },
+  comparison: {
+    heading: "C Corporation vs. Other Structures",
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    items: [
+      { question: "Why do so many companies incorporate in Delaware?", answer: "Delaware has the most developed body of corporate law in the U.S., with a specialized Court of Chancery for business disputes. The state offers predictable legal outcomes, flexible corporate statutes, privacy protections, and no state income tax for corporations that do not operate in Delaware. Most venture-backed startups and public companies incorporate there. However, if you operate in another state, you will need to register there as a 'foreign corporation' as well." },
+      { question: "How can I avoid double taxation as a C Corporation?", answer: "Several strategies can minimize double taxation: (1) Pay reasonable salaries to shareholder-employees (deductible to the corporation), (2) Retain earnings for reinvestment rather than paying dividends, (3) Provide tax-free fringe benefits to employees, (4) Consider electing S-Corp status if you qualify and do not need C-Corp features, (5) Defer dividends until lower-income years. Consult a tax advisor for your specific situation." },
+      { question: "What is the difference between authorized and issued shares?", answer: "Authorized shares are the maximum number of shares the corporation can issue, specified in the Articles of Incorporation. Issued shares are the shares actually distributed to shareholders. Companies typically authorize more shares than initially needed to allow for future issuances (employee options, investor rounds) without amending articles. For example, you might authorize 10 million shares but only issue 1 million to founders initially." },
+      { question: "Do I need a board of directors?", answer: "Yes, all corporations must have a board of directors. The board oversees major decisions, hires officers, and represents shareholder interests. Minimum requirements vary by state—some allow a single director, while others require three. For small corporations, the same person can be the sole shareholder, director, and officer. As you grow and add investors, board composition becomes more complex." },
+      { question: "What corporate formalities must I follow?", answer: "C Corporations must: (1) Hold annual shareholder and board meetings, (2) Keep detailed minutes of all meetings, (3) Maintain corporate records (bylaws, stock ledger, resolutions), (4) File annual reports with the state, (5) Keep corporate finances separate from personal, (6) Act in the corporation's name (sign contracts as 'Name, Title, for XYZ Corp'). Failure to follow formalities can result in 'piercing the corporate veil,' exposing shareholders to personal liability." },
+      { question: "When should I choose a C Corporation over an LLC?", answer: "Choose a C Corporation if you: (1) Plan to raise venture capital or go public, (2) Want to offer stock options to employees, (3) Need multiple classes of stock, (4) Plan to reinvest all profits (no dividend distributions), (5) Want maximum employee benefits. Choose an LLC if you: want simpler compliance, plan to distribute profits regularly, do not need outside investors, or prefer pass-through taxation." },
+    ],
+  },
+  cta: {
+    heading: "Ready to Incorporate?",
+    subheading: "Start your C Corporation today and unlock unlimited growth potential. Our experts will handle all the paperwork and filings.",
+    ctaPrimary: "Start Incorporation - $199",
+    ctaSecondary: "Speak with Expert",
+  },
+} as const;
+
+export const SOLE_PROP_COPY = {
+  hero: {
+    badge: "Simplest Business Structure",
+    headline: "Sole Proprietorship",
+    subheadline: "The fastest, simplest way to start your business as a single owner",
+    description: "Over 23 million Americans operate as sole proprietors, making it the most common business structure in the United States.",
+    ctaPrimary: "Start Your Business",
+    ctaSecondary: "Free Consultation",
+  },
+  whatIs: {
+    heading: "What Is a Sole Proprietorship?",
+    paragraphs: [
+      'A <strong class="text-foreground">sole proprietorship</strong> is an unincorporated business owned and operated by a single individual. It is the simplest and most common form of business organization in the United States, with no legal distinction between the owner and the business entity.',
+      'According to the <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline">Internal Revenue Service (IRS)</a>, a sole proprietorship is automatically created when you start conducting business activities as an individual. There is no need to file formation documents with the state (though local licenses may be required).',
+      "Because the business has no separate legal existence, you report all business income and expenses on your personal tax return. You are also personally responsible for all debts, obligations, and liabilities of the business.",
+    ],
+    cards: [
+      { title: "Single Owner", description: "One person owns and controls the entire business" },
+      { title: "No Legal Separation", description: "You and your business are legally the same entity" },
+      { title: "Pass-Through Taxation", description: "All income passes through to your personal tax return" },
+    ],
+  },
+  benefits: {
+    heading: "Benefits of a Sole Proprietorship",
+    subheading: "Understand the advantages that make sole proprietorship the go-to choice for millions of business owners",
+    items: [
+      { title: "Simplest Business Structure", description: "No formal registration required with the state in most cases. You can start operating immediately under your own legal name." },
+      { title: "Complete Control", description: "You make all business decisions without needing approval from partners, board members, or shareholders." },
+      { title: "Keep All Profits", description: "All business income belongs to you. There are no profit-sharing requirements with partners or dividend distributions to shareholders." },
+      { title: "Simple Tax Filing", description: "Business income and expenses are reported on Schedule C of your personal tax return (Form 1040). No separate business tax return required." },
+      { title: "Low Startup Costs", description: "Minimal fees to get started. No state filing fees for the business entity itself, though you may need local business licenses." },
+      { title: "Easy to Dissolve", description: "Simply stop operating. No formal dissolution paperwork or state filings required to close the business." },
+    ],
+  },
+  drawbacks: {
+    heading: "Potential Drawbacks to Consider",
+    subheading: "Every business structure has trade-offs. Here are the limitations you should understand before choosing a sole proprietorship.",
+    items: [
+      { title: "Unlimited Personal Liability", description: "Your personal assets (home, savings, vehicles) can be seized to pay business debts, lawsuits, or judgments against the business.", severity: "high" as const },
+      { title: "Self-Employment Tax", description: "You pay both the employer and employee portions of Social Security and Medicare taxes (15.3% on net earnings up to the Social Security wage base).", severity: "medium" as const },
+      { title: "Difficulty Raising Capital", description: "Cannot sell stock or ownership interests. Limited to personal funds, loans, and credit lines for business financing.", severity: "medium" as const },
+      { title: "Limited Business Continuity", description: "The business legally ends when you die or become incapacitated. Cannot easily transfer ownership to heirs or successors.", severity: "medium" as const },
+      { title: "Perceived Lack of Credibility", description: "Some customers, vendors, and lenders may view sole proprietorships as less established than LLCs or corporations.", severity: "low" as const },
+      { title: "No Separation of Business Credit", description: "Business credit history is tied to your personal credit. Business debts affect your personal credit score.", severity: "medium" as const },
+    ],
+  },
+  taxForms: [
+    { form: "Schedule C (Form 1040)", purpose: "Report business income and expenses" },
+    { form: "Schedule SE (Form 1040)", purpose: "Calculate self-employment tax" },
+    { form: "Form 1040-ES", purpose: "Make quarterly estimated tax payments" },
+    { form: "Form W-9", purpose: "Provide taxpayer ID to clients who pay you $600+" },
+    { form: "Form 1099-NEC", purpose: "Report payments to contractors you pay $600+" },
+  ],
+  tax: {
+    heading: "Tax Implications",
+    subheading: "Understanding how sole proprietorship taxes work according to IRS guidelines",
+    income: { title: "Income Tax", description: "Business profits are taxed at your personal income tax rate (10% to 37% for 2024). Profits flow through to your Form 1040 via Schedule C." },
+    selfEmployment: { title: "Self-Employment Tax", description: "You pay 15.3% self-employment tax on net earnings (12.4% Social Security up to $168,600 in 2024, plus 2.9% Medicare on all earnings). An additional 0.9% Medicare tax applies to earnings over $200,000 ($250,000 if married filing jointly)." },
+    quarterly: { title: "Quarterly Estimated Taxes", description: "If you expect to owe $1,000 or more in taxes, you must make quarterly estimated tax payments (due April 15, June 15, September 15, and January 15)." },
+  },
+  liability: {
+    heading: "Liability & Asset Protection",
+    subheading: "Understanding your personal exposure as a sole proprietor",
+    atRisk: ["Personal bank accounts and savings", "Your home and real estate", "Personal vehicles", "Investment accounts", "Other personal property"],
+    mitigations: [
+      "Obtain general liability insurance",
+      "Get professional liability (E&O) insurance",
+      "Use contracts with liability limitations",
+      "Keep adequate business reserves",
+      "Consider converting to an LLC as you grow",
+    ],
+  },
+  suitability: {
+    heading: "Is a Sole Proprietorship Right for You?",
+    subheading: "Evaluate whether this structure aligns with your business goals and risk tolerance",
+    idealFor: [
+      "Freelancers and consultants",
+      "Home-based businesses with low liability",
+      "Part-time or side businesses",
+      "Testing a business idea before formal incorporation",
+      "Service providers with minimal equipment",
+      "Artists, writers, and creative professionals",
+    ],
+    notIdealFor: [
+      "Businesses with significant liability exposure",
+      "Companies seeking outside investors",
+      "Businesses with multiple owners",
+      "Industries with high lawsuit risk",
+      "Businesses planning rapid growth",
+      "Those wanting to build separate business credit",
+    ],
+  },
+  formationSteps: {
+    heading: "How to Start a Sole Proprietorship",
+    subheading: "Follow these steps to establish your sole proprietorship the right way",
+    steps: [
+      { step: 1, title: "Choose Your Business Name", description: "You can operate under your legal name or file a DBA (Doing Business As) to use a different business name.", timeline: "Same day" },
+      { step: 2, title: "Obtain Required Licenses", description: "Check with your city, county, and state for required business licenses, permits, and zoning approvals.", timeline: "1-4 weeks" },
+      { step: 3, title: "Get an EIN (Optional but Recommended)", description: "Apply for a free Employer Identification Number from the IRS. Required if you have employees or want to open a business bank account.", timeline: "Immediate online" },
+      { step: 4, title: "Open a Business Bank Account", description: "Keep business and personal finances separate for easier bookkeeping and tax preparation.", timeline: "Same day" },
+      { step: 5, title: "Set Up Bookkeeping", description: "Track all income and expenses for tax reporting. Consider accounting software or a professional bookkeeper.", timeline: "Ongoing" },
+    ],
+  },
+  comparison: {
+    heading: "Compare Business Structures",
+    subheading: "See how a sole proprietorship compares to other common business structures",
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    subheading: "Get answers to common questions about sole proprietorships",
+    items: [
+      { question: "Do I need to register my sole proprietorship with the state?", answer: "In most states, no formal registration is required to operate as a sole proprietorship under your legal name. However, if you want to use a business name different from your personal name, you will need to file a DBA (Doing Business As) or fictitious business name registration with your county or state. Additionally, you may need local business licenses regardless of your business name." },
+      { question: "What is the difference between a sole proprietorship and an LLC?", answer: "The main difference is liability protection. In a sole proprietorship, you and the business are legally the same entity—your personal assets are at risk for business debts. An LLC creates a separate legal entity that protects your personal assets from business liabilities (with some exceptions). LLCs also require state registration and annual fees, while sole proprietorships have minimal formal requirements." },
+      { question: "How are sole proprietorship taxes calculated?", answer: "Your business profit (income minus expenses) is reported on Schedule C and flows through to your personal Form 1040. You pay income tax at your personal tax rate plus self-employment tax of 15.3% (12.4% Social Security + 2.9% Medicare) on net earnings. You can deduct half of self-employment tax as an adjustment to income. Quarterly estimated tax payments are typically required." },
+      { question: "Can I hire employees as a sole proprietor?", answer: "Yes, sole proprietors can hire employees. You will need to obtain an EIN from the IRS, register for state employer taxes, withhold payroll taxes, and comply with employment laws. Many sole proprietors also hire independent contractors, which has fewer requirements but must be properly classified according to IRS guidelines." },
+      { question: "Should I get business insurance as a sole proprietor?", answer: "Business insurance is highly recommended since you have unlimited personal liability. General liability insurance protects against customer injuries and property damage. Professional liability (errors & omissions) insurance is important for service providers. You may also need commercial auto insurance if using vehicles for business. Insurance costs vary by industry and coverage level." },
+      { question: "Can I convert my sole proprietorship to an LLC or corporation later?", answer: "Yes, you can convert to an LLC or corporation at any time. The process involves forming the new entity with your state, transferring assets and contracts, obtaining new licenses, and updating bank accounts. Tax implications vary—consult a tax professional. Many entrepreneurs start as sole proprietors and convert when their business grows or liability concerns increase." },
+    ],
+  },
+  cta: {
+    heading: "Ready to Start Your Business?",
+    subheading: "Get expert guidance on starting your sole proprietorship. We will help you understand your options and set up your business correctly.",
+    ctaPrimary: "Get Started Today",
+    ctaSecondary: "Schedule Free Consultation",
+    footnote: "No obligation. Speak with a business formation specialist.",
+  },
+} as const;
+
+export const PARTNERSHIP_COPY = {
+  hero: {
+    badge: "Multi-Owner Business Structure",
+    headline: "Partnership Formation",
+    subheadline: "Join forces with partners to build a successful business together",
+    description: "Partnerships combine resources, expertise, and capital while offering tax advantages and management flexibility.",
+    ctaPrimary: "Form Your Partnership",
+    ctaSecondary: "Free Consultation",
+  },
+  whatIs: {
+    heading: "What Is a Partnership?",
+    paragraphs: [
+      'A <strong class="text-foreground">partnership</strong> is a business structure where two or more individuals share ownership, management responsibilities, and profits. Partnerships are governed by the Uniform Partnership Act (UPA) or Revised Uniform Partnership Act (RUPA), which most states have adopted.',
+      "Unlike corporations and LLCs, general partnerships do not require formal state registration—they are created automatically when two or more people go into business together for profit. However, limited partnerships and LLPs do require state filing.",
+      'Partnerships offer <strong class="text-foreground">pass-through taxation</strong>, meaning the business itself does not pay income tax. Instead, profits and losses "pass through" to partners\' personal tax returns, avoiding the double taxation that affects C corporations.',
+    ],
+  },
+  types: {
+    heading: "Types of Partnerships",
+    subheading: "Choose the partnership structure that best fits your business needs and risk tolerance",
+    items: [
+      {
+        type: "General Partnership (GP)",
+        description: "All partners share equally in management responsibilities and personal liability for business debts.",
+        features: ["Equal management rights (unless agreed otherwise)", "Unlimited personal liability for all partners", "Shared profits and losses", "No state filing required in most states", "Simplest partnership structure"],
+        bestFor: "Small businesses where partners want equal involvement and trust each other completely",
+      },
+      {
+        type: "Limited Partnership (LP)",
+        description: "Combines general partners (who manage and have liability) with limited partners (passive investors with limited liability).",
+        features: ["At least one general partner required", "Limited partners cannot participate in management", "Limited partners' liability capped at investment", "State filing required", "Common for real estate and investment ventures"],
+        bestFor: "Businesses seeking passive investors while maintaining management control",
+      },
+      {
+        type: "Limited Liability Partnership (LLP)",
+        description: "All partners have limited liability protection from other partners' negligence or misconduct.",
+        features: ["Partners protected from other partners' malpractice", "All partners can participate in management", "State filing required", "Often restricted to professional services", "Popular with law firms and accounting practices"],
+        bestFor: "Professional service firms (lawyers, accountants, architects) wanting liability protection",
+      },
+    ],
+  },
+  benefits: {
+    heading: "Benefits of a Partnership",
+    subheading: "Partnerships offer unique advantages for businesses with multiple owners",
+    items: [
+      { title: "Shared Resources & Expertise", description: "Pool financial resources, skills, and industry knowledge with your partners to build a stronger business." },
+      { title: "Pass-Through Taxation", description: "Profits and losses pass through to partners' personal tax returns, avoiding double taxation." },
+      { title: "Simple Formation", description: "Easier and less expensive to form than corporations. No state filing required for general partnerships in most states." },
+      { title: "Flexible Management", description: "Partners can structure management and decision-making however they agree, with no statutory requirements." },
+      { title: "Combined Capital", description: "Multiple partners can contribute capital, making it easier to fund the business than as a sole proprietor." },
+      { title: "Shared Workload", description: "Distribute responsibilities among partners based on individual strengths and availability." },
+    ],
+  },
+  drawbacks: {
+    heading: "Potential Drawbacks",
+    subheading: "Consider these important limitations before choosing a partnership structure",
+    items: [
+      { title: "Unlimited Personal Liability (GP)", description: "In a general partnership, each partner is personally liable for all partnership debts and the actions of other partners.", severity: "high" as const },
+      { title: "Joint & Several Liability", description: "Any partner can be held responsible for the entire debt of the partnership, not just their proportional share.", severity: "high" as const },
+      { title: "Potential for Conflict", description: "Disagreements between partners can disrupt business operations and even lead to dissolution.", severity: "medium" as const },
+      { title: "Shared Profits", description: "Profits must be shared according to the partnership agreement, unlike a sole proprietorship where you keep everything.", severity: "low" as const },
+      { title: "Difficulty Transferring Ownership", description: "Adding or removing partners typically requires consent of all existing partners and may trigger dissolution.", severity: "medium" as const },
+      { title: "Limited Life", description: "A partnership may dissolve when a partner dies, withdraws, or becomes incapacitated unless otherwise agreed.", severity: "medium" as const },
+    ],
+  },
+  tax: {
+    heading: "Partnership Taxation",
+    subheading: "Understanding how partnership income flows to partners",
+    howItWorks: { title: "How It Works", description: "The partnership files an informational return (Form 1065) but does not pay income tax. Each partner receives a Schedule K-1 showing their share of profits, losses, and deductions." },
+    selfEmployment: { title: "Self-Employment Tax", description: "General partners pay self-employment tax (15.3%) on their share of partnership income. Limited partners typically do not pay self-employment tax on their distributive share." },
+    guaranteed: { title: "Guaranteed Payments", description: "Partners may receive guaranteed payments for services or capital use, which are deductible by the partnership and taxable to the receiving partner regardless of partnership profit." },
+  },
+  taxForms: [
+    { form: "Form 1065", purpose: "U.S. Return of Partnership Income (informational return)" },
+    { form: "Schedule K-1", purpose: "Each partner's share of income, deductions, and credits" },
+    { form: "Form 1040 Schedule E", purpose: "Partners report their K-1 income on personal returns" },
+    { form: "Form SE", purpose: "Self-employment tax for general partners" },
+    { form: "State Partnership Returns", purpose: "Varies by state; some require separate filings" },
+  ],
+  formationSteps: {
+    heading: "How to Form a Partnership",
+    subheading: "Follow these steps to establish your partnership properly",
+    steps: [
+      { step: 1, title: "Choose Your Partnership Type", description: "Decide between General Partnership, Limited Partnership, or Limited Liability Partnership based on your needs.", timeline: "Day 1" },
+      { step: 2, title: "Select a Business Name", description: "Choose a name and check availability. File a DBA if using a name other than partners' names.", timeline: "1-2 days" },
+      { step: 3, title: "Draft Partnership Agreement", description: "Create a comprehensive written agreement covering profit sharing, responsibilities, dispute resolution, and exit procedures.", timeline: "1-2 weeks" },
+      { step: 4, title: "Register with the State (if required)", description: "LPs and LLPs require state registration. General partnerships may only need local business licenses.", timeline: "1-2 weeks" },
+      { step: 5, title: "Obtain an EIN", description: "Apply for a free Employer Identification Number from the IRS for tax filing and banking.", timeline: "Immediate" },
+      { step: 6, title: "Open a Business Bank Account", description: "Keep partnership funds separate from personal accounts for proper accounting.", timeline: "1-2 days" },
+    ],
+  },
+  comparison: {
+    heading: "Partnership vs. Other Structures",
+    subheading: "Compare partnerships to other business entity options",
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    subheading: "Get answers to common questions about partnerships",
+    items: [
+      { question: "What is the difference between a partnership and an LLC?", answer: "The main difference is liability protection. In a general partnership, partners have unlimited personal liability for business debts and each other's actions. An LLC provides limited liability protection, meaning members' personal assets are generally protected from business debts. LLCs also offer more flexibility in management structure and profit distribution. Many businesses that would have formed partnerships now choose LLCs for the liability protection." },
+      { question: "Do I need a written partnership agreement?", answer: "While not legally required in most states, a written partnership agreement is strongly recommended. Without one, state default rules govern your partnership, which may not align with your intentions. A good partnership agreement covers: profit and loss allocation, management responsibilities, capital contributions, decision-making processes, partner withdrawal or death procedures, and dispute resolution. Many partnership disputes arise from unclear or unwritten agreements." },
+      { question: "How are partnerships taxed?", answer: "Partnerships are 'pass-through' entities, meaning the partnership itself does not pay income tax. Instead, profits and losses pass through to partners, who report them on their personal tax returns. The partnership files an informational return (Form 1065) and issues Schedule K-1 to each partner showing their share. General partners also pay self-employment tax on their share of partnership income." },
+      { question: "Can a partnership have employees?", answer: "Yes, partnerships can hire employees. The partnership must obtain an EIN, withhold payroll taxes, and comply with employment laws. Partners themselves are not considered employees—they are self-employed and receive distributions rather than wages. Some partnerships pay partners 'guaranteed payments' for services, which are similar to salary but taxed differently." },
+      { question: "What happens if a partner wants to leave?", answer: "This depends on your partnership agreement. Common approaches include: buyout provisions where remaining partners purchase the departing partner's share, right of first refusal before selling to outsiders, and valuation methods for determining the departing partner's payout. Without an agreement, state law applies, which may require dissolution of the partnership. This is why a comprehensive partnership agreement is essential." },
+      { question: "Can I convert a partnership to an LLC?", answer: "Yes, partnerships can be converted to LLCs. Many states offer statutory conversion processes that preserve the partnership's history and contracts. The process typically involves filing articles of organization, creating an operating agreement, and updating registrations. Converting to an LLC provides liability protection while maintaining pass-through taxation. Consult a tax professional as there may be tax implications." },
+    ],
+  },
+  cta: {
+    heading: "Ready to Partner Up?",
+    subheading: "Let us help you establish a strong foundation for your partnership. We will guide you through the formation process and help create a solid partnership agreement.",
+    ctaPrimary: "Form Your Partnership",
+    ctaSecondary: "Schedule Free Consultation",
+  },
+} as const;
+
+export const NONPROFIT_COPY = {
+  hero: {
+    badge: "Make a Difference",
+    headline: "Nonprofit Corporation Formation",
+    subheadline: "Create a tax-exempt organization dedicated to serving the greater good",
+    description: "Form a 501(c)(3) nonprofit to receive tax-deductible donations, apply for grants, and build an organization that makes a lasting impact.",
+    ctaPrimary: "Start Your Nonprofit",
+    ctaSecondary: "Free Consultation",
+  },
+  whatIs: {
+    heading: "What Is a Nonprofit Corporation?",
+    paragraphs: [
+      'A <strong class="text-foreground">nonprofit corporation</strong> is a legal entity organized for purposes other than generating profit for owners or shareholders. Instead, any surplus revenue is used to further the organization\'s mission—whether charitable, educational, religious, scientific, or social.',
+      'Forming a nonprofit involves two steps: (1) incorporating as a nonprofit under state law, and (2) applying to the IRS for federal tax-exempt status under Section 501(c) of the Internal Revenue Code. The most common designation is <strong class="text-foreground">501(c)(3)</strong>, which applies to charitable, religious, educational, and scientific organizations.',
+      "501(c)(3) organizations enjoy significant benefits: exemption from federal income tax, eligibility for tax-deductible donations, and access to grants from foundations and government agencies. However, they must follow strict rules about political activities, private benefit, and public disclosure.",
+    ],
+  },
+  types: {
+    heading: "Types of Tax-Exempt Organizations",
+    subheading: "Different IRS designations for different types of nonprofit purposes",
+    items: [
+      { code: "501(c)(3)", name: "Charitable Organizations", description: "Religious, educational, charitable, scientific, literary organizations, and prevention of cruelty to children or animals", taxDeductible: true, examples: "Churches, schools, hospitals, food banks, animal shelters" },
+      { code: "501(c)(4)", name: "Social Welfare Organizations", description: "Civic leagues and organizations promoting community welfare, including some lobbying", taxDeductible: false, examples: "Advocacy groups, volunteer fire departments, homeowner associations" },
+      { code: "501(c)(6)", name: "Business Leagues", description: "Trade associations, professional organizations, chambers of commerce", taxDeductible: false, examples: "Industry trade groups, bar associations, real estate boards" },
+      { code: "501(c)(7)", name: "Social & Recreation Clubs", description: "Clubs organized for pleasure, recreation, and social activities", taxDeductible: false, examples: "Country clubs, hobby clubs, fraternal organizations" },
+    ],
+  },
+  benefits: {
+    heading: "Benefits of Nonprofit Status",
+    items: [
+      { title: "Tax-Exempt Status", description: "Exempt from federal income tax on revenue related to your exempt purpose. May also be exempt from state and local taxes." },
+      { title: "Tax-Deductible Donations", description: "501(c)(3) donors can deduct contributions on their personal taxes, encouraging greater giving." },
+      { title: "Grant Eligibility", description: "Access foundation grants, government funding, and other funding sources only available to nonprofits." },
+      { title: "Limited Liability", description: "Directors, officers, and members are generally protected from personal liability for organizational debts." },
+      { title: "Credibility & Trust", description: "Official nonprofit status enhances credibility with donors, volunteers, and the community." },
+      { title: "Perpetual Existence", description: "The organization continues beyond the involvement of any particular founder or leader." },
+    ],
+  },
+  drawbacks: {
+    heading: "Restrictions & Considerations",
+    items: [
+      { title: "No Private Benefit", description: "Cannot distribute profits to founders, directors, or members. All earnings must further the exempt purpose.", severity: "high" as const },
+      { title: "Political Restrictions", description: "501(c)(3) organizations cannot participate in political campaigns and face strict limits on lobbying activities.", severity: "high" as const },
+      { title: "Public Scrutiny", description: "Tax returns (Form 990) are public documents. Financial information and executive compensation are disclosed.", severity: "medium" as const },
+      { title: "Complex Compliance", description: "Must follow strict IRS rules, maintain detailed records, and file annual returns to maintain tax-exempt status.", severity: "medium" as const },
+      { title: "Lengthy Approval Process", description: "IRS determination letter for 501(c)(3) status can take 3-12 months to obtain.", severity: "medium" as const },
+    ],
+  },
+  form1023: {
+    heading: "501(c)(3) Application Options",
+    subheading: "Choose the right IRS application form for your organization",
+    standard: { name: "Form 1023", fee: "$600", eligibility: "All organizations", length: "28 pages + attachments", processingTime: "6-12 months", bestFor: "Organizations expecting >$50K revenue, complex structures" },
+    ez: { name: "Form 1023-EZ", fee: "$275", eligibility: "Projected revenue < $50K, assets < $250K", length: "3 pages", processingTime: "3-6 months", bestFor: "Small, simple organizations just starting out" },
+  },
+  formationSteps: {
+    heading: "How to Form a 501(c)(3) Nonprofit",
+    steps: [
+      { step: 1, title: "Form a Nonprofit Corporation", description: "File Articles of Incorporation with your state, including required nonprofit language about purpose and dissolution.", timeline: "1-2 weeks" },
+      { step: 2, title: "Create Bylaws", description: "Draft comprehensive bylaws covering governance, board structure, membership, meetings, and amendment procedures.", timeline: "1-2 weeks" },
+      { step: 3, title: "Appoint Initial Board", description: "Select your initial board of directors. Most states require at least 3 directors who are not related.", timeline: "Day 1" },
+      { step: 4, title: "Hold Organizational Meeting", description: "Board adopts bylaws, elects officers, approves initial resolutions, and sets fiscal year.", timeline: "Day 1" },
+      { step: 5, title: "Obtain EIN", description: "Apply for a free Employer Identification Number from the IRS (required for all nonprofits).", timeline: "Immediate" },
+      { step: 6, title: "File Form 1023 or 1023-EZ", description: "Apply for 501(c)(3) status. Form 1023-EZ is simpler for small organizations; Form 1023 for larger ones.", timeline: "3-12 months" },
+      { step: 7, title: "Register for State Fundraising", description: "Many states require charitable solicitation registration before you can solicit donations.", timeline: "2-4 weeks" },
+    ],
+  },
+  annualRequirements: {
+    heading: "Annual Filing Requirements",
+    subheading: "Maintaining tax-exempt status requires annual filings with the IRS",
+    warning: "Warning: Failure to file for three consecutive years results in automatic revocation of tax-exempt status.",
+    items: [
+      { form: "Form 990", description: "Annual information return for larger nonprofits (gross receipts ≥ $200K or assets ≥ $500K)" },
+      { form: "Form 990-EZ", description: "Simplified return for mid-sized nonprofits (gross receipts < $200K and assets < $500K)" },
+      { form: "Form 990-N", description: "E-postcard for small nonprofits (gross receipts ≤ $50K)" },
+      { form: "State Reports", description: "Annual reports and charitable solicitation renewals as required by your state" },
+    ],
+  },
+  faq: {
+    heading: "Frequently Asked Questions",
+    items: [
+      { question: "What is the difference between a nonprofit and a 501(c)(3)?", answer: "A nonprofit corporation is a legal entity formed under state law that does not distribute profits to owners. A 501(c)(3) is a federal tax designation from the IRS that grants tax-exempt status. You first form a nonprofit corporation with your state, then apply to the IRS for 501(c)(3) status. Not all nonprofits are 501(c)(3)s—there are other tax-exempt categories like 501(c)(4), 501(c)(6), etc." },
+      { question: "Can nonprofit founders and employees be paid?", answer: "Yes, nonprofits can pay reasonable compensation to employees, including founders who work for the organization. What nonprofits cannot do is distribute profits to shareholders or pay excessive compensation. The key is 'reasonable compensation' based on what similar organizations pay for similar work. Executive compensation is reported on Form 990 and subject to public scrutiny." },
+      { question: "How long does it take to get 501(c)(3) status?", answer: "The timeline varies. Form 1023-EZ (for smaller organizations) typically takes 3-6 months. The full Form 1023 can take 6-12 months, sometimes longer for complex applications or if the IRS requests additional information. During the waiting period, you can operate as a nonprofit, but donors cannot claim tax deductions until status is approved (though approval is retroactive to your formation date)." },
+      { question: "What happens if we fail to file Form 990?", answer: "Failing to file Form 990 (or 990-N/990-EZ) for three consecutive years results in automatic revocation of your tax-exempt status. This means you become a taxable corporation and must apply again for exemption. Penalties also apply for late filings. Set up reminders and consider working with a CPA experienced in nonprofit accounting." },
+      { question: "Can a nonprofit engage in political activities?", answer: "501(c)(3) organizations cannot participate in political campaigns for or against candidates. They can engage in limited lobbying (attempting to influence legislation), but it cannot be a 'substantial part' of activities. 501(c)(4) organizations have more flexibility for lobbying and some political activity. If political engagement is important to your mission, consider the appropriate tax-exempt category." },
+      { question: "Do we need a board of directors?", answer: "Yes, all nonprofit corporations must have a board of directors (sometimes called board of trustees). Most states require at least 3 directors. Best practices recommend that the majority of directors be independent (not related to each other or compensated by the organization). The board is responsible for governance, oversight, and fiduciary duties." },
+    ],
+  },
+  cta: {
+    heading: "Ready to Make a Difference?",
+    subheading: "Start your nonprofit corporation and begin making a positive impact in your community. We will guide you through every step of the formation and 501(c)(3) application process.",
+    ctaPrimary: "Start Your Nonprofit",
+    ctaSecondary: "Schedule Free Consultation",
+  },
+} as const;
