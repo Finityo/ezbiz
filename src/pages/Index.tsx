@@ -167,25 +167,34 @@ const Index = () => {
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display min-h-[2.4em]">
-                  Start Your LLC the Right Way —{" "}
-                  <span className="text-bronze">Filed Fast. No Hidden Fees.</span>
+                  Start Your Texas LLC{" "}
+                  <span className="text-bronze">With Precision.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
-                  EZ BIZ File Service prepares and submits your business formation accurately 
-                  and efficiently so you can focus on building, not paperwork.
+                  Founded by a U.S. Marine Veteran. Built for Texas entrepreneurs — including 
+                  Veterans and Active Service Members who may qualify for state filing fee waivers.
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground/70 font-body">
-                  Founded by Christian Rene Talavera, MBA, MSL (USC Gould School of Law)
+                  Christian Rene Talavera, MBA, MSL (USC Gould School of Law)
                 </p>
               </div>
               
-              <div>
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   size="lg" 
                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-                  onClick={() => { trackClick('Start My LLC', 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
+                  onClick={() => { trackClick('Start My Texas LLC', 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
                 >
-                  Start My LLC
+                  Start My Texas LLC
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14" 
+                  onClick={() => { trackClick('View Veteran Benefits', 'hero_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+                >
+                  View Veteran Benefits
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
@@ -200,6 +209,42 @@ const Index = () => {
                 speed={0.2}
                 maxOffset={80}
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Veteran Benefits Strip */}
+      <section className="py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="text-xl md:text-2xl font-bold font-display flex items-center justify-center gap-2">
+                <span>🇺🇸</span> Texas Veteran Filing Benefits
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+              {[
+                "Possible Texas state filing fee waivers for qualifying Veterans",
+                "Structured, compliant business formation",
+                "Direct communication — no corporate runaround",
+                "Veteran-founded and Texas-focused"
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-base font-body text-foreground">{item}</span>
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+              <Button 
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/5"
+                onClick={() => { trackClick('Check My Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+              >
+                Check My Eligibility
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
@@ -382,6 +427,71 @@ const Index = () => {
                 <p className="text-base md:text-lg text-foreground font-body pt-2 md:pt-2.5">{step}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Founder Authority Block */}
+      <AnimatedSection className="py-12 md:py-20 bg-card border-y border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto text-center space-y-4">
+            <div className="accent-line-center mb-6"></div>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-2">
+              <Award className="h-8 w-8" />
+            </div>
+            <h3 className="text-xl md:text-2xl font-bold font-display">Christian Talavera</h3>
+            <p className="text-sm text-muted-foreground font-body">
+              U.S. Marine Veteran · MBA · MSL
+            </p>
+            <p className="text-base text-secondary font-semibold font-display">
+              Founder, EZ BIZ File Service, LLC
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed max-w-lg mx-auto">
+              Built on structure, compliance, and clear execution — so your business 
+              starts correctly from day one.
+            </p>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Mobile White-Glove Service */}
+      <AnimatedSection className="py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-secondary/20 shadow-elegant overflow-hidden">
+              <div className="p-6 md:p-10 space-y-5">
+                <Badge className="bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/15">
+                  Optional Add-On
+                </Badge>
+                <h3 className="text-2xl md:text-3xl font-bold font-display">
+                  White-Glove Mobile Filing
+                </h3>
+                <p className="text-muted-foreground font-body leading-relaxed">
+                  Prefer in-person guidance? We can meet at your residence or public location 
+                  and complete your filing together in real time. This service is ideal for 
+                  first-time business owners who want structured, step-by-step support.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-muted/50">
+                  <div className="text-center sm:text-left">
+                    <span className="text-2xl font-bold text-primary font-display">$150</span>
+                    <span className="text-sm text-muted-foreground font-body ml-1">first 2 hours</span>
+                  </div>
+                  <div className="hidden sm:block w-px bg-border"></div>
+                  <div className="text-center sm:text-left">
+                    <span className="text-2xl font-bold text-primary font-display">$80</span>
+                    <span className="text-sm text-muted-foreground font-body ml-1">per hour thereafter</span>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline"
+                  className="border-secondary text-secondary hover:bg-secondary/5"
+                  onClick={() => { trackClick('Learn More Mobile Service', 'mobile_service_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+                >
+                  Learn More About Mobile Service
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </Card>
           </div>
         </div>
       </AnimatedSection>
