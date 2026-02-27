@@ -33,6 +33,22 @@ const Index = () => {
   const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
   const [mobileAddonSelected, setMobileAddonSelected] = useState(false);
 
+  useEffect(() => {
+    if (qpVeteran) {
+      setIsVeteran(true);
+      setTimeout(() => {
+        veteranGateRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 250);
+    }
+    if (qpMobile) {
+      setMobileAddonSelected(true);
+      setTimeout(() => {
+        mobileAddonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 350);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qpVeteran, qpMobile]);
+
   // Business structures ordered from simple to complex
   const businessStructures = [
     {
