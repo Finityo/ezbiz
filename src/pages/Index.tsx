@@ -486,7 +486,7 @@ const Index = () => {
 
       {/* Mobile White-Glove Service */}
       <AnimatedSection className="py-12 md:py-20">
-        <div className="container mx-auto px-4">
+        <div ref={mobileAddonRef} className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <Card className="border-secondary/20 shadow-elegant overflow-hidden">
               <div className="p-6 md:p-10 space-y-5">
@@ -511,6 +511,21 @@ const Index = () => {
                     <span className="text-2xl font-bold text-primary font-display">$80</span>
                     <span className="text-sm text-muted-foreground font-body ml-1">per hour thereafter</span>
                   </div>
+                </div>
+                <div className="flex items-center gap-3 pt-2">
+                  <input
+                    type="checkbox"
+                    id="mobile-addon-toggle"
+                    checked={mobileAddonSelected}
+                    onChange={(e) => {
+                      setMobileAddonSelected(e.target.checked);
+                      trackEvent('mobile_service_addon_click', { location: 'homepage', selected: e.target.checked });
+                    }}
+                    className="h-5 w-5 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="mobile-addon-toggle" className="text-sm font-medium font-body cursor-pointer">
+                    Add Mobile Filing to My Order
+                  </label>
                 </div>
                 <Button 
                   variant="outline"
