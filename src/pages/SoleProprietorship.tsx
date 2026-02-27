@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, User, Zap, DollarSign, FileText, Shield, AlertTriangle, TrendingUp, Scale, BadgeCheck, ArrowRight, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SOLE_PROP_COPY } from "@/content/entityPagesCopy";
+import { SOLE_PROP_COPY } from "@/content/ezbizCopy";
 
 const c = SOLE_PROP_COPY;
 const benefitIcons = [Zap, User, DollarSign, FileText, TrendingUp, BadgeCheck];
