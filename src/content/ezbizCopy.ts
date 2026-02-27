@@ -164,4 +164,341 @@ export const EZBIZ_COPY = {
     heading: "Ready to Form Your Business the Right Way?",
     cta: "Get Started Today",
   },
+
+  // ── Pricing Page ──────────────────────────────────────────
+  pricing: {
+    hero: {
+      headline: "Transparent Pricing",
+      subheadline: "No hidden fees. No surprises. Choose the package that's right for your business.",
+      badges: ["No Hidden Fees", "Money-Back Guarantee", "Expert Support"],
+    },
+    trust: {
+      heading: "Why Choose EZ BIZ?",
+      items: [
+        { title: "100% Satisfaction Guaranteed", description: "We stand behind our work with a complete money-back guarantee." },
+        { title: "Expert Support", description: "Our experienced team guides you through every step of formation." },
+        { title: "All Documents Included", description: "Get all necessary formation documents and ongoing compliance support." },
+      ],
+    },
+    stateSelector: {
+      heading: "Select Your State",
+      subheading: "Choose your formation state to see the total cost including state filing fees.",
+      placeholder: "Select a state",
+    },
+    llcSection: {
+      heading: "LLC Formation Packages",
+      subheading: "Start your Limited Liability Company with confidence",
+    },
+    corpSection: {
+      heading: "Corporation Formation Packages",
+      subheading: "Establish your corporation with professional service",
+    },
+    llcPackages: [
+      {
+        name: "Basic",
+        description: "Essential LLC formation service",
+        features: [
+          "Articles of Organization filing",
+          "Registered Agent service (1 year)",
+          "EIN application",
+          "Operating Agreement template",
+          "Email support",
+        ],
+      },
+      {
+        name: "Deluxe",
+        description: "Most popular LLC package",
+        popular: true,
+        features: [
+          "Everything in Basic",
+          "Express processing",
+          "Banking resolution",
+          "Compliance calendar",
+          "Priority phone support",
+          "Business name search",
+        ],
+      },
+      {
+        name: "Complete",
+        description: "Complete LLC formation with extras",
+        features: [
+          "Everything in Deluxe",
+          "Custom Operating Agreement",
+          "Business license research",
+          "Domain name consultation",
+          "Trademark search",
+          "1-hour attorney consultation",
+        ],
+      },
+    ],
+    corpPackages: [
+      {
+        name: "Basic Corporation",
+        description: "Essential corporation formation",
+        features: [
+          "Articles of Incorporation filing",
+          "Registered Agent service (1 year)",
+          "EIN application",
+          "Corporate bylaws template",
+          "Email support",
+        ],
+      },
+      {
+        name: "Standard Corporation",
+        description: "Complete corporation package",
+        features: [
+          "Everything in Basic",
+          "Custom Corporate Bylaws",
+          "Stock certificates",
+          "Corporate seal",
+          "Priority support",
+          "Banking resolution",
+        ],
+      },
+      {
+        name: "Premium Corporation",
+        description: "Full-service corporation formation",
+        features: [
+          "Everything in Standard",
+          "Attorney consultation",
+          "S-Corp election assistance",
+          "Compliance calendar",
+          "Business license research",
+          "Ongoing support",
+        ],
+      },
+    ],
+    addOns: {
+      heading: "Additional Services",
+      subheading: "Add-on services to complement your business formation",
+    },
+    process: {
+      heading: "Simple 3-Step Process",
+      steps: [
+        { title: "Choose Your Package", description: "Select the formation package that best fits your business needs and budget." },
+        { title: "Provide Information", description: "Complete our simple form with your business details and preferences." },
+        { title: "We Handle the Rest", description: "Our experts prepare and file all documents while keeping you informed." },
+      ],
+    },
+    stateFees: {
+      heading: "State Filing Fees",
+      llcHeading: "LLC State Fees",
+      corpHeading: "Corporation State Fees",
+      disclaimer: "* State fees are paid directly to the state and are in addition to our service fees. Fees may vary by state and are subject to change. Contact us for current fees in your state.",
+      highlightedStates: ["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"],
+    },
+    guarantee: {
+      heading: "100% Satisfaction Guarantee",
+      title: "Money-Back Guarantee",
+      description: "We're so confident in our services that we offer a 100% money-back guarantee. If you're not completely satisfied with our service, we'll refund your money within 60 days.",
+      pillars: [
+        { title: "Fast Processing", description: "Quick turnaround times" },
+        { title: "Expert Support", description: "Professional guidance" },
+        { title: "Accuracy Guaranteed", description: "Error-free filing" },
+      ],
+    },
+    cta: {
+      heading: "Ready to Start Your Business?",
+      subheading: "Choose your package and get started today. Our experts are here to help you every step of the way.",
+      button: "Start Your Business Now",
+    },
+  },
+
+  // ── LLC Page ──────────────────────────────────────────────
+  llcPage: {
+    hero: {
+      badge: "Most Popular Business Structure",
+      headline: "Form Your LLC Today",
+      subheadline: "Limited Liability Company — the perfect blend of protection and simplicity",
+      description: "LLCs are the most popular business structure in America, offering liability protection, tax flexibility, and simple management requirements.",
+      ctaPrimary: "Start Your LLC - $149",
+      ctaSecondary: "Free LLC Guide",
+      badges: ["Fast 24-48 Hour Filing", "All 50 States", "100% Satisfaction Guaranteed"],
+    },
+    whatIs: {
+      heading: "What Is an LLC?",
+      paragraphs: [
+        'A <strong class="text-foreground">Limited Liability Company (LLC)</strong> is a business structure that combines the liability protection of a corporation with the simplicity and tax benefits of a sole proprietorship or partnership. LLCs are formed under state law and are recognized in all 50 states.',
+        'The key feature of an LLC is <strong class="text-foreground">limited liability protection</strong>. This means that the LLC is a separate legal entity from its owners (called "members"), and members\' personal assets are generally protected from business debts and lawsuits against the company.',
+        'LLCs are "pass-through" entities for tax purposes by default, meaning business income passes through to members\' personal tax returns and is taxed only once. However, LLCs can also elect to be taxed as S-Corporations or C-Corporations if that provides tax advantages.',
+      ],
+      cards: [
+        { title: "Liability Shield", description: "Personal assets protected from business debts and legal claims" },
+        { title: "Separate Entity", description: "Legally distinct from its owners with its own rights and obligations" },
+        { title: "Tax Flexibility", description: "Choose your tax treatment: pass-through, S-Corp, or C-Corp" },
+      ],
+    },
+    benefits: {
+      heading: "Benefits of an LLC",
+      subheading: "Discover why millions of business owners choose the LLC structure",
+      items: [
+        { title: "Limited Liability Protection", description: "Your personal assets (home, savings, vehicles) are protected from business debts and lawsuits against the company." },
+        { title: "Tax Flexibility", description: "Choose how you want to be taxed: as a sole proprietorship, partnership, S-Corp, or C-Corp depending on your situation." },
+        { title: "Simple Management", description: "Fewer formalities than corporations. No required board meetings, minutes, or complex record-keeping requirements." },
+        { title: "Business Credibility", description: "Adding 'LLC' to your business name establishes credibility with customers, vendors, and financial institutions." },
+        { title: "Flexible Ownership", description: "No restrictions on the number or type of members. Individuals, corporations, other LLCs, and foreign nationals can be members." },
+        { title: "Pass-Through Taxation", description: "By default, LLC profits pass through to members' personal tax returns, avoiding double taxation." },
+      ],
+    },
+    drawbacks: {
+      heading: "Considerations",
+      subheading: "A few things to keep in mind when forming an LLC",
+      items: [
+        { title: "State Filing Fees", description: "Unlike sole proprietorships, LLCs require state registration with filing fees that vary by state ($50 to $500+).", severity: "low" as const },
+        { title: "Annual Requirements", description: "Most states require annual reports and fees to maintain LLC status, adding ongoing costs and administrative tasks.", severity: "medium" as const },
+        { title: "Self-Employment Tax", description: "By default, all LLC profits are subject to self-employment tax (15.3%), though S-Corp election can reduce this.", severity: "medium" as const },
+        { title: "Limited Life in Some States", description: "Some states require dissolution when a member leaves, though this can be addressed in the operating agreement.", severity: "low" as const },
+      ],
+    },
+    taxOptions: {
+      heading: "LLC Tax Options",
+      subheading: "One of the biggest advantages of an LLC is tax flexibility",
+      disclaimer: "Consult a tax professional to determine the best election for your situation.",
+      items: [
+        { election: "Default (Disregarded Entity / Partnership)", description: "Single-member LLCs are taxed like sole proprietorships; multi-member LLCs like partnerships. Profits pass through to personal returns.", bestFor: "Most small businesses wanting simplicity" },
+        { election: "S Corporation Election", description: "File Form 2553 to be taxed as an S-Corp. Can reduce self-employment tax by paying reasonable salary and taking remaining profits as distributions.", bestFor: "Profitable businesses with $50K+ net income" },
+        { election: "C Corporation Election", description: "File Form 8832 to be taxed as a C-Corp. Subject to corporate income tax and potential double taxation on dividends.", bestFor: "Businesses planning to reinvest all profits or seek venture capital" },
+      ],
+    },
+    suitability: {
+      heading: "Is an LLC Right for You?",
+      subheading: "LLCs are ideal for many businesses, but not all",
+      idealFor: [
+        "Small to medium-sized businesses seeking liability protection",
+        "Real estate investors protecting rental properties",
+        "Freelancers and consultants with liability exposure",
+        "E-commerce businesses and online sellers",
+        "Businesses with multiple owners needing flexibility",
+        "Startups not planning to seek venture capital",
+      ],
+      notIdealFor: [
+        "Businesses planning to go public (IPO)",
+        "Startups seeking venture capital (VCs prefer C-Corps)",
+        "Very simple, low-risk side businesses",
+        "Professionals in states requiring Professional LLCs (PLLCs)",
+      ],
+    },
+    formationSteps: {
+      heading: "How to Form an LLC",
+      subheading: "Our simple 6-step process gets your LLC up and running quickly",
+      steps: [
+        { step: 1, title: "Choose Your State", description: "Decide where to form your LLC. Most businesses form in their home state, though Delaware, Nevada, and Wyoming offer benefits for some.", timeline: "Day 1" },
+        { step: 2, title: "Name Your LLC", description: "Choose a unique name that includes 'LLC' or 'Limited Liability Company' and check availability with your state.", timeline: "1-2 days" },
+        { step: 3, title: "Appoint a Registered Agent", description: "Designate a person or service to receive legal documents on behalf of your LLC. Required in all states.", timeline: "Same day" },
+        { step: 4, title: "File Articles of Organization", description: "Submit formation documents to your state's Secretary of State office, along with the required filing fee.", timeline: "1-4 weeks" },
+        { step: 5, title: "Create an Operating Agreement", description: "Draft a document outlining ownership, management, profit sharing, and member responsibilities.", timeline: "1-2 weeks" },
+        { step: 6, title: "Obtain an EIN", description: "Apply for a free Employer Identification Number from the IRS for tax filing and opening a business bank account.", timeline: "Immediate" },
+      ],
+    },
+    comparison: {
+      heading: "LLC vs. Other Structures",
+      subheading: "See how LLCs compare to other business entity options",
+      data: [
+        { feature: "Liability Protection", soleProp: false, llc: true, sCorp: true, cCorp: true },
+        { feature: "Pass-Through Taxation", soleProp: true, llc: true, sCorp: true, cCorp: false },
+        { feature: "Tax Flexibility", soleProp: false, llc: true, sCorp: false, cCorp: false },
+        { feature: "Ownership Restrictions", soleProp: "None", llc: "None", sCorp: "Limited", cCorp: "None" },
+        { feature: "Formation Complexity", soleProp: "Simple", llc: "Moderate", sCorp: "Complex", cCorp: "Complex" },
+      ],
+    },
+    faq: {
+      heading: "Frequently Asked Questions",
+      subheading: "Get answers to common questions about LLCs",
+      items: [
+        { question: "What is the difference between an LLC and a corporation?", answer: "The main differences are management structure and tax treatment. Corporations have a formal structure with shareholders, directors, and officers, plus required meetings and minutes. LLCs are more flexible with member-managed or manager-managed options and no required formalities. Tax-wise, C-Corporations face potential double taxation, while LLCs default to pass-through taxation. S-Corporations and LLCs with S-Corp election both avoid double taxation." },
+        { question: "How much does it cost to form an LLC?", answer: "Costs vary by state. State filing fees range from $50 (Colorado, Iowa) to $500+ (Massachusetts, California). Additional costs may include: registered agent service ($100-300/year), operating agreement drafting ($0-500), EIN (free from IRS), and business licenses (varies). Ongoing costs include annual report fees ($0-800 depending on state) and franchise taxes in some states." },
+        { question: "Can a single person form an LLC?", answer: "Yes, single-member LLCs are very common and provide liability protection for solo business owners. A single-member LLC is taxed as a 'disregarded entity' by default—meaning you report business income on Schedule C of your personal tax return, similar to a sole proprietorship, but with liability protection. You can also elect S-Corp or C-Corp taxation if beneficial." },
+        { question: "Do I need an operating agreement?", answer: "While not required in all states, an operating agreement is strongly recommended. It documents: ownership percentages, profit/loss distribution, member roles and responsibilities, voting rights and procedures, what happens if a member leaves, and dissolution procedures. Without one, state default rules apply, which may not match your intentions. Banks often require one to open a business account." },
+        { question: "What is a registered agent and do I need one?", answer: "A registered agent is a person or service designated to receive legal documents (lawsuits, subpoenas) and official correspondence on behalf of your LLC. Every state requires LLCs to have a registered agent with a physical address in the state of formation. You can be your own registered agent, but many businesses use professional services for privacy and reliability." },
+        { question: "Should I form my LLC in Delaware, Nevada, or Wyoming?", answer: "For most small businesses, forming in your home state is best. Delaware, Nevada, and Wyoming are popular for their business-friendly laws, but if you operate in another state, you will need to register as a 'foreign LLC' there anyway, paying fees in both states. These states make sense for: large companies with complex structures, businesses prioritizing privacy, or those with operations in multiple states." },
+      ],
+    },
+    cta: {
+      heading: "Ready to Form Your LLC?",
+      subheading: "Join thousands of entrepreneurs who have started their LLC with EZ BIZ. Get liability protection and tax benefits today.",
+      ctaPrimary: "Start Your LLC - $149",
+      ctaSecondary: "Schedule Free Consultation",
+      footnote: "Includes registered agent service for the first year",
+    },
+  },
+
+  // ── About Page ────────────────────────────────────────────
+  about: {
+    hero: {
+      headline: "About EZ BIZ FILE SERVICE",
+      subheadline: "Where timeless professionalism meets modern convenience. We handle your business filings with the care and precision of a master clerk.",
+    },
+    stats: [
+      { number: "50,000+", label: "Businesses Formed" },
+      { number: "15+", label: "Years Experience" },
+      { number: "50", label: "States Covered" },
+      { number: "4.9/5", label: "Customer Rating" },
+    ],
+    story: {
+      heading: "Our Story",
+      paragraphs: [
+        "EZ BIZ FILE SERVICE was born from a simple belief: that filing your business documents should be as straightforward and dignified as walking into a clerk's office in 1929—pen in hand, paperwork in order, and a professional ready to help you make it official.",
+        "Our founder, Christian Talavera, a military veteran and legal professional, understood that behind every LLC formation and annual report is someone's dream taking shape. After experiencing the confusing maze of modern business formation services—hidden fees, impersonal processes, and unclear guidance—he set out to create something different.",
+        "What started in New Braunfels, Texas—one of the nation's fastest-growing cities—has grown into a nationwide service that has helped over 50,000 entrepreneurs file their business documents correctly the first time. We've embraced technology to make the process faster, but we've never forgotten the old-fashioned values that built trust: meticulous attention to detail, honest pricing, and treating every client like a neighbor.",
+        "Today, EZ BIZ FILE SERVICE combines the precision of a master filing clerk with the convenience of modern technology. Whether you're forming your first LLC or filing your tenth annual report, we handle your paperwork with the same care and professionalism that defined a more dignified era of business.",
+      ],
+    },
+    values: {
+      heading: "Our Values",
+      subheading: "The principles that guide every document we file",
+      items: [
+        { title: "Old-Fashioned Integrity", description: "Like the filing clerks of old, we believe in doing things right the first time. Your documents deserve meticulous attention to detail." },
+        { title: "Personal Service", description: "Every business owner deserves the same white-glove treatment. We treat your formation like it's our own." },
+        { title: "Modern Efficiency", description: "We combine timeless values with modern technology to file your documents faster than ever before." },
+        { title: "Professional Excellence", description: "We maintain the highest standards of accuracy and professionalism in every document we prepare." },
+      ],
+    },
+    team: {
+      heading: "Meet Our Team",
+      subheading: "Dedicated professionals committed to your success",
+      members: [
+        { name: "Christian Talavera, MBA, MSL", role: "CEO & Founder", bio: "15+ years in business formation law with a passion for helping entrepreneurs succeed.", credentials: "University of Southern California Gould School of Law" },
+        { name: "Michael Chen", role: "Head of Operations", bio: "Expert in streamlining business processes and ensuring accurate, timely filings.", credentials: "MBA, Wharton School" },
+        { name: "Jessica Rodriguez", role: "Customer Success Manager", bio: "Dedicated to providing exceptional customer service and support throughout your business journey.", credentials: "B.A. Business Administration" },
+        { name: "David Kim", role: "Legal Compliance Director", bio: "Ensures all filings meet state requirements and maintains relationships with state agencies.", credentials: "J.D., Stanford Law School" },
+      ],
+    },
+    whyChooseUs: [
+      "Expert guidance from business formation specialists",
+      "Transparent pricing with no hidden fees",
+      "Fast, accurate document preparation and filing",
+      "Comprehensive support throughout the process",
+      "Ongoing compliance assistance and reminders",
+      "100% satisfaction guarantee",
+      "Licensed in all 50 states",
+      "Award-winning customer service",
+    ],
+    awards: {
+      heading: "Awards & Recognition",
+      items: [
+        { title: "Best Business Service 2023", source: "Entrepreneur Magazine" },
+        { title: "5-Star Customer Rating", source: "Trustpilot & Google Reviews" },
+        { title: "A+ BBB Rating", source: "Better Business Bureau" },
+      ],
+    },
+    mission: {
+      heading: "Our Mission",
+      quote: "To bring back the dignity and precision of professional document filing—combining old-fashioned integrity with modern convenience to help every entrepreneur make their business official, correctly and affordably.",
+      attribution: "— Christian Talavera, MBA, MSL",
+      attributionTitle: "CEO & Founder",
+    },
+    office: {
+      heading: "Our Office",
+      name: "EZ BIZ FILE SERVICE, LLC",
+      address: ["1101 Thorpe Lane Ste 105-1028", "San Marcos, TX 78666 United States"],
+      phone: "(830) 837-1955",
+      email: "support@ezbizfile.com",
+    },
+    cta: {
+      heading: "Ready to Start Your Business Journey?",
+      subheading: "Join thousands of successful entrepreneurs who trusted EZ BIZ FILE SERVICE to handle their business formation with care and precision.",
+      ctaPrimary: "Get Started Today",
+      ctaSecondary: "Free Consultation",
+    },
+  },
 } as const;

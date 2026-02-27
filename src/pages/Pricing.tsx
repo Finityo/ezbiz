@@ -9,16 +9,22 @@ import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star, Shield, Users, FileText, ExternalLink, MapPin } from "lucide-react";
+import { Check, Star, Shield, Users, FileText, MapPin } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { STRIPE_PACKAGES, STRIPE_ADDONS, type AddonId } from "@/lib/stripe-config";
+import { STRIPE_PACKAGES, STRIPE_ADDONS } from "@/lib/stripe-config";
 import { getStateFee, getCorpStateFee, STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
 import pricingHero from "@/assets/business-success.jpg";
 import transparentPricing from "@/assets/transparent-pricing.jpg";
 import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
 import ParallaxImage from "@/components/ParallaxImage";
+import { EZBIZ_COPY } from "@/content/ezbizCopy";
+
+const { pricing } = EZBIZ_COPY;
+const trustIcons = [Shield, Users, FileText];
+
+const packageKeyMap = ["basic", "standard", "premium"] as const;
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -38,102 +44,20 @@ const Pricing = () => {
     trackClick('Get Started Add-on', 'addon_cta', '/order-flow');
     navigate('/order-flow');
   };
-  const llcPackages = [
-    {
-      name: "Basic",
-      price: `$${STRIPE_PACKAGES.basic.price}`,
-      packageKey: "basic",
-      period: "+ State Fee",
-      description: "Essential LLC formation service",
-      features: [
-        "Articles of Organization filing",
-        "Registered Agent service (1 year)",
-        "EIN application",
-        "Operating Agreement template",
-        "Email support"
-      ],
-      popular: false
-    },
-    {
-      name: "Deluxe", 
-      price: `$${STRIPE_PACKAGES.standard.price}`,
-      packageKey: "standard",
-      period: "+ State Fee",
-      description: "Most popular LLC package",
-      features: [
-        "Everything in Basic",
-        "Express processing",
-        "Banking resolution",
-        "Compliance calendar",
-        "Priority phone support",
-        "Business name search"
-      ],
-      popular: true
-    },
-    {
-      name: "Complete",
-      price: `$${STRIPE_PACKAGES.premium.price}`, 
-      packageKey: "premium",
-      period: "+ State Fee",
-      description: "Complete LLC formation with extras",
-      features: [
-        "Everything in Deluxe",
-        "Custom Operating Agreement",
-        "Business license research",
-        "Domain name consultation", 
-        "Trademark search",
-        "1-hour attorney consultation"
-      ],
-      popular: false
-    }
-  ];
 
-  const corpPackages = [
-    {
-      name: "Basic Corporation",
-      price: `$${STRIPE_PACKAGES.basic.price}`,
-      packageKey: "basic",
-      period: "+ State Fee", 
-      description: "Essential corporation formation",
-      features: [
-        "Articles of Incorporation filing",
-        "Registered Agent service (1 year)",
-        "EIN application",
-        "Corporate bylaws template",
-        "Email support"
-      ]
-    },
-    {
-      name: "Standard Corporation",
-      price: `$${STRIPE_PACKAGES.standard.price}`,
-      packageKey: "standard",
-      period: "+ State Fee",
-      description: "Complete corporation package", 
-      features: [
-        "Everything in Basic",
-        "Custom Corporate Bylaws",
-        "Stock certificates",
-        "Corporate seal",
-        "Priority support",
-        "Banking resolution"
-      ]
-    },
-    {
-      name: "Premium Corporation", 
-      price: `$${STRIPE_PACKAGES.premium.price}`,
-      packageKey: "premium",
-      period: "+ State Fee",
-      description: "Full-service corporation formation",
-      features: [
-        "Everything in Standard",
-        "Attorney consultation",
-        "S-Corp election assistance",
-        "Compliance calendar",
-        "Business license research",
-        "Ongoing support"
-      ]
-    }
-  ];
+  const llcPackages = pricing.llcPackages.map((pkg, i) => ({
+    ...pkg,
+    price: `$${STRIPE_PACKAGES[packageKeyMap[i]].price}`,
+    packageKey: packageKeyMap[i],
+    period: "+ State Fee",
+  }));
+
+  const corpPackages = pricing.corpPackages.map((pkg, i) => ({
+    ...pkg,
+    price: `$${STRIPE_PACKAGES[packageKeyMap[i]].price}`,
+    packageKey: packageKeyMap[i],
+    period: "+ State Fee",
+  }));
 
   const additionalServices = [
     { name: "Registered Agent Service", price: `$${STRIPE_ADDONS["registered-agent"].price}`, addonKey: "registered-agent" },
@@ -143,7 +67,7 @@ const Pricing = () => {
     { name: "S-Corp Election", price: `$${STRIPE_ADDONS["s-corp-election"].price}`, addonKey: "s-corp-election" },
     { name: "Business License Research", price: `$${STRIPE_ADDONS["business-license"].price}`, addonKey: "business-license" },
     { name: "BOI Reporting", price: `$${STRIPE_ADDONS["boi-reporting"].price}`, addonKey: "boi-reporting" },
-    { name: "Compliance Alert", price: `$${STRIPE_ADDONS["compliance-alert"].price}`, addonKey: "compliance-alert" }
+    { name: "Compliance Alert", price: `$${STRIPE_ADDONS["compliance-alert"].price}`, addonKey: "compliance-alert" },
   ];
 
   return (
@@ -160,23 +84,15 @@ const Pricing = () => {
           <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
               <div className="max-w-2xl">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">Transparent Pricing</h1>
-                <p className="text-base md:text-xl mb-6 md:mb-8 text-white/90">
-                  No hidden fees. No surprises. Choose the package that's right for your business.
-                </p>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">{pricing.hero.headline}</h1>
+                <p className="text-base md:text-xl mb-6 md:mb-8 text-white/90">{pricing.hero.subheadline}</p>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-white/80 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5 flex-shrink-0" />
-                    <span>No Hidden Fees</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5 flex-shrink-0" />
-                    <span>Money-Back Guarantee</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Check className="h-5 w-5 flex-shrink-0" />
-                    <span>Expert Support</span>
-                  </div>
+                  {pricing.hero.badges.map((badge, i) => (
+                    <div key={i} className="flex items-center space-x-2">
+                      <Check className="h-5 w-5 flex-shrink-0" />
+                      <span>{badge}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="relative hidden md:block">
@@ -200,35 +116,22 @@ const Pricing = () => {
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Why Choose EZ BIZ?</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.trust.heading}</h2>
                   <div className="space-y-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary/10 p-3 rounded-lg">
-                        <Shield className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">100% Satisfaction Guaranteed</h3>
-                        <p className="text-muted-foreground">We stand behind our work with a complete money-back guarantee.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary/10 p-3 rounded-lg">
-                        <Users className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">Expert Support</h3>
-                        <p className="text-muted-foreground">Our experienced team guides you through every step of formation.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary/10 p-3 rounded-lg">
-                        <FileText className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">All Documents Included</h3>
-                        <p className="text-muted-foreground">Get all necessary formation documents and ongoing compliance support.</p>
-                      </div>
-                    </div>
+                    {pricing.trust.items.map((item, i) => {
+                      const IconComponent = trustIcons[i];
+                      return (
+                        <div key={i} className="flex items-start space-x-4">
+                          <div className="bg-primary/10 p-3 rounded-lg">
+                            <IconComponent className="h-6 w-6 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                            <p className="text-muted-foreground">{item.description}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
                 <div className="relative order-1 lg:order-2">
@@ -251,12 +154,12 @@ const Pricing = () => {
             <div className="max-w-xl mx-auto text-center">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <MapPin className="h-5 w-5 text-primary" />
-                <h2 className="text-xl md:text-2xl font-bold">Select Your State</h2>
+                <h2 className="text-xl md:text-2xl font-bold">{pricing.stateSelector.heading}</h2>
               </div>
-              <p className="text-muted-foreground mb-5 text-sm">Choose your formation state to see the total cost including state filing fees.</p>
+              <p className="text-muted-foreground mb-5 text-sm">{pricing.stateSelector.subheading}</p>
               <Select value={selectedState} onValueChange={setSelectedState}>
                 <SelectTrigger className="w-full max-w-xs mx-auto">
-                  <SelectValue placeholder="Select a state" />
+                  <SelectValue placeholder={pricing.stateSelector.placeholder} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(STATE_FILING_FEES).map((state) => (
@@ -281,14 +184,14 @@ const Pricing = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">LLC Formation Packages</h2>
-              <p className="text-base md:text-xl text-muted-foreground">Start your Limited Liability Company with confidence</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.llcSection.heading}</h2>
+              <p className="text-base md:text-xl text-muted-foreground">{pricing.llcSection.subheading}</p>
             </div>
             
             <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
               {llcPackages.map((pkg, index) => (
-                <TiltCard key={index} className={`relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
-                  {pkg.popular && (
+                <TiltCard key={index} className={`relative ${'popular' in pkg && pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
+                  {'popular' in pkg && pkg.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
                       <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center">
                         <Star className="h-4 w-4 mr-1" />
@@ -316,17 +219,10 @@ const Pricing = () => {
                       ))}
                     </ul>
                     <Button 
-                      className={`w-full touch-manipulation ${pkg.popular ? 'bg-primary' : ''}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handlePackageCheckout(pkg.packageKey);
-                      }}
+                      className={`w-full touch-manipulation ${'popular' in pkg && pkg.popular ? 'bg-primary' : ''}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePackageCheckout(pkg.packageKey); }}
                       onTouchStart={(e) => e.stopPropagation()}
-                      style={{ 
-                        minHeight: '44px',
-                        WebkitTapHighlightColor: 'transparent'
-                      }}
+                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
                     >
                       Choose {pkg.name}
                     </Button>
@@ -342,8 +238,8 @@ const Pricing = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Corporation Formation Packages</h2>
-              <p className="text-base md:text-xl text-muted-foreground">Establish your corporation with professional service</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.corpSection.heading}</h2>
+              <p className="text-base md:text-xl text-muted-foreground">{pricing.corpSection.subheading}</p>
             </div>
             
             <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
@@ -371,16 +267,9 @@ const Pricing = () => {
                     <Button 
                       className="w-full touch-manipulation" 
                       variant="outline"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handlePackageCheckout(pkg.packageKey);
-                      }}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePackageCheckout(pkg.packageKey); }}
                       onTouchStart={(e) => e.stopPropagation()}
-                      style={{ 
-                        minHeight: '44px',
-                        WebkitTapHighlightColor: 'transparent'
-                      }}
+                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
                     >
                       Choose {pkg.name}
                     </Button>
@@ -396,8 +285,8 @@ const Pricing = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Additional Services</h2>
-              <p className="text-base md:text-xl text-muted-foreground">Add-on services to complement your business formation</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.addOns.heading}</h2>
+              <p className="text-base md:text-xl text-muted-foreground">{pricing.addOns.subheading}</p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
@@ -413,10 +302,7 @@ const Pricing = () => {
                       size="sm" 
                       className="w-full touch-manipulation"
                       onClick={() => handleAddOnClick()}
-                      style={{ 
-                        minHeight: '44px',
-                        WebkitTapHighlightColor: 'transparent'
-                      }}
+                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
                     >
                       Get Started
                     </Button>
@@ -442,29 +328,17 @@ const Pricing = () => {
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-lg"></div>
                 </div>
                 <div className="order-1 lg:order-2">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Simple 3-Step Process</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.process.heading}</h2>
                   <div className="space-y-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">Choose Your Package</h3>
-                        <p className="text-muted-foreground">Select the formation package that best fits your business needs and budget.</p>
+                    {pricing.process.steps.map((step, i) => (
+                      <div key={i} className="flex items-start space-x-4">
+                        <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">{i + 1}</div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                          <p className="text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">Provide Information</h3>
-                        <p className="text-muted-foreground">Complete our simple form with your business details and preferences.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">3</div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">We Handle the Rest</h3>
-                        <p className="text-muted-foreground">Our experts prepare and file all documents while keeping you informed.</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -476,14 +350,14 @@ const Pricing = () => {
         <section className="py-10 md:py-16 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">State Filing Fees</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">{pricing.stateFees.heading}</h2>
               <Card>
                 <CardContent className="p-4 sm:p-6 md:p-8">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">LLC State Fees</h3>
+                      <h3 className="text-xl font-semibold mb-4">{pricing.stateFees.llcHeading}</h3>
                       <div className="space-y-2 text-sm">
-                        {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
+                        {pricing.stateFees.highlightedStates.map((state) => (
                           <div key={state} className="flex justify-between">
                             <span>{state}</span>
                             <span className="font-medium">${STATE_FILING_FEES[state]}</span>
@@ -492,9 +366,9 @@ const Pricing = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Corporation State Fees</h3>
+                      <h3 className="text-xl font-semibold mb-4">{pricing.stateFees.corpHeading}</h3>
                       <div className="space-y-2 text-sm">
-                        {["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"].map((state) => (
+                        {pricing.stateFees.highlightedStates.map((state) => (
                           <div key={state} className="flex justify-between">
                             <span>{state}</span>
                             <span className="font-medium">${STATE_CORP_FILING_FEES[state]}</span>
@@ -504,10 +378,7 @@ const Pricing = () => {
                     </div>
                   </div>
                   <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">
-                      * State fees are paid directly to the state and are in addition to our service fees. 
-                      Fees may vary by state and are subject to change. Contact us for current fees in your state.
-                    </p>
+                    <p className="text-sm text-muted-foreground">{pricing.stateFees.disclaimer}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -521,7 +392,7 @@ const Pricing = () => {
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">100% Satisfaction Guarantee</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.guarantee.heading}</h2>
                   <Card className="border-success">
                     <CardContent className="p-4 sm:p-6 md:p-8">
                       <div className="flex items-center justify-center mb-6">
@@ -529,27 +400,16 @@ const Pricing = () => {
                           <Check className="h-8 w-8 text-white" />
                         </div>
                       </div>
-                      <h3 className="text-2xl font-semibold mb-4">Money-Back Guarantee</h3>
-                      <p className="text-muted-foreground mb-6">
-                        We're so confident in our services that we offer a 100% money-back guarantee. 
-                        If you're not completely satisfied with our service, we'll refund your money within 60 days.
-                      </p>
+                      <h3 className="text-2xl font-semibold mb-4">{pricing.guarantee.title}</h3>
+                      <p className="text-muted-foreground mb-6">{pricing.guarantee.description}</p>
                       <div className="grid grid-cols-3 gap-3 md:gap-4 text-sm text-center">
-                        <div>
-                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                          <div className="font-semibold">Fast Processing</div>
-                          <div className="text-muted-foreground">Quick turnaround times</div>
-                        </div>
-                        <div>
-                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                          <div className="font-semibold">Expert Support</div>
-                          <div className="text-muted-foreground">Professional guidance</div>
-                        </div>
-                        <div>
-                          <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                          <div className="font-semibold">Accuracy Guaranteed</div>
-                          <div className="text-muted-foreground">Error-free filing</div>
-                        </div>
+                        {pricing.guarantee.pillars.map((pillar, i) => (
+                          <div key={i}>
+                            <Check className="h-5 w-5 text-success mx-auto mb-2" />
+                            <div className="font-semibold">{pillar.title}</div>
+                            <div className="text-muted-foreground">{pillar.description}</div>
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -572,17 +432,15 @@ const Pricing = () => {
         <section className="py-10 md:py-16 bg-gradient-primary text-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Ready to Start Your Business?</h2>
-              <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">
-                Choose your package and get started today. Our experts are here to help you every step of the way.
-              </p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.cta.heading}</h2>
+              <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">{pricing.cta.subheading}</p>
               <Button 
                 size="lg" 
                 variant="secondary" 
                 className="text-lg px-8 py-4"
-                onClick={() => { trackClick('Start Your Business Now', 'pricing_final_cta', '/order-flow'); navigate("/order-flow"); }}
+                onClick={() => { trackClick(pricing.cta.button, 'pricing_final_cta', '/order-flow'); navigate("/order-flow"); }}
               >
-                Start Your Business Now
+                {pricing.cta.button}
               </Button>
             </div>
           </div>
