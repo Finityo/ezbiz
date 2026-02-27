@@ -9,77 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Users, Shield, Clock, Star, Award, Heart, Zap, FileText, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { EZBIZ_COPY } from "@/content/ezbizCopy";
+
+const { about } = EZBIZ_COPY;
+
+const statIcons = [FileText, Clock, Shield, Star];
+const valueIcons = [Scale, Heart, Zap, Award];
+const awardIcons = [Award, Star, Shield];
 
 const About = () => {
   const navigate = useNavigate();
-  
-  const stats = [
-    { number: "50,000+", label: "Businesses Formed", icon: FileText },
-    { number: "15+", label: "Years Experience", icon: Clock },
-    { number: "50", label: "States Covered", icon: Shield },
-    { number: "4.9/5", label: "Customer Rating", icon: Star }
-  ];
-
-  const values = [
-    {
-      icon: Scale,
-      title: "Old-Fashioned Integrity",
-      description: "Like the filing clerks of old, we believe in doing things right the first time. Your documents deserve meticulous attention to detail."
-    },
-    {
-      icon: Heart,
-      title: "Personal Service",
-      description: "Every business owner deserves the same white-glove treatment. We treat your formation like it's our own."
-    },
-    {
-      icon: Zap,
-      title: "Modern Efficiency", 
-      description: "We combine timeless values with modern technology to file your documents faster than ever before."
-    },
-    {
-      icon: Award,
-      title: "Professional Excellence",
-      description: "We maintain the highest standards of accuracy and professionalism in every document we prepare."
-    }
-  ];
-
-  const teamMembers = [
-    {
-      name: "Christian Talavera, MBA, MSL",
-      role: "CEO & Founder",
-      bio: "15+ years in business formation law with a passion for helping entrepreneurs succeed.",
-      credentials: "University of Southern California Gould School of Law"
-    },
-    {
-      name: "Michael Chen",
-      role: "Head of Operations", 
-      bio: "Expert in streamlining business processes and ensuring accurate, timely filings.",
-      credentials: "MBA, Wharton School"
-    },
-    {
-      name: "Jessica Rodriguez",
-      role: "Customer Success Manager",
-      bio: "Dedicated to providing exceptional customer service and support throughout your business journey.",
-      credentials: "B.A. Business Administration"
-    },
-    {
-      name: "David Kim",
-      role: "Legal Compliance Director",
-      bio: "Ensures all filings meet state requirements and maintains relationships with state agencies.",
-      credentials: "J.D., Stanford Law School"
-    }
-  ];
-
-  const whyChooseUs = [
-    "Expert guidance from business formation specialists",
-    "Transparent pricing with no hidden fees", 
-    "Fast, accurate document preparation and filing",
-    "Comprehensive support throughout the process",
-    "Ongoing compliance assistance and reminders",
-    "100% satisfaction guarantee",
-    "Licensed in all 50 states",
-    "Award-winning customer service"
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,10 +33,8 @@ const About = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <div className="accent-line-center mb-6 bg-secondary"></div>
-              <h1 className="text-5xl font-bold mb-6 font-display">About EZ BIZ FILE SERVICE</h1>
-              <p className="text-xl mb-8 opacity-90 font-body">
-                Where timeless professionalism meets modern convenience. We handle your business filings with the care and precision of a master clerk.
-              </p>
+              <h1 className="text-5xl font-bold mb-6 font-display">{about.hero.headline}</h1>
+              <p className="text-xl mb-8 opacity-90 font-body">{about.hero.subheadline}</p>
             </div>
           </div>
         </section>
@@ -106,8 +43,8 @@ const About = () => {
         <section className="py-16 bg-card border-b border-border">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, index) => {
-                const IconComponent = stat.icon;
+              {about.stats.map((stat, index) => {
+                const IconComponent = statIcons[index];
                 return (
                   <div key={index} className="text-center">
                     <IconComponent className="h-12 w-12 text-secondary mx-auto mb-4" />
@@ -126,23 +63,14 @@ const About = () => {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <div className="accent-line-center mb-6"></div>
-                <h2 className="text-3xl font-bold font-display">Our Story</h2>
+                <h2 className="text-3xl font-bold font-display">{about.story.heading}</h2>
               </div>
               <Card className="border-0 shadow-elegant">
                 <CardContent className="p-8 md:p-12">
                   <div className="prose prose-lg max-w-none">
-                    <p className="text-lg text-muted-foreground leading-relaxed mb-6 font-body">
-                      EZ BIZ FILE SERVICE was born from a simple belief: that filing your business documents should be as straightforward and dignified as walking into a clerk's office in 1929—pen in hand, paperwork in order, and a professional ready to help you make it official.
-                    </p>
-                    <p className="text-lg text-muted-foreground leading-relaxed mb-6 font-body">
-                      Our founder, Christian Talavera, a military veteran and legal professional, understood that behind every LLC formation and annual report is someone's dream taking shape. After experiencing the confusing maze of modern business formation services—hidden fees, impersonal processes, and unclear guidance—he set out to create something different.
-                    </p>
-                    <p className="text-lg text-muted-foreground leading-relaxed mb-6 font-body">
-                      What started in New Braunfels, Texas—one of the nation's fastest-growing cities—has grown into a nationwide service that has helped over 50,000 entrepreneurs file their business documents correctly the first time. We've embraced technology to make the process faster, but we've never forgotten the old-fashioned values that built trust: meticulous attention to detail, honest pricing, and treating every client like a neighbor.
-                    </p>
-                    <p className="text-lg text-muted-foreground leading-relaxed font-body">
-                      Today, EZ BIZ FILE SERVICE combines the precision of a master filing clerk with the convenience of modern technology. Whether you're forming your first LLC or filing your tenth annual report, we handle your paperwork with the same care and professionalism that defined a more dignified era of business.
-                    </p>
+                    {about.story.paragraphs.map((p, i) => (
+                      <p key={i} className={`text-lg text-muted-foreground leading-relaxed ${i < about.story.paragraphs.length - 1 ? 'mb-6' : ''} font-body`}>{p}</p>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -156,14 +84,12 @@ const About = () => {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <div className="accent-line-center mb-6"></div>
-                <h2 className="text-3xl font-bold font-display">Our Values</h2>
-                <p className="text-xl text-muted-foreground mt-4 font-body">
-                  The principles that guide every document we file
-                </p>
+                <h2 className="text-3xl font-bold font-display">{about.values.heading}</h2>
+                <p className="text-xl text-muted-foreground mt-4 font-body">{about.values.subheading}</p>
               </div>
               <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={100}>
-                {values.map((value, index) => {
-                  const IconComponent = value.icon;
+                {about.values.items.map((value, index) => {
+                  const IconComponent = valueIcons[index];
                   return (
                     <Card key={index} className="text-center h-full border-0 shadow-smooth hover:shadow-elegant transition-all">
                       <CardHeader>
@@ -189,13 +115,11 @@ const About = () => {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <div className="accent-line-center mb-6"></div>
-                <h2 className="text-3xl font-bold font-display">Meet Our Team</h2>
-                <p className="text-xl text-muted-foreground mt-4 font-body">
-                  Dedicated professionals committed to your success
-                </p>
+                <h2 className="text-3xl font-bold font-display">{about.team.heading}</h2>
+                <p className="text-xl text-muted-foreground mt-4 font-body">{about.team.subheading}</p>
               </div>
               <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={120}>
-                {teamMembers.map((member, index) => (
+                {about.team.members.map((member, index) => (
                   <Card key={index} className="text-center border-0 shadow-smooth hover:shadow-elegant transition-all">
                     <CardHeader>
                       <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-light rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -224,7 +148,7 @@ const About = () => {
                 <h2 className="text-3xl font-bold font-display">Why Choose EZ BIZ?</h2>
               </div>
               <StaggeredGrid className="grid md:grid-cols-2 gap-6" staggerDelay={80}>
-                {whyChooseUs.map((reason, index) => (
+                {about.whyChooseUs.map((reason, index) => (
                   <div key={index} className="flex items-start space-x-3 p-4 rounded-lg bg-card shadow-smooth border border-border">
                     <Check className="h-5 w-5 text-success mt-1 flex-shrink-0" />
                     <span className="text-foreground font-body">{reason}</span>
@@ -240,31 +164,20 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <div className="accent-line-center mb-6"></div>
-              <h2 className="text-3xl font-bold mb-12 font-display">Awards & Recognition</h2>
+              <h2 className="text-3xl font-bold mb-12 font-display">{about.awards.heading}</h2>
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="border-0 shadow-smooth">
-                  <CardContent className="p-6 text-center">
-                    <Award className="h-12 w-12 text-secondary mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2 font-display">Best Business Service 2023</h3>
-                    <p className="text-sm text-muted-foreground font-body">Entrepreneur Magazine</p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="border-0 shadow-smooth">
-                  <CardContent className="p-6 text-center">
-                    <Star className="h-12 w-12 text-secondary mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2 font-display">5-Star Customer Rating</h3>
-                    <p className="text-sm text-muted-foreground font-body">Trustpilot & Google Reviews</p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="border-0 shadow-smooth">
-                  <CardContent className="p-6 text-center">
-                    <Shield className="h-12 w-12 text-secondary mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2 font-display">A+ BBB Rating</h3>
-                    <p className="text-sm text-muted-foreground font-body">Better Business Bureau</p>
-                  </CardContent>
-                </Card>
+                {about.awards.items.map((award, index) => {
+                  const IconComponent = awardIcons[index];
+                  return (
+                    <Card key={index} className="border-0 shadow-smooth">
+                      <CardContent className="p-6 text-center">
+                        <IconComponent className="h-12 w-12 text-secondary mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold mb-2 font-display">{award.title}</h3>
+                        <p className="text-sm text-muted-foreground font-body">{award.source}</p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -275,15 +188,15 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <div className="accent-line-center mb-6"></div>
-              <h2 className="text-3xl font-bold mb-8 font-display">Our Mission</h2>
+              <h2 className="text-3xl font-bold mb-8 font-display">{about.mission.heading}</h2>
               <Card className="border-2 border-secondary/20 shadow-elegant">
                 <CardContent className="p-8 md:p-12">
                   <blockquote className="text-2xl font-medium text-center italic text-muted-foreground leading-relaxed font-display">
-                    "To bring back the dignity and precision of professional document filing—combining old-fashioned integrity with modern convenience to help every entrepreneur make their business official, correctly and affordably."
+                    "{about.mission.quote}"
                   </blockquote>
                   <div className="mt-8 text-right">
-                    <div className="font-semibold font-display">— Christian Talavera, MBA, MSL</div>
-                    <div className="text-sm text-muted-foreground font-body">CEO & Founder</div>
+                    <div className="font-semibold font-display">{about.mission.attribution}</div>
+                    <div className="text-sm text-muted-foreground font-body">{about.mission.attributionTitle}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -295,13 +208,14 @@ const About = () => {
         <section className="py-16 bg-card border-b border-border">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6 font-display">Our Office</h2>
+              <h2 className="text-3xl font-bold mb-6 font-display">{about.office.heading}</h2>
               <div className="text-muted-foreground space-y-1 font-body">
-                <p className="font-semibold text-foreground text-lg">EZ BIZ FILE SERVICE, LLC</p>
-                <p>1101 Thorpe Lane Ste 105-1028</p>
-                <p>San Marcos, TX 78666 United States</p>
-                <p>Phone: (830) 837-1955</p>
-                <p>Email: support@ezbizfile.com</p>
+                <p className="font-semibold text-foreground text-lg">{about.office.name}</p>
+                {about.office.address.map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+                <p>Phone: {about.office.phone}</p>
+                <p>Email: {about.office.email}</p>
               </div>
             </div>
           </div>
@@ -311,25 +225,23 @@ const About = () => {
         <section className="py-24 gradient-executive text-primary-foreground">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 font-display">Ready to Start Your Business Journey?</h2>
-              <p className="text-xl opacity-90 mb-8 font-body">
-                Join thousands of successful entrepreneurs who trusted EZ BIZ FILE SERVICE to handle their business formation with care and precision.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 font-display">{about.cta.heading}</h2>
+              <p className="text-xl opacity-90 mb-8 font-body">{about.cta.subheading}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
                   className="bg-secondary hover:bg-secondary-light text-secondary-foreground text-lg px-8 h-14"
-                  onClick={() => { trackClick('Get Started Today', 'about_cta', '/order-flow'); navigate('/order-flow'); }}
+                  onClick={() => { trackClick(about.cta.ctaPrimary, 'about_cta', '/order-flow'); navigate('/order-flow'); }}
                 >
-                  Get Started Today
+                  {about.cta.ctaPrimary}
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline" 
                   className="text-lg px-8 h-14 border-2 border-white/30 text-white hover:bg-white/10"
-                  onClick={() => { trackClick('Free Consultation', 'about_cta', '/consultation'); navigate('/consultation'); }}
+                  onClick={() => { trackClick(about.cta.ctaSecondary, 'about_cta', '/consultation'); navigate('/consultation'); }}
                 >
-                  Free Consultation
+                  {about.cta.ctaSecondary}
                 </Button>
               </div>
             </div>
