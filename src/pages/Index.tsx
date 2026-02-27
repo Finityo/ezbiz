@@ -26,7 +26,9 @@ const Index = () => {
   const location = useLocation();
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const qpVeteran = query.get("veteran") === "1";
-  const qpMobile = query.get("mobile") === "1";
+  const veteranGateRef = useRef<HTMLDivElement | null>(null);
+  const mobileAddonRef = useRef<HTMLDivElement | null>(null);
+
 
   // Business structures ordered from simple to complex
   const businessStructures = [
