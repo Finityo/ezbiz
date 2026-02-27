@@ -18,7 +18,7 @@ import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { trackOrderFlowView, trackCheckoutStart, trackFormStart } from "@/lib/analytics";
+import { trackOrderFlowView, trackCheckoutStart, trackFormStart, trackEvent } from "@/lib/analytics";
 
 const steps = ["State", "Package", "Details", "Account", "Review"];
 
@@ -31,6 +31,7 @@ const EnhancedOrderFlow = () => {
   const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
   const [selectedEntity, setSelectedEntity] = useState(searchParams.get("entity") || "llc");
   const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
+  const [isVeteran, setIsVeteran] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
@@ -163,6 +164,34 @@ const EnhancedOrderFlow = () => {
                     <p className="text-muted-foreground">Select the state where you'd like to register</p>
                   </div>
                   <StateSelector selected={selectedState} onSelect={setSelectedState} />
+
+                  {/* Veteran Toggle */}
+                  <div className="mt-6 p-4 rounded-lg border bg-card space-y-3">
+                    <p className="font-semibold font-display text-sm">Are you a Veteran or Active Duty Service Member?</p>
+                    <div className="flex gap-3">
+                      <Button
+                        size="sm"
+                        variant={isVeteran ? "default" : "outline"}
+                        onClick={() => { setIsVeteran(true); trackEvent('veteran_toggle_select', { value: 'yes' }); }}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={!isVeteran ? "default" : "outline"}
+                        onClick={() => { setIsVeteran(false); trackEvent('veteran_toggle_select', { value: 'no' }); }}
+                      >
+                        No
+                      </Button>
+                    </div>
+                    {isVeteran && (
+                      <div className="p-3 rounded-md bg-primary/5 border border-primary/10 text-sm text-foreground flex items-start gap-2">
+                        <span>🇺🇸</span>
+                        <span>You may qualify for a Texas state filing fee waiver. We will guide you through the process.</span>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex justify-end">
                     <Button onClick={goNext} disabled={!isStepValid(1)}>Continue</Button>
                   </div>
