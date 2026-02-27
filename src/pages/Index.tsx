@@ -49,6 +49,18 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qpVeteran, qpMobile]);
 
+  // Clean query params from URL after processing
+  useEffect(() => {
+    if (!location.search) return;
+    if (!qpVeteran && !qpMobile) return;
+    const cleaned = new URLSearchParams(location.search);
+    cleaned.delete("veteran");
+    cleaned.delete("mobile");
+    const next = cleaned.toString();
+    window.history.replaceState({}, "", `${location.pathname}${next ? `?${next}` : ""}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Business structures ordered from simple to complex
   const businessStructures = [
     {
