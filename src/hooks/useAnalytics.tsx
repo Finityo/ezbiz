@@ -1,7 +1,15 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  initAnalytics,
+  trackPageView,
+  trackEvent,
+  trackCTAClick,
+  runDiagnostics,
+} from '@/lib/analytics';
 
+// ── Session helper ──
 const getSessionId = () => {
   let id = sessionStorage.getItem('analytics_session_id');
   if (!id) {
@@ -11,7 +19,7 @@ const getSessionId = () => {
   return id;
 };
 
-// ── Scroll depth tracking ──
+// ── Scroll depth tracking (Supabase) ──
 const useScrollTracking = () => {
   const location = useLocation();
   const maxScrollRef = useRef(0);
@@ -32,8 +40,6 @@ const useScrollTracking = () => {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-
-      // Flush on route change / unmount
       const depth = maxScrollRef.current;
       if (depth > 5) {
         const timeOnPage = Math.round((Date.now() - startTimeRef.current) / 1000);
@@ -50,32 +56,45 @@ const useScrollTracking = () => {
   }, [location.pathname]);
 };
 
-// ── Page view (GA4 only – Supabase scroll_analytics already captures visits) ──
+// ── SPA page-view tracking (GA4 + no duplicate) ──
 const usePageViewTracking = () => {
   const location = useLocation();
+  const prevPathRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', 'page_view', {
-        page_path: location.pathname + location.search,
-        page_title: document.title,
-      });
-    }
+    const fullPath = location.pathname + location.search;
+    // Prevent duplicate on same path (e.g. StrictMode double-mount)
+    if (prevPathRef.current === fullPath) return;
+    prevPathRef.current = fullPath;
+
+    trackPageView(fullPath);
   }, [location.pathname, location.search]);
 };
 
-// ── CTA click tracker (callable) ──
-export const trackClick = (label: string, type: string, destination: string) => {
-  // GA4
-  if (typeof window.gtag === 'function') {
-    window.gtag('event', 'cta_click', {
-      button_label: label,
-      button_type: type,
-      destination_url: destination,
-    });
-  }
+// ── Combined hook – mount once near the root ──
+export const useAnalytics = () => {
+  // Init GA4 once
+  useEffect(() => {
+    initAnalytics();
 
-  // Supabase
+    // Run diagnostics automatically in debug mode
+    const isDebug = new URLSearchParams(window.location.search).get('ga_debug') === '1';
+    if (isDebug) {
+      // Small delay to let dataLayer populate
+      setTimeout(() => runDiagnostics(), 1500);
+    }
+  }, []);
+
+  usePageViewTracking();
+  useScrollTracking();
+};
+
+// ── Re-export trackClick for backward compatibility ──
+export const trackClick = (label: string, type: string, destination: string) => {
+  // GA4 via centralized module
+  trackCTAClick(label, destination);
+
+  // Supabase (keep existing behaviour)
   supabase.from('click_analytics').insert({
     button_label: label,
     button_type: type,
@@ -84,12 +103,6 @@ export const trackClick = (label: string, type: string, destination: string) => 
     session_id: getSessionId(),
     user_agent: navigator.userAgent,
   }).then(() => {});
-};
-
-// ── Combined hook – mount once near the root ──
-export const useAnalytics = () => {
-  usePageViewTracking();
-  useScrollTracking();
 };
 
 export default useAnalytics;
