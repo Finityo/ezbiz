@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { trackClick } from "@/hooks/useAnalytics";
+import { EZBIZ_COPY } from "@/content/ezbizCopy";
 import { trackEvent } from "@/lib/analytics";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -199,7 +200,7 @@ const Index = () => {
           <div className="flex justify-center mb-8 md:mb-10 lg:mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
               <Star className="h-4 w-4 fill-current" />
-              <span className="text-xs md:text-sm font-medium font-body">Trusted by 50,000+ Entrepreneurs</span>
+              <span className="text-xs md:text-sm font-medium font-body">{EZBIZ_COPY.hero.badges.join(" · ")}</span>
             </div>
           </div>
 
@@ -207,13 +208,11 @@ const Index = () => {
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display min-h-[2.4em]">
-                  Start Your Texas LLC{" "}
-                  <span className="text-bronze">With Precision.</span>
-                </h1>
-                <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
-                  Founded by a U.S. Marine Veteran. Built for Texas entrepreneurs — including 
-                  Veterans and Active Service Members who may qualify for state filing fee waivers.
-                </p>
+                   {EZBIZ_COPY.hero.headline}
+                 </h1>
+                 <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
+                   {EZBIZ_COPY.hero.subheadline}
+                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground/70 font-body">
                   Christian Rene Talavera, MBA, MSL (USC Gould School of Law)
                 </p>
@@ -221,22 +220,25 @@ const Index = () => {
               
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
-                  size="lg" 
-                  className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-                  onClick={() => { trackClick('Start My Texas LLC', 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
-                >
-                  Start My Texas LLC
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14" 
-                  onClick={() => { trackClick('View Veteran Benefits', 'hero_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
-                >
-                  View Veteran Benefits
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                   size="lg" 
+                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
+                   onClick={() => { trackClick(EZBIZ_COPY.hero.ctaPrimary, 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
+                 >
+                   {EZBIZ_COPY.hero.ctaPrimary}
+                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                 </Button>
+                 <Button 
+                   size="lg" 
+                   variant="outline"
+                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14" 
+                   onClick={() => { trackClick(EZBIZ_COPY.hero.ctaSecondary, 'hero_cta', '/consultation'); navigate('/consultation'); }}
+                 >
+                   {EZBIZ_COPY.hero.ctaSecondary}
+                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                 </Button>
+                 <p className="text-xs md:text-sm text-muted-foreground/70 font-body pt-2">
+                   {EZBIZ_COPY.hero.trustLine}
+                 </p>
               </div>
             </div>
 
