@@ -19,16 +19,19 @@ import logoImage from "@/assets/logo-ezbiz-final.webp";
 import ParallaxImage from "@/components/ParallaxImage";
 import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const qpVeteran = query.get("veteran") === "1";
+  const qpMobile = query.get("mobile") === "1";
   const veteranGateRef = useRef<HTMLDivElement | null>(null);
   const mobileAddonRef = useRef<HTMLDivElement | null>(null);
-
+  const [isVeteran, setIsVeteran] = useState(false);
+  const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
+  const [mobileAddonSelected, setMobileAddonSelected] = useState(false);
 
   // Business structures ordered from simple to complex
   const businessStructures = [
