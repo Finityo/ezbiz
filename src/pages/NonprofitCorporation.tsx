@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Shield, Heart, TrendingUp, FileText, Users, AlertTriangle, ArrowRight, HelpCircle, Building, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-import { NONPROFIT_COPY } from "@/content/entityPagesCopy";
+import { NONPROFIT_COPY } from "@/content/ezbizCopy";
 
 const c = NONPROFIT_COPY;
 const benefitIcons = [Heart, Gift, TrendingUp, Shield, Building, Users];
