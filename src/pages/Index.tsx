@@ -18,10 +18,15 @@ import heroImage from "@/assets/hero-business.jpg";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 import ParallaxImage from "@/components/ParallaxImage";
 import CountUpDisplay from "@/components/CountUpDisplay";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useMemo, useRef } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const qpVeteran = query.get("veteran") === "1";
+  const qpMobile = query.get("mobile") === "1";
 
   // Business structures ordered from simple to complex
   const businessStructures = [
