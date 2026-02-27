@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { trackClick } from "@/hooks/useAnalytics";
+import { trackEvent } from "@/lib/analytics";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -222,6 +223,9 @@ const Index = () => {
               <h2 className="text-xl md:text-2xl font-bold font-display flex items-center justify-center gap-2">
                 <span>🇺🇸</span> Texas Veteran Filing Benefits
               </h2>
+              <p className="text-sm text-muted-foreground font-body mt-2 max-w-2xl mx-auto">
+                Eligible veteran-owned Texas businesses may qualify for relief from certain filing fees and franchise tax for up to five years.
+              </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3 md:gap-4 mb-6">
               {[
@@ -240,9 +244,9 @@ const Index = () => {
               <Button 
                 variant="outline"
                 className="border-primary text-primary hover:bg-primary/5"
-                onClick={() => { trackClick('Check My Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+                onClick={() => { trackEvent('veteran_cta_click', { location: 'homepage' }); trackClick('Check Veteran Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
               >
-                Check My Eligibility
+                Check Veteran Eligibility
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -485,7 +489,7 @@ const Index = () => {
                 <Button 
                   variant="outline"
                   className="border-secondary text-secondary hover:bg-secondary/5"
-                  onClick={() => { trackClick('Learn More Mobile Service', 'mobile_service_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+                  onClick={() => { trackEvent('mobile_service_addon_click', { location: 'homepage' }); trackClick('Learn More Mobile Service', 'mobile_service_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
                 >
                   Learn More About Mobile Service
                   <ArrowRight className="ml-2 h-4 w-4" />
