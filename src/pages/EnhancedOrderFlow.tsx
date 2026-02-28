@@ -13,13 +13,17 @@ import EntityTypeSelector from "@/components/order/EntityTypeSelector";
 import PackageSelector from "@/components/order/PackageSelector";
 import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
+import OwnerMemberForm, { type OwnerMember } from "@/components/order/OwnerMemberForm";
+import WhiteGloveSchedulingStep, { type WhiteGloveSchedulingData } from "@/components/order/WhiteGloveSchedulingStep";
+import PricingConfirmationStep from "@/components/order/PricingConfirmationStep";
+import GuidedReviewStep from "@/components/order/GuidedReviewStep";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { trackOrderFlowView, trackCheckoutStart, trackFormStart, trackEvent } from "@/lib/analytics";
+import { trackOrderFlowView, trackFormStart, trackEvent } from "@/lib/analytics";
 import { Car, MessageCircle } from "lucide-react";
 
 export type OrderMode = "guided" | "whiteglove";
@@ -28,24 +32,24 @@ function normalizeMode(value: string | null): OrderMode {
   return value === "whiteglove" ? "whiteglove" : "guided";
 }
 
-const WHITE_GLOVE_BASE_FEE = 150; // first 2 hours
+const WHITE_GLOVE_BASE_FEE = 150;
 
-const steps = ["State", "Package", "Details", "Account", "Review"];
+// Guided: Entity+State → Business Details → Owners → Add-ons → Review+Schedule
+const GUIDED_STEPS = ["Entity & State", "Business", "Owners", "Add-ons", "Review"];
+// White Glove: Scheduling → Entity+State → Business → Owners → Add-ons → Pricing
+const WHITEGLOVE_STEPS = ["Scheduling", "Entity & State", "Business", "Owners", "Add-ons", "Pricing"];
+
+const emptyMember: OwnerMember = {
+  fullName: "", email: "", phone: "", address: "", city: "", state: "", zipCode: "", ownershipPercentage: "",
+};
 
 const EnhancedOrderFlow = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
-
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
 
-  const setMode = useCallback(
-    (next: OrderMode) => {
-      const nextParams = new URLSearchParams(searchParams);
-      nextParams.set("mode", next);
-      setSearchParams(nextParams, { replace: true });
-    },
-    [searchParams, setSearchParams]
-  );
+  const steps = mode === "whiteglove" ? WHITEGLOVE_STEPS : GUIDED_STEPS;
+  const totalSteps = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
@@ -56,21 +60,20 @@ const EnhancedOrderFlow = () => {
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
-    businessName: "",
-    designator: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    managementStructure: "",
+    businessName: "", designator: "", address: "", city: "", zipCode: "", managementStructure: "",
+  });
+  const [members, setMembers] = useState<OwnerMember[]>([{ ...emptyMember }]);
+  const [whiteGloveScheduling, setWhiteGloveScheduling] = useState<WhiteGloveSchedulingData>({
+    city: "", zipCode: "", meetingPlaceType: "", meetingPlaceDetails: "",
+    preferredDate: undefined, preferredTime: "", notes: "",
   });
 
-  // Track order_flow_view once on mount
   useEffect(() => { trackOrderFlowView(); }, []);
 
   const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
+  const isVeteranEligible = isVeteran && isFormedInTexas2022 && selectedState === "Texas";
 
-  // Running total for sticky bar
   const calculateTotal = () => {
     const pkg = selectedPackage ? STRIPE_PACKAGES[selectedPackage as PackageId] : null;
     const basePrice = pkg?.price || 0;
@@ -79,31 +82,40 @@ const EnhancedOrderFlow = () => {
       const qty = addonQuantities[id] || 1;
       return sum + (addon?.price || 0) * qty;
     }, 0);
-    const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0;
-    return basePrice + addonsTotal + stateFee + whiteGloveFee;
+    const wgFee = mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0;
+    return basePrice + addonsTotal + stateFee + wgFee;
   };
 
-  const isStepValid = (step: number): boolean => {
-    switch (step) {
-      case 1: return !!selectedState;
-      case 2: return !!selectedPackage && !!selectedEntity;
-      case 3: return !!(businessDetails.businessName && businessDetails.designator &&
-        businessDetails.address && businessDetails.city && businessDetails.zipCode &&
-        (selectedEntity !== "llc" || businessDetails.managementStructure));
-      case 4: return !!user;
-      default: return false;
+  // --- Step name helpers for current mode ---
+  const currentStepName = steps[currentStep - 1];
+
+  const isStepValid = (): boolean => {
+    switch (currentStepName) {
+      case "Scheduling":
+        return !!(whiteGloveScheduling.city && whiteGloveScheduling.zipCode &&
+          whiteGloveScheduling.meetingPlaceType && whiteGloveScheduling.preferredDate &&
+          whiteGloveScheduling.preferredTime);
+      case "Entity & State":
+        return !!selectedState && !!selectedEntity && !!selectedPackage;
+      case "Business":
+        return !!(businessDetails.businessName && businessDetails.designator &&
+          businessDetails.address && businessDetails.city && businessDetails.zipCode &&
+          (selectedEntity !== "llc" || businessDetails.managementStructure));
+      case "Owners":
+        return members.length > 0 && members.every(m => m.fullName && m.email && m.phone && m.address && m.city && m.state && m.zipCode);
+      case "Add-ons":
+        return true; // add-ons are optional
+      case "Review":
+      case "Pricing":
+        return true;
+      default:
+        return false;
     }
   };
 
   const goNext = () => {
-    // Track form_start when entering business details step
-    if (currentStep === 2) trackFormStart('order_business_details');
-    // If user is already logged in and we're going to step 4, skip to 5
-    if (currentStep === 3 && user) {
-      setCurrentStep(5);
-    } else {
-      setCurrentStep((s) => Math.min(s + 1, 5));
-    }
+    if (currentStepName === "Business") trackFormStart("order_business_details");
+    setCurrentStep((s) => Math.min(s + 1, totalSteps));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -128,12 +140,15 @@ const EnhancedOrderFlow = () => {
         state: selectedState,
         status: "pending",
         application_data: {
+          mode,
           package: selectedPackage,
           addOns: selectedAddOns,
+          addonQuantities,
           businessDetails,
+          members,
           stateFee,
-          mode,
-          whiteGloveFee: mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0,
+          isVeteranEligible,
+          ...(mode === "whiteglove" ? { whiteGloveScheduling, whiteGloveFee: WHITE_GLOVE_BASE_FEE } : {}),
         } as any,
       }]);
     } catch (err) {
@@ -144,6 +159,154 @@ const EnhancedOrderFlow = () => {
   const handleCheckoutStarted = async () => {
     await saveOrderToDb();
   };
+
+  // --- Render step content ---
+  const renderStepContent = () => {
+    switch (currentStepName) {
+      case "Scheduling":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Where & When Should We Meet?"
+              subtitle="Tell us your location and preferred appointment time"
+            />
+            <WhiteGloveSchedulingStep data={whiteGloveScheduling} onChange={setWhiteGloveScheduling} />
+          </div>
+        );
+
+      case "Entity & State":
+        return (
+          <div className="space-y-8">
+            <StepHeader
+              title="Choose Your Entity, State & Package"
+              subtitle="Select your business structure, formation state, and service level"
+            />
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Entity Type</h3>
+              <EntityTypeSelector selected={selectedEntity} onSelect={setSelectedEntity} />
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Formation State</h3>
+              <StateSelector
+                selected={selectedState}
+                onSelect={setSelectedState}
+                slotAfterPopular={
+                  <VeteranEligibilityGate
+                    isVeteran={isVeteran}
+                    setIsVeteran={setIsVeteran}
+                    isFormedInTexas2022={isFormedInTexas2022}
+                    setIsFormedInTexas2022={setIsFormedInTexas2022}
+                  />
+                }
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Service Package</h3>
+              <PackageSelector selected={selectedPackage} onSelect={setSelectedPackage} stateFees={stateFee} />
+            </div>
+          </div>
+        );
+
+      case "Business":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Tell Us About Your Business"
+              subtitle="Provide the details for your formation documents"
+            />
+            <BusinessDetailsForm
+              data={businessDetails}
+              entityType={selectedEntity}
+              state={selectedState}
+              onChange={setBusinessDetails}
+            />
+          </div>
+        );
+
+      case "Owners":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Owner / Member Information"
+              subtitle="Add each owner or member who will be listed on the formation"
+            />
+            <OwnerMemberForm members={members} onChange={setMembers} entityType={selectedEntity} />
+          </div>
+        );
+
+      case "Add-ons":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Optional Add-On Services"
+              subtitle="Enhance your filing with these popular services"
+            />
+            <AddOnServices
+              selected={selectedAddOns}
+              onToggle={handleToggleAddon}
+              quantities={addonQuantities}
+              onQuantityChange={(id, qty) => setAddonQuantities(prev => ({ ...prev, [id]: qty }))}
+            />
+          </div>
+        );
+
+      case "Review":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Review & Schedule"
+              subtitle="Confirm your details, then schedule your guided call"
+            />
+            <GuidedReviewStep
+              state={selectedState}
+              entityType={selectedEntity}
+              selectedPackage={selectedPackage}
+              selectedAddOns={selectedAddOns}
+              addonQuantities={addonQuantities}
+              businessDetails={businessDetails}
+              members={members}
+              onEdit={(step) => setCurrentStep(step)}
+              onCheckoutStarted={handleCheckoutStarted}
+            />
+          </div>
+        );
+
+      case "Pricing":
+        return (
+          <div className="space-y-6">
+            <StepHeader
+              title="Confirm Your Pricing"
+              subtitle="Review fees and service costs before we finalize"
+            />
+            <PricingConfirmationStep
+              selectedPackage={selectedPackage}
+              selectedAddOns={selectedAddOns}
+              addonQuantities={addonQuantities}
+              stateFee={stateFee}
+              stateName={selectedState}
+              isVeteranEligible={isVeteranEligible}
+            />
+            <ReviewStep
+              state={selectedState}
+              entityType={selectedEntity}
+              selectedPackage={selectedPackage}
+              selectedAddOns={selectedAddOns}
+              addonQuantities={addonQuantities}
+              businessDetails={businessDetails}
+              onEdit={(step) => setCurrentStep(step)}
+              onCheckoutStarted={handleCheckoutStarted}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // Don't show back/forward on final step (Review/Pricing have their own CTAs)
+  const isFinalStep = currentStep === totalSteps;
+  const isFirstStep = currentStep === 1;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -171,13 +334,13 @@ const EnhancedOrderFlow = () => {
               </Badge>
             </div>
             <p className="text-center text-muted-foreground mb-6">
-              Complete your order in {steps.length} simple steps
+              Complete your order in {totalSteps} simple steps
             </p>
 
             <OrderStepIndicator currentStep={currentStep} steps={steps} />
 
-            {/* Running Total Bar (steps 2+) */}
-            {currentStep >= 2 && selectedPackage && (
+            {/* Running Total Bar */}
+            {selectedPackage && currentStep > (mode === "whiteglove" ? 2 : 1) && (
               <div className="mt-4 p-3 rounded-lg bg-card border flex items-center justify-between text-sm">
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="font-medium">{selectedState}</span>
@@ -201,114 +364,20 @@ const EnhancedOrderFlow = () => {
             )}
 
             <Card className="mt-6 p-4 sm:p-6">
-              {/* Step 1: State Selection */}
-              {currentStep === 1 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Where are you forming your business?</h2>
-                    <p className="text-muted-foreground">Select the state where you'd like to register</p>
-                  </div>
-                  <StateSelector
-                    selected={selectedState}
-                    onSelect={setSelectedState}
-                    slotAfterPopular={
-                      <VeteranEligibilityGate
-                        isVeteran={isVeteran}
-                        setIsVeteran={setIsVeteran}
-                        isFormedInTexas2022={isFormedInTexas2022}
-                        setIsFormedInTexas2022={setIsFormedInTexas2022}
-                      />
-                    }
-                  />
-                  <div className="flex justify-end">
-                    <Button onClick={goNext} disabled={!isStepValid(1)}>Continue</Button>
-                  </div>
-                </div>
-              )}
+              {renderStepContent()}
 
-              {/* Step 2: Entity + Package + Add-ons */}
-              {currentStep === 2 && (
-                <div className="space-y-8">
-                  <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Choose Your Entity & Package</h2>
-                    <p className="text-muted-foreground">Select your business structure and service level</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Entity Type</h3>
-                    <EntityTypeSelector selected={selectedEntity} onSelect={setSelectedEntity} />
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Service Package</h3>
-                    <PackageSelector selected={selectedPackage} onSelect={setSelectedPackage} stateFees={stateFee} />
-                  </div>
-
-                  <div className="border-t pt-6">
-                    <AddOnServices selected={selectedAddOns} onToggle={handleToggleAddon} quantities={addonQuantities} onQuantityChange={(id, qty) => setAddonQuantities(prev => ({ ...prev, [id]: qty }))} />
-                  </div>
-
-                  <div className="flex justify-between">
+              {/* Navigation buttons (skip on final step which has its own CTA) */}
+              {!isFinalStep && (
+                <div className="flex justify-between mt-8">
+                  {!isFirstStep ? (
                     <Button onClick={goBack} variant="outline">Back</Button>
-                    <Button onClick={goNext} disabled={!isStepValid(2)}>Continue</Button>
-                  </div>
+                  ) : <div />}
+                  <Button onClick={goNext} disabled={!isStepValid()}>Continue</Button>
                 </div>
               )}
-
-              {/* Step 3: Business Details */}
-              {currentStep === 3 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Tell Us About Your Business</h2>
-                    <p className="text-muted-foreground">Provide the details for your formation documents</p>
-                  </div>
-                  <BusinessDetailsForm
-                    data={businessDetails}
-                    entityType={selectedEntity}
-                    state={selectedState}
-                    onChange={setBusinessDetails}
-                  />
-                  <div className="flex justify-between">
-                    <Button onClick={goBack} variant="outline">Back</Button>
-                    <Button onClick={goNext} disabled={!isStepValid(3)}>Continue</Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Step 4: Account */}
-              {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Create Your Account</h2>
-                    <p className="text-muted-foreground">Sign up to track your order progress</p>
-                  </div>
-                  <AccountStep onAuthenticated={() => setCurrentStep(5)} />
-                  <div className="flex justify-start">
-                    <Button onClick={goBack} variant="outline">Back</Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Step 5: Review & Checkout */}
-              {currentStep === 5 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-semibold mb-2">Review Your Order</h2>
-                    <p className="text-muted-foreground">Confirm your details before checkout</p>
-                  </div>
-                  <ReviewStep
-                    state={selectedState}
-                    entityType={selectedEntity}
-                    selectedPackage={selectedPackage}
-                    selectedAddOns={selectedAddOns}
-                    addonQuantities={addonQuantities}
-                    businessDetails={businessDetails}
-                    onEdit={(step) => setCurrentStep(step)}
-                    onCheckoutStarted={handleCheckoutStarted}
-                  />
-                  <div className="flex justify-start">
-                    <Button onClick={() => setCurrentStep(user ? 3 : 4)} variant="outline">Back</Button>
-                  </div>
+              {isFinalStep && !isFirstStep && (
+                <div className="flex justify-start mt-6">
+                  <Button onClick={goBack} variant="outline">Back</Button>
                 </div>
               )}
             </Card>
@@ -320,5 +389,13 @@ const EnhancedOrderFlow = () => {
     </div>
   );
 };
+
+// Small helper component
+const StepHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
+  <div className="text-center mb-4">
+    <h2 className="text-xl sm:text-2xl font-semibold mb-2">{title}</h2>
+    <p className="text-muted-foreground">{subtitle}</p>
+  </div>
+);
 
 export default EnhancedOrderFlow;
