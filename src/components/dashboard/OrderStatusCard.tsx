@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Clock, CheckCircle, AlertCircle, XCircle } from "lucide-react";
+import { FileText, Download, Clock, CheckCircle, AlertCircle, XCircle, Send, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface Order {
@@ -9,7 +9,7 @@ export interface Order {
   businessName: string;
   entityType: string;
   state: string;
-  status: "pending" | "processing" | "filed" | "completed" | "rejected";
+  status: string;
   package: string;
   submittedDate: string;
   lastUpdated: string;
@@ -34,6 +34,16 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     label: "Processing",
     color: "bg-blue-500 text-white",
     icon: Clock
+  },
+  submitted: {
+    label: "Submitted",
+    color: "bg-blue-600 text-white",
+    icon: Send
+  },
+  "in-review": {
+    label: "In Review",
+    color: "bg-amber-500 text-white",
+    icon: Eye
   },
   filed: {
     label: "Filed",
