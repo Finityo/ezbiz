@@ -21,6 +21,7 @@ import ParallaxImage from "@/components/ParallaxImage";
 import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ChooseYourPath from "@/components/ChooseYourPath";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -214,6 +215,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Choose Your Path */}
+      <ChooseYourPath />
 
       {/* Veteran Benefits Strip */}
       <section ref={veteranGateRef} className={`py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10 transition-all ${highlightVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
