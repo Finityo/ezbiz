@@ -249,6 +249,11 @@ const ReviewStep = ({
         <Lock className="h-4 w-4 mr-2" />
         {loading ? "Processing..." : "Proceed to Stripe Checkout"}
       </Button>
+      {mode === "guided" && !guidedGateOk && (
+        <div className="mt-2 text-xs text-muted-foreground text-center">
+          Schedule your call above and confirm the checkbox to continue.
+        </div>
+      )}
       <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
         <Lock className="h-3 w-3" /> Secure payment powered by Stripe
       </p>
