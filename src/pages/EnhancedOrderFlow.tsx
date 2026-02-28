@@ -155,6 +155,9 @@ const EnhancedOrderFlow = () => {
         status: "pending",
         application_data: {
           mode,
+          guidedScheduling: "inside",
+          whiteGloveFeeCollection: "stripe_upfront_150",
+          whiteGloveOverageCollection: "on_site_80_per_hour",
           package: selectedPackage,
           addOns: selectedAddOns,
           addonQuantities,
