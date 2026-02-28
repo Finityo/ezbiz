@@ -1,26 +1,27 @@
-import * as React from "react";
+import { useEffect } from "react";
 
-const ACUITY_OWNER_ID = "38549422";
-
-interface AcuitySchedulerProps {
-  /** Optional CSS class for the wrapper div */
-  className?: string;
-  /** Height of the iframe (default 600px) */
-  height?: number;
-}
-
-const AcuityScheduler: React.FC<AcuitySchedulerProps> = ({ className, height = 600 }) => {
-  const src = `https://app.acuityscheduling.com/schedule.php?owner=${ACUITY_OWNER_ID}`;
+const AcuityScheduler = () => {
+  useEffect(() => {
+    const existing = document.querySelector(
+      'script[src="https://embed.acuityscheduling.com/js/embed.js"]'
+    );
+    if (!existing) {
+      const script = document.createElement("script");
+      script.src = "https://embed.acuityscheduling.com/js/embed.js";
+      script.type = "text/javascript";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   return (
-    <div className={className}>
+    <div className="mt-6">
       <iframe
-        src={src}
-        title="Schedule an Appointment"
+        src="https://app.acuityscheduling.com/schedule.php?owner=38549422&ref=embedded_csp"
+        title="Schedule Appointment"
         width="100%"
-        height={height}
+        height="800"
         frameBorder="0"
-        className="rounded-lg border border-border"
         allow="payment"
       />
     </div>
