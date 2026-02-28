@@ -221,7 +221,29 @@ const ReviewStep = ({
         )}
       </div>
 
-      {mode === "guided" && <AcuityScheduler />}
+      {mode === "guided" && (
+        <>
+          <Section title="Schedule Your Guided Filing Call" step={3}>
+            <Card className="p-4">
+              <p className="text-sm text-muted-foreground">
+                Schedule your Zoom/call below. After scheduling, confirm the checkbox to unlock payment.
+              </p>
+              <AcuityScheduler />
+              <div className="mt-4">
+                <label className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={guidedScheduled}
+                    onChange={(e) => setGuidedScheduled(e.target.checked)}
+                  />
+                  <span>I scheduled my call and I'm ready to continue to payment.</span>
+                </label>
+              </div>
+            </Card>
+          </Section>
+          <Separator />
+        </>
+      )}
 
       <Button onClick={handleCheckout} disabled={loading || !guidedGateOk} className="w-full" size="lg">
         <Lock className="h-4 w-4 mr-2" />
