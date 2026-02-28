@@ -95,6 +95,12 @@ export const STRIPE_ADDONS = {
     priceId: "price_1T5AqJIUysiSR1zwKPl6BGCU",
     productId: "prod_U3HP3yRkMhFyT1",
   },
+  "white-glove": {
+    name: "White Glove Mobile Filing (2 Hours)",
+    price: 150,
+    priceId: "price_1T5w3IIUysiSR1zwJyfILYm7",
+    productId: "prod_U44BmuaUvPQn9V",
+  },
 } as const;
 
 export type PackageId = keyof typeof STRIPE_PACKAGES;

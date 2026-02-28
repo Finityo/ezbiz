@@ -37,7 +37,7 @@ const ENTITY_LABELS: Record<string, string> = {
   "professional-corp": "Professional Corporation",
 };
 
-const WHITE_GLOVE_BASE_FEE = 150; // informational unless you add a Stripe price later
+const WHITE_GLOVE_ADDON = STRIPE_ADDONS["white-glove"];
 
 const ReviewStep = ({
   state,
@@ -61,8 +61,8 @@ const ReviewStep = ({
     return sum + (addon?.price || 0) * qty;
   }, 0);
 
-  // IMPORTANT: This matches what Stripe checkout currently charges (pkg + addons + state fee)
-  const total = (pkg?.price || 0) + addonsTotal + stateFee;
+  const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_ADDON.price : 0;
+  const total = (pkg?.price || 0) + addonsTotal + stateFee + whiteGloveFee;
 
   const handleCheckout = async () => {
     const lineItems: { priceId: string; quantity?: number }[] = [];
@@ -72,6 +72,9 @@ const ReviewStep = ({
       const qty = addonQuantities[id] || 1;
       if (addon) lineItems.push({ priceId: addon.priceId, quantity: qty });
     });
+    if (mode === "whiteglove") {
+      lineItems.push({ priceId: WHITE_GLOVE_ADDON.priceId });
+    }
 
     onCheckoutStarted();
     trackCheckoutStart(pkg?.name || selectedPackage, total);
@@ -108,7 +111,7 @@ const ReviewStep = ({
                 <p><span className="text-muted-foreground">Notes:</span> {serviceDetails.notes}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                White Glove fee: ${WHITE_GLOVE_BASE_FEE} (first 2 hours) + $80/hr after.
+                White Glove fee: ${WHITE_GLOVE_ADDON.price} (first 2 hours) + $80/hr after.
               </p>
             </div>
           </Section>
@@ -195,20 +198,20 @@ const ReviewStep = ({
         </div>
 
         {mode === "whiteglove" && (
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>White Glove Service (informational)</span>
-            <span>${WHITE_GLOVE_BASE_FEE}</span>
+          <div className="flex justify-between text-sm">
+            <span>White Glove Service (2 hrs)</span>
+            <span>${WHITE_GLOVE_ADDON.price}</span>
           </div>
         )}
 
         <Separator />
         <div className="flex justify-between text-lg font-bold">
-          <span>Total (charged today)</span>
+          <span>Total</span>
           <span className="text-primary">${total}</span>
         </div>
         {mode === "whiteglove" && (
           <p className="text-xs text-muted-foreground">
-            White Glove fee handling will be added to Stripe once you create a dedicated Stripe Price ID for it.
+            Overage billed at $80/hr in 30-min increments after the first 2 hours.
           </p>
         )}
       </div>
