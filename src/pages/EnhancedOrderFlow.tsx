@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
@@ -6,6 +6,7 @@ import VeteranEligibilityGate from "@/components/order/VeteranEligibilityGate";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import OrderStepIndicator from "@/components/order/OrderStepIndicator";
 import StateSelector from "@/components/order/StateSelector";
 import EntityTypeSelector from "@/components/order/EntityTypeSelector";
@@ -19,12 +20,32 @@ import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { trackOrderFlowView, trackCheckoutStart, trackFormStart, trackEvent } from "@/lib/analytics";
+import { Car, MessageCircle } from "lucide-react";
+
+export type OrderMode = "guided" | "whiteglove";
+
+function normalizeMode(value: string | null): OrderMode {
+  return value === "whiteglove" ? "whiteglove" : "guided";
+}
+
+const WHITE_GLOVE_BASE_FEE = 150; // first 2 hours
 
 const steps = ["State", "Package", "Details", "Account", "Review"];
 
 const EnhancedOrderFlow = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
+
+  const mode: OrderMode = normalizeMode(searchParams.get("mode"));
+
+  const setMode = useCallback(
+    (next: OrderMode) => {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set("mode", next);
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams]
+  );
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
@@ -58,7 +79,8 @@ const EnhancedOrderFlow = () => {
       const qty = addonQuantities[id] || 1;
       return sum + (addon?.price || 0) * qty;
     }, 0);
-    return basePrice + addonsTotal + stateFee;
+    const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0;
+    return basePrice + addonsTotal + stateFee + whiteGloveFee;
   };
 
   const isStepValid = (step: number): boolean => {
@@ -110,6 +132,8 @@ const EnhancedOrderFlow = () => {
           addOns: selectedAddOns,
           businessDetails,
           stateFee,
+          mode,
+          whiteGloveFee: mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0,
         } as any,
       }]);
     } catch (err) {
@@ -128,9 +152,24 @@ const EnhancedOrderFlow = () => {
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto px-4 py-6 sm:py-8">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-1">
-              Start Your Business Formation
-            </h1>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-center">
+                Start Your Business Formation
+              </h1>
+              <Badge
+                variant="outline"
+                className={mode === "whiteglove"
+                  ? "border-primary/30 bg-primary/10 text-primary"
+                  : "border-secondary/30 bg-secondary/10 text-secondary"
+                }
+              >
+                {mode === "whiteglove" ? (
+                  <><Car className="h-3 w-3 mr-1" /> White Glove</>
+                ) : (
+                  <><MessageCircle className="h-3 w-3 mr-1" /> Guided</>
+                )}
+              </Badge>
+            </div>
             <p className="text-center text-muted-foreground mb-6">
               Complete your order in {steps.length} simple steps
             </p>
@@ -144,6 +183,12 @@ const EnhancedOrderFlow = () => {
                   <span className="font-medium">{selectedState}</span>
                   <span className="text-muted-foreground">•</span>
                   <span>{STRIPE_PACKAGES[selectedPackage as PackageId]?.name}</span>
+                  {mode === "whiteglove" && (
+                    <>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="text-primary font-medium">White Glove +${WHITE_GLOVE_BASE_FEE}</span>
+                    </>
+                  )}
                   {selectedAddOns.length > 0 && (
                     <>
                       <span className="text-muted-foreground">•</span>
