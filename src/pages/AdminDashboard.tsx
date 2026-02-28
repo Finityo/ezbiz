@@ -242,12 +242,38 @@ const AdminDashboard = () => {
     setFilteredConsultations(filtered);
   }, [consultations, consultationSearchTerm, consultationStatusFilter, consultationBusinessTypeFilter]);
 
+  useEffect(() => {
+    let filtered = applications;
+    if (applicationSearchTerm) {
+      filtered = filtered.filter(a =>
+        a.business_name.toLowerCase().includes(applicationSearchTerm.toLowerCase()) ||
+        a.user_id.toLowerCase().includes(applicationSearchTerm.toLowerCase())
+      );
+    }
+    if (applicationStatusFilter !== 'all') {
+      filtered = filtered.filter(a => a.status === applicationStatusFilter);
+    }
+    if (applicationBusinessTypeFilter !== 'all') {
+      filtered = filtered.filter(a => a.business_type === applicationBusinessTypeFilter);
+    }
+    if (applicationStateFilter !== 'all') {
+      filtered = filtered.filter(a => a.state === applicationStateFilter);
+    }
+    setFilteredApplications(filtered);
+  }, [applications, applicationSearchTerm, applicationStatusFilter, applicationBusinessTypeFilter, applicationStateFilter]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'filed': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'contacted': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'submitted': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'in-review': return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+      case 'processing': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
       case 'scheduled': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
       case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
@@ -644,8 +670,11 @@ const AdminDashboard = () => {
                     <SelectContent>
                       <SelectItem value="all">All Statuses</SelectItem>
                       <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
                       <SelectItem value="submitted">Submitted</SelectItem>
+                      <SelectItem value="in-review">In Review</SelectItem>
                       <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="filed">Filed</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                       <SelectItem value="rejected">Rejected</SelectItem>
                     </SelectContent>
@@ -742,8 +771,11 @@ const AdminDashboard = () => {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="draft">Draft</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
                                 <SelectItem value="submitted">Submitted</SelectItem>
+                                <SelectItem value="in-review">In Review</SelectItem>
                                 <SelectItem value="processing">Processing</SelectItem>
+                                <SelectItem value="filed">Filed</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
                                 <SelectItem value="rejected">Rejected</SelectItem>
                               </SelectContent>
