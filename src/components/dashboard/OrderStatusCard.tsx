@@ -19,7 +19,12 @@ export interface Order {
   }>;
 }
 
-const statusConfig = {
+const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
+  draft: {
+    label: "Draft",
+    color: "bg-muted text-muted-foreground",
+    icon: Clock
+  },
   pending: {
     label: "Pending",
     color: "bg-warning text-warning-foreground",
@@ -53,7 +58,7 @@ interface OrderStatusCardProps {
 }
 
 const OrderStatusCard = ({ order, onViewDetails }: OrderStatusCardProps) => {
-  const config = statusConfig[order.status];
+  const config = statusConfig[order.status] || statusConfig.draft;
   const StatusIcon = config.icon;
 
   return (
