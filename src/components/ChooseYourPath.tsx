@@ -4,7 +4,7 @@ import { openAcuityPopup } from "@/components/consultation/ConsultationTypeCard"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Globe, MessageCircle, Car } from "lucide-react";
+import { ArrowRight, Globe, MessageCircle, Car, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
@@ -79,6 +79,17 @@ const ChooseYourPath = () => {
           <p className="text-lg text-muted-foreground font-body max-w-2xl mx-auto">
             Three clear options — pick the one that fits your pace and comfort level
           </p>
+
+          {/* Veteran Highlight */}
+          <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15 text-sm font-body max-w-xl mx-auto">
+            <Shield className="h-4 w-4 text-primary flex-shrink-0" />
+            <span>
+              <strong className="font-semibold text-foreground">Veteran-Owned Business.</strong>{" "}
+              <span className="text-muted-foreground">
+                Eligible Texas veterans may qualify for a state filing fee waiver, saving up to $310.
+              </span>
+            </span>
+          </div>
         </div>
 
         <StaggeredGrid className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto" staggerDelay={120}>
