@@ -8,6 +8,7 @@ import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
 import type { AddonQuantities } from "./AddOnServices";
+import AcuityScheduler from "./AcuityScheduler";
 
 type OrderMode = "guided" | "whiteglove";
 type ServiceDetails = {
@@ -216,6 +217,8 @@ const ReviewStep = ({
           </p>
         )}
       </div>
+
+      {mode === "guided" && <AcuityScheduler />}
 
       <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
         <Lock className="h-4 w-4 mr-2" />
