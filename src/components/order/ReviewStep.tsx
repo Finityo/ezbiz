@@ -111,7 +111,8 @@ const ReviewStep = ({
                 <p><span className="text-muted-foreground">Notes:</span> {serviceDetails.notes}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                White Glove fee: ${WHITE_GLOVE_ADDON.price} (first 2 hours) + $80/hr after.
+                White Glove base fee: ${WHITE_GLOVE_ADDON.price} (first 2 hours) — charged today.
+                {" "}Overage: $80/hr after 2 hours — charged on-site.
               </p>
             </div>
           </Section>
@@ -199,19 +200,19 @@ const ReviewStep = ({
 
         {mode === "whiteglove" && (
           <div className="flex justify-between text-sm">
-            <span>White Glove Service (2 hrs)</span>
+            <span>White Glove Mobile Service (First 2 Hours)</span>
             <span>${WHITE_GLOVE_ADDON.price}</span>
           </div>
         )}
 
         <Separator />
         <div className="flex justify-between text-lg font-bold">
-          <span>Total</span>
+          <span>Total (charged today)</span>
           <span className="text-primary">${total}</span>
         </div>
         {mode === "whiteglove" && (
           <p className="text-xs text-muted-foreground">
-            Overage billed at $80/hr in 30-min increments after the first 2 hours.
+            Overage ($80/hr after 2 hours) is charged on-site separately.
           </p>
         )}
       </div>
