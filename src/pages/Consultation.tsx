@@ -372,6 +372,40 @@ const Consultation = () => {
           </div>
         </section>
 
+        {/* File Online Section */}
+        <section className="py-16 bg-card border-t border-border">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
+              <div className="accent-line-center mb-6"></div>
+              <h2 className="text-3xl font-bold">File Online – Fast & Self-Directed</h2>
+              <p className="text-lg text-muted-foreground">
+                Ready to move quickly? Complete your business formation through our
+                trusted national filing partner.
+              </p>
+              <p className="text-muted-foreground">
+                This option is best for entrepreneurs who are comfortable completing
+                their filing independently through a secure third-party platform.
+              </p>
+              <Button
+                size="lg"
+                variant="hero"
+                className="text-lg px-8 py-4"
+                onClick={() => {
+                  trackClick('Start Filing Online', 'corpnet_referral', 'https://www.corpnet.com/?pid=16443');
+                  window.open('https://www.corpnet.com/?pid=16443', '_blank', 'noopener,noreferrer');
+                }}
+              >
+                Start Filing Online
+              </Button>
+              <p className="text-xs text-muted-foreground max-w-xl mx-auto">
+                You will be redirected to our trusted filing partner (CorpNet) to
+                complete your formation. EZ BIZ File Service, LLC may earn a referral
+                commission at no additional cost to you.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-16 bg-gradient-primary text-white">
           <div className="container mx-auto px-4">
