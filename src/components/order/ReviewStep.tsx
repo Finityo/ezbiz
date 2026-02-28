@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -52,6 +53,8 @@ const ReviewStep = ({
   onEdit,
   onCheckoutStarted,
 }: ReviewStepProps) => {
+  const [guidedScheduled, setGuidedScheduled] = React.useState(false);
+  const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
   const { checkout, loading } = useStripeCheckout();
   const pkg = STRIPE_PACKAGES[selectedPackage as PackageId];
   const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(entityType);
@@ -220,7 +223,7 @@ const ReviewStep = ({
 
       {mode === "guided" && <AcuityScheduler />}
 
-      <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
+      <Button onClick={handleCheckout} disabled={loading || !guidedGateOk} className="w-full" size="lg">
         <Lock className="h-4 w-4 mr-2" />
         {loading ? "Processing..." : "Proceed to Stripe Checkout"}
       </Button>
