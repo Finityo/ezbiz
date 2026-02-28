@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Edit2, Lock, ExternalLink } from "lucide-react";
+import { Edit2, Lock, ExternalLink, Car, MapPin, Clock } from "lucide-react";
 import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
 import type { AddonQuantities } from "./AddOnServices";
+import type { OrderMode, ServiceDetails } from "@/pages/EnhancedOrderFlow";
+
+const WHITE_GLOVE_BASE_FEE = 150;
 
 interface ReviewStepProps {
   state: string;
@@ -16,6 +19,8 @@ interface ReviewStepProps {
   selectedAddOns: string[];
   addonQuantities: AddonQuantities;
   businessDetails: BusinessDetails;
+  mode?: OrderMode;
+  serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
   onCheckoutStarted: () => void;
 }
@@ -35,6 +40,8 @@ const ReviewStep = ({
   selectedAddOns,
   addonQuantities,
   businessDetails,
+  mode = "guided",
+  serviceDetails,
   onEdit,
   onCheckoutStarted,
 }: ReviewStepProps) => {
@@ -48,7 +55,8 @@ const ReviewStep = ({
     const qty = addonQuantities[id] || 1;
     return sum + (addon?.price || 0) * qty;
   }, 0);
-  const total = (pkg?.price || 0) + addonsTotal + stateFee;
+  const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE_FEE : 0;
+  const total = (pkg?.price || 0) + addonsTotal + stateFee + whiteGloveFee;
 
   const handleCheckout = async () => {
     const lineItems: { priceId: string; quantity?: number }[] = [];
@@ -64,7 +72,7 @@ const ReviewStep = ({
     await checkout(lineItems, {
       stateFee: { amount: stateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
-      cancelPath: "/order-flow",
+      cancelPath: `/order-flow?mode=${mode}`,
     });
   };
 
@@ -101,9 +109,31 @@ const ReviewStep = ({
           {businessDetails.address}, {businessDetails.city}, {state} {businessDetails.zipCode}
         </p>
         {businessDetails.managementStructure && (
-          <p className="text-sm text-muted-foreground capitalize">{businessDetails.managementStructure.replace("-", "-")}</p>
+          <p className="text-sm text-muted-foreground capitalize">{businessDetails.managementStructure}</p>
         )}
       </Section>
+
+      {/* White Glove service details */}
+      {mode === "whiteglove" && serviceDetails && (
+        <>
+          <Separator />
+          <Section title="White Glove Appointment" step={3}>
+            <div className="space-y-1 text-sm">
+              <p className="flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="font-medium">{serviceDetails.meetingLocation}</span>
+              </p>
+              <p className="flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="font-medium">{serviceDetails.preferredDateTime}</span>
+              </p>
+              {serviceDetails.notes && (
+                <p className="text-muted-foreground mt-1">{serviceDetails.notes}</p>
+              )}
+            </div>
+          </Section>
+        </>
+      )}
 
       {selectedAddOns.length > 0 && (
         <>
@@ -147,11 +177,25 @@ const ReviewStep = ({
           <span>{state} Filing Fee</span>
           <span>${stateFee}</span>
         </div>
+        {mode === "whiteglove" && (
+          <div className="flex justify-between text-sm">
+            <span className="flex items-center gap-1.5">
+              <Car className="h-3.5 w-3.5 text-primary" />
+              White Glove Service (2 hrs)
+            </span>
+            <span>${WHITE_GLOVE_BASE_FEE}</span>
+          </div>
+        )}
         <Separator />
         <div className="flex justify-between text-lg font-bold">
           <span>Total</span>
           <span className="text-primary">${total}</span>
         </div>
+        {mode === "whiteglove" && (
+          <p className="text-xs text-muted-foreground">
+            Additional time beyond 2 hours billed at $80/hr in 30-min increments.
+          </p>
+        )}
       </div>
 
       <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
