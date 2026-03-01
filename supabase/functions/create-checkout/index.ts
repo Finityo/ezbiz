@@ -27,6 +27,7 @@ serve(async (req) => {
 
     // Authenticate user (optional - supports guest checkout)
     let userEmail: string | undefined;
+    let userId: string | undefined;
     let customerId: string | undefined;
     const authHeader = req.headers.get("Authorization");
 
@@ -34,6 +35,7 @@ serve(async (req) => {
       const token = authHeader.replace("Bearer ", "");
       const { data } = await supabaseClient.auth.getUser(token);
       userEmail = data.user?.email ?? undefined;
+      userId = data.user?.id;
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -52,7 +54,7 @@ serve(async (req) => {
     const { data: order } = await supabaseClient
       .from("orders")
       .insert({
-        user_id: data.user?.id,
+        user_id: userId,
         email: userEmail,
         package_id: lineItems[0]?.priceId,
         state: stateFee?.stateName,
