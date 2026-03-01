@@ -93,6 +93,9 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
+      metadata: {
+        orderId: order?.id,
+      },
       invoice_creation: {
         enabled: true,
         invoice_data: {
