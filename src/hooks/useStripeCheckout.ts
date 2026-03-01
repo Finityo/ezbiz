@@ -25,7 +25,7 @@ export const useStripeCheckout = () => {
         body: {
           lineItems,
           stateFee: options?.stateFee ? { amount: options.stateFee.amount, stateName: options.stateFee.stateName } : undefined,
-          successPath: options?.successPath || "/dashboard",
+          successPath: options?.successPath || "/order-success",
           cancelPath: options?.cancelPath || "/pricing",
         },
       });
