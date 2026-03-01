@@ -1,10 +1,22 @@
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/logo-ezbiz-final.webp";
 
 export default function Hero() {
   return (
     <section className="relative bg-background text-foreground">
-      <div className="container mx-auto px-6 py-24 text-center max-w-4xl">
-        {/* Badge */}
+      <div className="container mx-auto px-6 py-20 text-center max-w-4xl">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <div className="bg-white rounded-md overflow-hidden">
+            <img
+              src={logoImage}
+              alt="EZ BIZ File Service Logo"
+              className="h-20 md:h-24 object-contain"
+            />
+          </div>
+        </div>
+
+        {/* Veteran Badge */}
         <div className="mb-6">
           <span className="inline-block bg-muted text-foreground text-xs font-semibold px-4 py-2 rounded-full tracking-wide">
             🇺🇸 Veteran-Owned Texas Business
