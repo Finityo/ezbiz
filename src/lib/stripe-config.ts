@@ -5,8 +5,8 @@ export const STRIPE_PACKAGES = {
   basic: {
     name: "Basic",
     price: 99,
-    priceId: "price_1T6F1RIUysiSR1zwSHedHx9j", // TEMP $1 test – revert to price_1T0yVSIUysiSR1zwnXStH3WG
-    productId: "prod_U4NnBexzEH4nt4",           // TEMP – revert to prod_TywOyXPTc9OxXn
+    priceId: "price_1T0yVSIUysiSR1zwnXStH3WG",
+    productId: "prod_TywOyXPTc9OxXn",
   },
   standard: {
     name: "Deluxe",
