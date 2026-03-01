@@ -48,6 +48,20 @@ serve(async (req) => {
       }
     }
 
+    // Insert order record before creating checkout session
+    const { data: order } = await supabaseClient
+      .from("orders")
+      .insert({
+        user_id: data.user?.id,
+        email: userEmail,
+        package_id: lineItems[0]?.priceId,
+        state: stateFee?.stateName,
+        state_fee: stateFee?.amount || 0,
+        status: "Pending Payment",
+      })
+      .select()
+      .single();
+
     const origin = req.headers.get("origin") || "https://ezbiz.lovable.app";
 
     // Build Stripe line items
@@ -88,6 +102,17 @@ serve(async (req) => {
       success_url: `${origin}${successPath}`,
       cancel_url: `${origin}${cancelPath}`,
     });
+
+    // Update order with stripe session id and total
+    if (order?.id) {
+      await supabaseClient
+        .from("orders")
+        .update({
+          stripe_session_id: session.id,
+          total_amount: (session.amount_total || 0) / 100,
+        })
+        .eq("id", order.id);
+    }
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
