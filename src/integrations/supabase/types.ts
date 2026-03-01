@@ -182,6 +182,51 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          package_id: string | null
+          state: string | null
+          state_fee: number | null
+          status: string | null
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          total_amount: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          package_id?: string | null
+          state?: string | null
+          state_fee?: number | null
+          status?: string | null
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          package_id?: string | null
+          state?: string | null
+          state_fee?: number | null
+          status?: string | null
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           company_name: string | null
