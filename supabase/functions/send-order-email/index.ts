@@ -30,9 +30,20 @@ serve(async (req) => {
 
     // TODO: Integrate with email service (Resend, SendGrid, etc.)
     // For now, just log the email that would be sent
+    let subject = `Order Update: ${payload.businessName}`;
+    if (payload.status === "Paid") {
+      subject = "Your LLC Filing Has Been Received";
+    }
+    if (payload.status === "Submitted") {
+      subject = "Your LLC Filing Has Been Submitted";
+    }
+    if (payload.status === "Filed") {
+      subject = "Your LLC Is Officially Filed";
+    }
+
     const emailContent = {
       to: payload.to,
-      subject: `Order Update: ${payload.businessName} - ${payload.status}`,
+      subject,
       html: `
         <h2>Order Status Update</h2>
         <p>Your business formation order has been updated:</p>
