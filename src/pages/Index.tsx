@@ -15,9 +15,7 @@ import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
 import TiltCard from "@/components/TiltCard";
-import heroImage from "@/assets/hero-business.jpg";
-import logoImage from "@/assets/logo-ezbiz-final.webp";
-import ParallaxImage from "@/components/ParallaxImage";
+import Hero from "@/components/Hero";
 import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -124,100 +122,8 @@ const Index = () => {
       <FloatingCTA />
       <BackToTop />
 
-      {/* Hero Section - Executive Style */}
-      <section className="relative pt-4 md:pt-10 lg:pt-16 pb-10 md:pb-16 lg:pb-24 overflow-hidden min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
-        <div className="absolute inset-0 bg-white"></div>
-        {/* Decorative dot pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-        {/* Geometric grid lines */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(hsl(var(--secondary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--secondary)) 1px, transparent 1px)', backgroundSize: '80px 80px' }}></div>
-        {/* Warm gradient glow behind content area */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[60%] bg-gradient-to-t from-secondary/[0.04] via-secondary/[0.02] to-transparent rounded-full blur-3xl pointer-events-none"></div>
-        {/* Subtle corner accents */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/[0.03] to-transparent pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/[0.03] to-transparent pointer-events-none"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Centered Logo */}
-          <div className="flex justify-center items-center mb-6 md:mb-12 lg:mb-16">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <img 
-                src={logoImage} 
-                alt="EZ BIZ FILE SERVICE" 
-                width={1024}
-                height={1024}
-                fetchPriority="high"
-                className="w-full max-w-[20rem] sm:max-w-[28rem] md:max-w-[36rem] lg:max-w-[44rem] h-auto object-contain mx-auto mix-blend-multiply"
-                style={{ filter: 'contrast(1.03) saturate(1.05)' }}
-              />
-            </motion.div>
-          </div>
-
-          {/* Trusted Badge - Centered */}
-          <div className="flex justify-center mb-8 md:mb-10 lg:mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
-              <Star className="h-4 w-4 fill-current" />
-              <span className="text-xs md:text-sm font-medium font-body">{EZBIZ_COPY.hero.badges.join(" · ")}</span>
-            </div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-h-[350px] md:min-h-[400px]">
-            <div className="space-y-6 md:space-y-8">
-              <div className="space-y-4 md:space-y-6">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display min-h-[2.4em]">
-                   {EZBIZ_COPY.hero.headline}
-                 </h1>
-                 <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-body max-w-xl">
-                   {EZBIZ_COPY.hero.subheadline}
-                 </p>
-                <p className="text-xs md:text-sm text-muted-foreground/70 font-body">
-                  Christian Rene Talavera, MBA, MSL (USC Gould School of Law)
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                   size="lg" 
-                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14 bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant transition-all" 
-                   onClick={() => { trackClick(EZBIZ_COPY.hero.ctaPrimary, 'hero_cta', '/order-flow'); navigate('/order-flow'); }}
-                 >
-                   {EZBIZ_COPY.hero.ctaPrimary}
-                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                 </Button>
-                 <Button 
-                   size="lg" 
-                   variant="outline"
-                   className="group text-base md:text-lg px-6 md:px-8 h-12 md:h-14" 
-                   onClick={() => { trackClick(EZBIZ_COPY.hero.ctaSecondary, 'hero_cta', '/consultation'); navigate('/consultation'); }}
-                 >
-                   {EZBIZ_COPY.hero.ctaSecondary}
-                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                 </Button>
-                 <p className="text-xs md:text-sm text-muted-foreground/70 font-body pt-2">
-                   {EZBIZ_COPY.hero.trustLine}
-                 </p>
-              </div>
-            </div>
-
-            <div className="relative lg:pl-8 hidden md:block">
-              <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
-              <ParallaxImage 
-                src={heroImage} 
-                alt="Professional business consultation"
-                className="relative shadow-hero w-full h-auto object-cover scale-110"
-                speed={0.2}
-                maxOffset={80}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Choose Your Path */}
-      <ChooseYourPath />
+      {/* Hero Section */}
+      <Hero />
 
       {/* Veteran Benefits Strip */}
       <section ref={veteranGateRef} className={`py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10 transition-all ${highlightVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
