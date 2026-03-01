@@ -21,6 +21,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChooseYourPath from "@/components/ChooseYourPath";
 
+// Homepage component
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
