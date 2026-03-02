@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 
 export default function Hero() {
@@ -6,27 +7,42 @@ export default function Hero() {
     <section className="relative bg-background text-foreground">
       <div className="container mx-auto px-6 py-20 text-center max-w-4xl">
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <motion.div
+          className="flex justify-center mb-6"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <div className="bg-white rounded-md overflow-hidden">
             <img
               src={logoImage}
               alt="EZ BIZ File Service Logo"
-              className="h-20 md:h-24 object-contain"
+              className="h-28 md:h-36 object-contain"
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Veteran Badge */}
-        <div className="mb-6">
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <span className="inline-block bg-muted text-foreground text-xs font-semibold px-4 py-2 rounded-full tracking-wide">
             🇺🇸 Veteran-Owned Texas Business
           </span>
-        </div>
+        </motion.div>
 
         {/* Headline */}
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold leading-tight mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+        >
           Start Your Texas LLC The Right Way.
-        </h1>
+        </motion.h1>
 
         {/* Subheadline */}
         <p className="text-lg md:text-xl text-muted-foreground mb-8">
