@@ -173,7 +173,7 @@ export const EIN_COPY = {
     standard: {
       name: "Standard EIN Service",
       description: "Get your EIN quickly and efficiently",
-      price: "$79",
+      price: "$99",
       features: ["IRS Form SS-4 preparation", "Direct IRS submission", "Same-day processing", "Email confirmation"],
     },
     express: {
