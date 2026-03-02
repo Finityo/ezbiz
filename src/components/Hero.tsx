@@ -1,130 +1,83 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import logoImage from "@/assets/logo-ezbiz-final.webp";
+import { Flag } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative bg-background text-foreground">
-      <div className="container mx-auto px-6 py-20 text-center max-w-4xl">
-        {/* Logo */}
-        <motion.div
-          className="flex justify-center mb-6"
-          initial={{ opacity: 0, y: 12 }}
+    <section className="relative overflow-hidden bg-background text-foreground py-20 px-6 text-center">
+      <div className="max-w-5xl mx-auto">
+        {/* Headline */}
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold tracking-tight"
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <div className="bg-white rounded-md overflow-hidden">
-            <img
-              src={logoImage}
-              alt="EZ BIZ File Service Logo"
-              className="h-28 md:h-36 object-contain"
-            />
-          </div>
-        </motion.div>
+          Start Your Texas LLC the Right Way
+        </motion.h1>
 
-        {/* Veteran Badge */}
-        <motion.div
-          className="mb-6"
+        {/* Subtext */}
+        <motion.p
+          className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <span className="inline-block bg-muted text-foreground text-xs font-semibold px-4 py-2 rounded-full tracking-wide">
-            🇺🇸 Veteran-Owned Texas Business
-          </span>
-        </motion.div>
+          Fast. Compliant. Done For You. Veteran-Owned Filing Service.
+        </motion.p>
 
-        {/* Headline */}
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold leading-tight mb-6"
+        {/* Veteran Eligibility Section */}
+        <div className="mt-6 flex justify-center items-center gap-2 text-sm font-medium text-foreground">
+          <Flag className="w-4 h-4 text-primary" />
+          <span>
+            Texas Veterans may qualify for filing fee waivers &amp; franchise tax exemptions.
+          </span>
+        </div>
+
+        {/* Direct Government Links */}
+        <div className="mt-4 text-sm text-muted-foreground space-x-4">
+          <a
+            href="https://www.sos.state.tx.us/corp/veterans.shtml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition"
+          >
+            Texas SOS Veteran Info
+          </a>
+          <a
+            href="https://comptroller.texas.gov/taxes/franchise/veterans/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition"
+          >
+            Texas Comptroller Veteran Exemption
+          </a>
+        </div>
+
+        {/* CTA Section */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-10 flex justify-center gap-4 flex-wrap"
         >
-          Start Your Texas LLC The Right Way.
-        </motion.h1>
-
-        {/* Subheadline */}
-        <p className="text-lg md:text-xl text-muted-foreground mb-8">
-          Transparent pricing. No hidden fees. Real support when you need it.
-        </p>
-
-        {/* Pricing Line */}
-        <p className="text-sm text-muted-foreground mb-10">
-          Service packages start at <span className="font-semibold">$99</span> + Texas state filing fee.
-        </p>
-
-        {/* Primary CTA */}
-        <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
-          <Link
-            to="/order-flow"
-            className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition"
-          >
-            Start My LLC
-          </Link>
-          <Link
-            to="/pricing"
-            className="border border-border px-8 py-4 rounded-lg font-semibold hover:bg-muted transition"
-          >
-            See Pricing & What's Included
-          </Link>
-        </div>
-
-        {/* Trust Signals */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-          {["✔ Secure Checkout", "✔ State Filing Included", "✔ Admin Dashboard Tracking", "✔ No Subscription Required"].map((item, i) => (
-            <motion.div
-              key={item}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 + i * 0.1, ease: "easeOut" }}
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              to="/order-flow"
+              className="inline-block bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg shadow-lg hover:opacity-90 transition"
             >
-              {item}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Filing Options Section */}
-      <div className="bg-muted py-16 px-6">
-        <div className="container mx-auto max-w-5xl text-center">
-          <h2 className="text-2xl font-bold mb-10">
-            Two Ways To File
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Self Service */}
-            <div className="border border-border rounded-xl p-8 bg-background">
-              <h3 className="text-xl font-semibold mb-4">
-                Self-Service Filing
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Complete your filing online in minutes. We review and submit your documents to the state.
-              </p>
-              <Link
-                to="/order-flow"
-                className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-              >
-                Start Filing
-              </Link>
-            </div>
-
-            {/* White Glove */}
-            <div className="border border-border rounded-xl p-8 bg-background opacity-80">
-              <h3 className="text-xl font-semibold mb-4">
-                White Glove (Coming Soon)
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                In-person filing assistance with guided support from start to finish.
-              </p>
-              <button
-                disabled
-                className="border border-border px-6 py-3 rounded-lg font-semibold opacity-60 cursor-not-allowed"
-              >
-                Coming Soon
-              </button>
-            </div>
-          </div>
-        </div>
+              Order Now
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              to="/pricing"
+              className="inline-block border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition"
+            >
+              View Packages
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
