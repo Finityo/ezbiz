@@ -592,7 +592,7 @@ const Index = () => {
                       { feature: "LLC Formation", ezbiz: "From $99", legalzoom: "From $0 + upsells", zenbusiness: "From $0 + upsells" },
                       { feature: "Registered Agent (1yr)", ezbiz: true, legalzoom: "$249/yr", zenbusiness: "$199/yr" },
                       { feature: "Operating Agreement", ezbiz: true, legalzoom: "$99 extra", zenbusiness: "Paid plans only" },
-                      { feature: "EIN Filing", ezbiz: "$49", legalzoom: "$79", zenbusiness: "$99" },
+                      { feature: "EIN Filing", ezbiz: "$99", legalzoom: "$79", zenbusiness: "$99" },
                       { feature: "Transparent Pricing", ezbiz: true, legalzoom: false, zenbusiness: false },
                       { feature: "Free Consultation", ezbiz: true, legalzoom: false, zenbusiness: false },
                       { feature: "24–48hr Filing", ezbiz: true, legalzoom: "7–30 days", zenbusiness: "2–3 weeks" },

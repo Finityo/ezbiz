@@ -25,9 +25,9 @@ export const STRIPE_PACKAGES = {
 export const STRIPE_ADDONS = {
   ein: {
     name: "Federal Tax ID (EIN)",
-    price: 49,
-    priceId: "price_1T0yWgIUysiSR1zwlqpnLd2h",
-    productId: "prod_TywPCPQuBK0S1O",
+    price: 99,
+    priceId: "price_1T6TkPIUysiSR1zwn25vGPFg",
+    productId: "prod_U4d0yNkPwXOhgP",
   },
   "operating-agreement": {
     name: "Custom Operating Agreement",
