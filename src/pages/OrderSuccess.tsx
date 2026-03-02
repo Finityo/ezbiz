@@ -1,10 +1,72 @@
+import { useEffect, useState } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, FileText, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+
 export default function OrderSuccess() {
+  const [searchParams] = useSearchParams();
+  const [showConfetti, setShowConfetti] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowConfetti(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="container py-20 text-center">
-      <h1 className="text-3xl font-bold mb-4">Payment Confirmed</h1>
-      <p>Your LLC filing request has been received.</p>
-      <p>You will receive a confirmation email shortly.</p>
-      <p>We are preparing your submission now.</p>
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 py-16 px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-lg w-full"
+        >
+          <Card className="p-8 text-center space-y-6">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+              className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center"
+            >
+              <CheckCircle className="h-10 w-10 text-green-600" />
+            </motion.div>
+
+            <div>
+              <h1 className="text-2xl font-bold mb-2">Payment Confirmed!</h1>
+              <p className="text-muted-foreground">
+                Your business formation order has been received and is being processed.
+              </p>
+            </div>
+
+            <div className="space-y-3 text-sm text-left bg-muted/50 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <FileText className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <p>A confirmation email will be sent to you shortly.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <FileText className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <p>We are preparing your filing documents now.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <FileText className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <p>You can track your order status in your dashboard.</p>
+              </div>
+            </div>
+
+            <Button asChild className="w-full" size="lg">
+              <Link to="/dashboard">
+                Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </Card>
+        </motion.div>
+      </div>
+      <Footer />
     </div>
   );
 }
