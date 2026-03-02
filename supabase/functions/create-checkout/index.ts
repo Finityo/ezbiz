@@ -19,7 +19,10 @@ serve(async (req) => {
   );
 
   try {
-    const { lineItems, stateFee, successPath = "/dashboard", cancelPath = "/pricing" } = await req.json();
+    const { lineItems, stateFee, successPath = "/dashboard", cancelPath = "/pricing", mode } = await req.json();
+
+    console.log("MODE:", mode);
+    console.log("LINE ITEMS:", lineItems);
 
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
       throw new Error("lineItems array is required");
