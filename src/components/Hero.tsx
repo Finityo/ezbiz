@@ -72,10 +72,16 @@ export default function Hero() {
 
         {/* Trust Signals */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-          <div>✔ Secure Checkout</div>
-          <div>✔ State Filing Included</div>
-          <div>✔ Admin Dashboard Tracking</div>
-          <div>✔ No Subscription Required</div>
+          {["✔ Secure Checkout", "✔ State Filing Included", "✔ Admin Dashboard Tracking", "✔ No Subscription Required"].map((item, i) => (
+            <motion.div
+              key={item}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 + i * 0.1, ease: "easeOut" }}
+            >
+              {item}
+            </motion.div>
+          ))}
         </div>
       </div>
 
