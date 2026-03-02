@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
 import { STRIPE_ADDONS, STRIPE_PACKAGES, type AddonId, type PackageId } from "@/lib/stripe-config";
-import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
+import { calculatePricing } from "@/lib/pricing";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
@@ -57,16 +57,15 @@ const ReviewStep = ({
   const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
   const { checkout, loading, error, clearError } = useStripeCheckout();
   const pkg = STRIPE_PACKAGES[selectedPackage as PackageId];
-  const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(entityType);
-  const stateFee = isCorpType ? getCorpStateFee(state) : getStateFee(state);
-  const addonsTotal = selectedAddOns.reduce((sum, id) => {
-    const addon = STRIPE_ADDONS[id as AddonId];
-    const qty = addonQuantities[id] || 1;
-    return sum + (addon?.price || 0) * qty;
-  }, 0);
-
-  const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_ADDON.price : 0;
-  const total = (pkg?.price || 0) + addonsTotal + stateFee + whiteGloveFee;
+  const pricing = calculatePricing({
+    packageId: selectedPackage,
+    entityType: entityType,
+    state,
+    selectedAddOns,
+    addonQuantities,
+    includeWhiteGlove: mode === "whiteglove",
+  });
+  const { stateFee, total } = pricing;
 
   const handleCheckout = async () => {
     const lineItems: { priceId: string; quantity?: number }[] = [];

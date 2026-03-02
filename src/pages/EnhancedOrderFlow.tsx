@@ -18,7 +18,8 @@ import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
-import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
+import { STRIPE_PACKAGES, type PackageId } from "@/lib/stripe-config";
+import { calculatePricing } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -85,16 +86,14 @@ const EnhancedOrderFlow = () => {
   const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
-  const calculateTotal = () => {
-    const pkg = selectedPackage ? STRIPE_PACKAGES[selectedPackage as PackageId] : null;
-    const basePrice = pkg?.price || 0;
-    const addonsTotal = selectedAddOns.reduce((sum, id) => {
-      const addon = STRIPE_ADDONS[id as AddonId];
-      const qty = addonQuantities[id] || 1;
-      return sum + (addon?.price || 0) * qty;
-    }, 0);
-    return basePrice + addonsTotal + stateFee;
-  };
+  const runningTotal = () =>
+    calculatePricing({
+      packageId: selectedPackage,
+      entityType: selectedEntity,
+      state: selectedState,
+      selectedAddOns,
+      addonQuantities,
+    }).total;
 
   const isStepValid = (step: number): boolean => {
     switch (step) {
@@ -221,7 +220,7 @@ const EnhancedOrderFlow = () => {
                     </>
                   )}
                 </div>
-                <span className="font-bold text-primary text-lg">${calculateTotal()}</span>
+                <span className="font-bold text-primary text-lg">${runningTotal()}</span>
               </div>
             )}
 
