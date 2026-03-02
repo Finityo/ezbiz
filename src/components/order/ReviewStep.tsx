@@ -55,7 +55,7 @@ const ReviewStep = ({
 }: ReviewStepProps) => {
   const [guidedScheduled, setGuidedScheduled] = React.useState(false);
   const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
-  const { checkout, loading } = useStripeCheckout();
+  const { checkout, loading, error, clearError } = useStripeCheckout();
   const pkg = STRIPE_PACKAGES[selectedPackage as PackageId];
   const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(entityType);
   const stateFee = isCorpType ? getCorpStateFee(state) : getStateFee(state);
@@ -243,6 +243,13 @@ const ReviewStep = ({
           </Section>
           <Separator />
         </>
+      )}
+
+      {error && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive text-center">
+          {error}
+          <button onClick={clearError} className="ml-2 underline text-xs">Dismiss</button>
+        </div>
       )}
 
       <Button onClick={handleCheckout} disabled={loading || !guidedGateOk} className="w-full" size="lg">
