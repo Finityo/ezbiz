@@ -695,6 +695,30 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
+      {/* Beta / Under Construction CTA Block */}
+      <AnimatedSection className="py-8 md:py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto bg-muted/50 border border-border rounded-xl p-6 text-center shadow-sm">
+            <h3 className="text-xl font-semibold font-display text-foreground">
+              We're Currently in Beta
+            </h3>
+            <p className="text-sm text-muted-foreground font-body mt-2">
+              Early access is open for Texas entrepreneurs and veterans.
+            </p>
+            <Button
+              size="lg"
+              className="mt-6 w-full py-5 px-8 text-lg font-semibold bg-secondary hover:bg-secondary-light text-secondary-foreground rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              onClick={() => { trackClick('Join Beta', 'beta_cta', '/order-flow'); navigate('/order-flow'); }}
+            >
+              Join Beta — Start My Filing
+            </Button>
+            <p className="text-xs text-muted-foreground font-body mt-3">
+              Secure checkout • Professional filing • Limited beta access
+            </p>
+          </div>
+        </div>
+      </AnimatedSection>
+
       {/* Final CTA */}
       <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
         <div className="container mx-auto px-4 text-center space-y-6 md:space-y-8">
