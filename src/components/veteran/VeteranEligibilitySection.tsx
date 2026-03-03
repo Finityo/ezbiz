@@ -1,71 +1,61 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import React from "react";
 
 const VeteranEligibilitySection = () => {
   return (
     <section className="w-full py-16 px-6 text-center">
       <div className="flex items-center justify-center gap-3 mb-6">
         <span className="text-3xl">🇺🇸</span>
-        <h2 className="text-3xl font-bold font-display text-foreground">
+        <h2 className="text-3xl font-bold">
           Veteran-Owned Business Benefits
         </h2>
         <span className="text-3xl">🇺🇸</span>
       </div>
-      <p className="max-w-2xl mx-auto text-lg mb-8 text-muted-foreground font-body">
+      <p className="max-w-2xl mx-auto text-lg mb-8 opacity-80">
         If you are a qualified Texas Veteran, you may be eligible for
         franchise tax exemptions and filing benefits.
         EZ Biz handles your entity filing. The resources below are
         official state pages for independent veteran verification.
       </p>
       <div className="mb-10">
-        <Button variant="success" size="lg" className="px-8">
+        <button className="px-8 py-3 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition">
           ✓ You May Be Eligible
-        </Button>
+        </button>
       </div>
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        <Card className="border-border">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold font-display mb-3 text-foreground">
-              Texas Veteran Verification Letter (VVL)
-            </h3>
-            <p className="mb-4 text-sm text-muted-foreground font-body">
-              Request your official Veteran Verification Letter required
-              when processing formation documents.
-            </p>
-            <Button variant="outline" className="group" asChild>
-              <a
-                href="https://tvc.texas.gov/entrepreneurs/veteran-verification-letter/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit Texas Veterans Commission
-                <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="border-border">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold font-display mb-3 text-foreground">
-              Texas Veteran Franchise Tax Exemption
-            </h3>
-            <p className="mb-4 text-sm text-muted-foreground font-body">
-              Review eligibility requirements and franchise tax exemption
-              details directly from the Texas Comptroller.
-            </p>
-            <Button variant="outline" className="group" asChild>
-              <a
-                href="https://comptroller.texas.gov/taxes/franchise/veteran-business.php"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit Texas Comptroller
-                <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="border rounded-xl p-6 shadow-sm">
+          <h3 className="text-xl font-semibold mb-3">
+            Texas Veteran Verification Letter (VVL)
+          </h3>
+          <p className="mb-4 text-sm opacity-70">
+            Request your official Veteran Verification Letter required
+            when processing formation documents.
+          </p>
+          <a
+            href="https://tvc.texas.gov/entrepreneurs/veteran-verification-letter/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 rounded-lg border font-semibold hover:bg-gray-100 transition"
+          >
+            Visit Texas Veterans Commission →
+          </a>
+        </div>
+        <div className="border rounded-xl p-6 shadow-sm">
+          <h3 className="text-xl font-semibold mb-3">
+            Texas Veteran Franchise Tax Exemption
+          </h3>
+          <p className="mb-4 text-sm opacity-70">
+            Review eligibility requirements and franchise tax exemption
+            details directly from the Texas Comptroller.
+          </p>
+          <a
+            href="https://comptroller.texas.gov/taxes/franchise/veteran-business.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 rounded-lg border font-semibold hover:bg-gray-100 transition"
+          >
+            Visit Texas Comptroller →
+          </a>
+        </div>
       </div>
     </section>
   );
