@@ -1,10 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
+import BackToTop from "@/components/BackToTop";
 
 export default function VeteranLLCTexas() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-6 py-16 max-w-5xl mx-auto">
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      <div className="px-6 py-16 max-w-5xl mx-auto flex-1">
       {/* Hero */}
       <section className="text-center mb-20">
         <div className="text-4xl mb-4">🇺🇸 Veterans 🇺🇸</div>
@@ -148,6 +154,10 @@ export default function VeteranLLCTexas() {
           Get Started Today
         </button>
       </section>
+      </div>
+      <FloatingCTA />
+      <BackToTop />
+      <Footer />
     </div>
   );
 }
