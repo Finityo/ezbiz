@@ -26,7 +26,7 @@ export default function VeteranLLCTexas() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => navigate("/order-flow")}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold"
+            className="px-6 py-3 bg-success text-success-foreground rounded-lg font-semibold"
           >
             Check My Eligibility
           </button>
@@ -52,7 +52,7 @@ export default function VeteranLLCTexas() {
             "Must submit Comptroller Form 05-904 (Certification of New Veteran-Owned Business)"
           ].map((text, i) => (
             <li key={i} className="flex items-start gap-3">
-              <span className="text-green-600 font-bold">✔</span>
+              <span className="text-success font-bold">✔</span>
               <span>{text}</span>
             </li>
           ))}
@@ -86,7 +86,7 @@ export default function VeteranLLCTexas() {
             }
           ].map((item, i) => (
             <div key={i} className="flex gap-4">
-              <div className="font-bold text-green-600 text-xl">
+              <div className="font-bold text-success text-xl">
                 {item.step}
               </div>
               <div>
@@ -149,7 +149,7 @@ export default function VeteranLLCTexas() {
         </h2>
         <button
           onClick={() => navigate("/order-flow")}
-          className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold"
+          className="px-8 py-3 bg-success text-success-foreground rounded-lg font-semibold"
         >
           Get Started Today
         </button>
