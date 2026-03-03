@@ -1,14 +1,58 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
+import ServiceJsonLd from "@/components/ServiceJsonLd";
+import FaqJsonLd from "@/components/FaqJsonLd";
+
+const VETERAN_FAQS = [
+  {
+    question: "Who qualifies for Texas veteran-owned business benefits?",
+    answer: "Businesses formed in Texas on or after January 1, 2022 that are 100% owned by one or more honorably discharged U.S. veterans qualify for filing fee relief and franchise tax exemption for up to five years."
+  },
+  {
+    question: "What documents do I need for the Texas veteran LLC exemption?",
+    answer: "You need a Texas Veterans Commission Verification Letter for each owner and Comptroller Certification Form 05-904, submitted along with your Certificate of Formation."
+  },
+  {
+    question: "How long does the Texas veteran franchise tax exemption last?",
+    answer: "Qualifying veteran-owned businesses are exempt from Texas franchise tax for up to five years from the date of formation."
+  },
+  {
+    question: "How do I get a Texas Veteran Verification Letter?",
+    answer: "Request your Veteran Verification Letter (VVL) through the Texas Veterans Commission at tvc.texas.gov. Each owner of the business must obtain their own letter."
+  }
+];
 
 export default function VeteranLLCTexas() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Texas Veteran LLC Benefits & Fee Exemptions | EZ BIZ FILE SERVICE";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const descContent = "Texas veteran-owned businesses formed after Jan 2022 may qualify for filing fee relief and franchise tax exemption for up to 5 years. Check eligibility and start your LLC today.";
+    if (metaDesc) {
+      metaDesc.setAttribute("content", descContent);
+    } else {
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content = descContent;
+      document.head.appendChild(meta);
+    }
+    return () => { document.title = "EZ BIZ FILE SERVICE"; };
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
+      <ServiceJsonLd
+        serviceName="Texas Veteran-Owned LLC Formation"
+        description="Professional LLC formation services for Texas veterans. Qualify for filing fee relief and franchise tax exemption for up to five years."
+        url="/veteran-llc-texas"
+        priceRange="$$"
+      />
+      <FaqJsonLd faqs={VETERAN_FAQS} />
       <Navigation />
       <div className="px-6 py-16 max-w-5xl mx-auto flex-1">
       {/* Hero */}
