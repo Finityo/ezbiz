@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
+import VeteranEligibilitySection from "@/components/veteran/VeteranEligibilitySection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -195,6 +196,11 @@ const VeteranLLCTexas = () => {
             </div>
           </div>
         </div>
+      </AnimatedSection>
+
+      {/* Veteran Eligibility Section */}
+      <AnimatedSection className="py-12 md:py-20">
+        <VeteranEligibilitySection />
       </AnimatedSection>
 
       {/* Section 5: Mobile Filing */}
