@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Flag } from "lucide-react";
+import { Flag, Zap } from "lucide-react";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 
 export default function Hero() {
@@ -73,12 +73,21 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-10 flex justify-center gap-4 flex-wrap"
         >
-          <Link
-            to="/order-flow"
-            className="bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg shadow-lg hover:opacity-90 transition"
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            className="relative"
           >
-            Order Now
-          </Link>
+            <span className="absolute inset-0 rounded-lg bg-secondary/40 blur-xl animate-pulse" />
+            <Link
+              to="/order-flow"
+              className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground transition-all duration-300 hover:shadow-elegant"
+            >
+              <Zap className="w-5 h-5 fill-current" />
+              Order Now
+              <Zap className="w-5 h-5 fill-current" />
+            </Link>
+          </motion.div>
           <Link
             to="/pricing"
             className="border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition"
