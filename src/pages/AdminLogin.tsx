@@ -123,6 +123,7 @@ const AdminLogin = () => {
                       setError('Enter your email first');
                       return;
                     }
+                    setError('');
                     await supabase.auth.resetPasswordForEmail(email, {
                       redirectTo: `${window.location.origin}/reset-password`,
                     });
