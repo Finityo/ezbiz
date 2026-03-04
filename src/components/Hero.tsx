@@ -76,16 +76,18 @@ export default function Hero() {
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className="relative"
+            className="relative group"
           >
-            <span className="absolute inset-0 rounded-lg bg-secondary/40 blur-xl animate-pulse" />
+            <span className="absolute inset-0 rounded-lg bg-secondary/50 blur-xl animate-pulse" />
             <Link
               to="/order-flow"
-              className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground transition-all duration-300 hover:shadow-elegant"
+              className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant"
             >
-              <Zap className="w-5 h-5 fill-current" />
+              {/* Shimmer sweep */}
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
+              <Zap className="w-5 h-5 fill-current animate-bounce" style={{ animationDuration: '1.5s' }} />
               Order Now
-              <Zap className="w-5 h-5 fill-current" />
+              <Zap className="w-5 h-5 fill-current animate-bounce" style={{ animationDuration: '1.5s', animationDelay: '0.2s' }} />
             </Link>
           </motion.div>
           <Link

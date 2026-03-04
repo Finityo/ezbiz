@@ -32,9 +32,9 @@
     --primary-dark: 220 35% 12%;
 
     /* Secondary - Warm Bronze (Executive Accent) */
-    --secondary: 38 45% 52%;
-    --secondary-foreground: 40 20% 98%;
-    --secondary-light: 38 40% 62%;
+    --secondary: 45 95% 55%;
+    --secondary-foreground: 45 20% 10%;
+    --secondary-light: 45 90% 62%;
 
     /* Accent - Sage/Teal (Subtle sophistication) */
     --accent: 168 25% 45%;
