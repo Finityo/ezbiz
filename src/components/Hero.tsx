@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Flag, Zap, Globe, MessageCircle, BookOpen } from "lucide-react";
 import { trackClick } from "@/hooks/useAnalytics";
-import { trackEvent } from "@/lib/analytics";
+import { trackHeroPath, trackCorpNetClick, trackConsultationClickHero, trackLearnClick } from "@/lib/analytics";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
@@ -90,9 +90,9 @@ export default function Hero() {
             <span className="absolute inset-0 rounded-lg bg-secondary/50 blur-xl animate-pulse" />
             <button
               onClick={() => {
-                trackEvent("hero_path_click", { option: "file_instantly", destination: "corpnet" });
+                trackHeroPath("file_instantly");
+                trackCorpNetClick();
                 trackClick("File Instantly", "hero_file_instantly", CORPNET_AFFILIATE_LINK);
-                window.open(CORPNET_AFFILIATE_LINK, "_blank", "noopener,noreferrer");
               }}
               className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant cursor-pointer"
             >
@@ -108,9 +108,9 @@ export default function Hero() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <button
               onClick={() => {
-                trackEvent("hero_path_click", { option: "talk_expert", destination: "/consultation" });
+                trackHeroPath("talk_expert");
+                trackConsultationClickHero();
                 trackClick("Talk to an Expert", "hero_talk_expert", "/consultation");
-                navigate("/consultation");
               }}
               className="inline-flex items-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer"
             >
@@ -123,9 +123,9 @@ export default function Hero() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <button
               onClick={() => {
-                trackEvent("hero_path_click", { option: "learn_first", destination: "/business-guide" });
+                trackHeroPath("learn_first");
+                trackLearnClick();
                 trackClick("Learn First", "hero_learn_first", "/business-guide");
-                navigate("/business-guide");
               }}
               className="inline-flex items-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer"
             >
