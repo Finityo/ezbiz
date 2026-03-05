@@ -21,6 +21,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChooseYourPath from "@/components/ChooseYourPath";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
+import TrustStrip from "@/components/TrustStrip";
 
 // Homepage component
 const Index = () => {
@@ -126,6 +127,9 @@ const Index = () => {
 
       {/* Hero Section */}
       <Hero />
+
+      {/* Trust Strip */}
+      <TrustStrip />
 
       {/* Beta Notice — Above the Fold */}
       <section className="py-4 md:py-6">
