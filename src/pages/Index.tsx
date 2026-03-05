@@ -23,6 +23,7 @@ import ChooseYourPath from "@/components/ChooseYourPath";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import TrustStrip from "@/components/TrustStrip";
 import HowItWorks from "@/components/HowItWorks";
+import BetaLaunchCountdown from "@/components/BetaLaunchCountdown";
 
 // Homepage component
 const Index = () => {
@@ -135,20 +136,8 @@ const Index = () => {
       {/* How It Works */}
       <HowItWorks />
 
-      {/* Beta Notice — Above the Fold */}
-      <section className="py-4 md:py-6">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto bg-muted/50 border border-border rounded-xl p-5 text-center shadow-sm">
-            <h3 className="text-lg font-semibold font-display text-foreground">
-              🚧 EZ Biz is currently in Beta
-            </h3>
-            <p className="text-sm text-muted-foreground font-body mt-2 max-w-lg mx-auto">
-              Our platform is actively being tested. You can start your business instantly
-              through our trusted partner CorpNet or schedule a consultation with us for guided assistance.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Beta Launch Countdown */}
+      <BetaLaunchCountdown />
 
       {/* Lead Capture Form */}
       <section className="py-10 md:py-14">
