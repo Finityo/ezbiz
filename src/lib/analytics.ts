@@ -172,4 +172,18 @@ export function runDiagnostics(): CheckResult[] {
   return results;
 }
 
+// ── Hero routing trackers ────────────────────────────────────────────────────
+
+export const trackHeroPath = (option: "file_instantly" | "talk_expert" | "learn_first") =>
+  trackEvent("hero_path_click", { option, location: "hero_router" });
+
+export const trackCorpNetClick = () =>
+  trackEvent("corpnet_affiliate_click", { partner: "corpnet", location: "hero" });
+
+export const trackConsultationClickHero = () =>
+  trackEvent("consultation_click", { location: "hero" });
+
+export const trackLearnClick = () =>
+  trackEvent("learn_click", { location: "hero" });
+
 export default { initAnalytics, trackPageView, trackEvent, runDiagnostics };
