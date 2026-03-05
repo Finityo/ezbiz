@@ -85,26 +85,32 @@ export type Database = {
       }
       email_list: {
         Row: {
+          business_type: string | null
           created_at: string
           email: string
           id: string
           name: string
+          phone: string | null
           source: string
           updated_at: string
         }
         Insert: {
+          business_type?: string | null
           created_at?: string
           email: string
           id?: string
           name: string
+          phone?: string | null
           source?: string
           updated_at?: string
         }
         Update: {
+          business_type?: string | null
           created_at?: string
           email?: string
           id?: string
           name?: string
+          phone?: string | null
           source?: string
           updated_at?: string
         }

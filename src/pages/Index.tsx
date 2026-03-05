@@ -20,6 +20,7 @@ import CountUpDisplay from "@/components/CountUpDisplay";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChooseYourPath from "@/components/ChooseYourPath";
+import LeadCaptureForm from "@/components/LeadCaptureForm";
 
 // Homepage component
 const Index = () => {
@@ -138,6 +139,13 @@ const Index = () => {
               through our trusted partner CorpNet or schedule a consultation with us for guided assistance.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Lead Capture Form */}
+      <section className="py-10 md:py-14">
+        <div className="container mx-auto px-4">
+          <LeadCaptureForm />
         </div>
       </section>
 
