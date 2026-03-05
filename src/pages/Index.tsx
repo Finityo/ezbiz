@@ -126,6 +126,21 @@ const Index = () => {
       {/* Hero Section */}
       <Hero />
 
+      {/* Beta Notice — Above the Fold */}
+      <section className="py-4 md:py-6">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto bg-muted/50 border border-border rounded-xl p-5 text-center shadow-sm">
+            <h3 className="text-lg font-semibold font-display text-foreground">
+              🚧 EZ Biz is currently in Beta
+            </h3>
+            <p className="text-sm text-muted-foreground font-body mt-2 max-w-lg mx-auto">
+              Our platform is actively being tested. You can start your business instantly
+              through our trusted partner CorpNet or schedule a consultation with us for guided assistance.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Veteran Benefits Strip */}
       <section ref={veteranGateRef} className={`py-8 md:py-12 bg-primary/[0.04] border-y border-primary/10 transition-all ${highlightVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
         <div className="container mx-auto px-4">
@@ -695,29 +710,7 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* Beta / Under Construction CTA Block */}
-      <AnimatedSection className="py-8 md:py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto bg-muted/50 border border-border rounded-xl p-6 text-center shadow-sm">
-            <h3 className="text-xl font-semibold font-display text-foreground">
-              We're Currently in Beta
-            </h3>
-            <p className="text-sm text-muted-foreground font-body mt-2">
-              Early access is open for Texas entrepreneurs and veterans.
-            </p>
-            <Button
-              size="lg"
-              className="mt-6 w-full py-5 px-8 text-lg font-semibold bg-secondary hover:bg-secondary-light text-secondary-foreground rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              onClick={() => { trackClick('Join Beta', 'beta_cta', '/order-flow'); navigate('/order-flow'); }}
-            >
-              Join Beta — Start My Filing
-            </Button>
-            <p className="text-xs text-muted-foreground font-body mt-3">
-              Secure checkout • Professional filing • Limited beta access
-            </p>
-          </div>
-        </div>
-      </AnimatedSection>
+      {/* (Beta CTA moved above the fold) */}
 
       {/* Final CTA */}
       <section className="py-12 md:py-24 gradient-executive text-primary-foreground">
