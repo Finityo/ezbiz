@@ -22,6 +22,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ChooseYourPath from "@/components/ChooseYourPath";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import TrustStrip from "@/components/TrustStrip";
+import HowItWorks from "@/components/HowItWorks";
 
 // Homepage component
 const Index = () => {
@@ -130,6 +131,9 @@ const Index = () => {
 
       {/* Trust Strip */}
       <TrustStrip />
+
+      {/* How It Works */}
+      <HowItWorks />
 
       {/* Beta Notice — Above the Fold */}
       <section className="py-4 md:py-6">
