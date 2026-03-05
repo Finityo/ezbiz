@@ -1,0 +1,3 @@
+ALTER TABLE public.email_list
+  ADD COLUMN IF NOT EXISTS phone text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS business_type text DEFAULT NULL;
