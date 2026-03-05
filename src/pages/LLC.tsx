@@ -40,7 +40,7 @@ const LLC = () => {
       <ServiceJsonLd serviceName="LLC Formation Services" description="Form your Limited Liability Company quickly and affordably. Expert LLC formation in all 50 states with liability protection and tax flexibility." url="/form-llc" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />
-      <FloatingCTA text="Form Your LLC" />
+      <FloatingCTA />
       <BackToTop />
       
       <main>
