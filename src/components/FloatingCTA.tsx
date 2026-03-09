@@ -46,13 +46,15 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
                 window.open(CORPNET_AFFILIATE_LINK, "_blank", "noopener,noreferrer");
               }}
               className={cn(
-                "flex-1 sm:flex-none inline-flex items-center justify-center gap-2",
+                "flex-1 sm:flex-none inline-flex items-center justify-center gap-2 relative",
                 "bg-secondary text-secondary-foreground px-5 py-2.5 rounded-lg",
-                "font-semibold text-sm hover:bg-secondary-light transition-all duration-200 cursor-pointer"
+                "font-semibold text-sm hover:bg-secondary-light transition-all duration-200 cursor-pointer",
+                "animate-pulse shadow-lg sm:shadow-none sm:animate-none"
               )}
             >
-              <Zap className="h-4 w-4" />
-              File Instantly
+              <div className="absolute inset-0 rounded-lg bg-secondary/40 animate-pulse sm:hidden" />
+              <Zap className="h-4 w-4 relative z-10" />
+              <span className="relative z-10">File Instantly</span>
             </button>
 
             {/* Talk to an Expert */}
