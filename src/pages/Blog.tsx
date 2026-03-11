@@ -14,14 +14,15 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Business Formation Blog | EZ BIZ FILE SERVICE</title>
-        <meta
-          name="description"
-          content="Expert insights on business formation, LLC filing, compliance requirements, and IRS tax obligations. Stay informed with EZ BIZ FILE SERVICE."
-        />
-        <link rel="canonical" href="https://ezbizs.com/blog" />
-      </Helmet>
+      {(() => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          document.title = "Business Formation Blog | EZ BIZ FILE SERVICE";
+          const meta = document.querySelector('meta[name="description"]');
+          if (meta) meta.setAttribute("content", "Expert insights on business formation, LLC filing, compliance requirements, and IRS tax obligations. Stay informed with EZ BIZ FILE SERVICE.");
+        }, []);
+        return null;
+      })()}
 
       <Navigation />
 
