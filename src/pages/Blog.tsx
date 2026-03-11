@@ -12,18 +12,12 @@ const Blog = () => {
   const companyPosts = blogPosts.filter((p) => p.category === "company");
   const compliancePosts = blogPosts.filter((p) => p.category === "compliance");
 
+  useEffect(() => {
+    document.title = "Business Formation Blog | EZ BIZ FILE SERVICE";
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
-      {(() => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect(() => {
-          document.title = "Business Formation Blog | EZ BIZ FILE SERVICE";
-          const meta = document.querySelector('meta[name="description"]');
-          if (meta) meta.setAttribute("content", "Expert insights on business formation, LLC filing, compliance requirements, and IRS tax obligations. Stay informed with EZ BIZ FILE SERVICE.");
-        }, []);
-        return null;
-      })()}
-
       <Navigation />
 
       <main className="container mx-auto px-4 py-16 max-w-5xl">
