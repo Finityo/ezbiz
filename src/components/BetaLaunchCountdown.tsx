@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const LAUNCH_DATE = new Date("2026-06-01T00:00:00");
+// 30 days from March 11, 2026
+const LAUNCH_DATE = new Date("2026-04-10T00:00:00");
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
 
 function calculateTimeLeft() {

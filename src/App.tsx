@@ -62,6 +62,8 @@ const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VeteranLLCTexas = lazy(() => import("./pages/VeteranLLCTexas"));
 const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
@@ -132,6 +134,8 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/veteran-llc-texas" element={<VeteranLLCTexas />} />
               <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
