@@ -53,7 +53,7 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
               )}
             >
               <div className="absolute inset-0 rounded-lg bg-secondary/40 animate-pulse sm:hidden" />
-              <Zap className="h-4 w-4 relative z-10" />
+              <Zap className="h-4 w-4 relative z-10 animate-zap-bounce" />
               <span className="relative z-10">File Instantly</span>
             </button>
 
