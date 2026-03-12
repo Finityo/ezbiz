@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
 } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 const ENTITY_LABELS: Record<string, string> = {
   llc: "LLC",
