@@ -112,7 +112,7 @@ serve(async (req) => {
       line_items: stripeLineItems,
       mode: "payment",
       metadata: {
-        orderId: order?.id,
+        orderId: finalOrderId,
       },
       invoice_creation: {
         enabled: true,
