@@ -357,8 +357,12 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="consultations" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="orders" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="orders">
+              <Package className="h-4 w-4 mr-2" />
+              Orders
+            </TabsTrigger>
             <TabsTrigger value="consultations">
               <MessageSquare className="h-4 w-4 mr-2" />
               Consultations ({filteredConsultations.length})
@@ -376,6 +380,10 @@ const AdminDashboard = () => {
               Analytics
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="orders" className="space-y-6">
+            <OrdersTab />
+          </TabsContent>
 
           <TabsContent value="consultations" className="space-y-6">
             {/* Stats Cards */}
