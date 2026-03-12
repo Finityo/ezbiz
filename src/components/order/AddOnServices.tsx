@@ -118,7 +118,7 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
 
                   <p className="text-sm text-muted-foreground mb-2">{addon.description}</p>
 
-                  <p className="text-lg font-bold text-primary">${addon.price}</p>
+                  <p className="text-lg font-bold text-primary">${formatPrice(addon.price)}</p>
                 </div>
               </div>
             </Card>
