@@ -124,7 +124,7 @@ const StateTemplate = ({
             <div className="space-y-4">
               <div className="flex justify-between items-center pb-4 border-b">
                 <span className="font-medium">{stateName} State Filing Fee</span>
-                <span className="text-xl font-bold text-primary">${stateFee}</span>
+                <span className="text-xl font-bold text-primary">${formatPrice(stateFee)}</span>
               </div>
               
               <div className="flex justify-between items-center pb-4 border-b">
