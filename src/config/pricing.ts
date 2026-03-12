@@ -21,19 +21,19 @@ export const PACKAGES: Record<
   basic: {
     name: "Basic",
     price: 148,
-    stripePriceId: "price_basic_REPLACE",
+    stripePriceId: "price_1TAIL4IUysiSR1zw3M01ArWS",
     description: "Business formation with required filing documents",
   },
   deluxe: {
     name: "Deluxe",
     price: 328,
-    stripePriceId: "price_deluxe_REPLACE",
+    stripePriceId: "price_1TAIMKIUysiSR1zwu3f0jHW4",
     description: "Formation plus essential compliance documents",
   },
   complete: {
     name: "Complete",
     price: 403,
-    stripePriceId: "price_complete_REPLACE",
+    stripePriceId: "price_1TAIMdIUysiSR1zwqXRGk7WY",
     description: "Full formation package with compliance and filings",
   },
 };
@@ -50,21 +50,21 @@ export const ADDONS: Record<
   ein: {
     name: "Federal Tax ID (EIN)",
     price: 89,
-    stripePriceId: "price_ein_REPLACE",
+    stripePriceId: "price_1TAIMzIUysiSR1zw3s47ma4C",
     description:
       "We obtain your EIN from the IRS so you can open bank accounts and hire employees.",
   },
   operatingAgreement: {
     name: "Operating Agreement",
     price: 148.5,
-    stripePriceId: "price_operating_REPLACE",
+    stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
     description:
       "Defines ownership and operating procedures for your LLC.",
   },
   registeredAgent: {
     name: "Registered Agent Service",
     price: 149,
-    stripePriceId: "price_agent_REPLACE",
+    stripePriceId: "price_1TAIO1IUysiSR1zwAm501dWv",
     description:
       "Maintains a legal address to receive official government documents.",
   },
