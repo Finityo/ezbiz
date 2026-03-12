@@ -395,8 +395,8 @@ const Pricing = () => {
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.satisfaction.heading}</h2>
-                  <p className="text-lg text-muted-foreground mb-6">{pricing.satisfaction.description}</p>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Ready to Get Started?</h2>
+                  <p className="text-lg text-muted-foreground mb-6">Join thousands of business owners who trust EZ Biz for their formation needs.</p>
                   <Button 
                     size="lg" 
                     className="touch-manipulation"
