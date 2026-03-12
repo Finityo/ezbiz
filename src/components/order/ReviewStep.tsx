@@ -146,7 +146,7 @@ const ReviewStep = ({
 
       <Section title="Package" step={2}>
         <p className="font-medium">
-          {pkg?.name} Package — <span className="text-primary">${pkg?.price}</span>
+          {pkg?.name} Package — <span className="text-primary">${formatPrice(pkg?.price ?? 0)}</span>
         </p>
       </Section>
 
