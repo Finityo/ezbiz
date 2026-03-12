@@ -114,6 +114,10 @@ function App() {
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/order-flow" element={<EnhancedOrderFlow />} />
+              <Route path="/order/company-info" element={<OrderProvider><CompanyInfo /></OrderProvider>} />
+              <Route path="/order/irs-contact" element={<OrderProvider><IrsContact /></OrderProvider>} />
+              <Route path="/order/terms" element={<OrderProvider><OrderTerms /></OrderProvider>} />
+              <Route path="/order/checkout" element={<OrderProvider><OrderCheckout /></OrderProvider>} />
               <Route path="/state/california/llc" element={<CaliforniaLLC />} />
               <Route path="/state/delaware/llc" element={<DelawareLLC />} />
               <Route path="/state/texas/llc" element={<TexasLLC />} />
