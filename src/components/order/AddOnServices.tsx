@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InfoIcon } from "lucide-react";
