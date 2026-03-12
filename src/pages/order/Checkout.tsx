@@ -178,7 +178,7 @@ export default function Checkout() {
               {pkg && (
                 <div className="flex justify-between text-sm">
                   <span>{pkg.name} Package</span>
-                  <span>${pkg.price}</span>
+                  <span>${formatPrice(pkg.price)}</span>
                 </div>
               )}
 
