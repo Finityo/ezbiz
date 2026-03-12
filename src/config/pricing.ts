@@ -50,7 +50,7 @@ export const ADDONS: Record<
   ein: {
     name: "Federal Tax ID (EIN)",
     price: 89,
-    stripePriceId: "price_ein_REPLACE",
+    stripePriceId: "price_1TAIMzIUysiSR1zw3s47ma4C",
     description:
       "We obtain your EIN from the IRS so you can open bank accounts and hire employees.",
   },
