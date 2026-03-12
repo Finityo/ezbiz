@@ -379,7 +379,7 @@ const Pricing = () => {
                       {Object.entries(STATE_CORP_FILING_FEES).map(([state, fee]) => (
                         <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
                           <span>{state}</span>
-                          <span className="font-medium">${fee}</span>
+                          <span className="font-medium">${formatPrice(fee)}</span>
                         </div>
                       ))}
                     </div>
