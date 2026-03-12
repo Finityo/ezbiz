@@ -125,14 +125,14 @@ serve(async (req) => {
     });
 
     // Update order with stripe session id and total
-    if (order?.id) {
+    if (finalOrderId) {
       await supabaseClient
         .from("orders")
         .update({
           stripe_session_id: session.id,
           total_amount: (session.amount_total || 0) / 100,
         })
-        .eq("id", order.id);
+        .eq("id", finalOrderId);
     }
 
     return new Response(JSON.stringify({ url: session.url }), {
