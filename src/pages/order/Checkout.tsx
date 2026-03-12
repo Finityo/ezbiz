@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
 } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 const ENTITY_LABELS: Record<string, string> = {
   llc: "LLC",
@@ -177,7 +178,7 @@ export default function Checkout() {
               {pkg && (
                 <div className="flex justify-between text-sm">
                   <span>{pkg.name} Package</span>
-                  <span>${pkg.price}</span>
+                  <span>${formatPrice(pkg.price)}</span>
                 </div>
               )}
 
@@ -186,21 +187,21 @@ export default function Checkout() {
                 return addon ? (
                   <div key={id} className="flex justify-between text-sm">
                     <span>{addon.name}</span>
-                    <span>${addon.price}</span>
+                    <span>${formatPrice(addon.price)}</span>
                   </div>
                 ) : null;
               })}
 
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
-                <span>${stateFee}</span>
+                <span>${formatPrice(stateFee)}</span>
               </div>
 
               <Separator />
 
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span className="text-primary">${total}</span>
+                <span className="text-primary">${formatPrice(total)}</span>
               </div>
             </div>
           </Card>
@@ -222,7 +223,7 @@ export default function Checkout() {
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
               ) : (
-                <><Lock className="h-4 w-4 mr-2" /> Pay ${total}</>
+                <><Lock className="h-4 w-4 mr-2" /> Pay ${formatPrice(total)}</>
               )}
             </Button>
           </div>

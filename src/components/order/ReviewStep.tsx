@@ -1,4 +1,5 @@
 import * as React from "react";
+import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -145,7 +146,7 @@ const ReviewStep = ({
 
       <Section title="Package" step={2}>
         <p className="font-medium">
-          {pkg?.name} Package — <span className="text-primary">${pkg?.price}</span>
+          {pkg?.name} Package — <span className="text-primary">${formatPrice(pkg?.price ?? 0)}</span>
         </p>
       </Section>
 
@@ -173,7 +174,7 @@ const ReviewStep = ({
                 return addon ? (
                   <li key={id} className="flex justify-between text-sm">
                     <span>{addon.name}</span>
-                    <span className="font-medium">${addon.price}</span>
+                    <span className="font-medium">${formatPrice(addon.price)}</span>
                   </li>
                 ) : null;
               })}
@@ -188,20 +189,20 @@ const ReviewStep = ({
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>{pkg?.name} Package</span>
-          <span>${pkg?.price || 0}</span>
+          <span>${formatPrice(pkg?.price || 0)}</span>
         </div>
         {selectedAddOns.map((id) => {
           const addon = ADDONS[id as AddonId];
           return addon ? (
             <div key={id} className="flex justify-between text-sm">
               <span>{addon.name}</span>
-              <span>${addon.price}</span>
+              <span>${formatPrice(addon.price)}</span>
             </div>
           ) : null;
         })}
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
-          <span>${stateFee}</span>
+          <span>${formatPrice(stateFee)}</span>
         </div>
 
         {mode === "whiteglove" && (
@@ -214,7 +215,7 @@ const ReviewStep = ({
         <Separator />
         <div className="flex justify-between text-lg font-bold">
           <span>Total (charged today)</span>
-          <span className="text-primary">${total}</span>
+          <span className="text-primary">${formatPrice(total)}</span>
         </div>
         {mode === "whiteglove" && (
           <p className="text-xs text-muted-foreground">

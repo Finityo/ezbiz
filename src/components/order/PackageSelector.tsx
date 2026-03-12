@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { PACKAGES, type PackageId } from "@/config/pricing";
 
 interface Package {
@@ -96,10 +96,10 @@ const PackageSelector = ({ selected, onSelect, stateFees = 0 }: PackageSelectorP
             <div className="text-center mb-6 pt-2">
               <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
               <div className="flex items-baseline justify-center gap-1 mb-1">
-                <span className="text-4xl font-bold text-primary">${pkg.price}</span>
+                <span className="text-4xl font-bold text-primary">${formatPrice(pkg.price)}</span>
               </div>
               {stateFees > 0 && (
-                <p className="text-sm text-muted-foreground">+ ${stateFees} state fees</p>
+                <p className="text-sm text-muted-foreground">+ ${formatPrice(stateFees)} state fees</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">{pkg.processingTime}</p>
             </div>
