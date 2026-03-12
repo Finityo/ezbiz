@@ -61,7 +61,7 @@ const StateSelector = ({ selected, onSelect, slotAfterPopular }: StateSelectorPr
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{state}</p>
-                      <p className="text-sm text-muted-foreground">${fee} filing fee</p>
+                      <p className="text-sm text-muted-foreground">${formatPrice(fee)} filing fee</p>
                     </div>
                     {isSelected && (
                       <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
