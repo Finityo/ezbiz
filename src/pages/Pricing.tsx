@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatPrice } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -47,24 +48,24 @@ const Pricing = () => {
 
   const llcPackages = pricing.llcPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
 
   const corpPackages = pricing.corpPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
 
   const additionalServices = [
-    { name: ADDONS.ein.name, price: `$${ADDONS.ein.price}` },
-    { name: ADDONS.operatingAgreement.name, price: `$${ADDONS.operatingAgreement.price}` },
-    { name: ADDONS.registeredAgent.name, price: `$${ADDONS.registeredAgent.price}` },
-    { name: ADDONS.boiFiling.name, price: `$${ADDONS.boiFiling.price}` },
-    { name: ADDONS.licenseResearch.name, price: `$${ADDONS.licenseResearch.price}` },
+    { name: ADDONS.ein.name, price: `$${formatPrice(ADDONS.ein.price)}` },
+    { name: ADDONS.operatingAgreement.name, price: `$${formatPrice(ADDONS.operatingAgreement.price)}` },
+    { name: ADDONS.registeredAgent.name, price: `$${formatPrice(ADDONS.registeredAgent.price)}` },
+    { name: ADDONS.boiFiling.name, price: `$${formatPrice(ADDONS.boiFiling.price)}` },
+    { name: ADDONS.licenseResearch.name, price: `$${formatPrice(ADDONS.licenseResearch.price)}` },
   ];
 
   return (
@@ -161,15 +162,15 @@ const Pricing = () => {
                 <SelectContent>
                   {Object.keys(STATE_FILING_FEES).map((state) => (
                     <SelectItem key={state} value={state}>
-                      {state} — ${STATE_FILING_FEES[state]}
+                      {state} — ${formatPrice(STATE_FILING_FEES[state])}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {selectedState && (
                 <div className="mt-3 text-sm font-medium text-primary flex flex-col sm:flex-row gap-1 sm:gap-4 justify-center">
-                  <span>LLC filing fee: <span className="font-bold">${stateFee}</span></span>
-                  <span>Corp filing fee: <span className="font-bold">${corpStateFee}</span></span>
+                   <span>LLC filing fee: <span className="font-bold">${formatPrice(stateFee)}</span></span>
+                   <span>Corp filing fee: <span className="font-bold">${formatPrice(corpStateFee)}</span></span>
                 </div>
               )}
             </div>
@@ -200,7 +201,7 @@ const Pricing = () => {
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
                     {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${stateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + stateFee} total</span></div>
+                      <div className="text-sm text-muted-foreground">+ ${formatPrice(stateFee)} {selectedState} filing fee = <span className="font-semibold text-foreground">${formatPrice(parseInt(pkg.price.replace('$', '')) + stateFee)} total</span></div>
                     ) : (
                       <div className="text-sm text-muted-foreground">{pkg.period}</div>
                     )}
@@ -246,7 +247,7 @@ const Pricing = () => {
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
                     {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${corpStateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + corpStateFee} total</span></div>
+                      <div className="text-sm text-muted-foreground">+ ${formatPrice(corpStateFee)} {selectedState} filing fee = <span className="font-semibold text-foreground">${formatPrice(parseInt(pkg.price.replace('$', '')) + corpStateFee)} total</span></div>
                     ) : (
                       <div className="text-sm text-muted-foreground">{pkg.period}</div>
                     )}
@@ -362,7 +363,7 @@ const Pricing = () => {
                       {Object.entries(STATE_FILING_FEES).map(([state, fee]) => (
                         <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
                           <span>{state}</span>
-                          <span className="font-medium">${fee}</span>
+                          <span className="font-medium">${formatPrice(fee)}</span>
                         </div>
                       ))}
                     </div>
@@ -378,7 +379,7 @@ const Pricing = () => {
                       {Object.entries(STATE_CORP_FILING_FEES).map(([state, fee]) => (
                         <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
                           <span>{state}</span>
-                          <span className="font-medium">${fee}</span>
+                          <span className="font-medium">${formatPrice(fee)}</span>
                         </div>
                       ))}
                     </div>
