@@ -202,7 +202,7 @@ const ReviewStep = ({
         })}
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
-          <span>${stateFee}</span>
+          <span>${formatPrice(stateFee)}</span>
         </div>
 
         {mode === "whiteglove" && (
