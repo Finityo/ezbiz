@@ -276,6 +276,38 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          document_type: string
+          file_url: string
+          id: string
+          order_id: string
+          uploaded_at: string
+        }
+        Insert: {
+          document_type: string
+          file_url: string
+          id?: string
+          order_id: string
+          uploaded_at?: string
+        }
+        Update: {
+          document_type?: string
+          file_url?: string
+          id?: string
+          order_id?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_list: {
         Row: {
           business_type: string | null
@@ -425,8 +457,10 @@ export type Database = {
       orders: {
         Row: {
           created_at: string | null
+          ein_service: boolean | null
           email: string | null
           entity_type: string | null
+          filing_speed: string | null
           id: string
           package: string | null
           package_id: string | null
@@ -441,8 +475,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          ein_service?: boolean | null
           email?: string | null
           entity_type?: string | null
+          filing_speed?: string | null
           id?: string
           package?: string | null
           package_id?: string | null
@@ -457,8 +493,10 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          ein_service?: boolean | null
           email?: string | null
           entity_type?: string | null
+          filing_speed?: string | null
           id?: string
           package?: string | null
           package_id?: string | null
