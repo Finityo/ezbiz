@@ -169,8 +169,8 @@ const Pricing = () => {
               </Select>
               {selectedState && (
                 <div className="mt-3 text-sm font-medium text-primary flex flex-col sm:flex-row gap-1 sm:gap-4 justify-center">
-                  <span>LLC filing fee: <span className="font-bold">${stateFee}</span></span>
-                  <span>Corp filing fee: <span className="font-bold">${corpStateFee}</span></span>
+                   <span>LLC filing fee: <span className="font-bold">${formatPrice(stateFee)}</span></span>
+                   <span>Corp filing fee: <span className="font-bold">${formatPrice(corpStateFee)}</span></span>
                 </div>
               )}
             </div>
