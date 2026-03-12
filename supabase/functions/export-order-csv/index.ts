@@ -97,14 +97,15 @@ serve(async (req) => {
 
     // CSV headers matching CorpNet format
     const headers = [
-      'order_id', 'status', 'entity_type', 'package', 'state',
+      'order_id', 'submission_date', 'status', 'entity_type', 'package', 'state',
+      'filing_speed', 'ein_service',
       'company_name', 'alternate_name', 'business_description', 'organizer_type', 'business_purpose',
       'contact_first_name', 'contact_last_name', 'contact_email', 'contact_phone',
       'business_address', 'business_city', 'business_state', 'business_zip',
       'registered_agent_type', 'registered_agent_name', 'registered_agent_address',
       'management_type',
       'participant_name', 'participant_role', 'participant_title', 'ownership_percent',
-      'irs_first_name', 'irs_last_name', 'irs_ssn', 'irs_phone', 'irs_title',
+      'irs_first_name', 'irs_last_name', 'irs_ssn_masked', 'irs_phone', 'irs_title',
       'created_at',
     ];
 
