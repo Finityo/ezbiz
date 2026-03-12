@@ -14,6 +14,88 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address1: string | null
+          address2: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          id: string
+          order_id: string
+          state: string | null
+          type: string
+          zip: string | null
+        }
+        Insert: {
+          address1?: string | null
+          address2?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          state?: string | null
+          type?: string
+          zip?: string | null
+        }
+        Update: {
+          address1?: string | null
+          address2?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          state?: string | null
+          type?: string
+          zip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agreements: {
+        Row: {
+          id: string
+          ip_address: string | null
+          order_id: string
+          privacy_accepted: boolean | null
+          terms_accepted: boolean | null
+          timestamp: string
+        }
+        Insert: {
+          id?: string
+          ip_address?: string | null
+          order_id: string
+          privacy_accepted?: boolean | null
+          terms_accepted?: boolean | null
+          timestamp?: string
+        }
+        Update: {
+          id?: string
+          ip_address?: string | null
+          order_id?: string
+          privacy_accepted?: boolean | null
+          terms_accepted?: boolean | null
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreements_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_applications: {
         Row: {
           application_data: Json
@@ -50,6 +132,50 @@ export type Database = {
         }
         Relationships: []
       }
+      business_information: {
+        Row: {
+          alternate_company_name: string | null
+          business_description: string | null
+          business_purpose: string | null
+          company_name: string | null
+          created_at: string
+          delayed_filing: boolean | null
+          id: string
+          order_id: string
+          organizer_type: string | null
+        }
+        Insert: {
+          alternate_company_name?: string | null
+          business_description?: string | null
+          business_purpose?: string | null
+          company_name?: string | null
+          created_at?: string
+          delayed_filing?: boolean | null
+          id?: string
+          order_id: string
+          organizer_type?: string | null
+        }
+        Update: {
+          alternate_company_name?: string | null
+          business_description?: string | null
+          business_purpose?: string | null
+          company_name?: string | null
+          created_at?: string
+          delayed_filing?: boolean | null
+          id?: string
+          order_id?: string
+          organizer_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_information_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       click_analytics: {
         Row: {
           button_label: string
@@ -82,6 +208,73 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      company_management: {
+        Row: {
+          created_at: string
+          id: string
+          management_type: string | null
+          order_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          management_type?: string | null
+          order_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          management_type?: string | null
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_management_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_information: {
+        Row: {
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          order_id: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_information_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_list: {
         Row: {
@@ -188,11 +381,54 @@ export type Database = {
         }
         Relationships: []
       }
+      irs_responsible_party: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          order_id: string
+          phone: string | null
+          ssn_encrypted: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id: string
+          phone?: string | null
+          ssn_encrypted?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id?: string
+          phone?: string | null
+          ssn_encrypted?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "irs_responsible_party_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string | null
           email: string | null
+          entity_type: string | null
           id: string
+          package: string | null
           package_id: string | null
           state: string | null
           state_fee: number | null
@@ -206,7 +442,9 @@ export type Database = {
         Insert: {
           created_at?: string | null
           email?: string | null
+          entity_type?: string | null
           id?: string
+          package?: string | null
           package_id?: string | null
           state?: string | null
           state_fee?: number | null
@@ -220,7 +458,9 @@ export type Database = {
         Update: {
           created_at?: string | null
           email?: string | null
+          entity_type?: string | null
           id?: string
+          package?: string | null
           package_id?: string | null
           state?: string | null
           state_fee?: number | null
@@ -232,6 +472,88 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      participants: {
+        Row: {
+          address: string | null
+          authorized_signer: boolean | null
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          order_id: string
+          ownership_percent: number | null
+          role: string | null
+          title: string | null
+        }
+        Insert: {
+          address?: string | null
+          authorized_signer?: boolean | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id: string
+          ownership_percent?: number | null
+          role?: string | null
+          title?: string | null
+        }
+        Update: {
+          address?: string | null
+          authorized_signer?: boolean | null
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          order_id?: string
+          ownership_percent?: number | null
+          role?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participants_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number | null
+          created_at: string
+          id: string
+          order_id: string
+          status: string | null
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          order_id: string
+          status?: string | null
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          status?: string | null
+          stripe_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -265,6 +587,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      registered_agent: {
+        Row: {
+          address: string | null
+          agent_type: string | null
+          created_at: string
+          id: string
+          name: string | null
+          order_id: string
+        }
+        Insert: {
+          address?: string | null
+          agent_type?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          order_id: string
+        }
+        Update: {
+          address?: string | null
+          agent_type?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registered_agent_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scroll_analytics: {
         Row: {
