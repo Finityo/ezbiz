@@ -18,8 +18,7 @@ import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
-import { STRIPE_PACKAGES, type PackageId } from "@/lib/stripe-config";
-import { calculatePricing } from "@/lib/pricing";
+import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,14 +38,14 @@ const normalizeMode = (raw: string | null): OrderMode =>
 
 const steps = ["State", "Package", "Details", "Account", "Review"];
 
+const CORP_ENTITIES = ["c-corp", "s-corp", "nonprofit", "professional-corp"];
+
 const EnhancedOrderFlow = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
 
-  // --- mode wiring ---
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
 
-  // Ensure URL always contains a stable mode param
   useEffect(() => {
     const raw = searchParams.get("mode");
     const normalized = normalizeMode(raw);
@@ -74,7 +73,6 @@ const EnhancedOrderFlow = () => {
     managementStructure: "",
   });
 
-  // Only used when mode === "whiteglove"
   const [serviceDetails, setServiceDetails] = useState<ServiceDetails>({
     meetingLocation: "",
     preferredDateTime: "",
@@ -83,17 +81,17 @@ const EnhancedOrderFlow = () => {
 
   useEffect(() => { trackOrderFlowView(); }, []);
 
-  const isCorpType = ["c-corp", "s-corp", "nonprofit", "professional-corp"].includes(selectedEntity);
+  const isCorpType = CORP_ENTITIES.includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
-  const runningTotal = () =>
-    calculatePricing({
-      packageId: selectedPackage,
-      entityType: selectedEntity,
-      state: selectedState,
-      selectedAddOns,
-      addonQuantities,
-    }).total;
+  const runningTotal = () => {
+    const pkgPrice = PACKAGES[selectedPackage as PackageId]?.price || 0;
+    const addonsTotal = selectedAddOns.reduce((sum, id) => {
+      const addon = ADDONS[id as AddonId];
+      return sum + (addon?.price || 0);
+    }, 0);
+    return pkgPrice + addonsTotal + stateFee;
+  };
 
   const isStepValid = (step: number): boolean => {
     switch (step) {
@@ -155,8 +153,6 @@ const EnhancedOrderFlow = () => {
         application_data: {
           mode,
           guidedScheduling: "inside",
-          whiteGloveFeeCollection: "stripe_upfront_150",
-          whiteGloveOverageCollection: "on_site_80_per_hour",
           package: selectedPackage,
           addOns: selectedAddOns,
           addonQuantities,
@@ -212,7 +208,7 @@ const EnhancedOrderFlow = () => {
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="font-medium">{selectedState}</span>
                   <span className="text-muted-foreground">•</span>
-                  <span>{STRIPE_PACKAGES[selectedPackage as PackageId]?.name}</span>
+                  <span>{PACKAGES[selectedPackage as PackageId]?.name}</span>
                   {selectedAddOns.length > 0 && (
                     <>
                       <span className="text-muted-foreground">•</span>
@@ -292,7 +288,6 @@ const EnhancedOrderFlow = () => {
                     <p className="text-muted-foreground">Provide the details for your formation documents</p>
                   </div>
 
-                  {/* White Glove: service logistics */}
                   {mode === "whiteglove" && (
                     <Card className="p-4 sm:p-5 border-primary/20 bg-primary/[0.03] space-y-4">
                       <div>

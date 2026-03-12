@@ -3,8 +3,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
-import { STRIPE_PACKAGES, STRIPE_ADDONS, type PackageId, type AddonId } from "@/lib/stripe-config";
-import { calculatePricing } from "@/lib/pricing";
+import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
+import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,35 +22,42 @@ const ENTITY_LABELS: Record<string, string> = {
   "professional-corp": "Professional Corporation",
 };
 
+const CORP_ENTITIES = ["c-corp", "s-corp", "nonprofit", "professional-corp"];
+
 export default function Checkout() {
   const navigate = useNavigate();
   const { order } = useOrderContext();
   const { checkout, loading, error, clearError } = useStripeCheckout();
 
-  const pkg = STRIPE_PACKAGES[order.packageId as PackageId];
-  const pricing = calculatePricing({
-    packageId: order.packageId,
-    entityType: order.entityType,
-    state: order.state,
-    selectedAddOns: order.selectedAddOns,
-    addonQuantities: order.addonQuantities,
-  });
+  const pkg = PACKAGES[order.packageId as PackageId];
+  const isCorpType = CORP_ENTITIES.includes(order.entityType);
+  const stateFee = order.state
+    ? isCorpType
+      ? getCorpStateFee(order.state)
+      : getStateFee(order.state)
+    : 0;
+
+  const addonsTotal = order.selectedAddOns.reduce((sum, id) => {
+    const addon = ADDONS[id as AddonId];
+    return sum + (addon?.price || 0);
+  }, 0);
+
+  const total = (pkg?.price || 0) + addonsTotal + stateFee;
 
   const handleCheckout = async () => {
     const lineItems: { priceId: string; quantity?: number }[] = [];
 
-    if (pkg) lineItems.push({ priceId: pkg.priceId });
+    if (pkg) lineItems.push({ priceId: pkg.stripePriceId });
 
     order.selectedAddOns.forEach((id) => {
-      const addon = STRIPE_ADDONS[id as AddonId];
-      const qty = order.addonQuantities[id] || 1;
-      if (addon) lineItems.push({ priceId: addon.priceId, quantity: qty });
+      const addon = ADDONS[id as AddonId];
+      if (addon) lineItems.push({ priceId: addon.stripePriceId });
     });
 
-    trackCheckoutStart(pkg?.name || order.packageId, pricing.total);
+    trackCheckoutStart(pkg?.name || order.packageId, total);
 
     await checkout(lineItems, {
-      stateFee: { amount: pricing.stateFee, stateName: order.state },
+      stateFee: { amount: stateFee, stateName: order.state },
       successPath: "/order-success",
       cancelPath: "/order/checkout",
       orderId: order.orderId || undefined,
@@ -175,26 +182,25 @@ export default function Checkout() {
               )}
 
               {order.selectedAddOns.map((id) => {
-                const addon = STRIPE_ADDONS[id as AddonId];
-                const qty = order.addonQuantities[id] || 1;
+                const addon = ADDONS[id as AddonId];
                 return addon ? (
                   <div key={id} className="flex justify-between text-sm">
-                    <span>{addon.name}{qty > 1 ? ` × ${qty}` : ""}</span>
-                    <span>${addon.price * qty}</span>
+                    <span>{addon.name}</span>
+                    <span>${addon.price}</span>
                   </div>
                 ) : null;
               })}
 
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
-                <span>${pricing.stateFee}</span>
+                <span>${stateFee}</span>
               </div>
 
               <Separator />
 
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span className="text-primary">${pricing.total}</span>
+                <span className="text-primary">${total}</span>
               </div>
             </div>
           </Card>
@@ -216,7 +222,7 @@ export default function Checkout() {
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
               ) : (
-                <><Lock className="h-4 w-4 mr-2" /> Pay ${pricing.total}</>
+                <><Lock className="h-4 w-4 mr-2" /> Pay ${total}</>
               )}
             </Button>
           </div>

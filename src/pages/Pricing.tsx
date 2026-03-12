@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Check, Star, Shield, Users, FileText, MapPin } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { STRIPE_PACKAGES, STRIPE_ADDONS } from "@/lib/stripe-config";
+import { PACKAGES, ADDONS } from "@/config/pricing";
 import { getStateFee, getCorpStateFee, STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
 import businessDocuments from "@/assets/business-documents.jpg";
 import pricingHero from "@/assets/business-success.jpg";
@@ -24,7 +24,7 @@ import { EZBIZ_COPY } from "@/content/ezbizCopy";
 const { pricing } = EZBIZ_COPY;
 const trustIcons = [Shield, Users, FileText];
 
-const packageKeyMap = ["basic", "standard", "premium"] as const;
+const packageKeyMap = ["basic", "deluxe", "complete"] as const;
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -47,27 +47,24 @@ const Pricing = () => {
 
   const llcPackages = pricing.llcPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${STRIPE_PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${PACKAGES[packageKeyMap[i]].price}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
 
   const corpPackages = pricing.corpPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${STRIPE_PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${PACKAGES[packageKeyMap[i]].price}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
 
   const additionalServices = [
-    { name: "Registered Agent Service", price: `$${STRIPE_ADDONS["registered-agent"].price}`, addonKey: "registered-agent" },
-    { name: "EIN Application", price: `$${STRIPE_ADDONS.ein.price}`, addonKey: "ein" },
-    { name: "DBA Filing", price: `$${STRIPE_ADDONS.dba.price}`, addonKey: "dba" },
-    { name: "Operating Agreement", price: `$${STRIPE_ADDONS["operating-agreement"].price}`, addonKey: "operating-agreement" },
-    { name: "S-Corp Election", price: `$${STRIPE_ADDONS["s-corp-election"].price}`, addonKey: "s-corp-election" },
-    { name: "Business License Research", price: `$${STRIPE_ADDONS["business-license"].price}`, addonKey: "business-license" },
-    { name: "BOI Reporting", price: `$${STRIPE_ADDONS["boi-reporting"].price}`, addonKey: "boi-reporting" },
-    { name: "Compliance Alert", price: `$${STRIPE_ADDONS["compliance-alert"].price}`, addonKey: "compliance-alert" },
+    { name: ADDONS.ein.name, price: `$${ADDONS.ein.price}` },
+    { name: ADDONS.operatingAgreement.name, price: `$${ADDONS.operatingAgreement.price}` },
+    { name: ADDONS.registeredAgent.name, price: `$${ADDONS.registeredAgent.price}` },
+    { name: ADDONS.boiFiling.name, price: `$${ADDONS.boiFiling.price}` },
+    { name: ADDONS.licenseResearch.name, price: `$${ADDONS.licenseResearch.price}` },
   ];
 
   return (
@@ -289,7 +286,7 @@ const Pricing = () => {
               <p className="text-base md:text-xl text-muted-foreground">{pricing.addOns.subheading}</p>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
               {additionalServices.map((service, index) => (
                 <Card key={index} className="text-center">
                   <CardHeader>
@@ -350,98 +347,75 @@ const Pricing = () => {
         <section className="py-10 md:py-16 bg-muted/50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">{pricing.stateFees.heading}</h2>
-              <Card>
-                <CardContent className="p-4 sm:p-6 md:p-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">{pricing.stateFees.llcHeading}</h3>
-                      <div className="space-y-2 text-sm">
-                        {pricing.stateFees.highlightedStates.map((state) => (
-                          <div key={state} className="flex justify-between">
-                            <span>{state}</span>
-                            <span className="font-medium">${STATE_FILING_FEES[state]}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">{pricing.stateFees.corpHeading}</h3>
-                      <div className="space-y-2 text-sm">
-                        {pricing.stateFees.highlightedStates.map((state) => (
-                          <div key={state} className="flex justify-between">
-                            <span>{state}</span>
-                            <span className="font-medium">${STATE_CORP_FILING_FEES[state]}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">{pricing.stateFees.disclaimer}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">{pricing.stateFees.heading}</h2>
+                <p className="text-muted-foreground">{pricing.stateFees.subheading}</p>
+              </div>
 
-        {/* Money Back Guarantee */}
-        <section className="py-10 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.guarantee.heading}</h2>
-                  <Card className="border-success">
-                    <CardContent className="p-4 sm:p-6 md:p-8">
-                      <div className="flex items-center justify-center mb-6">
-                        <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
-                          <Check className="h-8 w-8 text-white" />
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>LLC Filing Fees by State</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="max-h-64 overflow-y-auto space-y-1">
+                      {Object.entries(STATE_FILING_FEES).map(([state, fee]) => (
+                        <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
+                          <span>{state}</span>
+                          <span className="font-medium">${fee}</span>
                         </div>
-                      </div>
-                      <h3 className="text-2xl font-semibold mb-4">{pricing.guarantee.title}</h3>
-                      <p className="text-muted-foreground mb-6">{pricing.guarantee.description}</p>
-                      <div className="grid grid-cols-3 gap-3 md:gap-4 text-sm text-center">
-                        {pricing.guarantee.pillars.map((pillar, i) => (
-                          <div key={i}>
-                            <Check className="h-5 w-5 text-success mx-auto mb-2" />
-                            <div className="font-semibold">{pillar.title}</div>
-                            <div className="text-muted-foreground">{pillar.description}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                <div className="relative">
-                  <img 
-                    src={customerSatisfaction} 
-                    alt="Satisfied customers reviewing business services with happy expressions" 
-                    className="rounded-lg shadow-lg w-full h-auto"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tl from-success/20 to-transparent rounded-lg"></div>
-                </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Corporation Filing Fees by State</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="max-h-64 overflow-y-auto space-y-1">
+                      {Object.entries(STATE_CORP_FILING_FEES).map(([state, fee]) => (
+                        <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
+                          <span>{state}</span>
+                          <span className="font-medium">${fee}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-10 md:py-16 bg-gradient-primary text-white">
+        {/* Customer Satisfaction */}
+        <section className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.cta.heading}</h2>
-              <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">{pricing.cta.subheading}</p>
-              <Button 
-                size="lg" 
-                variant="secondary" 
-                className="text-lg px-8 py-4"
-                onClick={() => { trackClick(pricing.cta.button, 'pricing_final_cta', '/order-flow'); navigate("/order-flow"); }}
-              >
-                {pricing.cta.button}
-              </Button>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.satisfaction.heading}</h2>
+                  <p className="text-lg text-muted-foreground mb-6">{pricing.satisfaction.description}</p>
+                  <Button 
+                    size="lg" 
+                    className="touch-manipulation"
+                    onClick={() => navigate('/order-flow')}
+                    style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
+                  >
+                    Get Started Today
+                  </Button>
+                </div>
+                <div className="relative">
+                  <img 
+                    src={customerSatisfaction} 
+                    alt="Happy business owners reviewing their formation documents" 
+                    className="rounded-lg shadow-lg w-full h-auto"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg"></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
