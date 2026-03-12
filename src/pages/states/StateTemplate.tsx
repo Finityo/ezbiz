@@ -135,7 +135,7 @@ const StateTemplate = ({
               <div className="bg-muted/50 p-4 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-lg">Total Starting Cost</span>
-                  <span className="text-2xl font-bold text-success">From ${stateFee + 99}</span>
+                  <span className="text-2xl font-bold text-success">From ${formatPrice(stateFee + 99)}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
                   Includes everything you need to get started
