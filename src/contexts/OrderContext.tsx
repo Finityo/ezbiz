@@ -452,7 +452,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 
   return (
-    <OrderContext.Provider value={{ order, setOrder, updateField, saving, saveStep }}>
+    <OrderContext.Provider value={{ order, setOrder, updateField, saving, loading, saveStep }}>
       {children}
     </OrderContext.Provider>
   );
