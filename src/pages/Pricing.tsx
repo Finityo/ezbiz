@@ -48,14 +48,14 @@ const Pricing = () => {
 
   const llcPackages = pricing.llcPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
 
   const corpPackages = pricing.corpPackages.map((pkg, i) => ({
     ...pkg,
-    price: `$${PACKAGES[packageKeyMap[i]].price}`,
+    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
     packageKey: packageKeyMap[i],
     period: "+ State Fee",
   }));
