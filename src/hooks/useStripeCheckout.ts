@@ -57,6 +57,7 @@ export const useStripeCheckout = () => {
                 : undefined,
               successPath: options?.successPath || "/order-success",
               cancelPath: options?.cancelPath || "/pricing",
+              orderId: options?.orderId,
             },
           }
         );
