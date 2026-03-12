@@ -189,7 +189,7 @@ const ReviewStep = ({
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>{pkg?.name} Package</span>
-          <span>${pkg?.price || 0}</span>
+          <span>${formatPrice(pkg?.price || 0)}</span>
         </div>
         {selectedAddOns.map((id) => {
           const addon = ADDONS[id as AddonId];
