@@ -349,7 +349,7 @@ const Pricing = () => {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{pricing.stateFees.heading}</h2>
-                <p className="text-muted-foreground">{pricing.stateFees.subheading}</p>
+                <p className="text-muted-foreground">State fees are in addition to our service fees and vary by state.</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
