@@ -27,21 +27,33 @@ serve(async (req) => {
     const session = event.data.object as any;
     const orderId = session.metadata.orderId;
 
+    // Update order status
     await supabase
       .from("orders")
       .update({
-        status: "Paid",
+        status: "payment_complete",
         stripe_session_id: session.id,
         stripe_payment_intent: session.payment_intent,
+        total_amount: (session.amount_total || 0) / 100,
       })
       .eq("id", orderId);
+
+    // Create payment record
+    await supabase
+      .from("payments")
+      .insert({
+        order_id: orderId,
+        stripe_payment_id: session.payment_intent,
+        amount: (session.amount_total || 0) / 100,
+        status: "paid",
+      });
 
     // Trigger confirmation email
     await supabase.functions.invoke("send-order-email", {
       body: {
         orderId,
-        email: session.customer_email,
-        status: "Paid",
+        email: session.customer_email || session.customer_details?.email,
+        status: "payment_complete",
       },
     });
   }

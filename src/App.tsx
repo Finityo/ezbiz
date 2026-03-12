@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { OrderProvider } from "@/contexts/OrderContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FeedbackWidget from "./components/FeedbackWidget";
@@ -37,6 +38,10 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const EnhancedOrderFlow = lazy(() => import("./pages/EnhancedOrderFlow"));
+const CompanyInfo = lazy(() => import("./pages/order/CompanyInfo"));
+const IrsContact = lazy(() => import("./pages/order/IrsContact"));
+const OrderTerms = lazy(() => import("./pages/order/Terms"));
+const OrderCheckout = lazy(() => import("./pages/order/Checkout"));
 const CaliforniaLLC = lazy(() => import("./pages/states/CaliforniaLLC"));
 const DelawareLLC = lazy(() => import("./pages/states/DelawareLLC"));
 const TexasLLC = lazy(() => import("./pages/states/TexasLLC"));
@@ -81,6 +86,7 @@ function App() {
         <AuthProvider>
            <BrowserRouter>
             <AnalyticsWrapper>
+            <OrderProvider>
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
               <Routes>
               <Route path="/" element={<Index />} />
@@ -109,6 +115,10 @@ function App() {
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/order-flow" element={<EnhancedOrderFlow />} />
+              <Route path="/order/company-info" element={<CompanyInfo />} />
+              <Route path="/order/irs-contact" element={<IrsContact />} />
+              <Route path="/order/terms" element={<OrderTerms />} />
+              <Route path="/order/checkout" element={<OrderCheckout />} />
               <Route path="/state/california/llc" element={<CaliforniaLLC />} />
               <Route path="/state/delaware/llc" element={<DelawareLLC />} />
               <Route path="/state/texas/llc" element={<TexasLLC />} />
@@ -140,6 +150,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
+            </OrderProvider>
             <FeedbackWidget />
             <ExitIntentModal />
             </AnalyticsWrapper>

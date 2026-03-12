@@ -53,6 +53,7 @@ export default function Checkout() {
       stateFee: { amount: pricing.stateFee, stateName: order.state },
       successPath: "/order-success",
       cancelPath: "/order/checkout",
+      orderId: order.orderId || undefined,
     });
   };
 

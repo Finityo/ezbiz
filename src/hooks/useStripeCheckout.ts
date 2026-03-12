@@ -16,6 +16,7 @@ interface CheckoutOptions {
   stateFee?: StateFee;
   successPath?: string;
   cancelPath?: string;
+  orderId?: string;
 }
 
 export const useStripeCheckout = () => {
@@ -56,6 +57,7 @@ export const useStripeCheckout = () => {
                 : undefined,
               successPath: options?.successPath || "/order-success",
               cancelPath: options?.cancelPath || "/pricing",
+              orderId: options?.orderId,
             },
           }
         );
