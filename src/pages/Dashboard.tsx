@@ -534,7 +534,7 @@ const Dashboard = () => {
                         <div key={doc.id} className="flex items-center justify-between py-3">
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium text-foreground truncate">
-                              {(doc.document_type || "Document").replaceAll("_", " ")}
+                              {(doc.document_type || "Document").replace(/_/g, " ")}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               Uploaded {formatDate(doc.uploaded_at)}
