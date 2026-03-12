@@ -134,6 +134,141 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const { user } = useAuth();
   const [order, setOrder] = useState<OrderState>(initialOrderState);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Restore most recent draft order on login
+  useEffect(() => {
+    if (!user) return;
+    const stored = localStorage.getItem("ezbiz_order_id");
+    if (!stored) {
+      // Check for existing draft
+      (async () => {
+        setLoading(true);
+        try {
+          const { data: orderRow } = await supabase
+            .from("orders")
+            .select("*")
+            .eq("user_id", user.id)
+            .eq("status", "draft")
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (orderRow) await hydrateOrder(orderRow.id, orderRow);
+        } finally {
+          setLoading(false);
+        }
+      })();
+      return;
+    }
+    (async () => {
+      setLoading(true);
+      try {
+        const { data: orderRow } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("id", stored)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (orderRow) await hydrateOrder(orderRow.id, orderRow);
+        else localStorage.removeItem("ezbiz_order_id");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [user]);
+
+  const hydrateOrder = async (orderId: string, orderRow: any) => {
+    const [contact, biz, bizAddr, shipAddr, agent, mgmt, participants, irs, agreements] = await Promise.all([
+      supabase.from("contact_information").select("*").eq("order_id", orderId).maybeSingle(),
+      supabase.from("business_information").select("*").eq("order_id", orderId).maybeSingle(),
+      supabase.from("addresses").select("*").eq("order_id", orderId).eq("type", "business").maybeSingle(),
+      supabase.from("addresses").select("*").eq("order_id", orderId).eq("type", "shipping").maybeSingle(),
+      supabase.from("registered_agent").select("*").eq("order_id", orderId).maybeSingle(),
+      supabase.from("company_management").select("*").eq("order_id", orderId).maybeSingle(),
+      supabase.from("participants").select("*").eq("order_id", orderId),
+      supabase.from("irs_responsible_party").select("*").eq("order_id", orderId).maybeSingle(),
+      supabase.from("agreements").select("*").eq("order_id", orderId).maybeSingle(),
+    ]);
+
+    const c = contact.data;
+    const b = biz.data;
+    const ba = bizAddr.data;
+    const sa = shipAddr.data;
+    const ag = agent.data;
+    const m = mgmt.data;
+    const ps = participants.data || [];
+    const ir = irs.data;
+    const ag2 = agreements.data;
+
+    setOrder({
+      orderId,
+      state: orderRow.state || "",
+      entityType: orderRow.entity_type || "llc",
+      packageId: orderRow.package || "",
+      selectedAddOns: [],
+      addonQuantities: {},
+      contact: {
+        firstName: c?.first_name || "",
+        lastName: c?.last_name || "",
+        email: c?.email || "",
+        phone: c?.phone || "",
+      },
+      business: {
+        companyName: b?.company_name || "",
+        alternateCompanyName: b?.alternate_company_name || "",
+        businessDescription: b?.business_description || "",
+        organizerType: b?.organizer_type || "",
+        businessPurpose: b?.business_purpose || "",
+        delayedFiling: b?.delayed_filing || false,
+      },
+      businessAddress: {
+        type: "business",
+        address1: ba?.address1 || "",
+        address2: ba?.address2 || "",
+        city: ba?.city || "",
+        state: ba?.state || "",
+        zip: ba?.zip || "",
+        country: ba?.country || "US",
+      },
+      shippingAddress: {
+        type: "shipping",
+        address1: sa?.address1 || "",
+        address2: sa?.address2 || "",
+        city: sa?.city || "",
+        state: sa?.state || "",
+        zip: sa?.zip || "",
+        country: sa?.country || "US",
+      },
+      registeredAgent: {
+        agentType: (ag?.agent_type as "corpnet" | "custom") || "corpnet",
+        name: ag?.name || "",
+        address: ag?.address || "",
+      },
+      managementType: m?.management_type || "member_managed",
+      participants: ps.map((p: any) => ({
+        id: p.id,
+        firstName: p.first_name || "",
+        lastName: p.last_name || "",
+        role: p.role || "",
+        title: p.title || "",
+        ownershipPercent: p.ownership_percent || 0,
+        address: p.address || "",
+        authorizedSigner: p.authorized_signer || false,
+      })),
+      irsParty: {
+        firstName: ir?.first_name || "",
+        lastName: ir?.last_name || "",
+        ssn: "", // Never restore raw SSN
+        phone: ir?.phone || "",
+        title: ir?.title || "",
+      },
+      agreements: {
+        termsAccepted: ag2?.terms_accepted || false,
+        privacyAccepted: ag2?.privacy_accepted || false,
+      },
+    });
+    localStorage.setItem("ezbiz_order_id", orderId);
+  };
 
   const updateField = useCallback(<K extends keyof OrderState>(key: K, value: OrderState[K]) => {
     setOrder((prev) => ({ ...prev, [key]: value }));
