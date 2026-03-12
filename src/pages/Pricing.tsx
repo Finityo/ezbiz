@@ -61,11 +61,11 @@ const Pricing = () => {
   }));
 
   const additionalServices = [
-    { name: ADDONS.ein.name, price: `$${ADDONS.ein.price}` },
-    { name: ADDONS.operatingAgreement.name, price: `$${ADDONS.operatingAgreement.price}` },
-    { name: ADDONS.registeredAgent.name, price: `$${ADDONS.registeredAgent.price}` },
-    { name: ADDONS.boiFiling.name, price: `$${ADDONS.boiFiling.price}` },
-    { name: ADDONS.licenseResearch.name, price: `$${ADDONS.licenseResearch.price}` },
+    { name: ADDONS.ein.name, price: `$${formatPrice(ADDONS.ein.price)}` },
+    { name: ADDONS.operatingAgreement.name, price: `$${formatPrice(ADDONS.operatingAgreement.price)}` },
+    { name: ADDONS.registeredAgent.name, price: `$${formatPrice(ADDONS.registeredAgent.price)}` },
+    { name: ADDONS.boiFiling.name, price: `$${formatPrice(ADDONS.boiFiling.price)}` },
+    { name: ADDONS.licenseResearch.name, price: `$${formatPrice(ADDONS.licenseResearch.price)}` },
   ];
 
   return (
