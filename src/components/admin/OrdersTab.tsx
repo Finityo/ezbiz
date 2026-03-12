@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Search, Filter, Download, CheckCircle, Package } from 'lucide-react';
+import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -33,6 +34,90 @@ interface ContactInfo {
 interface BizInfo {
   company_name: string | null;
 }
+
+/* ── Document Upload Sub-component ── */
+
+function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUploaded: () => void }) {
+  const { toast } = useToast();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async () => {
+    const file = fileRef.current?.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const filePath = `orders/${orderId}/${Date.now()}_${file.name}`;
+      const { error: storageError } = await supabase.storage
+        .from('order-documents')
+        .upload(filePath, file);
+
+      if (storageError) throw storageError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('order-documents')
+        .getPublicUrl(filePath);
+
+      const { error: dbError } = await supabase.from('documents').insert({
+        order_id: orderId,
+        document_type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
+        file_url: publicUrl,
+      });
+
+      if (dbError) throw dbError;
+
+      // Log event
+      await supabase.from('order_events').insert({
+        order_id: orderId,
+        event_type: 'document_uploaded',
+        actor: 'admin',
+        metadata: { file_name: file.name },
+      });
+
+      toast({ title: 'Uploaded', description: `${file.name} uploaded successfully.` });
+      onUploaded();
+      if (fileRef.current) fileRef.current.value = '';
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast({ title: 'Upload Failed', description: error.message || 'Could not upload file.', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" title="Upload Document">
+          <Upload className="h-3 w-3" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" /> Upload Document
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 pt-2">
+          <p className="text-sm text-muted-foreground">
+            Upload a document for order <span className="font-mono text-xs">{orderId.substring(0, 8)}...</span>
+          </p>
+          <Input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+          <Button onClick={handleUpload} disabled={uploading} className="w-full">
+            {uploading ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading...</>
+            ) : (
+              <><Upload className="h-4 w-4 mr-2" /> Upload Document</>
+            )}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* ── Main OrdersTab ── */
 
 const OrdersTab = () => {
   const { toast } = useToast();
@@ -108,6 +193,15 @@ const OrdersTab = () => {
     try {
       const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id);
       if (error) throw error;
+
+      // Log status change event
+      await supabase.from('order_events').insert({
+        order_id: id,
+        event_type: 'status_changed',
+        actor: 'admin',
+        metadata: { new_status: newStatus },
+      });
+
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
       toast({ title: 'Status Updated', description: `Order status set to ${newStatus}` });
     } catch (error) {
@@ -324,6 +418,7 @@ const OrdersTab = () => {
                           >
                             <Download className="h-3 w-3" />
                           </Button>
+                          <DocumentUploadDialog orderId={order.id} onUploaded={fetchOrders} />
                           {order.status === 'payment_complete' && (
                             <Button
                               size="sm"
