@@ -162,7 +162,7 @@ const Pricing = () => {
                 <SelectContent>
                   {Object.keys(STATE_FILING_FEES).map((state) => (
                     <SelectItem key={state} value={state}>
-                      {state} — ${STATE_FILING_FEES[state]}
+                      {state} — ${formatPrice(STATE_FILING_FEES[state])}
                     </SelectItem>
                   ))}
                 </SelectContent>
