@@ -201,7 +201,7 @@ const Pricing = () => {
                     <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                     <div className="text-4xl font-bold text-primary">{pkg.price}</div>
                     {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${stateFee} {selectedState} filing fee = <span className="font-semibold text-foreground">${parseInt(pkg.price.replace('$', '')) + stateFee} total</span></div>
+                      <div className="text-sm text-muted-foreground">+ ${formatPrice(stateFee)} {selectedState} filing fee = <span className="font-semibold text-foreground">${formatPrice(parseInt(pkg.price.replace('$', '')) + stateFee)} total</span></div>
                     ) : (
                       <div className="text-sm text-muted-foreground">{pkg.period}</div>
                     )}
