@@ -64,7 +64,7 @@ export const ADDONS: Record<
   registeredAgent: {
     name: "Registered Agent Service",
     price: 149,
-    stripePriceId: "price_agent_REPLACE",
+    stripePriceId: "price_1TAIO1IUysiSR1zwAm501dWv",
     description:
       "Maintains a legal address to receive official government documents.",
   },
