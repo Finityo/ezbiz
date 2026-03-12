@@ -6,7 +6,7 @@ export type AddonId =
   | "ein"
   | "operatingAgreement"
   | "registeredAgent"
-  | "boiFiling"
+  | "sCorp"
   | "licenseResearch";
 
 export const PACKAGES: Record<
@@ -68,12 +68,12 @@ export const ADDONS: Record<
     description:
       "Maintains a legal address to receive official government documents.",
   },
-  boiFiling: {
-    name: "FinCEN BOI Filing",
-    price: 118.5,
-    stripePriceId: "price_boi_REPLACE",
+  sCorp: {
+    name: "S-Corp Tax Election",
+    price: 99,
+    stripePriceId: "price_1T0yYLIUysiSR1zwkctIi3Th",
     description:
-      "We prepare and submit your Beneficial Ownership Information report.",
+      "We prepare and file IRS Form 2553 for S-Corp tax election status.",
   },
   licenseResearch: {
     name: "Business License Research",
