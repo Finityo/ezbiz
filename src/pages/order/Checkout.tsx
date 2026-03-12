@@ -223,7 +223,7 @@ export default function Checkout() {
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
               ) : (
-                <><Lock className="h-4 w-4 mr-2" /> Pay ${total}</>
+                <><Lock className="h-4 w-4 mr-2" /> Pay ${formatPrice(total)}</>
               )}
             </Button>
           </div>
