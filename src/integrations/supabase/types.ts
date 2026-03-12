@@ -90,7 +90,7 @@ export type Database = {
           {
             foreignKeyName: "agreements_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -170,7 +170,7 @@ export type Database = {
           {
             foreignKeyName: "business_information_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -232,7 +232,7 @@ export type Database = {
           {
             foreignKeyName: "company_management_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -270,7 +270,7 @@ export type Database = {
           {
             foreignKeyName: "contact_information_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -416,7 +416,7 @@ export type Database = {
           {
             foreignKeyName: "irs_responsible_party_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -617,7 +617,7 @@ export type Database = {
           {
             foreignKeyName: "registered_agent_order_id_fkey"
             columns: ["order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
