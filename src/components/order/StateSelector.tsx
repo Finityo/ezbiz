@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Check, Search, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { STATE_FILING_FEES } from "@/lib/state-fees";
 
 const POPULAR_STATES = ["Florida", "Texas", "California", "Delaware", "Wyoming", "Nevada"];
