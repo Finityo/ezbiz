@@ -298,6 +298,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const id = data.id;
     setOrder((prev) => ({ ...prev, orderId: id }));
+    localStorage.setItem("ezbiz_order_id", id);
     return id;
   };
 
