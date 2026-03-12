@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatPrice } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
