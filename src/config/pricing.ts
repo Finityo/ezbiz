@@ -21,7 +21,7 @@ export const PACKAGES: Record<
   basic: {
     name: "Basic",
     price: 148,
-    stripePriceId: "price_basic_REPLACE",
+    stripePriceId: "price_1TAIL4IUysiSR1zw3M01ArWS",
     description: "Business formation with required filing documents",
   },
   deluxe: {
