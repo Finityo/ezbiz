@@ -33,7 +33,7 @@ export const PACKAGES: Record<
   complete: {
     name: "Complete",
     price: 403,
-    stripePriceId: "price_complete_REPLACE",
+    stripePriceId: "price_1TAIMdIUysiSR1zwqXRGk7WY",
     description: "Full formation package with compliance and filings",
   },
 };
