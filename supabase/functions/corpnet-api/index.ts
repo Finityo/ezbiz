@@ -62,6 +62,8 @@ serve(async (req) => {
       entityType: order.data.entity_type,
       package: order.data.package,
       state: order.data.state,
+      filingSpeed: order.data.filing_speed || 'standard',
+      einService: order.data.ein_service || false,
       
       // Business info
       companyName: bizInfo.data?.company_name || '',
