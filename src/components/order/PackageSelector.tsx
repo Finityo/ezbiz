@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { STRIPE_PACKAGES, type PackageId } from "@/lib/stripe-config";
+import { PACKAGES, type PackageId } from "@/config/pricing";
 
 interface Package {
   id: PackageId;
@@ -16,8 +16,8 @@ interface Package {
 const packages: Package[] = [
   {
     id: "basic",
-    name: STRIPE_PACKAGES.basic.name,
-    price: STRIPE_PACKAGES.basic.price,
+    name: PACKAGES.basic.name,
+    price: PACKAGES.basic.price,
     processingTime: "15-20 business days",
     features: [
       "Name availability check",
@@ -25,13 +25,13 @@ const packages: Package[] = [
       "Registered agent (1 year FREE)",
       "Federal Tax ID (EIN)",
       "Operating agreement template",
-      "Email delivery of documents"
-    ]
+      "Email delivery of documents",
+    ],
   },
   {
-    id: "standard",
-    name: STRIPE_PACKAGES.standard.name,
-    price: STRIPE_PACKAGES.standard.price,
+    id: "deluxe",
+    name: PACKAGES.deluxe.name,
+    price: PACKAGES.deluxe.price,
     badge: "Most Popular",
     processingTime: "10-15 business days",
     features: [
@@ -41,13 +41,13 @@ const packages: Package[] = [
       "Banking resolution",
       "Organizational minutes",
       "Membership certificates",
-      "Priority support"
-    ]
+      "Priority support",
+    ],
   },
   {
-    id: "premium",
-    name: STRIPE_PACKAGES.premium.name,
-    price: STRIPE_PACKAGES.premium.price,
+    id: "complete",
+    name: PACKAGES.complete.name,
+    price: PACKAGES.complete.price,
     badge: "Best Value",
     processingTime: "5-7 business days",
     features: [
@@ -58,9 +58,9 @@ const packages: Package[] = [
       "Compliance calendar",
       "Annual report filing (1 year)",
       "FinCEN BOI reporting",
-      "Dedicated account manager"
-    ]
-  }
+      "Dedicated account manager",
+    ],
+  },
 ];
 
 interface PackageSelectorProps {

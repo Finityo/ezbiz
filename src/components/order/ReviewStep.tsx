@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { STRIPE_ADDONS, STRIPE_PACKAGES, type AddonId, type PackageId } from "@/lib/stripe-config";
-import { calculatePricing } from "@/lib/pricing";
+import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
+import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
@@ -17,6 +17,8 @@ type ServiceDetails = {
   preferredDateTime: string;
   notes: string;
 };
+
+const WHITE_GLOVE_PRICE = 150;
 
 interface ReviewStepProps {
   state: string;
@@ -39,7 +41,7 @@ const ENTITY_LABELS: Record<string, string> = {
   "professional-corp": "Professional Corporation",
 };
 
-const WHITE_GLOVE_ADDON = STRIPE_ADDONS["white-glove"];
+const CORP_ENTITIES = ["c-corp", "s-corp", "nonprofit", "professional-corp"];
 
 const ReviewStep = ({
   state,
@@ -56,28 +58,31 @@ const ReviewStep = ({
   const [guidedScheduled, setGuidedScheduled] = React.useState(false);
   const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
   const { checkout, loading, error, clearError } = useStripeCheckout();
-  const pkg = STRIPE_PACKAGES[selectedPackage as PackageId];
-  const pricing = calculatePricing({
-    packageId: selectedPackage,
-    entityType: entityType,
-    state,
-    selectedAddOns,
-    addonQuantities,
-    includeWhiteGlove: mode === "whiteglove",
-  });
-  const { stateFee, total } = pricing;
+
+  const pkg = PACKAGES[selectedPackage as PackageId];
+  const isCorpType = CORP_ENTITIES.includes(entityType);
+  const stateFee = state
+    ? isCorpType
+      ? getCorpStateFee(state)
+      : getStateFee(state)
+    : 0;
+
+  const addonsTotal = selectedAddOns.reduce((sum, id) => {
+    const addon = ADDONS[id as AddonId];
+    return sum + (addon?.price || 0);
+  }, 0);
+
+  const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_PRICE : 0;
+  const total = (pkg?.price || 0) + addonsTotal + stateFee + whiteGloveFee;
 
   const handleCheckout = async () => {
     const lineItems: { priceId: string; quantity?: number }[] = [];
-    if (pkg) lineItems.push({ priceId: pkg.priceId });
+    if (pkg) lineItems.push({ priceId: pkg.stripePriceId });
     selectedAddOns.forEach((id) => {
-      const addon = STRIPE_ADDONS[id as AddonId];
-      const qty = addonQuantities[id] || 1;
-      if (addon) lineItems.push({ priceId: addon.priceId, quantity: qty });
+      const addon = ADDONS[id as AddonId];
+      if (addon) lineItems.push({ priceId: addon.stripePriceId });
     });
-    if (mode === "whiteglove") {
-      lineItems.push({ priceId: WHITE_GLOVE_ADDON.priceId });
-    }
+    // White glove fee handled as dynamic line item on backend if needed
 
     onCheckoutStarted();
     trackCheckoutStart(pkg?.name || selectedPackage, total);
@@ -114,7 +119,7 @@ const ReviewStep = ({
                 <p><span className="text-muted-foreground">Notes:</span> {serviceDetails.notes}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                White Glove base fee: ${WHITE_GLOVE_ADDON.price} (first 2 hours) — charged today.
+                White Glove base fee: ${WHITE_GLOVE_PRICE} (first 2 hours) — charged today.
                 {" "}Overage: $80/hr after 2 hours — charged on-site.
               </p>
             </div>
@@ -164,12 +169,11 @@ const ReviewStep = ({
           <Section title="Add-on Services" step={2}>
             <ul className="space-y-1">
               {selectedAddOns.map((id) => {
-                const addon = STRIPE_ADDONS[id as AddonId];
-                const qty = addonQuantities[id] || 1;
+                const addon = ADDONS[id as AddonId];
                 return addon ? (
                   <li key={id} className="flex justify-between text-sm">
-                    <span>{addon.name}{qty > 1 ? ` × ${qty}` : ""}</span>
-                    <span className="font-medium">${addon.price * qty}</span>
+                    <span>{addon.name}</span>
+                    <span className="font-medium">${addon.price}</span>
                   </li>
                 ) : null;
               })}
@@ -187,12 +191,11 @@ const ReviewStep = ({
           <span>${pkg?.price || 0}</span>
         </div>
         {selectedAddOns.map((id) => {
-          const addon = STRIPE_ADDONS[id as AddonId];
-          const qty = addonQuantities[id] || 1;
+          const addon = ADDONS[id as AddonId];
           return addon ? (
             <div key={id} className="flex justify-between text-sm">
-              <span>{addon.name}{qty > 1 ? ` × ${qty}` : ""}</span>
-              <span>${addon.price * qty}</span>
+              <span>{addon.name}</span>
+              <span>${addon.price}</span>
             </div>
           ) : null;
         })}
@@ -204,7 +207,7 @@ const ReviewStep = ({
         {mode === "whiteglove" && (
           <div className="flex justify-between text-sm">
             <span>White Glove Mobile Service (First 2 Hours)</span>
-            <span>${WHITE_GLOVE_ADDON.price}</span>
+            <span>${WHITE_GLOVE_PRICE}</span>
           </div>
         )}
 
