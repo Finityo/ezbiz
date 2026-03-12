@@ -34,10 +34,10 @@ const addOns: AddOn[] = [
     description: ADDONS.registeredAgent.description,
   },
   {
-    id: "boiFiling",
-    name: ADDONS.boiFiling.name,
-    price: ADDONS.boiFiling.price,
-    description: ADDONS.boiFiling.description,
+    id: "sCorp",
+    name: ADDONS.sCorp.name,
+    price: ADDONS.sCorp.price,
+    description: ADDONS.sCorp.description,
   },
   {
     id: "licenseResearch",

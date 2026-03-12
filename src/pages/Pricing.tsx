@@ -64,7 +64,7 @@ const Pricing = () => {
     { name: ADDONS.ein.name, price: `$${formatPrice(ADDONS.ein.price)}` },
     { name: ADDONS.operatingAgreement.name, price: `$${formatPrice(ADDONS.operatingAgreement.price)}` },
     { name: ADDONS.registeredAgent.name, price: `$${formatPrice(ADDONS.registeredAgent.price)}` },
-    { name: ADDONS.boiFiling.name, price: `$${formatPrice(ADDONS.boiFiling.price)}` },
+    { name: ADDONS.sCorp.name, price: `$${formatPrice(ADDONS.sCorp.price)}` },
     { name: ADDONS.licenseResearch.name, price: `$${formatPrice(ADDONS.licenseResearch.price)}` },
   ];
 
