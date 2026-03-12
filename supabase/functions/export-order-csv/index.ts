@@ -126,10 +126,13 @@ serve(async (req) => {
       for (const p of participantRows) {
         rows.push([
           order.id,
+          new Date().toISOString(),
           order.status || '',
           order.entity_type || '',
           order.package || '',
           order.state || '',
+          order.filing_speed || 'standard',
+          order.ein_service ? 'Yes' : 'No',
           biz.company_name || '',
           biz.alternate_company_name || '',
           biz.business_description || '',

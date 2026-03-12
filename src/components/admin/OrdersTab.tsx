@@ -172,7 +172,10 @@ const OrdersTab = () => {
 
   const getStatusColor = (status: string | null) => {
     switch (status) {
+      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'in_progress': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
       case 'payment_complete': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'ready_for_submission': return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300';
       case 'submitted_to_corpnet': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'processing': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
       case 'filed': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
