@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { formatPrice } from "@/lib/utils";
 import Footer from "@/components/Footer";
 import StateHeroSection from "@/components/state/StateHeroSection";
 import { Card } from "@/components/ui/card";
@@ -123,7 +124,7 @@ const StateTemplate = ({
             <div className="space-y-4">
               <div className="flex justify-between items-center pb-4 border-b">
                 <span className="font-medium">{stateName} State Filing Fee</span>
-                <span className="text-xl font-bold text-primary">${stateFee}</span>
+                <span className="text-xl font-bold text-primary">${formatPrice(stateFee)}</span>
               </div>
               
               <div className="flex justify-between items-center pb-4 border-b">
@@ -134,7 +135,7 @@ const StateTemplate = ({
               <div className="bg-muted/50 p-4 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-lg">Total Starting Cost</span>
-                  <span className="text-2xl font-bold text-success">From ${stateFee + 99}</span>
+                  <span className="text-2xl font-bold text-success">From ${formatPrice(stateFee + 99)}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
                   Includes everything you need to get started
