@@ -174,7 +174,7 @@ const ReviewStep = ({
                 return addon ? (
                   <li key={id} className="flex justify-between text-sm">
                     <span>{addon.name}</span>
-                    <span className="font-medium">${addon.price}</span>
+                    <span className="font-medium">${formatPrice(addon.price)}</span>
                   </li>
                 ) : null;
               })}
