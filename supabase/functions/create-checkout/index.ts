@@ -19,7 +19,7 @@ serve(async (req) => {
   );
 
   try {
-    const { lineItems, stateFee, successPath = "/dashboard", cancelPath = "/pricing" } = await req.json();
+    const { lineItems, stateFee, successPath = "/dashboard", cancelPath = "/pricing", orderId } = await req.json();
 
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
       throw new Error("lineItems array is required");
@@ -50,19 +50,35 @@ serve(async (req) => {
       }
     }
 
-    // Insert order record before creating checkout session
-    const { data: order } = await supabaseClient
-      .from("orders")
-      .insert({
-        user_id: userId,
-        email: userEmail,
-        package_id: lineItems[0]?.priceId,
-        state: stateFee?.stateName,
-        state_fee: stateFee?.amount || 0,
-        status: "Pending Payment",
-      })
-      .select()
-      .single();
+    let finalOrderId = orderId;
+
+    // Use existing order or create new one
+    if (orderId) {
+      // Update existing order
+      await supabaseClient
+        .from("orders")
+        .update({
+          package_id: lineItems[0]?.priceId,
+          state_fee: stateFee?.amount || 0,
+          status: "Pending Payment",
+        })
+        .eq("id", orderId);
+    } else {
+      // Create new order record
+      const { data: order } = await supabaseClient
+        .from("orders")
+        .insert({
+          user_id: userId,
+          email: userEmail,
+          package_id: lineItems[0]?.priceId,
+          state: stateFee?.stateName,
+          state_fee: stateFee?.amount || 0,
+          status: "Pending Payment",
+        })
+        .select()
+        .single();
+      finalOrderId = order?.id;
+    }
 
     const origin = req.headers.get("origin") || "https://ezbiz.lovable.app";
 
