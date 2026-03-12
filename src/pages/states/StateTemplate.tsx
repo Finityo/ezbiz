@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import { formatPrice } from "@/lib/utils";
 import Footer from "@/components/Footer";
 import StateHeroSection from "@/components/state/StateHeroSection";
 import { Card } from "@/components/ui/card";
