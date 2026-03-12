@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Check, Search, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { STATE_FILING_FEES } from "@/lib/state-fees";
 
 const POPULAR_STATES = ["Florida", "Texas", "California", "Delaware", "Wyoming", "Nevada"];
@@ -61,7 +61,7 @@ const StateSelector = ({ selected, onSelect, slotAfterPopular }: StateSelectorPr
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{state}</p>
-                      <p className="text-sm text-muted-foreground">${fee} filing fee</p>
+                      <p className="text-sm text-muted-foreground">${formatPrice(fee)} filing fee</p>
                     </div>
                     {isSelected && (
                       <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
@@ -100,7 +100,7 @@ const StateSelector = ({ selected, onSelect, slotAfterPopular }: StateSelectorPr
                 <div className="flex items-center justify-between gap-1">
                   <span className="font-medium truncate">{state}</span>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <span className="text-muted-foreground text-xs">${fee}</span>
+                    <span className="text-muted-foreground text-xs">${formatPrice(fee)}</span>
                     {isSelected && <Check className="h-3.5 w-3.5 text-primary" />}
                   </div>
                 </div>

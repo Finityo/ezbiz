@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 interface StateHeroSectionProps {
   stateName: string;
@@ -31,7 +32,7 @@ const StateHeroSection = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <p className="text-sm opacity-80 mb-1">State Filing Fee</p>
-              <p className="text-3xl font-bold">${stateFee}</p>
+              <p className="text-3xl font-bold">${formatPrice(stateFee)}</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
