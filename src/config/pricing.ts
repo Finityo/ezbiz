@@ -57,7 +57,7 @@ export const ADDONS: Record<
   operatingAgreement: {
     name: "Operating Agreement",
     price: 148.5,
-    stripePriceId: "price_operating_REPLACE",
+    stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
     description:
       "Defines ownership and operating procedures for your LLC.",
   },
