@@ -145,6 +145,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/veteran-llc-texas" element={<VeteranLLCTexas />} />
               <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/start-order" element={<StartOrder />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
