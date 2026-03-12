@@ -118,6 +118,7 @@ interface OrderContextValue {
   setOrder: React.Dispatch<React.SetStateAction<OrderState>>;
   updateField: <K extends keyof OrderState>(key: K, value: OrderState[K]) => void;
   saving: boolean;
+  loading: boolean;
   saveStep: (step: number) => Promise<void>;
 }
 
