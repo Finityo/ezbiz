@@ -100,7 +100,7 @@ const StateSelector = ({ selected, onSelect, slotAfterPopular }: StateSelectorPr
                 <div className="flex items-center justify-between gap-1">
                   <span className="font-medium truncate">{state}</span>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <span className="text-muted-foreground text-xs">${fee}</span>
+                    <span className="text-muted-foreground text-xs">${formatPrice(fee)}</span>
                     {isSelected && <Check className="h-3.5 w-3.5 text-primary" />}
                   </div>
                 </div>

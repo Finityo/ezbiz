@@ -72,7 +72,7 @@ const AddOnServices = ({ selected, onToggle }: AddOnServicesProps) => {
         {selected.length > 0 && (
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Add-ons Total</p>
-            <p className="text-2xl font-bold text-primary">${calculateTotal()}</p>
+            <p className="text-2xl font-bold text-primary">${formatPrice(calculateTotal())}</p>
           </div>
         )}
       </div>
