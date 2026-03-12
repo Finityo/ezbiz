@@ -27,7 +27,7 @@ export const PACKAGES: Record<
   deluxe: {
     name: "Deluxe",
     price: 328,
-    stripePriceId: "price_deluxe_REPLACE",
+    stripePriceId: "price_1TAIMKIUysiSR1zwu3f0jHW4",
     description: "Formation plus essential compliance documents",
   },
   complete: {
