@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   Eye, Loader2, Building2, User, MapPin, Users, Shield, FileText,
-  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Check,
+  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2,
 } from 'lucide-react';
 
 interface OrderDetailDialogProps {
@@ -32,47 +32,33 @@ interface OrderDetail {
   payments: any[];
   documents: any[];
   events: any[];
+  notes: any[];
 }
 
-/* ── Editable Section wrapper ── */
+/* ── Shared UI pieces ── */
 
 function EditableSection({
-  icon: Icon,
-  title,
-  editing,
-  dirty,
-  saving,
-  onToggleEdit,
-  onSave,
-  onCancel,
-  children,
+  icon: Icon, title, editing, dirty, saving, onToggleEdit, onSave, onCancel, headerExtra, children,
 }: {
-  icon: any;
-  title: string;
-  editing: boolean;
-  dirty: boolean;
-  saving: boolean;
-  onToggleEdit: () => void;
-  onSave: () => void;
-  onCancel: () => void;
-  children: React.ReactNode;
+  icon: any; title: string; editing: boolean; dirty: boolean; saving: boolean;
+  onToggleEdit: () => void; onSave: () => void; onCancel: () => void;
+  headerExtra?: React.ReactNode; children: React.ReactNode;
 }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Icon className="h-4 w-4 text-primary" />
-          {title}
+          <Icon className="h-4 w-4 text-primary" /> {title}
         </h3>
         <div className="flex items-center gap-1">
+          {headerExtra}
           {editing ? (
             <>
               <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={onCancel} disabled={saving}>
                 <X className="h-3 w-3 mr-1" /> Cancel
               </Button>
               <Button size="sm" className="h-7 px-2 text-xs" onClick={onSave} disabled={!dirty || saving}>
-                {saving ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Save className="h-3 w-3 mr-1" />}
-                Save
+                {saving ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Save className="h-3 w-3 mr-1" />} Save
               </Button>
             </>
           ) : (
@@ -82,29 +68,24 @@ function EditableSection({
           )}
         </div>
       </div>
-      <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">
-        {children}
-      </div>
+      <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">{children}</div>
     </div>
   );
 }
 
-/* ── Read-only section (for payments, events, etc.) ── */
-function ReadOnlySection({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) {
+function ReadOnlySection({ icon: Icon, title, headerExtra, children }: { icon: any; title: string; headerExtra?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-        <Icon className="h-4 w-4 text-primary" />
-        {title}
-      </h3>
-      <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-1">
-        {children}
+      <div className="flex items-center justify-between">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <Icon className="h-4 w-4 text-primary" /> {title}
+        </h3>
+        {headerExtra}
       </div>
+      <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-1">{children}</div>
     </div>
   );
 }
-
-/* ── Field components ── */
 
 function ReadField({ label, value }: { label: string; value: any }) {
   const display = value === null || value === undefined || value === '' ? '—' : String(value);
@@ -116,18 +97,8 @@ function ReadField({ label, value }: { label: string; value: any }) {
   );
 }
 
-function EditField({
-  label,
-  value,
-  onChange,
-  type = 'text',
-  multiline = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-  multiline?: boolean;
+function EditField({ label, value, onChange, type = 'text', multiline = false }: {
+  label: string; value: string; onChange: (v: string) => void; type?: string; multiline?: boolean;
 }) {
   return (
     <div className="flex items-start gap-3">
@@ -150,32 +121,20 @@ function EditBoolField({ label, value, onChange }: { label: string; value: boole
   );
 }
 
-/* ── Helper: use section editing state ── */
 function useSectionEdit<T extends Record<string, any>>(initial: T | null) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<T | null>(null);
   const [saving, setSaving] = useState(false);
-
-  const startEdit = () => {
-    setDraft(initial ? { ...initial } : null);
-    setEditing(true);
-  };
-
-  const cancel = () => {
-    setDraft(null);
-    setEditing(false);
-  };
-
-  const updateField = (key: keyof T, value: any) => {
-    setDraft((prev) => prev ? { ...prev, [key]: value } : prev);
-  };
-
-  const dirty = editing && draft && initial
-    ? JSON.stringify(draft) !== JSON.stringify(initial)
-    : false;
-
+  const startEdit = () => { setDraft(initial ? { ...initial } : null); setEditing(true); };
+  const cancel = () => { setDraft(null); setEditing(false); };
+  const updateField = (key: keyof T, value: any) => setDraft((prev) => prev ? { ...prev, [key]: value } : prev);
+  const dirty = editing && draft && initial ? JSON.stringify(draft) !== JSON.stringify(initial) : false;
   return { editing, draft, saving, setSaving, dirty, startEdit, cancel, updateField, setEditing, setDraft };
 }
+
+const str = (v: any) => (v == null ? '' : String(v));
+const num = (v: string) => (v === '' ? null : Number(v));
+const bool = (v: any) => !!v;
 
 /* ── Main Component ── */
 
@@ -185,7 +144,6 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // Section edit states
   const orderEdit = useSectionEdit(detail?.order);
   const bizEdit = useSectionEdit(detail?.businessInfo);
   const contactEdit = useSectionEdit(detail?.contactInfo);
@@ -197,7 +155,7 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
     if (detail && !force) return;
     setLoading(true);
     try {
-      const [orderRes, bizRes, contactRes, addressRes, participantsRes, agentRes, mgmtRes, irsRes, agreementRes, paymentsRes, docsRes, eventsRes] =
+      const [orderRes, bizRes, contactRes, addressRes, participantsRes, agentRes, mgmtRes, irsRes, agreementRes, paymentsRes, docsRes, eventsRes, notesRes] =
         await Promise.all([
           supabase.from('orders').select('*').eq('id', orderId).single(),
           supabase.from('business_information').select('*').eq('order_id', orderId).maybeSingle(),
@@ -211,68 +169,34 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
           supabase.from('payments').select('*').eq('order_id', orderId).order('created_at', { ascending: false }),
           supabase.from('documents').select('*').eq('order_id', orderId).order('uploaded_at', { ascending: false }),
           supabase.from('order_events').select('*').eq('order_id', orderId).order('created_at', { ascending: false }),
+          supabase.from('admin_notes' as any).select('*').eq('order_id', orderId).order('created_at', { ascending: false }),
         ]);
-
       setDetail({
-        order: orderRes.data,
-        businessInfo: bizRes.data,
-        contactInfo: contactRes.data,
-        addresses: addressRes.data || [],
-        participants: participantsRes.data || [],
-        registeredAgent: agentRes.data,
-        companyManagement: mgmtRes.data,
-        irsParty: irsRes.data,
-        agreements: agreementRes.data,
-        payments: paymentsRes.data || [],
-        documents: docsRes.data || [],
-        events: eventsRes.data || [],
+        order: orderRes.data, businessInfo: bizRes.data, contactInfo: contactRes.data,
+        addresses: addressRes.data || [], participants: participantsRes.data || [],
+        registeredAgent: agentRes.data, companyManagement: mgmtRes.data, irsParty: irsRes.data,
+        agreements: agreementRes.data, payments: paymentsRes.data || [],
+        documents: docsRes.data || [], events: eventsRes.data || [],
+        notes: (notesRes as any).data || [],
       });
-    } catch (err) {
-      console.error('Failed to fetch order details:', err);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { console.error('Failed to fetch order details:', err); }
+    finally { setLoading(false); }
   };
 
-  const saveSection = async (
-    table: string,
-    idField: string,
-    idValue: string,
-    data: Record<string, any>,
-    editState: ReturnType<typeof useSectionEdit>,
-    sectionName: string,
-  ) => {
+  const saveSection = async (table: string, idField: string, idValue: string, data: Record<string, any>, editState: ReturnType<typeof useSectionEdit>, sectionName: string) => {
     editState.setSaving(true);
     try {
-      // Strip id and metadata fields
       const { id, order_id, created_at, updated_at, ...updateData } = data;
       const { error } = await supabase.from(table as any).update(updateData).eq(idField, idValue);
       if (error) throw error;
-
-      // Log amendment event
-      await supabase.from('order_events').insert({
-        order_id: orderId,
-        event_type: 'admin_amendment',
-        actor: 'admin',
-        metadata: { section: sectionName, fields_updated: Object.keys(updateData) },
-      });
-
+      await supabase.from('order_events').insert({ order_id: orderId, event_type: 'admin_amendment', actor: 'admin', metadata: { section: sectionName, fields_updated: Object.keys(updateData) } });
       toast({ title: 'Saved', description: `${sectionName} updated successfully.` });
-      editState.setEditing(false);
-      editState.setDraft(null);
-      await fetchDetails(true);
-      onUpdated?.();
+      editState.setEditing(false); editState.setDraft(null);
+      await fetchDetails(true); onUpdated?.();
     } catch (err: any) {
-      console.error('Save error:', err);
       toast({ title: 'Save Failed', description: err.message || 'Could not save changes.', variant: 'destructive' });
-    } finally {
-      editState.setSaving(false);
-    }
+    } finally { editState.setSaving(false); }
   };
-
-  const str = (v: any) => (v == null ? '' : String(v));
-  const num = (v: string) => (v === '' ? null : Number(v));
-  const bool = (v: any) => !!v;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (v) fetchDetails(); }}>
@@ -289,7 +213,6 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
             <span className="text-xs font-mono text-muted-foreground ml-2">{orderId.substring(0, 8)}</span>
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="px-6 pb-6 max-h-[70vh]">
           {loading ? (
             <div className="flex items-center justify-center py-12">
@@ -298,18 +221,9 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
             </div>
           ) : detail ? (
             <div className="space-y-4">
-
               {/* ── Order Summary ── */}
-              <EditableSection
-                icon={FileText}
-                title="Order Summary"
-                editing={orderEdit.editing}
-                dirty={!!orderEdit.dirty}
-                saving={orderEdit.saving}
-                onToggleEdit={() => orderEdit.startEdit()}
-                onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')}
-                onCancel={orderEdit.cancel}
-              >
+              <EditableSection icon={FileText} title="Order Summary" editing={orderEdit.editing} dirty={!!orderEdit.dirty} saving={orderEdit.saving}
+                onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
                     <ReadField label="Order ID" value={detail.order?.id} />
@@ -342,16 +256,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
 
               {/* ── Business Information ── */}
               {detail.businessInfo && (
-                <EditableSection
-                  icon={Building2}
-                  title="Business Information"
-                  editing={bizEdit.editing}
-                  dirty={!!bizEdit.dirty}
-                  saving={bizEdit.saving}
-                  onToggleEdit={() => bizEdit.startEdit()}
-                  onSave={() => saveSection('business_information', 'order_id', orderId, bizEdit.draft!, bizEdit, 'Business Information')}
-                  onCancel={bizEdit.cancel}
-                >
+                <EditableSection icon={Building2} title="Business Information" editing={bizEdit.editing} dirty={!!bizEdit.dirty} saving={bizEdit.saving}
+                  onToggleEdit={() => bizEdit.startEdit()} onSave={() => saveSection('business_information', 'order_id', orderId, bizEdit.draft!, bizEdit, 'Business Information')} onCancel={bizEdit.cancel}>
                   {bizEdit.editing && bizEdit.draft ? (
                     <>
                       <EditField label="Company Name" value={str(bizEdit.draft.company_name)} onChange={(v) => bizEdit.updateField('company_name', v)} />
@@ -376,16 +282,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
 
               {/* ── Contact Information ── */}
               {detail.contactInfo && (
-                <EditableSection
-                  icon={User}
-                  title="Contact Information"
-                  editing={contactEdit.editing}
-                  dirty={!!contactEdit.dirty}
-                  saving={contactEdit.saving}
-                  onToggleEdit={() => contactEdit.startEdit()}
-                  onSave={() => saveSection('contact_information', 'order_id', orderId, contactEdit.draft!, contactEdit, 'Contact Information')}
-                  onCancel={contactEdit.cancel}
-                >
+                <EditableSection icon={User} title="Contact Information" editing={contactEdit.editing} dirty={!!contactEdit.dirty} saving={contactEdit.saving}
+                  onToggleEdit={() => contactEdit.startEdit()} onSave={() => saveSection('contact_information', 'order_id', orderId, contactEdit.draft!, contactEdit, 'Contact Information')} onCancel={contactEdit.cancel}>
                   {contactEdit.editing && contactEdit.draft ? (
                     <>
                       <EditField label="First Name" value={str(contactEdit.draft.first_name)} onChange={(v) => contactEdit.updateField('first_name', v)} />
@@ -404,28 +302,16 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                 </EditableSection>
               )}
 
-              {/* ── Addresses (editable per address) ── */}
-              {detail.addresses.length > 0 && detail.addresses.map((addr, idx) => (
-                <AddressEditSection key={addr.id} addr={addr} orderId={orderId} onSaved={() => fetchDetails(true)} />
-              ))}
+              {/* ── Addresses ── */}
+              <AddressesSectionGroup addresses={detail.addresses} orderId={orderId} onRefresh={() => fetchDetails(true)} />
 
-              {/* ── Participants (editable per participant) ── */}
-              {detail.participants.length > 0 && detail.participants.map((p, idx) => (
-                <ParticipantEditSection key={p.id} participant={p} orderId={orderId} onSaved={() => fetchDetails(true)} />
-              ))}
+              {/* ── Participants ── */}
+              <ParticipantsSectionGroup participants={detail.participants} orderId={orderId} onRefresh={() => fetchDetails(true)} />
 
               {/* ── Registered Agent ── */}
               {detail.registeredAgent && (
-                <EditableSection
-                  icon={Shield}
-                  title="Registered Agent"
-                  editing={agentEdit.editing}
-                  dirty={!!agentEdit.dirty}
-                  saving={agentEdit.saving}
-                  onToggleEdit={() => agentEdit.startEdit()}
-                  onSave={() => saveSection('registered_agent', 'order_id', orderId, agentEdit.draft!, agentEdit, 'Registered Agent')}
-                  onCancel={agentEdit.cancel}
-                >
+                <EditableSection icon={Shield} title="Registered Agent" editing={agentEdit.editing} dirty={!!agentEdit.dirty} saving={agentEdit.saving}
+                  onToggleEdit={() => agentEdit.startEdit()} onSave={() => saveSection('registered_agent', 'order_id', orderId, agentEdit.draft!, agentEdit, 'Registered Agent')} onCancel={agentEdit.cancel}>
                   {agentEdit.editing && agentEdit.draft ? (
                     <>
                       <EditField label="Type" value={str(agentEdit.draft.agent_type)} onChange={(v) => agentEdit.updateField('agent_type', v)} />
@@ -444,16 +330,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
 
               {/* ── Company Management ── */}
               {detail.companyManagement && (
-                <EditableSection
-                  icon={Settings}
-                  title="Company Management"
-                  editing={mgmtEdit.editing}
-                  dirty={!!mgmtEdit.dirty}
-                  saving={mgmtEdit.saving}
-                  onToggleEdit={() => mgmtEdit.startEdit()}
-                  onSave={() => saveSection('company_management', 'order_id', orderId, mgmtEdit.draft!, mgmtEdit, 'Company Management')}
-                  onCancel={mgmtEdit.cancel}
-                >
+                <EditableSection icon={Settings} title="Company Management" editing={mgmtEdit.editing} dirty={!!mgmtEdit.dirty} saving={mgmtEdit.saving}
+                  onToggleEdit={() => mgmtEdit.startEdit()} onSave={() => saveSection('company_management', 'order_id', orderId, mgmtEdit.draft!, mgmtEdit, 'Company Management')} onCancel={mgmtEdit.cancel}>
                   {mgmtEdit.editing && mgmtEdit.draft ? (
                     <EditField label="Management Type" value={str(mgmtEdit.draft.management_type)} onChange={(v) => mgmtEdit.updateField('management_type', v)} />
                   ) : (
@@ -464,23 +342,15 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
 
               {/* ── IRS Responsible Party ── */}
               {detail.irsParty && (
-                <EditableSection
-                  icon={Gavel}
-                  title="IRS Responsible Party"
-                  editing={irsEdit.editing}
-                  dirty={!!irsEdit.dirty}
-                  saving={irsEdit.saving}
-                  onToggleEdit={() => irsEdit.startEdit()}
-                  onSave={() => saveSection('irs_responsible_party', 'order_id', orderId, irsEdit.draft!, irsEdit, 'IRS Responsible Party')}
-                  onCancel={irsEdit.cancel}
-                >
+                <EditableSection icon={Gavel} title="IRS Responsible Party" editing={irsEdit.editing} dirty={!!irsEdit.dirty} saving={irsEdit.saving}
+                  onToggleEdit={() => irsEdit.startEdit()} onSave={() => saveSection('irs_responsible_party', 'order_id', orderId, irsEdit.draft!, irsEdit, 'IRS Responsible Party')} onCancel={irsEdit.cancel}>
                   {irsEdit.editing && irsEdit.draft ? (
                     <>
                       <EditField label="First Name" value={str(irsEdit.draft.first_name)} onChange={(v) => irsEdit.updateField('first_name', v)} />
                       <EditField label="Last Name" value={str(irsEdit.draft.last_name)} onChange={(v) => irsEdit.updateField('last_name', v)} />
                       <EditField label="Title" value={str(irsEdit.draft.title)} onChange={(v) => irsEdit.updateField('title', v)} />
                       <EditField label="Phone" value={str(irsEdit.draft.phone)} onChange={(v) => irsEdit.updateField('phone', v)} type="tel" />
-                      <ReadField label="SSN" value={irsEdit.draft.ssn_encrypted ? '●●●-●●-●●●● (encrypted)' : '—'} />
+                      <ReadField label="SSN" value="●●●-●●-●●●● (encrypted)" />
                     </>
                   ) : (
                     <>
@@ -534,6 +404,11 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                 </ReadOnlySection>
               )}
 
+              <Separator />
+
+              {/* ── Admin Notes ── */}
+              <AdminNotesSection notes={detail.notes} orderId={orderId} onRefresh={() => fetchDetails(true)} />
+
               {/* ── Event Log (read-only) ── */}
               {detail.events.length > 0 && (
                 <ReadOnlySection icon={Clock} title={`Event Log (${detail.events.length})`}>
@@ -557,48 +432,88 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
   );
 };
 
-/* ── Address Edit Sub-component ── */
+/* ── Addresses Group with Add New ── */
+
+function AddressesSectionGroup({ addresses, orderId, onRefresh }: { addresses: any[]; orderId: string; onRefresh: () => void }) {
+  const { toast } = useToast();
+  const [adding, setAdding] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newAddr, setNewAddr] = useState({ type: 'business', address1: '', address2: '', city: '', state: '', zip: '', country: 'US' });
+
+  const addAddress = async () => {
+    if (!newAddr.address1.trim()) { toast({ title: 'Required', description: 'Address line 1 is required.', variant: 'destructive' }); return; }
+    setSaving(true);
+    try {
+      const { error } = await supabase.from('addresses').insert({ order_id: orderId, ...newAddr });
+      if (error) throw error;
+      await supabase.from('order_events').insert({ order_id: orderId, event_type: 'admin_added_address', actor: 'admin', metadata: { type: newAddr.type } });
+      toast({ title: 'Added', description: 'New address added.' });
+      setAdding(false); setNewAddr({ type: 'business', address1: '', address2: '', city: '', state: '', zip: '', country: 'US' });
+      onRefresh();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <>
+      {addresses.map((addr) => (
+        <AddressEditSection key={addr.id} addr={addr} orderId={orderId} onSaved={onRefresh} />
+      ))}
+      {adding ? (
+        <div className="space-y-2">
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <MapPin className="h-4 w-4 text-primary" /> New Address
+          </h3>
+          <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">
+            <EditField label="Type" value={newAddr.type} onChange={(v) => setNewAddr(p => ({ ...p, type: v }))} />
+            <EditField label="Address 1" value={newAddr.address1} onChange={(v) => setNewAddr(p => ({ ...p, address1: v }))} />
+            <EditField label="Address 2" value={newAddr.address2} onChange={(v) => setNewAddr(p => ({ ...p, address2: v }))} />
+            <EditField label="City" value={newAddr.city} onChange={(v) => setNewAddr(p => ({ ...p, city: v }))} />
+            <EditField label="State" value={newAddr.state} onChange={(v) => setNewAddr(p => ({ ...p, state: v }))} />
+            <EditField label="ZIP" value={newAddr.zip} onChange={(v) => setNewAddr(p => ({ ...p, zip: v }))} />
+            <EditField label="Country" value={newAddr.country} onChange={(v) => setNewAddr(p => ({ ...p, country: v }))} />
+            <div className="flex gap-2 pt-1">
+              <Button size="sm" variant="ghost" onClick={() => setAdding(false)} disabled={saving}><X className="h-3 w-3 mr-1" /> Cancel</Button>
+              <Button size="sm" onClick={addAddress} disabled={saving}>
+                {saving ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Plus className="h-3 w-3 mr-1" />} Add Address
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Button size="sm" variant="outline" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-3 w-3 mr-1" /> Add Address
+        </Button>
+      )}
+    </>
+  );
+}
+
+/* ── Address Edit ── */
 
 function AddressEditSection({ addr, orderId, onSaved }: { addr: any; orderId: string; onSaved: () => void }) {
   const { toast } = useToast();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-
   const startEdit = () => { setDraft({ ...addr }); setEditing(true); };
   const cancel = () => { setDraft(null); setEditing(false); };
   const update = (key: string, value: any) => setDraft((p: any) => ({ ...p, [key]: value }));
   const dirty = draft ? JSON.stringify(draft) !== JSON.stringify(addr) : false;
-
   const save = async () => {
     setSaving(true);
     try {
       const { id, order_id, created_at, ...data } = draft;
       const { error } = await supabase.from('addresses').update(data).eq('id', addr.id);
       if (error) throw error;
-      await supabase.from('order_events').insert({
-        order_id: orderId, event_type: 'admin_amendment', actor: 'admin',
-        metadata: { section: `Address (${addr.type})`, fields_updated: Object.keys(data) },
-      });
-      toast({ title: 'Saved', description: `Address updated.` });
-      setEditing(false);
-      onSaved();
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally { setSaving(false); }
+      await supabase.from('order_events').insert({ order_id: orderId, event_type: 'admin_amendment', actor: 'admin', metadata: { section: `Address (${addr.type})` } });
+      toast({ title: 'Saved', description: 'Address updated.' }); setEditing(false); onSaved();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+    finally { setSaving(false); }
   };
 
   return (
-    <EditableSection
-      icon={MapPin}
-      title={`Address — ${addr.type}`}
-      editing={editing}
-      dirty={dirty}
-      saving={saving}
-      onToggleEdit={startEdit}
-      onSave={save}
-      onCancel={cancel}
-    >
+    <EditableSection icon={MapPin} title={`Address — ${addr.type}`} editing={editing} dirty={dirty} saving={saving} onToggleEdit={startEdit} onSave={save} onCancel={cancel}>
       {editing && draft ? (
         <>
           <EditField label="Type" value={draft.type || ''} onChange={(v) => update('type', v)} />
@@ -621,50 +536,91 @@ function AddressEditSection({ addr, orderId, onSaved }: { addr: any; orderId: st
   );
 }
 
-/* ── Participant Edit Sub-component ── */
+/* ── Participants Group with Add New ── */
+
+function ParticipantsSectionGroup({ participants, orderId, onRefresh }: { participants: any[]; orderId: string; onRefresh: () => void }) {
+  const { toast } = useToast();
+  const [adding, setAdding] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newP, setNewP] = useState({ first_name: '', last_name: '', role: 'member', title: '', ownership_percent: '', authorized_signer: false, address: '' });
+
+  const addParticipant = async () => {
+    if (!newP.first_name.trim()) { toast({ title: 'Required', description: 'First name is required.', variant: 'destructive' }); return; }
+    setSaving(true);
+    try {
+      const insertData = { order_id: orderId, first_name: newP.first_name, last_name: newP.last_name, role: newP.role, title: newP.title || null,
+        ownership_percent: newP.ownership_percent ? Number(newP.ownership_percent) : null, authorized_signer: newP.authorized_signer, address: newP.address || null };
+      const { error } = await supabase.from('participants').insert(insertData);
+      if (error) throw error;
+      await supabase.from('order_events').insert({ order_id: orderId, event_type: 'admin_added_participant', actor: 'admin', metadata: { name: `${newP.first_name} ${newP.last_name}` } });
+      toast({ title: 'Added', description: 'New participant added.' });
+      setAdding(false); setNewP({ first_name: '', last_name: '', role: 'member', title: '', ownership_percent: '', authorized_signer: false, address: '' });
+      onRefresh();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <>
+      {participants.map((p) => (
+        <ParticipantEditSection key={p.id} participant={p} orderId={orderId} onSaved={onRefresh} />
+      ))}
+      {adding ? (
+        <div className="space-y-2">
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Users className="h-4 w-4 text-primary" /> New Member / Officer
+          </h3>
+          <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">
+            <EditField label="First Name" value={newP.first_name} onChange={(v) => setNewP(p => ({ ...p, first_name: v }))} />
+            <EditField label="Last Name" value={newP.last_name} onChange={(v) => setNewP(p => ({ ...p, last_name: v }))} />
+            <EditField label="Role" value={newP.role} onChange={(v) => setNewP(p => ({ ...p, role: v }))} />
+            <EditField label="Title" value={newP.title} onChange={(v) => setNewP(p => ({ ...p, title: v }))} />
+            <EditField label="Ownership %" value={newP.ownership_percent} onChange={(v) => setNewP(p => ({ ...p, ownership_percent: v }))} type="number" />
+            <EditBoolField label="Auth. Signer" value={newP.authorized_signer} onChange={(v) => setNewP(p => ({ ...p, authorized_signer: v }))} />
+            <EditField label="Address" value={newP.address} onChange={(v) => setNewP(p => ({ ...p, address: v }))} />
+            <div className="flex gap-2 pt-1">
+              <Button size="sm" variant="ghost" onClick={() => setAdding(false)} disabled={saving}><X className="h-3 w-3 mr-1" /> Cancel</Button>
+              <Button size="sm" onClick={addParticipant} disabled={saving}>
+                {saving ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Plus className="h-3 w-3 mr-1" />} Add Member
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Button size="sm" variant="outline" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-3 w-3 mr-1" /> Add Member / Officer
+        </Button>
+      )}
+    </>
+  );
+}
+
+/* ── Participant Edit ── */
 
 function ParticipantEditSection({ participant, orderId, onSaved }: { participant: any; orderId: string; onSaved: () => void }) {
   const { toast } = useToast();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-
   const startEdit = () => { setDraft({ ...participant }); setEditing(true); };
   const cancel = () => { setDraft(null); setEditing(false); };
   const update = (key: string, value: any) => setDraft((p: any) => ({ ...p, [key]: value }));
   const dirty = draft ? JSON.stringify(draft) !== JSON.stringify(participant) : false;
-
   const save = async () => {
     setSaving(true);
     try {
       const { id, order_id, created_at, ...data } = draft;
       const { error } = await supabase.from('participants').update(data).eq('id', participant.id);
       if (error) throw error;
-      await supabase.from('order_events').insert({
-        order_id: orderId, event_type: 'admin_amendment', actor: 'admin',
-        metadata: { section: `Participant (${participant.first_name} ${participant.last_name})`, fields_updated: Object.keys(data) },
-      });
-      toast({ title: 'Saved', description: `Participant updated.` });
-      setEditing(false);
-      onSaved();
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
-    } finally { setSaving(false); }
+      await supabase.from('order_events').insert({ order_id: orderId, event_type: 'admin_amendment', actor: 'admin', metadata: { section: `Participant` } });
+      toast({ title: 'Saved', description: 'Participant updated.' }); setEditing(false); onSaved();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+    finally { setSaving(false); }
   };
-
   const name = [participant.first_name, participant.last_name].filter(Boolean).join(' ') || 'Member';
 
   return (
-    <EditableSection
-      icon={Users}
-      title={`Member — ${name}`}
-      editing={editing}
-      dirty={dirty}
-      saving={saving}
-      onToggleEdit={startEdit}
-      onSave={save}
-      onCancel={cancel}
-    >
+    <EditableSection icon={Users} title={`Member — ${name}`} editing={editing} dirty={dirty} saving={saving} onToggleEdit={startEdit} onSave={save} onCancel={cancel}>
       {editing && draft ? (
         <>
           <EditField label="First Name" value={draft.first_name || ''} onChange={(v) => update('first_name', v)} />
@@ -686,6 +642,82 @@ function ParticipantEditSection({ participant, orderId, onSaved }: { participant
         </>
       )}
     </EditableSection>
+  );
+}
+
+/* ── Admin Notes Section ── */
+
+function AdminNotesSection({ notes, orderId, onRefresh }: { notes: any[]; orderId: string; onRefresh: () => void }) {
+  const { toast } = useToast();
+  const [newNote, setNewNote] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const addNote = async () => {
+    if (!newNote.trim()) return;
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+      const { error } = await supabase.from('admin_notes' as any).insert({ order_id: orderId, author_id: user.id, note: newNote.trim() } as any);
+      if (error) throw error;
+      toast({ title: 'Note Added' });
+      setNewNote('');
+      onRefresh();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+    finally { setSaving(false); }
+  };
+
+  const deleteNote = async (noteId: string) => {
+    try {
+      const { error } = await supabase.from('admin_notes' as any).delete().eq('id', noteId);
+      if (error) throw error;
+      toast({ title: 'Note Deleted' });
+      onRefresh();
+    } catch (err: any) { toast({ title: 'Error', description: err.message, variant: 'destructive' }); }
+  };
+
+  return (
+    <div className="space-y-2">
+      <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+        <MessageSquare className="h-4 w-4 text-primary" /> Admin Notes ({notes.length})
+      </h3>
+      <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-3">
+        {/* Add new note */}
+        <div className="flex gap-2">
+          <Textarea
+            placeholder="Add an internal note…"
+            value={newNote}
+            onChange={(e) => setNewNote(e.target.value)}
+            className="h-16 text-sm flex-1"
+          />
+          <Button size="sm" className="self-end h-8" onClick={addNote} disabled={saving || !newNote.trim()}>
+            {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3 mr-1" />}
+            Add
+          </Button>
+        </div>
+
+        {/* Existing notes */}
+        {notes.length > 0 ? (
+          <div className="space-y-2 pt-1">
+            {notes.map((n: any) => (
+              <div key={n.id} className="flex items-start justify-between gap-2 rounded border border-border bg-background p-2">
+                <div className="flex-1">
+                  <p className="text-sm whitespace-pre-wrap">{n.note}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {n.created_at ? new Date(n.created_at).toLocaleString() : ''}
+                  </p>
+                </div>
+                <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => deleteNote(n.id)}>
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground text-center py-2">No notes yet. Add one above.</p>
+        )}
+      </div>
+    </div>
   );
 }
 
