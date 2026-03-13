@@ -1,4 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { sendOrderStatusEmail } from '@/lib/sendStatusEmail';
 
 export const ORDER_STATUSES = [
   "draft",
@@ -19,7 +20,7 @@ export const updateOrderStatus = async (
 ) => {
   const { data: order, error } = await supabase
     .from("orders")
-    .select("status")
+    .select("*")
     .eq("id", orderId)
     .single();
 
@@ -34,6 +35,16 @@ export const updateOrderStatus = async (
     .eq("id", orderId);
 
   if (updateError) throw updateError;
+
+  // Trigger email notification (non-blocking)
+  await sendOrderStatusEmail({
+    orderId,
+    customerEmail: order.email,
+    businessName: order.business_information?.company_name ?? null,
+    entityType: order.entity_type,
+    state: order.state,
+    newStatus,
+  });
 
   return {
     previousStatus: order.status,
