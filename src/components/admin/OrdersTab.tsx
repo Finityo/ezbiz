@@ -196,15 +196,7 @@ const OrdersTab = () => {
 
   const updateOrderStatus = async (id: string, newStatus: string) => {
     try {
-      const result = await engineUpdateStatus(supabase, id, newStatus as OrderStatus);
-
-      // Log status change event with previous status
-      await supabase.from('order_events').insert({
-        order_id: id,
-        event_type: 'status_changed',
-        actor: 'admin',
-        metadata: { previous_status: result.previousStatus, new_status: result.newStatus },
-      });
+      await engineUpdateStatus(supabase, id, newStatus as OrderStatus);
 
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
       toast({ title: 'Status Updated', description: `Order status set to ${newStatus}` });
