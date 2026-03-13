@@ -55,14 +55,17 @@ function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUplo
 
       if (storageError) throw storageError;
 
-      const { data: { publicUrl } } = supabase.storage
+      // Use signed URL since bucket is private
+      const { data: signedData, error: signError } = await supabase.storage
         .from('order-documents')
-        .getPublicUrl(filePath);
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+
+      if (signError) throw signError;
 
       const { error: dbError } = await supabase.from('documents').insert({
         order_id: orderId,
-        document_type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
-        file_url: publicUrl,
+        document_type: file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' '),
+        file_url: signedData.signedUrl,
       });
 
       if (dbError) throw dbError;
