@@ -92,7 +92,7 @@ function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUplo
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" title="Upload Document">
+        <Button size="icon" variant="outline" className="h-7 w-7 shrink-0" title="Upload Document">
           <Upload className="h-3 w-3" />
         </Button>
       </DialogTrigger>
