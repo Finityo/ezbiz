@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
+import OrderDetailDialog from './OrderDetailDialog';
 
 interface Order {
   id: string;
