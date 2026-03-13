@@ -36,6 +36,14 @@ export const updateOrderStatus = async (
 
   if (updateError) throw updateError;
 
+  // Insert timeline event
+  await supabase.from("order_events").insert({
+    order_id: orderId,
+    event_type: newStatus,
+    actor: "system",
+    metadata: { previous_status: order.status },
+  });
+
   // Trigger email notification (non-blocking)
   await sendOrderStatusEmail({
     orderId,
