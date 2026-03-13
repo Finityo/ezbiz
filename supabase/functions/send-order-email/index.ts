@@ -31,14 +31,20 @@ serve(async (req) => {
     // TODO: Integrate with email service (Resend, SendGrid, etc.)
     // For now, just log the email that would be sent
     let subject = `Order Update: ${payload.businessName}`;
-    if (payload.status === "Paid") {
+    if (payload.status === "Paid" || payload.status === "payment_complete") {
       subject = "Your LLC Filing Has Been Received";
     }
-    if (payload.status === "Submitted") {
+    if (payload.status === "Submitted" || payload.status === "submitted") {
       subject = "Your LLC Filing Has Been Submitted";
     }
-    if (payload.status === "Filed") {
+    if (payload.status === "filed") {
       subject = "Your LLC Is Officially Filed";
+    }
+    if (payload.status === "processing") {
+      subject = "Your Formation Has Entered Processing";
+    }
+    if (payload.status === "completed") {
+      subject = "Your Formation Is Complete — Documents Available";
     }
 
     const emailContent = {
