@@ -36,12 +36,37 @@ export const updateOrderStatus = async (
 
   if (updateError) throw updateError;
 
-  // Insert timeline event
-  await supabase.from("order_events").insert({
-    order_id: orderId,
-    event_type: newStatus,
-    actor: "system",
-    metadata: { previous_status: order.status },
+  console.log("ORDER STATUS UPDATED", {
+    orderId,
+    previousStatus: order.status,
+    newStatus,
+  });
+
+  // Insert both lifecycle event and normalized audit event
+  await supabase.from("order_events").insert([
+    {
+      order_id: orderId,
+      event_type: newStatus,
+      actor: "system",
+      metadata: {
+        previous_status: order.status,
+        new_status: newStatus,
+      },
+    },
+    {
+      order_id: orderId,
+      event_type: "status_changed",
+      actor: "system",
+      metadata: {
+        previous_status: order.status,
+        new_status: newStatus,
+      },
+    },
+  ]);
+
+  console.log("TIMELINE EVENT INSERTED", {
+    orderId,
+    eventType: newStatus,
   });
 
   // Trigger email notification (non-blocking)
@@ -52,6 +77,11 @@ export const updateOrderStatus = async (
     entityType: order.entity_type,
     state: order.state,
     newStatus,
+  });
+
+  console.log("STATUS EMAIL TRIGGERED", {
+    orderId,
+    status: newStatus,
   });
 
   return {
