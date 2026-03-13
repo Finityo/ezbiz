@@ -18,13 +18,13 @@ export const updateOrderStatus = async (
   orderId: string,
   newStatus: OrderStatus
 ) => {
-  const { data: order, error } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("id", orderId)
-    .single();
+  const [orderRes, bizRes] = await Promise.all([
+    supabase.from("orders").select("*").eq("id", orderId).single(),
+    supabase.from("business_information").select("company_name").eq("order_id", orderId).maybeSingle(),
+  ]);
 
-  if (error) throw error;
+  if (orderRes.error) throw orderRes.error;
+  const order = orderRes.data;
 
   const { error: updateError } = await supabase
     .from("orders")
@@ -40,7 +40,7 @@ export const updateOrderStatus = async (
   await sendOrderStatusEmail({
     orderId,
     customerEmail: order.email,
-    businessName: order.business_information?.company_name ?? null,
+    businessName: bizRes.data?.company_name ?? null,
     entityType: order.entity_type,
     state: order.state,
     newStatus,
