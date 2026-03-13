@@ -646,6 +646,9 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
+              {/* Order Timeline */}
+              <OrderTimeline orderId={data.order.id} />
+
               {/* Document Vault */}
               <Card id="documents">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
