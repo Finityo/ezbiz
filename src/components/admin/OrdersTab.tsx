@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
+import OrderDetailDialog from './OrderDetailDialog';
 
 interface Order {
   id: string;
@@ -412,6 +413,7 @@ const OrdersTab = () => {
                       <TableCell className="text-sm">{order.created_at ? new Date(order.created_at).toLocaleDateString() : '—'}</TableCell>
                       <TableCell className="min-w-[120px]">
                         <div className="flex gap-1 flex-nowrap">
+                          <OrderDetailDialog orderId={order.id} companyName={biz?.company_name || undefined} />
                           <Button
                             size="icon"
                             variant="outline"
