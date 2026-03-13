@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
 import OrderDetailDialog from './OrderDetailDialog';
+import { updateOrderStatus as engineUpdateStatus, ORDER_STATUSES, OrderStatus } from '@/lib/orderStatusEngine';
 
 interface Order {
   id: string;
