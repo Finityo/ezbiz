@@ -47,6 +47,7 @@ export default function OrderTimeline({ orderId }: OrderTimelineProps) {
         .eq("order_id", orderId)
         .order("created_at", { ascending: true });
 
+      console.log("TIMELINE EVENTS LOADED", data);
       setEvents((data as OrderEvent[]) || []);
       setLoading(false);
     };
