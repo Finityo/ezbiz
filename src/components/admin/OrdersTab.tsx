@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
 import OrderDetailDialog from './OrderDetailDialog';
+import { updateOrderStatus as engineUpdateStatus, ORDER_STATUSES, OrderStatus } from '@/lib/orderStatusEngine';
 
 interface Order {
   id: string;
@@ -195,15 +196,14 @@ const OrdersTab = () => {
 
   const updateOrderStatus = async (id: string, newStatus: string) => {
     try {
-      const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id);
-      if (error) throw error;
+      const result = await engineUpdateStatus(supabase, id, newStatus as OrderStatus);
 
-      // Log status change event
+      // Log status change event with previous status
       await supabase.from('order_events').insert({
         order_id: id,
         event_type: 'status_changed',
         actor: 'admin',
-        metadata: { new_status: newStatus },
+        metadata: { previous_status: result.previousStatus, new_status: result.newStatus },
       });
 
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
