@@ -92,7 +92,7 @@ function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUplo
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" title="Upload Document">
+        <Button size="icon" variant="outline" className="h-7 w-7 shrink-0" title="Upload Document">
           <Upload className="h-3 w-3" />
         </Button>
       </DialogTrigger>
@@ -410,11 +410,12 @@ const OrdersTab = () => {
                         </Select>
                       </TableCell>
                       <TableCell className="text-sm">{order.created_at ? new Date(order.created_at).toLocaleDateString() : '—'}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
+                      <TableCell className="min-w-[120px]">
+                        <div className="flex gap-1 flex-nowrap">
                           <Button
-                            size="sm"
+                            size="icon"
                             variant="outline"
+                            className="h-7 w-7 shrink-0"
                             disabled={exporting === order.id}
                             onClick={() => exportSingleCSV(order.id)}
                             title="Download CorpNet CSV"
@@ -424,8 +425,9 @@ const OrdersTab = () => {
                           <DocumentUploadDialog orderId={order.id} onUploaded={fetchOrders} />
                           {order.status === 'payment_complete' && (
                             <Button
-                              size="sm"
+                              size="icon"
                               variant="outline"
+                              className="h-7 w-7 shrink-0"
                               onClick={() => updateOrderStatus(order.id, 'submitted_to_corpnet')}
                               title="Mark as Submitted"
                             >
