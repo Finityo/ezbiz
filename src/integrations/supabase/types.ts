@@ -61,6 +61,38 @@ export type Database = {
           },
         ]
       }
+      admin_notes: {
+        Row: {
+          author_id: string
+          created_at: string
+          id: string
+          note: string
+          order_id: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          id?: string
+          note: string
+          order_id: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          note?: string
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_notes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agreements: {
         Row: {
           id: string
