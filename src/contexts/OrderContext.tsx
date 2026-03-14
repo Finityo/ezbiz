@@ -67,6 +67,7 @@ export interface OrderState {
   packageId: string;
   selectedAddOns: string[];
   addonQuantities: Record<string, number>;
+  processingSpeed: "standard" | "express";
   contact: ContactInfo;
   business: BusinessInfo;
   businessAddress: Address;
