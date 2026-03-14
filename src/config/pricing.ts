@@ -12,7 +12,8 @@ export type AddonId =
   | "dba"
   | "annualReport"
   | "corporateKit"
-  | "complianceAlerts";
+  | "complianceAlerts"
+  | "whiteGlove";
 
 export const PACKAGES: Record<
   PackageId,
@@ -122,6 +123,13 @@ export const ADDONS: Record<
     description:
       "Automated reminders for filings, tax deadlines, and compliance requirements.",
   },
+  whiteGlove: {
+    name: "White Glove Service",
+    price: 199,
+    stripePriceId: "price_WHITEGLOVE",
+    description:
+      "In-person mobile filing service — we come to you and handle everything.",
+  },
 };
 
 // UTILITIES
@@ -145,7 +153,11 @@ export function calculateOrderTotal(
   return packagePrice + addonsTotal + stateFee;
 }
 
-export function getStripeLineItems(packageId: PackageId, addons: AddonId[]) {
+export function getStripeLineItems(
+  packageId: PackageId,
+  addons: AddonId[],
+  mode?: "guided" | "whiteglove"
+) {
   const items: { priceId: string; quantity: number }[] = [];
   const pkg = PACKAGES[packageId];
   if (pkg?.stripePriceId) {
@@ -157,5 +169,11 @@ export function getStripeLineItems(packageId: PackageId, addons: AddonId[]) {
       items.push({ priceId: addon.stripePriceId, quantity: 1 });
     }
   });
+  if (mode === "whiteglove") {
+    const wg = ADDONS.whiteGlove;
+    if (wg?.stripePriceId) {
+      items.push({ priceId: wg.stripePriceId, quantity: 1 });
+    }
+  }
   return items;
 }

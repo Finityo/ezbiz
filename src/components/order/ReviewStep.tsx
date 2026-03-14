@@ -19,7 +19,7 @@ type ServiceDetails = {
   notes: string;
 };
 
-const WHITE_GLOVE_PRICE = 150;
+const WHITE_GLOVE_PRICE = ADDONS.whiteGlove.price;
 
 interface ReviewStepProps {
   state: string;
@@ -80,7 +80,8 @@ const ReviewStep = ({
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       selectedPackage as PackageId,
-      selectedAddOns as AddonId[]
+      selectedAddOns as AddonId[],
+      mode
     );
 
     onCheckoutStarted();
