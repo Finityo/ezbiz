@@ -170,7 +170,7 @@ export function getStripeLineItems(
     }
   });
   if (mode === "whiteglove") {
-    const wg = ADDONS.whiteGlove;
+    const wg = ADDONS.whiteGloveBase;
     if (wg?.stripePriceId) {
       items.push({ priceId: wg.stripePriceId, quantity: 1 });
     }
