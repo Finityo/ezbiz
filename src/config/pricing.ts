@@ -87,13 +87,6 @@ export const ADDONS: Record<
     description:
       "Identifies all licenses required based on business type and location.",
   },
-  boiFiling: {
-    name: "FinCEN BOI Filing",
-    price: 149,
-    stripePriceId: "",
-    description:
-      "We file your Beneficial Ownership Information report with FinCEN.",
-  },
   dba: {
     name: "DBA Filing",
     price: 149,
