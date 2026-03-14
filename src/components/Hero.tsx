@@ -94,7 +94,7 @@ export default function Hero() {
                 trackCorpNetClick();
                 trackClick("File Instantly", "hero_file_instantly", CORPNET_AFFILIATE_LINK);
               }}
-              className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant cursor-pointer"
+              className="relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant cursor-pointer w-full sm:w-auto"
             >
               {/* Shimmer sweep */}
               <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
