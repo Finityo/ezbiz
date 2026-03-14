@@ -79,7 +79,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-10 flex justify-center gap-4 flex-wrap"
+          className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4"
         >
           {/* FILE INSTANTLY (CorpNet) */}
           <motion.div
