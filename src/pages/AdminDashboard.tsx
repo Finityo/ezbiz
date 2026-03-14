@@ -11,11 +11,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package, HandHelping } from 'lucide-react';
+import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package, HandHelping, Users } from 'lucide-react';
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
 import OrdersTab from '@/components/admin/OrdersTab';
 import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
+import UsersTab from '@/components/admin/UsersTab';
 
 
 interface ConsultationRequest {
