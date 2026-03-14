@@ -3,7 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
-import { PACKAGES, ADDONS, type PackageId, type AddonId, getStripeLineItems } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, getStripeLineItems } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
