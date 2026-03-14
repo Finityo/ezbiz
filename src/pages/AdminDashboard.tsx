@@ -348,41 +348,44 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-            <p className="text-muted-foreground">
-              Manage consultation requests and client contacts
-            </p>
-          </div>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Manage consultation requests and client contacts
+          </p>
         </div>
 
-        <Tabs defaultValue="orders" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="orders">
-              <Package className="h-4 w-4 mr-2" />
+        <Tabs defaultValue="orders" className="space-y-6 sm:space-y-8">
+          <TabsList className="flex flex-wrap h-auto gap-1 p-1">
+            <TabsTrigger value="orders" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <Package className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Orders
             </TabsTrigger>
-            <TabsTrigger value="consultations">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Consultations ({filteredConsultations.length})
+            <TabsTrigger value="consultations" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Consultations</span>
+              <span className="sm:hidden">Consult</span>
             </TabsTrigger>
-            <TabsTrigger value="applications">
-              <FileText className="h-4 w-4 mr-2" />
-              Applications ({filteredApplications.length})
+            <TabsTrigger value="applications" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Applications</span>
+              <span className="sm:hidden">Apps</span>
             </TabsTrigger>
-            <TabsTrigger value="white-glove">
-              <HandHelping className="h-4 w-4 mr-2" />
-              White Glove
+            <TabsTrigger value="white-glove" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <HandHelping className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">White Glove</span>
+              <span className="sm:hidden">WG</span>
             </TabsTrigger>
-            <TabsTrigger value="feedback">
-              <Star className="h-4 w-4 mr-2" />
-              Feedback
+            <TabsTrigger value="feedback" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Feedback</span>
+              <span className="sm:hidden">FB</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Analytics
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Analytics</span>
+              <span className="sm:hidden">Stats</span>
             </TabsTrigger>
           </TabsList>
 
@@ -392,7 +395,7 @@ const AdminDashboard = () => {
 
           <TabsContent value="consultations" className="space-y-6">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">Total Requests</CardTitle>
@@ -442,7 +445,7 @@ const AdminDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -617,7 +620,7 @@ const AdminDashboard = () => {
           {/* Business Applications Tab */}
           <TabsContent value="applications" className="space-y-6">
             {/* Applications Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
@@ -667,7 +670,7 @@ const AdminDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
