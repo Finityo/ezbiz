@@ -97,28 +97,28 @@ export const ADDONS: Record<
   dba: {
     name: "DBA Filing",
     price: 149,
-    stripePriceId: "",
+    stripePriceId: "price_1TAjoKIUysiSR1zwBWcDQxr8",
     description:
       "File a Doing Business As name with your state or county.",
   },
   annualReport: {
     name: "Annual Report Filing",
     price: 224,
-    stripePriceId: "",
+    stripePriceId: "price_1TAjudIUysiSR1zw5wkbfPVv",
     description:
       "We prepare and file your annual report with the state.",
   },
   corporateKit: {
     name: "Corporate Kit",
     price: 59,
-    stripePriceId: "",
+    stripePriceId: "price_1TAjy8IUysiSR1zwnphHwavq",
     description:
       "Professional binder, seal, and member certificates for your company records.",
   },
   complianceAlerts: {
     name: "Compliance Alerts",
     price: 103,
-    stripePriceId: "",
+    stripePriceId: "price_1TAjzBIUysiSR1zwapC53gXv",
     description:
       "Automated reminders for filings, tax deadlines, and compliance requirements.",
   },
