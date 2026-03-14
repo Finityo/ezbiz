@@ -11,10 +11,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package } from 'lucide-react';
+import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package, HandHelping } from 'lucide-react';
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
 import OrdersTab from '@/components/admin/OrdersTab';
+import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
 
 
 interface ConsultationRequest {
@@ -358,7 +359,7 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="orders" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="orders">
               <Package className="h-4 w-4 mr-2" />
               Orders
@@ -370,6 +371,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="applications">
               <FileText className="h-4 w-4 mr-2" />
               Applications ({filteredApplications.length})
+            </TabsTrigger>
+            <TabsTrigger value="white-glove">
+              <HandHelping className="h-4 w-4 mr-2" />
+              White Glove
             </TabsTrigger>
             <TabsTrigger value="feedback">
               <Star className="h-4 w-4 mr-2" />
@@ -832,6 +837,10 @@ const AdminDashboard = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="white-glove" className="space-y-6">
+            <WhiteGloveBillingTab />
           </TabsContent>
 
           <TabsContent value="feedback" className="space-y-6">
