@@ -7,7 +7,12 @@ export type AddonId =
   | "operatingAgreement"
   | "registeredAgent"
   | "sCorp"
-  | "licenseResearch";
+  | "licenseResearch"
+  | "boiFiling"
+  | "dba"
+  | "annualReport"
+  | "corporateKit"
+  | "complianceAlerts";
 
 export const PACKAGES: Record<
   PackageId,
@@ -20,20 +25,20 @@ export const PACKAGES: Record<
 > = {
   basic: {
     name: "Basic",
-    price: 409,
-    stripePriceId: "price_1T0yVSIUysiSR1zwnXStH3WG",
+    price: 149,
+    stripePriceId: "price_1TAjRYIUysiSR1zwBUBS2jDQ",
     description: "Business formation with required filing documents",
   },
   deluxe: {
     name: "Deluxe",
-    price: 529,
-    stripePriceId: "price_1T0yVtIUysiSR1zwWe4ZNHvO",
+    price: 329,
+    stripePriceId: "price_1TAjRsIUysiSR1zwaDwDhUBl",
     description: "Formation plus essential compliance documents",
   },
   complete: {
     name: "Complete",
-    price: 579,
-    stripePriceId: "price_1T0yW9IUysiSR1zwOI1uP20X",
+    price: 399,
+    stripePriceId: "price_1TAjSCIUysiSR1zwLXwe8C0Z",
     description: "Full formation package with compliance and filings",
   },
 };
@@ -48,7 +53,7 @@ export const ADDONS: Record<
   }
 > = {
   ein: {
-    name: "Federal Tax ID (EIN)",
+    name: "EIN Filing Service",
     price: 89,
     stripePriceId: "price_1TAIMzIUysiSR1zw3s47ma4C",
     description:
@@ -56,7 +61,7 @@ export const ADDONS: Record<
   },
   operatingAgreement: {
     name: "Operating Agreement",
-    price: 148.5,
+    price: 149,
     stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
     description:
       "Defines ownership and operating procedures for your LLC.",
@@ -69,18 +74,53 @@ export const ADDONS: Record<
       "Maintains a legal address to receive official government documents.",
   },
   sCorp: {
-    name: "S-Corp Tax Election",
-    price: 99,
+    name: "S-Corp Election",
+    price: 149,
     stripePriceId: "price_1T0yYLIUysiSR1zwkctIi3Th",
     description:
       "We prepare and file IRS Form 2553 for S-Corp tax election status.",
   },
   licenseResearch: {
     name: "Business License Research",
-    price: 118.5,
+    price: 149,
     stripePriceId: "price_1TAISYIUysiSR1zw9QGizV8b",
     description:
       "Identifies all licenses required based on business type and location.",
+  },
+  boiFiling: {
+    name: "FinCEN BOI Filing",
+    price: 149,
+    stripePriceId: "",
+    description:
+      "We file your Beneficial Ownership Information report with FinCEN.",
+  },
+  dba: {
+    name: "DBA Filing",
+    price: 149,
+    stripePriceId: "",
+    description:
+      "File a Doing Business As name with your state or county.",
+  },
+  annualReport: {
+    name: "Annual Report Filing",
+    price: 224,
+    stripePriceId: "",
+    description:
+      "We prepare and file your annual report with the state.",
+  },
+  corporateKit: {
+    name: "Corporate Kit",
+    price: 59,
+    stripePriceId: "",
+    description:
+      "Professional binder, seal, and member certificates for your company records.",
+  },
+  complianceAlerts: {
+    name: "Compliance Alerts",
+    price: 103,
+    stripePriceId: "",
+    description:
+      "Automated reminders for filings, tax deadlines, and compliance requirements.",
   },
 };
 
