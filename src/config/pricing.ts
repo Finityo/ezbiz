@@ -190,7 +190,10 @@ export function calculateOrderTotal(
 export function getStripeLineItems(
   packageId: PackageId,
   addons: AddonId[],
-  mode?: "guided" | "whiteglove"
+  options?: {
+    mode?: "guided" | "whiteglove";
+    processingSpeed?: ProcessingSpeed;
+  }
 ) {
   const items: { priceId: string; quantity: number }[] = [];
   const pkg = PACKAGES[packageId];
@@ -203,11 +206,22 @@ export function getStripeLineItems(
       items.push({ priceId: addon.stripePriceId, quantity: 1 });
     }
   });
-  if (mode === "whiteglove") {
+  if (options?.mode === "whiteglove") {
     const wg = ADDONS.whiteGloveBase;
     if (wg?.stripePriceId) {
       items.push({ priceId: wg.stripePriceId, quantity: 1 });
     }
   }
+
+  // Express processing
+  const speed = options?.processingSpeed || "standard";
+  const speedConfig = PROCESSING_SPEEDS[speed];
+  if (speedConfig?.stripePriceId) {
+    items.push({ priceId: speedConfig.stripePriceId, quantity: 1 });
+  }
+
+  // Shipping (always included)
+  items.push({ priceId: SHIPPING.stripePriceId, quantity: 1 });
+
   return items;
 }
