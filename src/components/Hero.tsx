@@ -47,15 +47,15 @@ export default function Hero() {
         </p>
 
         {/* Veteran Eligibility */}
-        <div className="mt-6 flex justify-center items-center gap-2 text-sm font-medium text-foreground">
-          <Flag className="w-4 h-4 text-primary" />
+        <div className="mt-6 flex justify-center items-center gap-2 text-sm font-medium text-foreground px-2">
+          <Flag className="w-4 h-4 text-primary flex-shrink-0" />
           <span>
             Texas Veterans may qualify for filing fee waivers &amp; franchise tax exemptions.
           </span>
         </div>
 
         {/* Direct State Links */}
-        <div className="mt-4 text-sm text-muted-foreground space-x-4">
+        <div className="mt-4 text-sm text-muted-foreground flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
           <a
             href="https://www.sos.state.tx.us/corp/veterans.shtml"
             target="_blank"
@@ -79,7 +79,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-10 flex justify-center gap-4 flex-wrap"
+          className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4"
         >
           {/* FILE INSTANTLY (CorpNet) */}
           <motion.div
@@ -94,7 +94,7 @@ export default function Hero() {
                 trackCorpNetClick();
                 trackClick("File Instantly", "hero_file_instantly", CORPNET_AFFILIATE_LINK);
               }}
-              className="relative inline-flex items-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant cursor-pointer"
+              className="relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-secondary via-secondary-light to-secondary px-10 py-5 font-bold text-lg rounded-lg shadow-hero text-secondary-foreground overflow-hidden transition-all duration-300 hover:shadow-elegant cursor-pointer w-full sm:w-auto"
             >
               {/* Shimmer sweep */}
               <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
@@ -112,7 +112,7 @@ export default function Hero() {
                 trackConsultationClickHero();
                 trackClick("Talk to an Expert", "hero_talk_expert", "/consultation");
               }}
-              className="inline-flex items-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer w-full sm:w-auto"
             >
               <MessageCircle className="w-5 h-5" />
               Talk to an Expert
@@ -127,7 +127,7 @@ export default function Hero() {
                 trackLearnClick();
                 trackClick("Learn First", "hero_learn_first", "/business-guide");
               }}
-              className="inline-flex items-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer w-full sm:w-auto"
             >
               <BookOpen className="w-5 h-5" />
               Learn First

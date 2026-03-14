@@ -30,8 +30,8 @@ const ChooseYourPath = () => {
       <div className="container mx-auto px-4">
         {/* Beta Banner */}
         <div className="max-w-3xl mx-auto mb-8">
-          <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-secondary/10 border border-secondary/20 text-sm font-body">
-            <span className="font-semibold text-secondary">🧪 Beta Testing:</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 px-4 py-3 rounded-lg bg-secondary/10 border border-secondary/20 text-sm font-body">
+            <span className="font-semibold text-secondary whitespace-nowrap">🧪 Beta Testing:</span>
             <span className="text-muted-foreground">
               Please click through the full flow and leave feedback using the floating box.
             </span>
@@ -40,7 +40,7 @@ const ChooseYourPath = () => {
 
         {/* Veteran Highlight */}
         <div className="max-w-3xl mx-auto mb-10">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15 text-sm font-body">
+          <div className="flex items-start gap-2 px-4 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15 text-sm font-body">
             <Shield className="h-4 w-4 text-primary flex-shrink-0" />
             <span>
               <strong className="font-semibold text-foreground">Veteran-Owned.</strong>{" "}

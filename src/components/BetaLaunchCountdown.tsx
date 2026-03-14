@@ -39,7 +39,7 @@ export default function BetaLaunchCountdown() {
         </p>
 
         {/* Countdown */}
-        <div className="flex justify-center gap-6 text-center mb-8">
+        <div className="flex justify-center gap-4 sm:gap-6 text-center mb-8">
           {([
             ["days", "Days"],
             ["hours", "Hours"],
