@@ -46,12 +46,6 @@ const addOns: AddOn[] = [
     description: ADDONS.licenseResearch.description,
   },
   {
-    id: "boiFiling",
-    name: ADDONS.boiFiling.name,
-    price: ADDONS.boiFiling.price,
-    description: ADDONS.boiFiling.description,
-  },
-  {
     id: "dba",
     name: ADDONS.dba.name,
     price: ADDONS.dba.price,

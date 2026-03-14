@@ -8,7 +8,6 @@ export type AddonId =
   | "registeredAgent"
   | "sCorp"
   | "licenseResearch"
-  | "boiFiling"
   | "dba"
   | "annualReport"
   | "corporateKit"
@@ -87,13 +86,6 @@ export const ADDONS: Record<
     stripePriceId: "price_1TAISYIUysiSR1zw9QGizV8b",
     description:
       "Identifies all licenses required based on business type and location.",
-  },
-  boiFiling: {
-    name: "FinCEN BOI Filing",
-    price: 149,
-    stripePriceId: "",
-    description:
-      "We file your Beneficial Ownership Information report with FinCEN.",
   },
   dba: {
     name: "DBA Filing",
