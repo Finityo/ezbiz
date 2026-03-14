@@ -15,6 +15,7 @@ import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, Fil
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
 import OrdersTab from '@/components/admin/OrdersTab';
+import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
 
 
 interface ConsultationRequest {
