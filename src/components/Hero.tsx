@@ -55,7 +55,7 @@ export default function Hero() {
         </div>
 
         {/* Direct State Links */}
-        <div className="mt-4 text-sm text-muted-foreground space-x-4">
+        <div className="mt-4 text-sm text-muted-foreground flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
           <a
             href="https://www.sos.state.tx.us/corp/veterans.shtml"
             target="_blank"
