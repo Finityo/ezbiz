@@ -132,6 +132,40 @@ export const ADDONS: Record<
   },
 };
 
+// ── Processing Speed ──
+export type ProcessingSpeed = "standard" | "express";
+
+export const PROCESSING_SPEEDS: Record<
+  ProcessingSpeed,
+  {
+    name: string;
+    description: string;
+    price: number;
+    stripePriceId: string | null;
+  }
+> = {
+  standard: {
+    name: "Standard Processing",
+    description: "7–10 Business Days to your door",
+    price: 0,
+    stripePriceId: null, // included in package
+  },
+  express: {
+    name: "Express Processing",
+    description: "3–5 Business Days to your door",
+    price: 150,
+    stripePriceId: "price_1TAwtjIUysiSR1zwrXt9vICY",
+  },
+};
+
+// ── Shipping ──
+export const SHIPPING = {
+  name: "Shipping & Handling",
+  description: "Document delivery and handling",
+  price: 29,
+  stripePriceId: "price_1TAwu6IUysiSR1zw8TGxG4RI",
+};
+
 // UTILITIES
 export function getPackage(packageId: PackageId) {
   return PACKAGES[packageId];
