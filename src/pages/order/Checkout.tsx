@@ -198,6 +198,18 @@ export default function Checkout() {
                 <span>${formatPrice(stateFee)}</span>
               </div>
 
+              {processingFee > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>{speedConfig.name}</span>
+                  <span>${formatPrice(processingFee)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-sm">
+                <span>{SHIPPING.name}</span>
+                <span>${formatPrice(shippingFee)}</span>
+              </div>
+
               <Separator />
 
               <div className="flex justify-between text-lg font-bold">
