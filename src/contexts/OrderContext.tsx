@@ -209,6 +209,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       packageId: orderRow.package || "",
       selectedAddOns: [],
       addonQuantities: {},
+      processingSpeed: (orderRow.filing_speed as "standard" | "express") || "standard",
       contact: {
         firstName: c?.first_name || "",
         lastName: c?.last_name || "",
