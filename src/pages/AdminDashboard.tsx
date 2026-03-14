@@ -839,6 +839,10 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="white-glove" className="space-y-6">
+            <WhiteGloveBillingTab />
+          </TabsContent>
+
           <TabsContent value="feedback" className="space-y-6">
             <FeedbackTab />
           </TabsContent>
