@@ -30,8 +30,8 @@ const ChooseYourPath = () => {
       <div className="container mx-auto px-4">
         {/* Beta Banner */}
         <div className="max-w-3xl mx-auto mb-8">
-          <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-secondary/10 border border-secondary/20 text-sm font-body">
-            <span className="font-semibold text-secondary">🧪 Beta Testing:</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 px-4 py-3 rounded-lg bg-secondary/10 border border-secondary/20 text-sm font-body">
+            <span className="font-semibold text-secondary whitespace-nowrap">🧪 Beta Testing:</span>
             <span className="text-muted-foreground">
               Please click through the full flow and leave feedback using the floating box.
             </span>
