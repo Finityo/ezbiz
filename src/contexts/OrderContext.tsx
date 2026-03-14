@@ -96,6 +96,7 @@ export const initialOrderState: OrderState = {
   packageId: "",
   selectedAddOns: [],
   addonQuantities: {},
+  processingSpeed: "standard",
   contact: { firstName: "", lastName: "", email: "", phone: "" },
   business: {
     companyName: "",

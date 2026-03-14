@@ -81,7 +81,7 @@ const ReviewStep = ({
     const lineItems = getStripeLineItems(
       selectedPackage as PackageId,
       selectedAddOns as AddonId[],
-      mode
+      { mode }
     );
 
     onCheckoutStarted();
