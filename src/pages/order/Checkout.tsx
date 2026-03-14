@@ -52,7 +52,8 @@ export default function Checkout() {
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       order.packageId as PackageId,
-      order.selectedAddOns as AddonId[]
+      order.selectedAddOns as AddonId[],
+      { processingSpeed: order.processingSpeed || "standard" }
     );
 
     trackCheckoutStart(pkg?.name || order.packageId, total);
