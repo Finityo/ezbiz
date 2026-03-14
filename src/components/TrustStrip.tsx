@@ -1,7 +1,7 @@
 export default function TrustStrip() {
   return (
     <section className="w-full border-y border-border bg-muted/40">
-      <div className="max-w-6xl mx-auto px-6 py-8 grid md:grid-cols-4 gap-6 text-center">
+      <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
         {/* Veteran Owned */}
         <div className="flex flex-col items-center">
           <div className="text-3xl mb-2">🇺🇸</div>

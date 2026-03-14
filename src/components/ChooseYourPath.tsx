@@ -40,7 +40,7 @@ const ChooseYourPath = () => {
 
         {/* Veteran Highlight */}
         <div className="max-w-3xl mx-auto mb-10">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15 text-sm font-body">
+          <div className="flex items-start gap-2 px-4 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15 text-sm font-body">
             <Shield className="h-4 w-4 text-primary flex-shrink-0" />
             <span>
               <strong className="font-semibold text-foreground">Veteran-Owned.</strong>{" "}
