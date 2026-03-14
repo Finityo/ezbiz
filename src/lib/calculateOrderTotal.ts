@@ -1,4 +1,4 @@
-import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, type ProcessingSpeed } from "@/config/pricing";
 
 /**
  * Server-side-safe order total calculation.
@@ -7,7 +7,8 @@ import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing
 export const calculateOrderTotal = (
   pkg: string,
   addons: string[],
-  stateFee: number = 0
+  stateFee: number = 0,
+  processingSpeed: ProcessingSpeed = "standard"
 ): number => {
   const packageConfig = PACKAGES[pkg as PackageId];
   if (!packageConfig) {
@@ -24,6 +25,8 @@ export const calculateOrderTotal = (
   });
 
   total += stateFee;
+  total += PROCESSING_SPEEDS[processingSpeed]?.price || 0;
+  total += SHIPPING.price;
 
   return total;
 };

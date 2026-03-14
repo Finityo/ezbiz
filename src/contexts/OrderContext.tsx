@@ -324,6 +324,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             state: order.state || null,
             entity_type: order.entityType || null,
             package: order.packageId || null,
+            filing_speed: order.processingSpeed || "standard",
           })
           .eq("id", orderId);
 
