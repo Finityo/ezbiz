@@ -127,7 +127,7 @@ export default function Hero() {
                 trackLearnClick();
                 trackClick("Learn First", "hero_learn_first", "/business-guide");
               }}
-              className="inline-flex items-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer w-full sm:w-auto"
             >
               <BookOpen className="w-5 h-5" />
               Learn First
