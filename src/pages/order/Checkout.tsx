@@ -3,7 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
-import { PACKAGES, ADDONS, type PackageId, type AddonId, getStripeLineItems } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, getStripeLineItems } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
@@ -43,12 +43,17 @@ export default function Checkout() {
     return sum + (addon?.price || 0);
   }, 0);
 
-  const total = (pkg?.price || 0) + addonsTotal + stateFee;
+  const speedConfig = PROCESSING_SPEEDS[order.processingSpeed || "standard"];
+  const processingFee = speedConfig?.price || 0;
+  const shippingFee = SHIPPING.price;
+
+  const total = (pkg?.price || 0) + addonsTotal + stateFee + processingFee + shippingFee;
 
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       order.packageId as PackageId,
-      order.selectedAddOns as AddonId[]
+      order.selectedAddOns as AddonId[],
+      { processingSpeed: order.processingSpeed || "standard" }
     );
 
     trackCheckoutStart(pkg?.name || order.packageId, total);
@@ -191,6 +196,18 @@ export default function Checkout() {
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
                 <span>${formatPrice(stateFee)}</span>
+              </div>
+
+              {processingFee > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>{speedConfig.name}</span>
+                  <span>${formatPrice(processingFee)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-sm">
+                <span>{SHIPPING.name}</span>
+                <span>${formatPrice(shippingFee)}</span>
               </div>
 
               <Separator />

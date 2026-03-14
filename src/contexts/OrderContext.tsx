@@ -67,6 +67,7 @@ export interface OrderState {
   packageId: string;
   selectedAddOns: string[];
   addonQuantities: Record<string, number>;
+  processingSpeed: "standard" | "express";
   contact: ContactInfo;
   business: BusinessInfo;
   businessAddress: Address;
@@ -95,6 +96,7 @@ export const initialOrderState: OrderState = {
   packageId: "",
   selectedAddOns: [],
   addonQuantities: {},
+  processingSpeed: "standard",
   contact: { firstName: "", lastName: "", email: "", phone: "" },
   business: {
     companyName: "",
@@ -207,6 +209,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       packageId: orderRow.package || "",
       selectedAddOns: [],
       addonQuantities: {},
+      processingSpeed: (orderRow.filing_speed as "standard" | "express") || "standard",
       contact: {
         firstName: c?.first_name || "",
         lastName: c?.last_name || "",
@@ -321,6 +324,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             state: order.state || null,
             entity_type: order.entityType || null,
             package: order.packageId || null,
+            filing_speed: order.processingSpeed || "standard",
           })
           .eq("id", orderId);
 

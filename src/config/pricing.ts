@@ -132,6 +132,40 @@ export const ADDONS: Record<
   },
 };
 
+// ── Processing Speed ──
+export type ProcessingSpeed = "standard" | "express";
+
+export const PROCESSING_SPEEDS: Record<
+  ProcessingSpeed,
+  {
+    name: string;
+    description: string;
+    price: number;
+    stripePriceId: string | null;
+  }
+> = {
+  standard: {
+    name: "Standard Processing",
+    description: "7–10 Business Days to your door",
+    price: 0,
+    stripePriceId: null, // included in package
+  },
+  express: {
+    name: "Express Processing",
+    description: "3–5 Business Days to your door",
+    price: 150,
+    stripePriceId: "price_1TAwtjIUysiSR1zwrXt9vICY",
+  },
+};
+
+// ── Shipping ──
+export const SHIPPING = {
+  name: "Shipping & Handling",
+  description: "Document delivery and handling",
+  price: 29,
+  stripePriceId: "price_1TAwu6IUysiSR1zw8TGxG4RI",
+};
+
 // UTILITIES
 export function getPackage(packageId: PackageId) {
   return PACKAGES[packageId];
@@ -144,19 +178,24 @@ export function getAddon(addonId: AddonId) {
 export function calculateOrderTotal(
   packageId: PackageId,
   addons: AddonId[],
-  stateFee: number
+  stateFee: number,
+  processingSpeed: ProcessingSpeed = "standard"
 ) {
   const packagePrice = PACKAGES[packageId].price;
   const addonsTotal = addons.reduce((sum, addonId) => {
     return sum + ADDONS[addonId].price;
   }, 0);
-  return packagePrice + addonsTotal + stateFee;
+  const processingFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
+  return packagePrice + addonsTotal + stateFee + processingFee + SHIPPING.price;
 }
 
 export function getStripeLineItems(
   packageId: PackageId,
   addons: AddonId[],
-  mode?: "guided" | "whiteglove"
+  options?: {
+    mode?: "guided" | "whiteglove";
+    processingSpeed?: ProcessingSpeed;
+  }
 ) {
   const items: { priceId: string; quantity: number }[] = [];
   const pkg = PACKAGES[packageId];
@@ -169,11 +208,22 @@ export function getStripeLineItems(
       items.push({ priceId: addon.stripePriceId, quantity: 1 });
     }
   });
-  if (mode === "whiteglove") {
+  if (options?.mode === "whiteglove") {
     const wg = ADDONS.whiteGloveBase;
     if (wg?.stripePriceId) {
       items.push({ priceId: wg.stripePriceId, quantity: 1 });
     }
   }
+
+  // Express processing
+  const speed = options?.processingSpeed || "standard";
+  const speedConfig = PROCESSING_SPEEDS[speed];
+  if (speedConfig?.stripePriceId) {
+    items.push({ priceId: speedConfig.stripePriceId, quantity: 1 });
+  }
+
+  // Shipping (always included)
+  items.push({ priceId: SHIPPING.stripePriceId, quantity: 1 });
+
   return items;
 }
