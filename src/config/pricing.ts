@@ -8,7 +8,6 @@ export type AddonId =
   | "registeredAgent"
   | "sCorp"
   | "licenseResearch"
-  | "boiFiling"
   | "dba"
   | "annualReport"
   | "corporateKit"
