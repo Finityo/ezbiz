@@ -359,7 +359,7 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="orders" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="orders">
               <Package className="h-4 w-4 mr-2" />
               Orders
@@ -371,6 +371,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="applications">
               <FileText className="h-4 w-4 mr-2" />
               Applications ({filteredApplications.length})
+            </TabsTrigger>
+            <TabsTrigger value="white-glove">
+              <HandHelping className="h-4 w-4 mr-2" />
+              White Glove
             </TabsTrigger>
             <TabsTrigger value="feedback">
               <Star className="h-4 w-4 mr-2" />
