@@ -58,7 +58,21 @@ serve(async (req) => {
       customerId = customer.id;
     }
 
-    // Create invoice item + finalize invoice
+    // Pricing rules
+    const INCLUDED_HOURS = 2;
+    const HOURLY_RATE = 80;
+
+    // Calculate billable hours (only hours beyond the first 2)
+    const extraHours = Math.max(0, hours - INCLUDED_HOURS);
+
+    if (extraHours === 0) {
+      return new Response(
+        JSON.stringify({ success: false, message: "No billable overage hours." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      );
+    }
+
+    // Create invoice
     const invoice = await stripe.invoices.create({
       customer: customerId,
       collection_method: "send_invoice",
@@ -69,21 +83,22 @@ serve(async (req) => {
     await stripe.invoiceItems.create({
       customer: customerId,
       price: WHITE_GLOVE_HOURLY_PRICE_ID,
-      quantity: hours,
+      quantity: extraHours,
       invoice: invoice.id,
     });
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id);
-
-    // Send the invoice
     await stripe.invoices.sendInvoice(invoice.id);
+
+    const amount = extraHours * HOURLY_RATE;
 
     return new Response(
       JSON.stringify({
         success: true,
         invoiceId: finalizedInvoice.id,
         invoiceUrl: finalizedInvoice.hosted_invoice_url,
-        amount: (hours * 80 * 100) / 100,
+        billedHours: extraHours,
+        amount,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
