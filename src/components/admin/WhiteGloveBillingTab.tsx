@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle, CheckCircle2, ExternalLink, Loader2, RefreshCw } from "lucide-react";
 
 interface BillingResult {
   success?: boolean;
@@ -17,12 +19,43 @@ interface BillingResult {
   error?: string;
 }
 
+interface WhiteGloveInvoice {
+  id: string;
+  customerEmail: string;
+  hours: number;
+  amount: number;
+  status: string;
+  created: string;
+  invoiceUrl: string | null;
+  orderId: string | null;
+}
+
 const WhiteGloveBillingTab = () => {
   const [email, setEmail] = useState("");
   const [hours, setHours] = useState(3);
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BillingResult | null>(null);
+
+  // History state
+  const [invoices, setInvoices] = useState<WhiteGloveInvoice[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
+  const loadInvoices = useCallback(async () => {
+    setHistoryLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("list-white-glove-invoices");
+      if (error) throw error;
+      setInvoices(data || []);
+    } catch (err) {
+      console.error("Failed to load invoices", err);
+    }
+    setHistoryLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadInvoices();
+  }, [loadInvoices]);
 
   const submitBilling = async () => {
     if (!email.trim()) return;
@@ -43,6 +76,7 @@ const WhiteGloveBillingTab = () => {
 
       if (error) throw error;
       setResult(data);
+      if (data?.success) loadInvoices();
     } catch (err: any) {
       setResult({ error: err.message });
     }
@@ -54,8 +88,22 @@ const WhiteGloveBillingTab = () => {
   const extraHours = Math.max(0, hours - includedHours);
   const estimatedAmount = extraHours * 80;
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "paid":
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Paid</Badge>;
+      case "open":
+        return <Badge variant="outline">Open</Badge>;
+      case "void":
+        return <Badge variant="secondary">Void</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Billing Form */}
       <Card>
         <CardHeader>
           <CardTitle>White Glove Overage Billing</CardTitle>
@@ -115,6 +163,7 @@ const WhiteGloveBillingTab = () => {
         </CardContent>
       </Card>
 
+      {/* Result feedback */}
       {result && (
         <Card>
           <CardContent className="pt-6">
@@ -156,6 +205,75 @@ const WhiteGloveBillingTab = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Billing History */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div>
+            <CardTitle>Recent White Glove Invoices</CardTitle>
+            <CardDescription>History of overage billing invoices sent via Stripe</CardDescription>
+          </div>
+          <Button variant="outline" size="sm" onClick={loadInvoices} disabled={historyLoading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${historyLoading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {historyLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          ) : invoices.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No White Glove overage invoices found.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Hours</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Invoice</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {invoices.map((inv) => (
+                    <TableRow key={inv.id}>
+                      <TableCell className="font-medium">{inv.customerEmail}</TableCell>
+                      <TableCell>{inv.hours}</TableCell>
+                      <TableCell>${inv.amount}</TableCell>
+                      <TableCell>{getStatusBadge(inv.status ?? "unknown")}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {new Date(inv.created).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {inv.invoiceUrl ? (
+                          <a
+                            href={inv.invoiceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                          >
+                            View <ExternalLink className="h-3 w-3" />
+                          </a>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
