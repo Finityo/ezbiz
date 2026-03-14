@@ -12,7 +12,8 @@ export type AddonId =
   | "dba"
   | "annualReport"
   | "corporateKit"
-  | "complianceAlerts";
+  | "complianceAlerts"
+  | "whiteGlove";
 
 export const PACKAGES: Record<
   PackageId,
