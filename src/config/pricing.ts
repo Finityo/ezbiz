@@ -12,7 +12,8 @@ export type AddonId =
   | "annualReport"
   | "corporateKit"
   | "complianceAlerts"
-  | "whiteGlove";
+  | "whiteGloveBase"
+  | "whiteGloveHourly";
 
 export const PACKAGES: Record<
   PackageId,
