@@ -178,13 +178,15 @@ export function getAddon(addonId: AddonId) {
 export function calculateOrderTotal(
   packageId: PackageId,
   addons: AddonId[],
-  stateFee: number
+  stateFee: number,
+  processingSpeed: ProcessingSpeed = "standard"
 ) {
   const packagePrice = PACKAGES[packageId].price;
   const addonsTotal = addons.reduce((sum, addonId) => {
     return sum + ADDONS[addonId].price;
   }, 0);
-  return packagePrice + addonsTotal + stateFee;
+  const processingFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
+  return packagePrice + addonsTotal + stateFee + processingFee + SHIPPING.price;
 }
 
 export function getStripeLineItems(
