@@ -19,7 +19,7 @@ type ServiceDetails = {
   notes: string;
 };
 
-const WHITE_GLOVE_PRICE = ADDONS.whiteGlove.price;
+const WHITE_GLOVE_PRICE = ADDONS.whiteGloveBase.price;
 
 interface ReviewStepProps {
   state: string;

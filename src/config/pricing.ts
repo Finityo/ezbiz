@@ -12,7 +12,8 @@ export type AddonId =
   | "annualReport"
   | "corporateKit"
   | "complianceAlerts"
-  | "whiteGlove";
+  | "whiteGloveBase"
+  | "whiteGloveHourly";
 
 export const PACKAGES: Record<
   PackageId,
@@ -115,12 +116,19 @@ export const ADDONS: Record<
     description:
       "Automated reminders for filings, tax deadlines, and compliance requirements.",
   },
-  whiteGlove: {
-    name: "White Glove Service",
-    price: 199,
-    stripePriceId: "price_WHITEGLOVE",
+  whiteGloveBase: {
+    name: "White Glove Concierge Filing (First 2 Hours)",
+    price: 150,
+    stripePriceId: "price_1TAkcOIUysiSR1zwNvOiYDnD",
     description:
-      "In-person mobile filing service — we come to you and handle everything.",
+      "In-person mobile filing service — first 2 hours included.",
+  },
+  whiteGloveHourly: {
+    name: "White Glove Additional Hour",
+    price: 80,
+    stripePriceId: "price_1TAkckIUysiSR1zw6EQcZ3lo",
+    description:
+      "Additional hour of White Glove concierge filing beyond the first 2 hours.",
   },
 };
 
@@ -162,7 +170,7 @@ export function getStripeLineItems(
     }
   });
   if (mode === "whiteglove") {
-    const wg = ADDONS.whiteGlove;
+    const wg = ADDONS.whiteGloveBase;
     if (wg?.stripePriceId) {
       items.push({ priceId: wg.stripePriceId, quantity: 1 });
     }
