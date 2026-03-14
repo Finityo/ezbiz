@@ -47,8 +47,8 @@ export default function Hero() {
         </p>
 
         {/* Veteran Eligibility */}
-        <div className="mt-6 flex justify-center items-center gap-2 text-sm font-medium text-foreground">
-          <Flag className="w-4 h-4 text-primary" />
+        <div className="mt-6 flex justify-center items-center gap-2 text-sm font-medium text-foreground px-2">
+          <Flag className="w-4 h-4 text-primary flex-shrink-0" />
           <span>
             Texas Veterans may qualify for filing fee waivers &amp; franchise tax exemptions.
           </span>
