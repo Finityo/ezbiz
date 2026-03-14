@@ -20,19 +20,19 @@ export const PACKAGES: Record<
 > = {
   basic: {
     name: "Basic",
-    price: 148,
+    price: 99,
     stripePriceId: "price_1TAIL4IUysiSR1zw3M01ArWS",
     description: "Business formation with required filing documents",
   },
   deluxe: {
     name: "Deluxe",
-    price: 328,
+    price: 219,
     stripePriceId: "price_1TAIMKIUysiSR1zwu3f0jHW4",
     description: "Formation plus essential compliance documents",
   },
   complete: {
     name: "Complete",
-    price: 403,
+    price: 269,
     stripePriceId: "price_1TAIMdIUysiSR1zwqXRGk7WY",
     description: "Full formation package with compliance and filings",
   },
