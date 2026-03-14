@@ -15,12 +15,14 @@ interface EmailPayload {
 }
 
 const STATUS_SUBJECTS: Record<string, string> = {
+  draft: "Your EZ Biz Order Has Been Received",
   processing: "Your Formation Has Entered Processing",
+  payment_complete: "Payment Confirmed — We Are Preparing Your Filing",
   submitted: "Your LLC Filing Has Been Submitted",
+  state_processing: "Your Filing Is Being Processed by the State",
   filed: "Your LLC Is Officially Filed",
   completed: "Your Formation Is Complete — Documents Available",
-  payment_complete: "Your LLC Filing Has Been Received",
-  Paid: "Your LLC Filing Has Been Received",
+  Paid: "Payment Confirmed — We Are Preparing Your Filing",
   Submitted: "Your LLC Filing Has Been Submitted",
 };
 

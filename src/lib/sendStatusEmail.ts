@@ -10,8 +10,11 @@ interface SendStatusEmailParams {
 }
 
 const STATUS_SUBJECTS: Record<string, string> = {
+  draft: 'Your order has been received.',
   processing: 'Your formation has entered processing.',
+  payment_complete: 'Payment confirmed. We are preparing your filing.',
   submitted: 'Your formation has been submitted to the state.',
+  state_processing: 'Your filing is being processed by the state.',
   filed: 'Your business has officially been filed.',
   completed: 'Your formation is complete. Documents are now available.',
 };
