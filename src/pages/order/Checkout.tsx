@@ -46,14 +46,10 @@ export default function Checkout() {
   const total = (pkg?.price || 0) + addonsTotal + stateFee;
 
   const handleCheckout = async () => {
-    const lineItems: { priceId: string; quantity?: number }[] = [];
-
-    if (pkg) lineItems.push({ priceId: pkg.stripePriceId });
-
-    order.selectedAddOns.forEach((id) => {
-      const addon = ADDONS[id as AddonId];
-      if (addon) lineItems.push({ priceId: addon.stripePriceId });
-    });
+    const lineItems = getStripeLineItems(
+      order.packageId as PackageId,
+      order.selectedAddOns as AddonId[]
+    );
 
     trackCheckoutStart(pkg?.name || order.packageId, total);
 
