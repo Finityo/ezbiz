@@ -65,7 +65,7 @@ const buildEmailHtml = (payload: EmailPayload): string => `
                   <td style="color:#2b6cb0;font-size:14px;font-weight:700;text-transform:uppercase;">${payload.status}</td>
                 </tr>
               </table>
-              <a href="https://ezbizfile.com/dashboard" style="display:inline-block;background-color:#2b6cb0;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;">
+              <a href="https://ezbizs.com/dashboard" style="display:inline-block;background-color:#2b6cb0;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;">
                 View Your Dashboard
               </a>
               <p style="color:#a0aec0;font-size:12px;margin-top:24px;">
@@ -121,7 +121,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'EZ Biz Filing <notifications@ezbizfile.com>',
+        from: 'EZ Biz Filing <notifications@ezbizs.com>',
         to: [payload.to],
         subject,
         html,
