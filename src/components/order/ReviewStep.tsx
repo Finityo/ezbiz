@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
+import { PACKAGES, ADDONS, type PackageId, type AddonId, calculateOrderTotal, getStripeLineItems } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -68,22 +68,20 @@ const ReviewStep = ({
       : getStateFee(state)
     : 0;
 
-  const addonsTotal = selectedAddOns.reduce((sum, id) => {
-    const addon = ADDONS[id as AddonId];
-    return sum + (addon?.price || 0);
-  }, 0);
+  const baseTotal = calculateOrderTotal(
+    selectedPackage as PackageId,
+    selectedAddOns as AddonId[],
+    stateFee
+  );
 
   const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_PRICE : 0;
-  const total = (pkg?.price || 0) + addonsTotal + stateFee + whiteGloveFee;
+  const total = baseTotal + whiteGloveFee;
 
   const handleCheckout = async () => {
-    const lineItems: { priceId: string; quantity?: number }[] = [];
-    if (pkg) lineItems.push({ priceId: pkg.stripePriceId });
-    selectedAddOns.forEach((id) => {
-      const addon = ADDONS[id as AddonId];
-      if (addon) lineItems.push({ priceId: addon.stripePriceId });
-    });
-    // White glove fee handled as dynamic line item on backend if needed
+    const lineItems = getStripeLineItems(
+      selectedPackage as PackageId,
+      selectedAddOns as AddonId[]
+    );
 
     onCheckoutStarted();
     trackCheckoutStart(pkg?.name || selectedPackage, total);
