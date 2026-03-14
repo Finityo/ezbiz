@@ -11,11 +11,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package, HandHelping } from 'lucide-react';
+import { Search, Phone, Mail, MessageSquare, Filter, Download, ExternalLink, FileText, BarChart3, Star, Package, HandHelping, Users } from 'lucide-react';
 import AnalyticsTab from '@/components/admin/AnalyticsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
 import OrdersTab from '@/components/admin/OrdersTab';
 import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
+import UsersTab from '@/components/admin/UsersTab';
 
 
 interface ConsultationRequest {
@@ -386,6 +387,11 @@ const AdminDashboard = () => {
               <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Analytics</span>
               <span className="sm:hidden">Stats</span>
+            </TabsTrigger>
+            <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Users</span>
+              <span className="sm:hidden">Users</span>
             </TabsTrigger>
           </TabsList>
 
@@ -852,6 +858,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="analytics" className="space-y-6">
             <AnalyticsTab />
+          </TabsContent>
+
+          <TabsContent value="users" className="space-y-6">
+            <UsersTab />
           </TabsContent>
         </Tabs>
       </div>
