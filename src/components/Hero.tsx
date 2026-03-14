@@ -112,7 +112,7 @@ export default function Hero() {
                 trackConsultationClickHero();
                 trackClick("Talk to an Expert", "hero_talk_expert", "/consultation");
               }}
-              className="inline-flex items-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer w-full sm:w-auto"
             >
               <MessageCircle className="w-5 h-5" />
               Talk to an Expert
