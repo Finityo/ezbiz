@@ -144,3 +144,18 @@ export function calculateOrderTotal(
   }, 0);
   return packagePrice + addonsTotal + stateFee;
 }
+
+export function getStripeLineItems(packageId: PackageId, addons: AddonId[]) {
+  const items: { priceId: string; quantity: number }[] = [];
+  const pkg = PACKAGES[packageId];
+  if (pkg?.stripePriceId) {
+    items.push({ priceId: pkg.stripePriceId, quantity: 1 });
+  }
+  addons.forEach((addonId) => {
+    const addon = ADDONS[addonId];
+    if (addon?.stripePriceId && addon.stripePriceId.length > 0) {
+      items.push({ priceId: addon.stripePriceId, quantity: 1 });
+    }
+  });
+  return items;
+}
