@@ -45,6 +45,36 @@ const addOns: AddOn[] = [
     price: ADDONS.licenseResearch.price,
     description: ADDONS.licenseResearch.description,
   },
+  {
+    id: "boiFiling",
+    name: ADDONS.boiFiling.name,
+    price: ADDONS.boiFiling.price,
+    description: ADDONS.boiFiling.description,
+  },
+  {
+    id: "dba",
+    name: ADDONS.dba.name,
+    price: ADDONS.dba.price,
+    description: ADDONS.dba.description,
+  },
+  {
+    id: "annualReport",
+    name: ADDONS.annualReport.name,
+    price: ADDONS.annualReport.price,
+    description: ADDONS.annualReport.description,
+  },
+  {
+    id: "corporateKit",
+    name: ADDONS.corporateKit.name,
+    price: ADDONS.corporateKit.price,
+    description: ADDONS.corporateKit.description,
+  },
+  {
+    id: "complianceAlerts",
+    name: ADDONS.complianceAlerts.name,
+    price: ADDONS.complianceAlerts.price,
+    description: ADDONS.complianceAlerts.description,
+  },
 ];
 
 export interface AddonQuantities {
