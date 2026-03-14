@@ -80,7 +80,8 @@ const ReviewStep = ({
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       selectedPackage as PackageId,
-      selectedAddOns as AddonId[]
+      selectedAddOns as AddonId[],
+      mode
     );
 
     onCheckoutStarted();
