@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
 import Navigation from "@/components/Navigation";
@@ -6,420 +7,327 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
-import StaggeredGrid from "@/components/StaggeredGrid";
-import TiltCard from "@/components/TiltCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star, Shield, Users, FileText, MapPin } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useNavigate } from "react-router-dom";
+import { Check, Plus, Eye, EyeOff } from "lucide-react";
 import { PACKAGES, ADDONS } from "@/config/pricing";
-import { getStateFee, getCorpStateFee, STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
-import businessDocuments from "@/assets/business-documents.jpg";
-import pricingHero from "@/assets/business-success.jpg";
-import transparentPricing from "@/assets/transparent-pricing.jpg";
-import customerSatisfaction from "@/assets/customer-satisfaction.jpg";
-import ParallaxImage from "@/components/ParallaxImage";
-import { EZBIZ_COPY } from "@/content/ezbizCopy";
 
-const { pricing } = EZBIZ_COPY;
-const trustIcons = [Shield, Users, FileText];
+const packages = [
+  {
+    key: "basic" as const,
+    name: PACKAGES.basic.name,
+    price: PACKAGES.basic.price,
+    registeredAgent: "60 days free then $149/year",
+    ein: false,
+    operatingAgreement: false,
+    llcKit: false,
+  },
+  {
+    key: "deluxe" as const,
+    name: PACKAGES.deluxe.name,
+    price: PACKAGES.deluxe.price,
+    registeredAgent: "1 year free then $149/year",
+    ein: true,
+    operatingAgreement: false,
+    llcKit: false,
+    popular: true,
+  },
+  {
+    key: "complete" as const,
+    name: PACKAGES.complete.name,
+    price: PACKAGES.complete.price,
+    registeredAgent: "1 year free then $149/year",
+    ein: true,
+    operatingAgreement: true,
+    llcKit: true,
+  },
+];
 
-const packageKeyMap = ["basic", "deluxe", "complete"] as const;
+const features = [
+  {
+    name: "Name Availability Check",
+    description: "Search to confirm your business name is available before filing.",
+  },
+  {
+    name: "File Articles of Organization",
+    description: "Official filing with the Secretary of State to form your LLC.",
+  },
+  {
+    name: "Corporate Compliance Tool",
+    description:
+      "Business Information Zone provides reminders for filings, tax deadlines and stores your documents securely.",
+  },
+  {
+    name: "Registered Agent",
+    description:
+      "Required for all LLCs and corporations. Keeps your address private and accepts legal service on behalf of your company.",
+  },
+  {
+    name: "Business License Research",
+    description:
+      "Identifies every license and permit your business may need based on location and industry.",
+  },
+  {
+    name: "Custom Operating Agreement",
+    description:
+      "Prepared document with your company details and optional custom provisions.",
+  },
+  {
+    name: "Custom LLC Kit & Seal",
+    description:
+      "Professional binder, LLC seal, and member certificates for your company records.",
+  },
+  {
+    name: "Federal Tax ID (EIN)",
+    description:
+      "We obtain your EIN from the IRS once your formation is approved.",
+  },
+];
+
+function getCellValue(featureName: string, pkg: (typeof packages)[number]) {
+  switch (featureName) {
+    case "Registered Agent":
+      return { type: "text" as const, value: pkg.registeredAgent };
+    case "Federal Tax ID (EIN)":
+      return pkg.ein
+        ? { type: "included" as const }
+        : { type: "addon" as const };
+    case "Custom Operating Agreement":
+      return pkg.operatingAgreement
+        ? { type: "included" as const }
+        : { type: "addon" as const };
+    case "Custom LLC Kit & Seal":
+      return pkg.llcKit
+        ? { type: "included" as const }
+        : { type: "addon" as const };
+    default:
+      return { type: "included" as const };
+  }
+}
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [selectedState, setSelectedState] = useState("");
-  const stateFee = selectedState ? getStateFee(selectedState) : 0;
-  const corpStateFee = selectedState ? getCorpStateFee(selectedState) : 0;
+  const [showDescriptions, setShowDescriptions] = useState(false);
 
-  const handlePackageCheckout = (packageKey: string) => {
+  const handleStart = (packageKey: string) => {
     const params = new URLSearchParams();
-    params.set('package', packageKey);
-    if (selectedState) params.set('state', selectedState);
-    trackClick(`Choose ${packageKey}`, 'package_cta', `/order-flow?${params.toString()}`);
+    params.set("package", packageKey);
+    trackClick(`Start ${packageKey}`, "package_cta", `/order-flow?${params.toString()}`);
     navigate(`/order-flow?${params.toString()}`);
   };
-
-  const handleAddOnClick = () => {
-    trackClick('Get Started Add-on', 'addon_cta', '/order-flow');
-    navigate('/order-flow');
-  };
-
-  const llcPackages = pricing.llcPackages.map((pkg, i) => ({
-    ...pkg,
-    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
-    packageKey: packageKeyMap[i],
-    period: "+ State Fee",
-  }));
-
-  const corpPackages = pricing.corpPackages.map((pkg, i) => ({
-    ...pkg,
-    price: `$${formatPrice(PACKAGES[packageKeyMap[i]].price)}`,
-    packageKey: packageKeyMap[i],
-    period: "+ State Fee",
-  }));
-
-  const additionalServices = [
-    { name: ADDONS.ein.name, price: `$${formatPrice(ADDONS.ein.price)}` },
-    { name: ADDONS.operatingAgreement.name, price: `$${formatPrice(ADDONS.operatingAgreement.price)}` },
-    { name: ADDONS.registeredAgent.name, price: `$${formatPrice(ADDONS.registeredAgent.price)}` },
-    { name: ADDONS.sCorp.name, price: `$${formatPrice(ADDONS.sCorp.price)}` },
-    { name: ADDONS.licenseResearch.name, price: `$${formatPrice(ADDONS.licenseResearch.price)}` },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <FloatingCTA />
       <BackToTop />
-      
+
       <main>
-        {/* Hero Section */}
-        <section className="relative bg-gradient-primary text-white overflow-hidden pattern-geometric">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="absolute inset-0 pattern-dots opacity-40"></div>
-          <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div className="max-w-2xl">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">{pricing.hero.headline}</h1>
-                <p className="text-base md:text-xl mb-6 md:mb-8 text-white/90">{pricing.hero.subheadline}</p>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-white/80 text-sm">
-                  {pricing.hero.badges.map((badge, i) => (
-                    <div key={i} className="flex items-center space-x-2">
-                      <Check className="h-5 w-5 flex-shrink-0" />
-                      <span>{badge}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="relative hidden md:block">
-                <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 to-primary/10 rounded-3xl blur-2xl"></div>
-                <ParallaxImage 
-                  src={pricingHero} 
-                  alt="Professional business team celebrating success" 
-                  className="relative shadow-2xl w-full h-auto object-cover scale-110"
-                  speed={0.2}
-                  maxOffset={80}
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent rounded-2xl pointer-events-none"></div>
-              </div>
-            </div>
+        {/* Hero */}
+        <section className="bg-gradient-primary text-white py-12 md:py-20">
+          <div className="container mx-auto px-4 text-center max-w-3xl">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+              Choose Your Business Formation Package
+            </h1>
+            <p className="text-lg text-white/90">
+              Transparent pricing. No hidden fees. State filing fees additional.
+            </p>
           </div>
         </section>
 
-        {/* Trust Indicators */}
-        <AnimatedSection className="py-10 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.trust.heading}</h2>
-                  <div className="space-y-6">
-                    {pricing.trust.items.map((item, i) => {
-                      const IconComponent = trustIcons[i];
-                      return (
-                        <div key={i} className="flex items-start space-x-4">
-                          <div className="bg-primary/10 p-3 rounded-lg">
-                            <IconComponent className="h-6 w-6 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                            <p className="text-muted-foreground">{item.description}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="relative order-1 lg:order-2">
-                  <img 
-                    src={transparentPricing} 
-                    alt="Business calculator and financial documents showing transparent pricing" 
-                    className="rounded-lg shadow-lg w-full h-auto"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-lg"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </AnimatedSection>
-
-        {/* State Selector */}
-        <AnimatedSection className="py-8 md:py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-xl mx-auto text-center">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <MapPin className="h-5 w-5 text-primary" />
-                <h2 className="text-xl md:text-2xl font-bold">{pricing.stateSelector.heading}</h2>
-              </div>
-              <p className="text-muted-foreground mb-5 text-sm">{pricing.stateSelector.subheading}</p>
-              <Select value={selectedState} onValueChange={setSelectedState}>
-                <SelectTrigger className="w-full max-w-xs mx-auto">
-                  <SelectValue placeholder={pricing.stateSelector.placeholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.keys(STATE_FILING_FEES).map((state) => (
-                    <SelectItem key={state} value={state}>
-                      {state} — ${formatPrice(STATE_FILING_FEES[state])}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedState && (
-                <div className="mt-3 text-sm font-medium text-primary flex flex-col sm:flex-row gap-1 sm:gap-4 justify-center">
-                   <span>LLC filing fee: <span className="font-bold">${formatPrice(stateFee)}</span></span>
-                   <span>Corp filing fee: <span className="font-bold">${formatPrice(corpStateFee)}</span></span>
-                </div>
-              )}
-            </div>
-          </div>
-        </AnimatedSection>
-
-        {/* LLC Packages */}
+        {/* Comparison Table */}
         <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12">
-              <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.llcSection.heading}</h2>
-              <p className="text-base md:text-xl text-muted-foreground">{pricing.llcSection.subheading}</p>
+            <div className="flex justify-end mb-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDescriptions(!showDescriptions)}
+                className="gap-2"
+              >
+                {showDescriptions ? (
+                  <>
+                    <EyeOff className="h-4 w-4" /> Hide Descriptions
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4" /> Show Descriptions
+                  </>
+                )}
+              </Button>
             </div>
-            
-            <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
-              {llcPackages.map((pkg, index) => (
-                <TiltCard key={index} className={`relative ${'popular' in pkg && pkg.popular ? 'border-primary shadow-lg' : ''}`} tiltMax={6} scale={1.02}>
-                  {'popular' in pkg && pkg.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                      <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center">
-                        <Star className="h-4 w-4 mr-1" />
-                        Most Popular
-                      </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full border-collapse max-w-5xl mx-auto">
+                <thead>
+                  <tr>
+                    <th className="text-left p-4 border border-border bg-muted/50 w-[35%]">
+                      <span className="text-lg font-bold text-foreground">Features</span>
+                    </th>
+                    {packages.map((pkg) => (
+                      <th
+                        key={pkg.key}
+                        className={`border border-border p-4 text-center ${
+                          pkg.popular ? "bg-primary/5 ring-2 ring-primary ring-inset" : "bg-muted/30"
+                        }`}
+                      >
+                        {pkg.popular && (
+                          <div className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
+                            Most Popular
+                          </div>
+                        )}
+                        <h3 className="text-xl font-bold text-foreground">{pkg.name}</h3>
+                        <p className="text-2xl font-bold text-primary mt-1">
+                          ${formatPrice(pkg.price)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">+ state filing fee</p>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {features.map((feature, idx) => (
+                    <tr key={feature.name} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+                      <td className="border border-border p-4">
+                        <div className="font-semibold text-foreground">{feature.name}</div>
+                        {showDescriptions && (
+                          <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
+                        )}
+                      </td>
+                      {packages.map((pkg) => {
+                        const cell = getCellValue(feature.name, pkg);
+                        return (
+                          <td
+                            key={pkg.key}
+                            className={`border border-border p-4 text-center ${
+                              pkg.popular ? "bg-primary/5" : ""
+                            }`}
+                          >
+                            {cell.type === "included" && (
+                              <Check className="h-5 w-5 text-primary mx-auto" />
+                            )}
+                            {cell.type === "addon" && (
+                              <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+                                <Plus className="h-3.5 w-3.5" /> Add-On
+                              </span>
+                            )}
+                            {cell.type === "text" && (
+                              <span className="text-sm text-foreground">{cell.value}</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                  {/* CTA row */}
+                  <tr>
+                    <td className="border border-border p-4 font-bold text-foreground">
+                      Start Filing
+                    </td>
+                    {packages.map((pkg) => (
+                      <td
+                        key={pkg.key}
+                        className={`border border-border p-4 text-center ${
+                          pkg.popular ? "bg-primary/5" : ""
+                        }`}
+                      >
+                        <Button
+                          className="touch-manipulation"
+                          variant={pkg.popular ? "default" : "outline"}
+                          onClick={() => handleStart(pkg.key)}
+                          style={{ minHeight: "44px" }}
+                        >
+                          Start {pkg.name}
+                        </Button>
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-6">
+              {packages.map((pkg) => (
+                <div
+                  key={pkg.key}
+                  className={`rounded-xl border p-5 ${
+                    pkg.popular
+                      ? "border-primary shadow-lg ring-2 ring-primary/20"
+                      : "border-border"
+                  }`}
+                >
+                  {pkg.popular && (
+                    <div className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 text-center">
+                      Most Popular
                     </div>
                   )}
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                    <div className="text-4xl font-bold text-primary">{pkg.price}</div>
-                    {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${formatPrice(stateFee)} {selectedState} filing fee = <span className="font-semibold text-foreground">${formatPrice(parseInt(pkg.price.replace('$', '')) + stateFee)} total</span></div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground">{pkg.period}</div>
-                    )}
-                    <CardDescription>{pkg.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <ul className="space-y-3">
-                      {pkg.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start space-x-3">
-                          <Check className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{feature}</span>
+                  <h3 className="text-xl font-bold text-center text-foreground">{pkg.name}</h3>
+                  <p className="text-3xl font-bold text-primary text-center mt-1">
+                    ${formatPrice(pkg.price)}
+                  </p>
+                  <p className="text-xs text-muted-foreground text-center mb-4">+ state filing fee</p>
+
+                  <ul className="space-y-3 mb-5">
+                    {features.map((feature) => {
+                      const cell = getCellValue(feature.name, pkg);
+                      return (
+                        <li key={feature.name} className="flex items-start gap-3">
+                          {cell.type === "included" ? (
+                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          ) : cell.type === "addon" ? (
+                            <Plus className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                          ) : (
+                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          )}
+                          <div>
+                            <span className="text-sm font-medium text-foreground">{feature.name}</span>
+                            {cell.type === "text" && (
+                              <span className="text-xs text-muted-foreground block">{cell.value}</span>
+                            )}
+                            {cell.type === "addon" && (
+                              <span className="text-xs text-muted-foreground block">Available as add-on</span>
+                            )}
+                          </div>
                         </li>
-                      ))}
-                    </ul>
-                    <Button 
-                      className={`w-full touch-manipulation ${'popular' in pkg && pkg.popular ? 'bg-primary' : ''}`}
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePackageCheckout(pkg.packageKey); }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      Choose {pkg.name}
-                    </Button>
-                  </CardContent>
-                </TiltCard>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </AnimatedSection>
+                      );
+                    })}
+                  </ul>
 
-        {/* Corporation Packages */}
-        <AnimatedSection className="py-10 md:py-16 bg-muted/50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12">
-              <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.corpSection.heading}</h2>
-              <p className="text-base md:text-xl text-muted-foreground">{pricing.corpSection.subheading}</p>
-            </div>
-            
-            <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" staggerDelay={150}>
-              {corpPackages.map((pkg, index) => (
-                <TiltCard key={index} tiltMax={6} scale={1.02}>
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                    <div className="text-4xl font-bold text-primary">{pkg.price}</div>
-                    {selectedState ? (
-                      <div className="text-sm text-muted-foreground">+ ${formatPrice(corpStateFee)} {selectedState} filing fee = <span className="font-semibold text-foreground">${formatPrice(parseInt(pkg.price.replace('$', '')) + corpStateFee)} total</span></div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground">{pkg.period}</div>
-                    )}
-                    <CardDescription>{pkg.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <ul className="space-y-3">
-                      {pkg.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start space-x-3">
-                          <Check className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button 
-                      className="w-full touch-manipulation" 
-                      variant="outline"
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePackageCheckout(pkg.packageKey); }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      Choose {pkg.name}
-                    </Button>
-                  </CardContent>
-                </TiltCard>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </AnimatedSection>
-
-        {/* Additional Services */}
-        <section className="py-10 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12">
-              <div className="accent-line-center mb-4 md:mb-6"></div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">{pricing.addOns.heading}</h2>
-              <p className="text-base md:text-xl text-muted-foreground">{pricing.addOns.subheading}</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
-              {additionalServices.map((service, index) => (
-                <Card key={index} className="text-center">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{service.name}</CardTitle>
-                    <div className="text-2xl font-bold text-primary">{service.price}</div>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full touch-manipulation"
-                      onClick={() => handleAddOnClick()}
-                      style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      Get Started
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Process Overview */}
-        <section className="py-10 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div className="relative order-2 lg:order-1">
-                  <img 
-                    src={businessDocuments} 
-                    alt="Business formation documents and legal paperwork" 
-                    className="rounded-lg shadow-lg w-full h-auto"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-lg"></div>
-                </div>
-                <div className="order-1 lg:order-2">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">{pricing.process.heading}</h2>
-                  <div className="space-y-6">
-                    {pricing.process.steps.map((step, i) => (
-                      <div key={i} className="flex items-start space-x-4">
-                        <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">{i + 1}</div>
-                        <div>
-                          <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                          <p className="text-muted-foreground">{step.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* State Fees Info */}
-        <section className="py-10 md:py-16 bg-muted/50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">{pricing.stateFees.heading}</h2>
-                <p className="text-muted-foreground">State fees are in addition to our service fees and vary by state.</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>LLC Filing Fees by State</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="max-h-64 overflow-y-auto space-y-1">
-                      {Object.entries(STATE_FILING_FEES).map(([state, fee]) => (
-                        <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
-                          <span>{state}</span>
-                          <span className="font-medium">${formatPrice(fee)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Corporation Filing Fees by State</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="max-h-64 overflow-y-auto space-y-1">
-                      {Object.entries(STATE_CORP_FILING_FEES).map(([state, fee]) => (
-                        <div key={state} className="flex justify-between text-sm py-1 border-b border-border/50">
-                          <span>{state}</span>
-                          <span className="font-medium">${formatPrice(fee)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Customer Satisfaction */}
-        <section className="py-10 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Ready to Get Started?</h2>
-                  <p className="text-lg text-muted-foreground mb-6">Join thousands of business owners who trust EZ Biz for their formation needs.</p>
-                  <Button 
-                    size="lg" 
-                    className="touch-manipulation"
-                    onClick={() => navigate('/order-flow')}
-                    style={{ minHeight: '44px', WebkitTapHighlightColor: 'transparent' }}
+                  <Button
+                    className="w-full touch-manipulation"
+                    variant={pkg.popular ? "default" : "outline"}
+                    onClick={() => handleStart(pkg.key)}
+                    style={{ minHeight: "44px" }}
                   >
-                    Get Started Today
+                    Start {pkg.name}
                   </Button>
                 </div>
-                <div className="relative">
-                  <img 
-                    src={customerSatisfaction} 
-                    alt="Happy business owners reviewing their formation documents" 
-                    className="rounded-lg shadow-lg w-full h-auto"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg"></div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
+
+        {/* Add-on services */}
+        <AnimatedSection className="py-10 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+              Available Add-On Services
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.values(ADDONS).map((addon) => (
+                <div
+                  key={addon.name}
+                  className="border border-border rounded-lg p-4 bg-background text-center"
+                >
+                  <h3 className="font-semibold text-foreground">{addon.name}</h3>
+                  <p className="text-xl font-bold text-primary mt-1">${formatPrice(addon.price)}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{addon.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </AnimatedSection>
       </main>
 
       <Footer />
