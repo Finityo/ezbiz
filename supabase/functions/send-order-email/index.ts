@@ -121,7 +121,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'EZ Biz Filing <notifications@ezbizs.com>',
+        from: 'EZ Biz Filing <onboarding@resend.dev>',
         to: [payload.to],
         subject,
         html,
