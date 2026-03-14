@@ -123,6 +123,13 @@ export const ADDONS: Record<
     description:
       "Automated reminders for filings, tax deadlines, and compliance requirements.",
   },
+  whiteGlove: {
+    name: "White Glove Service",
+    price: 199,
+    stripePriceId: "price_WHITEGLOVE",
+    description:
+      "In-person mobile filing service — we come to you and handle everything.",
+  },
 };
 
 // UTILITIES
