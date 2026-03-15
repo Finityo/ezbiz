@@ -12,98 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Check, Plus, Eye, EyeOff } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
-const packages = [
-  {
-    key: "basic" as const,
-    name: PACKAGE_PRICES.basic.name,
-    price: PACKAGE_PRICES.basic.price,
-    registeredAgent: "60 days free then $149/year",
-    ein: false,
-    operatingAgreement: false,
-    llcKit: false,
-  },
-  {
-    key: "deluxe" as const,
-    name: PACKAGE_PRICES.deluxe.name,
-    price: PACKAGE_PRICES.deluxe.price,
-    registeredAgent: "1 year free then $149/year",
-    ein: true,
-    operatingAgreement: false,
-    llcKit: false,
-    popular: true,
-  },
-  {
-    key: "complete" as const,
-    name: PACKAGE_PRICES.complete.name,
-    price: PACKAGE_PRICES.complete.price,
-    registeredAgent: "1 year free then $149/year",
-    ein: true,
-    operatingAgreement: true,
-    llcKit: true,
-  },
-];
+const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
 
-const features = [
-  {
-    name: "Name Availability Check",
-    description: "Search to confirm your business name is available before filing.",
-  },
-  {
-    name: "File Articles of Organization",
-    description: "Official filing with the Secretary of State to form your LLC.",
-  },
-  {
-    name: "Corporate Compliance Tool",
-    description:
-      "Business Information Zone provides reminders for filings, tax deadlines and stores your documents securely.",
-  },
-  {
-    name: "Registered Agent",
-    description:
-      "Required for all LLCs and corporations. Keeps your address private and accepts legal service on behalf of your company.",
-  },
-  {
-    name: "Business License Research",
-    description:
-      "Identifies every license and permit your business may need based on location and industry.",
-  },
-  {
-    name: "Custom Operating Agreement",
-    description:
-      "Prepared document with your company details and optional custom provisions.",
-  },
-  {
-    name: "Custom LLC Kit & Seal",
-    description:
-      "Professional binder, LLC seal, and member certificates for your company records.",
-  },
-  {
-    name: "Federal Tax ID (EIN)",
-    description:
-      "We obtain your EIN from the IRS once your formation is approved.",
-  },
-];
-
-function getCellValue(featureName: string, pkg: (typeof packages)[number]) {
-  switch (featureName) {
-    case "Registered Agent":
-      return { type: "text" as const, value: pkg.registeredAgent };
-    case "Federal Tax ID (EIN)":
-      return pkg.ein
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    case "Custom Operating Agreement":
-      return pkg.operatingAgreement
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    case "Custom LLC Kit & Seal":
-      return pkg.llcKit
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    default:
-      return { type: "included" as const };
-  }
-}
+const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRICES["basic"]][]).map(
+  ([key, pkg]) => ({
+    key,
+    name: pkg.name,
+    price: pkg.price,
+    description: pkg.description,
+    features: [...pkg.features],
+    popular: !!POPULAR_MAP[key],
+  })
+);
 
 const Pricing = () => {
   const navigate = useNavigate();
