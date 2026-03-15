@@ -437,6 +437,7 @@ const EnhancedOrderFlow = () => {
                     selectedAddOns={selectedAddOns}
                     addonQuantities={addonQuantities}
                     businessDetails={businessDetails}
+                    processingSpeed={processingSpeed}
                     mode={mode}
                     serviceDetails={mode === "whiteglove" ? serviceDetails : undefined}
                     onEdit={(step) => setCurrentStep(step)}
