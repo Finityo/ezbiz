@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import SEOHead from "@/components/SEOHead";
 import heroLogo from "@/assets/logo-ezbiz-final.webp";
 import { useNavigate } from "react-router-dom";
@@ -328,9 +328,9 @@ const Pricing = () => {
 
               <tbody>
                 {TABLE_ROWS.map((row, idx) => (
-                  <>
+                  <React.Fragment key={idx}>
                     {row.section && (
-                      <tr key={`section-${idx}`}>
+                      <tr>
                         <td colSpan={4} className="border border-border p-4 bg-muted/40">
                           <span className="text-sm font-bold text-primary uppercase tracking-wide">
                             {row.section}
@@ -339,9 +339,9 @@ const Pricing = () => {
                       </tr>
                     )}
 
-                    <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/10"}>
-                      <td className="border border-border p-4">
-                        <div className="font-semibold text-foreground">{row.label}</div>
+                    <tr className="group border-b border-border hover:bg-muted/40 transition-colors">
+                      <td className="border border-border px-4 py-3">
+                        <div className="text-sm font-semibold text-foreground">{row.label}</div>
                         {showDescriptions && row.description && (
                           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                             {row.description}
@@ -352,15 +352,17 @@ const Pricing = () => {
                       {PACKAGES.map((pkg) => (
                         <td
                           key={pkg.key}
-                          className={`border border-border p-4 text-center align-middle ${
-                            pkg.popular ? "bg-primary/5" : ""
+                          className={`border border-border px-4 py-3 text-center align-middle transition-colors ${
+                            pkg.popular
+                              ? "bg-primary/5 group-hover:bg-primary/10"
+                              : "group-hover:bg-muted/50"
                           }`}
                         >
                           <CellContent value={row[pkg.key]} />
                         </td>
                       ))}
                     </tr>
-                  </>
+                  </React.Fragment>
                 ))}
 
                 {/* CTA row */}
