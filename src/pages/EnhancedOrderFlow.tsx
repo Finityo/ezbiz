@@ -212,7 +212,7 @@ const EnhancedOrderFlow = () => {
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="font-medium">{selectedState}</span>
                   <span className="text-muted-foreground">•</span>
-                  <span>{PACKAGES[selectedPackage as PackageId]?.name}</span>
+                  <span>{PACKAGE_PRICES[selectedPackage as PackageType]?.name}</span>
                   {selectedAddOns.length > 0 && (
                     <>
                       <span className="text-muted-foreground">•</span>
