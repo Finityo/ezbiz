@@ -18,7 +18,7 @@ import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
-import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, type PackageType, type AddonId, type ProcessingType } from "@/lib/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
