@@ -88,13 +88,13 @@ const EnhancedOrderFlow = () => {
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
   const runningTotal = () => {
-    const pkgPrice = PACKAGES[selectedPackage as PackageId]?.price || 0;
+    const pkgPrice = PACKAGE_PRICES[selectedPackage as PackageType]?.price || 0;
     const addonsTotal = selectedAddOns.reduce((sum, id) => {
-      const addon = ADDONS[id as AddonId];
+      const addon = ADDON_PRICES[id as AddonId];
       return sum + (addon?.price || 0);
     }, 0);
-    const speedFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
-    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING.price;
+    const speedFee = PROCESSING_PRICES[processingSpeed]?.price || 0;
+    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE;
   };
 
   const isStepValid = (step: number): boolean => {
