@@ -82,6 +82,7 @@ function App() {
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
