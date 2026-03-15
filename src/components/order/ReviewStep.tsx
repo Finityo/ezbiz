@@ -210,17 +210,24 @@ const ReviewStep = ({
           <span>${formatPrice(stateFee)}</span>
         </div>
 
+        {speedFee > 0 && (
+          <div className="flex justify-between text-sm">
+            <span>{speedConfig.name}</span>
+            <span>${formatPrice(speedFee)}</span>
+          </div>
+        )}
+
+        <div className="flex justify-between text-sm">
+          <span>{SHIPPING.name}</span>
+          <span>${formatPrice(shippingFee)}</span>
+        </div>
+
         {mode === "whiteglove" && (
           <div className="flex justify-between text-sm">
             <span>White Glove Mobile Service (First 2 Hours)</span>
             <span>${formatPrice(WHITE_GLOVE_PRICE)}</span>
           </div>
         )}
-
-        <Separator />
-        <div className="flex justify-between text-lg font-bold">
-          <span>Total (charged today)</span>
-          <span className="text-primary">${formatPrice(total)}</span>
         </div>
         {mode === "whiteglove" && (
           <p className="text-xs text-muted-foreground">
