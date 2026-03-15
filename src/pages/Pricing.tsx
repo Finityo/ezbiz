@@ -12,6 +12,25 @@ import { Button } from "@/components/ui/button";
 import { Check, Eye, EyeOff } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
+/** Map feature labels → descriptions from ADDON_PRICES for the toggle */
+const FEATURE_DESCRIPTIONS: Record<string, string> = {
+  "Prepare & File Articles of Organization": "We prepare and file your formation documents with the state on your behalf.",
+  "Name Availability Search": "We verify your desired business name is available in your filing state.",
+  "Digital Filing Documents": "Receive all official formation documents in digital format.",
+  "Order Tracking Dashboard": "Track every step of your filing from submission to approval.",
+  "Lifetime Customer Support": "Get help whenever you need it — no expiration on support access.",
+  "Operating Agreement": ADDON_PRICES.operatingAgreement.description,
+  "Banking Resolution": "Official resolution authorizing your company to open business bank accounts.",
+  "Initial Compliance Instructions": "Step-by-step guide to keep your new business in good standing.",
+  "Priority Support": "Jump to the front of the line with priority response times.",
+  "EIN Filing Service": ADDON_PRICES.ein.description,
+  "S-Corp Election Filing": ADDON_PRICES.sCorp.description,
+  "Business License Research": ADDON_PRICES.licenseResearch.description,
+  "Compliance Alerts": ADDON_PRICES.complianceAlerts.description,
+  "Everything in Basic": "Includes all features from the Basic package.",
+  "Everything in Deluxe": "Includes all features from the Deluxe package.",
+};
+
 const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
 
 const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRICES["basic"]][]).map(
