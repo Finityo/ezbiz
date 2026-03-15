@@ -31,18 +31,7 @@ export default function VeteranLLCTexas() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Texas Veteran LLC Benefits & Fee Exemptions | EZ BIZ FILE SERVICE";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = "Texas veteran-owned businesses formed after Jan 2022 may qualify for filing fee relief and franchise tax exemption for up to 5 years. Check eligibility and start your LLC today.";
-    if (metaDesc) {
-      metaDesc.setAttribute("content", descContent);
-    } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
-      meta.content = descContent;
-      document.head.appendChild(meta);
-    }
-    return () => { document.title = "EZ BIZ FILE SERVICE"; };
+    // No longer needed - SEOHead handles this
   }, []);
 
   return (
