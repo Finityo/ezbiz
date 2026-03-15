@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
@@ -8,7 +9,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Eye, EyeOff } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
 const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
@@ -26,6 +27,7 @@ const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRIC
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const [showDescriptions, setShowDescriptions] = useState(false);
 
   const handleStart = (packageKey: string) => {
     const params = new URLSearchParams();
