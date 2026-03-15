@@ -27,7 +27,6 @@ const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRIC
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [showDescriptions, setShowDescriptions] = useState(false);
 
   const handleStart = (packageKey: string) => {
     const params = new URLSearchParams();
