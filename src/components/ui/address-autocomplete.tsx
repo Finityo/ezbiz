@@ -143,7 +143,7 @@ export function AddressAutocomplete({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverAnchor asChild>
+      <PopoverTrigger asChild>
         <div className="relative">
           <Input
             ref={inputRef}
@@ -153,8 +153,9 @@ export function AddressAutocomplete({
             disabled={disabled}
             className={cn("pr-8", className)}
             autoComplete="off"
+            onFocus={() => suggestions.length > 0 && setOpen(true)}
           />
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -162,7 +163,7 @@ export function AddressAutocomplete({
             )}
           </div>
         </div>
-      </PopoverAnchor>
+      </PopoverTrigger>
       <PopoverContent
         className="p-0 w-[var(--radix-popover-trigger-width)]"
         align="start"
