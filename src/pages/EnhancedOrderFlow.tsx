@@ -18,7 +18,7 @@ import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
-import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, type ProcessingSpeed } from "@/config/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, type PackageType, type AddonId, type ProcessingType } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -66,7 +66,7 @@ const EnhancedOrderFlow = () => {
   const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
-  const [processingSpeed, setProcessingSpeed] = useState<ProcessingSpeed>("standard");
+  const [processingSpeed, setProcessingSpeed] = useState<ProcessingType>("standard");
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
     businessName: "",
     designator: "",
@@ -88,13 +88,13 @@ const EnhancedOrderFlow = () => {
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
   const runningTotal = () => {
-    const pkgPrice = PACKAGES[selectedPackage as PackageId]?.price || 0;
+    const pkgPrice = PACKAGE_PRICES[selectedPackage as PackageType]?.price || 0;
     const addonsTotal = selectedAddOns.reduce((sum, id) => {
-      const addon = ADDONS[id as AddonId];
+      const addon = ADDON_PRICES[id as AddonId];
       return sum + (addon?.price || 0);
     }, 0);
-    const speedFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
-    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING.price;
+    const speedFee = PROCESSING_PRICES[processingSpeed]?.price || 0;
+    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE;
   };
 
   const isStepValid = (step: number): boolean => {
@@ -212,7 +212,7 @@ const EnhancedOrderFlow = () => {
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="font-medium">{selectedState}</span>
                   <span className="text-muted-foreground">•</span>
-                  <span>{PACKAGES[selectedPackage as PackageId]?.name}</span>
+                  <span>{PACKAGE_PRICES[selectedPackage as PackageType]?.name}</span>
                   {selectedAddOns.length > 0 && (
                     <>
                       <span className="text-muted-foreground">•</span>
@@ -284,10 +284,10 @@ const EnhancedOrderFlow = () => {
                     </h3>
                     <RadioGroup
                       value={processingSpeed}
-                      onValueChange={(v) => setProcessingSpeed(v as ProcessingSpeed)}
+                      onValueChange={(v) => setProcessingSpeed(v as ProcessingType)}
                       className="space-y-2"
                     >
-                      {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeed, typeof PROCESSING_SPEEDS[ProcessingSpeed]][]).map(
+                      {(Object.entries(PROCESSING_PRICES) as [ProcessingType, typeof PROCESSING_PRICES[ProcessingType]][]).map(
                         ([key, speed]) => (
                           <div
                             key={key}

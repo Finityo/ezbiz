@@ -2,10 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
-import { PACKAGES, type PackageId } from "@/config/pricing";
+import { PACKAGE_PRICES, type PackageType } from "@/lib/pricing";
 
 interface Package {
-  id: PackageId;
+  id: PackageType;
   name: string;
   price: number;
   features: string[];
@@ -16,8 +16,8 @@ interface Package {
 const packages: Package[] = [
   {
     id: "basic",
-    name: PACKAGES.basic.name,
-    price: PACKAGES.basic.price,
+    name: PACKAGE_PRICES.basic.name,
+    price: PACKAGE_PRICES.basic.price,
     processingTime: "15-20 business days",
     features: [
       "Name availability check",
@@ -30,8 +30,8 @@ const packages: Package[] = [
   },
   {
     id: "deluxe",
-    name: PACKAGES.deluxe.name,
-    price: PACKAGES.deluxe.price,
+    name: PACKAGE_PRICES.deluxe.name,
+    price: PACKAGE_PRICES.deluxe.price,
     badge: "Most Popular",
     processingTime: "10-15 business days",
     features: [
@@ -46,8 +46,8 @@ const packages: Package[] = [
   },
   {
     id: "complete",
-    name: PACKAGES.complete.name,
-    price: PACKAGES.complete.price,
+    name: PACKAGE_PRICES.complete.name,
+    price: PACKAGE_PRICES.complete.price,
     badge: "Best Value",
     processingTime: "5-7 business days",
     features: [
@@ -73,7 +73,6 @@ const PackageSelector = ({ selected, onSelect, stateFees = 0 }: PackageSelectorP
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {packages.map((pkg) => {
         const isSelected = selected === pkg.id;
-        const totalPrice = pkg.price + stateFees;
         
         return (
           <Card

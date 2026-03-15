@@ -1,2 +1,2 @@
-// Re-export from the single source of truth
-export { calculateOrderTotal } from "@/config/pricing";
+// Re-export from the canonical pricing engine
+export { calculateOrderTotal } from "@/lib/pricing";
