@@ -228,6 +228,11 @@ const ReviewStep = ({
             <span>${formatPrice(WHITE_GLOVE_PRICE)}</span>
           </div>
         )}
+
+        <Separator />
+        <div className="flex justify-between text-lg font-bold">
+          <span>Total (charged today)</span>
+          <span className="text-primary">${formatPrice(total)}</span>
         </div>
         {mode === "whiteglove" && (
           <p className="text-xs text-muted-foreground">
