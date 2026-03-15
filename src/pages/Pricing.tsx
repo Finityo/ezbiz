@@ -61,7 +61,7 @@ const Pricing = () => {
           <div className="container mx-auto px-4">
 
             {/* Description Toggle */}
-            <div className="flex justify-end mb-4 max-w-5xl mx-auto">
+            <div className="flex justify-start mb-4 max-w-5xl mx-auto">
               <button
                 onClick={() => setShowDescriptions(!showDescriptions)}
                 className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
