@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { AddressAutocomplete, type ParsedAddress } from "@/components/ui/address-autocomplete";
 import {
   User, Building2, MapPin, Shield, Users, Plus, Trash2, ArrowRight, Save, Loader2,
 } from "lucide-react";
