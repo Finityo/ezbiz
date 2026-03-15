@@ -57,7 +57,6 @@ const packages: Package[] = [
       "Business license research",
       "Compliance calendar",
       "Annual report filing (1 year)",
-      "FinCEN BOI reporting",
       "Dedicated account manager",
     ],
   },

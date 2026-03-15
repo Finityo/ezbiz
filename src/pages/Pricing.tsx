@@ -317,7 +317,9 @@ const Pricing = () => {
               Available Add-On Services
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.values(ADDONS).map((addon) => (
+              {Object.entries(ADDONS)
+                .filter(([key]) => !key.startsWith("whiteGlove"))
+                .map(([, addon]) => (
                 <div
                   key={addon.name}
                   className="border border-border rounded-lg p-4 bg-background text-center"

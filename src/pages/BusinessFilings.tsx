@@ -66,13 +66,6 @@ const BusinessFilings = () => {
       href: "/ein-number"
     },
     {
-      title: "BOI Reporting",
-      description: "Comply with new Beneficial Ownership Information reporting requirements",
-      icon: <Users className="h-8 w-8" />,
-      category: "compliance",
-      href: "/consultation"
-    },
-    {
       title: "Corporate Bylaws",
       description: "Professional corporate bylaws and operating agreement preparation",
       icon: <Gavel className="h-8 w-8" />,
