@@ -18,7 +18,19 @@ import {
 } from "@/lib/pricing";
 
 /* ------------------------------------------------------------------ */
-/*  DATA: rows that make up the comparison table                      */
+/*  PACKAGES — derived from pricing config                            */
+/* ------------------------------------------------------------------ */
+
+const PACKAGES = Object.entries(PACKAGE_PRICES).map(([key, pkg]) => ({
+  key: key as PackageType,
+  name: pkg.name,
+  price: pkg.price,
+  description: pkg.description,
+  popular: key === "deluxe",
+}));
+
+/* ------------------------------------------------------------------ */
+/*  TABLE ROWS — all values from pricing config, zero hardcoded $     */
 /* ------------------------------------------------------------------ */
 
 type CellValue = "included" | "not-included" | { price: number } | string;
@@ -26,30 +38,25 @@ type CellValue = "included" | "not-included" | { price: number } | string;
 interface TableRow {
   label: string;
   description?: string;
-  section?: string;           // optional section header rendered above
+  section?: string;
   basic: CellValue;
   deluxe: CellValue;
   complete: CellValue;
 }
 
-const PACKAGES: { key: PackageType; name: string; price: number; popular: boolean; description: string }[] = [
-  { key: "basic", name: "Basic", price: PACKAGE_PRICES.basic.price, popular: false, description: PACKAGE_PRICES.basic.description },
-  { key: "deluxe", name: "Deluxe", price: PACKAGE_PRICES.deluxe.price, popular: true, description: PACKAGE_PRICES.deluxe.description },
-  { key: "complete", name: "Complete", price: PACKAGE_PRICES.complete.price, popular: false, description: PACKAGE_PRICES.complete.description },
-];
-
 const TABLE_ROWS: TableRow[] = [
-  // ── Package features ──
+  // ── Formation ──
   {
-    label: "Name Availability Search",
-    description: "We verify your desired business name is available in your filing state.",
+    section: "Formation",
+    label: "Articles of Organization Filing",
+    description: "Preparation and filing of your formation documents with the state.",
     basic: "included",
     deluxe: "included",
     complete: "included",
   },
   {
-    label: "Prepare & File Articles of Organization",
-    description: "We prepare and file your formation documents with the state on your behalf.",
+    label: "Name Availability Search",
+    description: "Ensures your business name is available before filing.",
     basic: "included",
     deluxe: "included",
     complete: "included",
@@ -63,7 +70,7 @@ const TABLE_ROWS: TableRow[] = [
   },
   {
     label: "Order Tracking Dashboard",
-    description: "Track every step of your filing from submission to approval in real time.",
+    description: "Track every step of your filing from submission to approval.",
     basic: "included",
     deluxe: "included",
     complete: "included",
@@ -75,10 +82,13 @@ const TABLE_ROWS: TableRow[] = [
     deluxe: "included",
     complete: "included",
   },
+
+  // ── Compliance ──
   {
+    section: "Compliance",
     label: "Operating Agreement",
     description: ADDON_PRICES.operatingAgreement.description,
-    basic: { price: ADDON_PRICES.operatingAgreement.price },
+    basic: "not-included",
     deluxe: "included",
     complete: "included",
   },
@@ -97,19 +107,20 @@ const TABLE_ROWS: TableRow[] = [
     complete: "included",
   },
   {
-    label: "Priority Support",
-    description: "Jump to the front of the line with priority response times.",
-    basic: "not-included",
-    deluxe: "included",
+    label: "Compliance Alerts",
+    description: ADDON_PRICES.complianceAlerts.description,
+    basic: { price: ADDON_PRICES.complianceAlerts.price },
+    deluxe: { price: ADDON_PRICES.complianceAlerts.price },
     complete: "included",
   },
 
-  // ── Add-on services ──
+  // ── Tax Setup ──
   {
+    section: "Tax Setup",
     label: "EIN Filing Service",
     description: ADDON_PRICES.ein.description,
     basic: { price: ADDON_PRICES.ein.price },
-    deluxe: { price: ADDON_PRICES.ein.price },
+    deluxe: "included",
     complete: "included",
   },
   {
@@ -119,7 +130,10 @@ const TABLE_ROWS: TableRow[] = [
     deluxe: { price: ADDON_PRICES.sCorp.price },
     complete: "included",
   },
+
+  // ── Business Tools ──
   {
+    section: "Business Tools",
     label: "Business License Research",
     description: ADDON_PRICES.licenseResearch.description,
     basic: { price: ADDON_PRICES.licenseResearch.price },
@@ -127,18 +141,11 @@ const TABLE_ROWS: TableRow[] = [
     complete: "included",
   },
   {
-    label: "Compliance Alerts",
-    description: ADDON_PRICES.complianceAlerts.description,
-    basic: { price: ADDON_PRICES.complianceAlerts.price },
-    deluxe: { price: ADDON_PRICES.complianceAlerts.price },
-    complete: "included",
-  },
-  {
     label: "Corporate Kit",
     description: ADDON_PRICES.corporateKit.description,
     basic: { price: ADDON_PRICES.corporateKit.price },
     deluxe: { price: ADDON_PRICES.corporateKit.price },
-    complete: { price: ADDON_PRICES.corporateKit.price },
+    complete: "included",
   },
   {
     label: "Registered Agent Service",
@@ -162,11 +169,11 @@ const TABLE_ROWS: TableRow[] = [
     complete: { price: ADDON_PRICES.annualReport.price },
   },
 
-  // ── Processing & shipping ──
+  // ── Processing Speed ──
   {
+    section: "Processing Speed",
     label: "Standard Processing",
     description: PROCESSING_PRICES.standard.description,
-    section: "Select Speed",
     basic: "included",
     deluxe: "included",
     complete: "included",
@@ -178,12 +185,15 @@ const TABLE_ROWS: TableRow[] = [
     deluxe: { price: PROCESSING_PRICES.express.price },
     complete: { price: PROCESSING_PRICES.express.price },
   },
+
+  // ── Shipping ──
   {
+    section: "Shipping",
     label: "Shipping & Handling",
-    description: "Includes shipping your approved formation documents via U.S. First Class Priority Mail.",
-    basic: `$${SHIPPING_PRICE}`,
-    deluxe: `$${SHIPPING_PRICE}`,
-    complete: `$${SHIPPING_PRICE}`,
+    description: "Delivery of your approved formation documents via U.S. First Class Priority Mail.",
+    basic: { price: SHIPPING_PRICE },
+    deluxe: { price: SHIPPING_PRICE },
+    complete: { price: SHIPPING_PRICE },
   },
 ];
 
@@ -201,7 +211,6 @@ function CellContent({ value }: { value: CellValue }) {
   if (typeof value === "string") {
     return <span className="text-sm font-semibold text-primary">{value}</span>;
   }
-  // price object
   return <span className="text-sm font-semibold text-foreground">${formatPrice(value.price)}</span>;
 }
 
@@ -248,10 +257,9 @@ const Pricing = () => {
         <section className="hidden md:block py-10 md:py-16">
           <div className="container mx-auto px-4 max-w-6xl">
             <table className="w-full border-collapse">
-              {/* ── Sticky package header ── */}
-              <thead className="sticky top-0 z-20">
+              {/* Sticky header */}
+              <thead className="sticky top-0 z-30 bg-background border-b border-border">
                 <tr>
-                  {/* Left column: description toggle */}
                   <th className="text-left p-4 border border-border bg-background w-[40%] align-bottom">
                     <button
                       onClick={() => setShowDescriptions(!showDescriptions)}
@@ -298,11 +306,9 @@ const Pricing = () => {
                 </tr>
               </thead>
 
-              {/* ── Body rows ── */}
               <tbody>
                 {TABLE_ROWS.map((row, idx) => (
                   <>
-                    {/* Optional section header */}
                     {row.section && (
                       <tr key={`section-${idx}`}>
                         <td colSpan={4} className="border border-border p-4 bg-muted/40">
@@ -313,11 +319,7 @@ const Pricing = () => {
                       </tr>
                     )}
 
-                    <tr
-                      key={idx}
-                      className={idx % 2 === 0 ? "bg-background" : "bg-muted/10"}
-                    >
-                      {/* Feature label + description */}
+                    <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/10"}>
                       <td className="border border-border p-4">
                         <div className="font-semibold text-foreground">{row.label}</div>
                         {showDescriptions && row.description && (
@@ -327,7 +329,6 @@ const Pricing = () => {
                         )}
                       </td>
 
-                      {/* Per-package cells */}
                       {PACKAGES.map((pkg) => (
                         <td
                           key={pkg.key}
@@ -342,7 +343,7 @@ const Pricing = () => {
                   </>
                 ))}
 
-                {/* ── CTA row ── */}
+                {/* CTA row */}
                 <tr className="bg-muted/20">
                   <td className="border border-border p-4 font-bold text-foreground text-lg">
                     Start Filing
@@ -377,7 +378,6 @@ const Pricing = () => {
         {/* ── MOBILE CARDS ── */}
         <section className="md:hidden py-10">
           <div className="container mx-auto px-4">
-            {/* Toggle */}
             <div className="flex justify-start mb-4">
               <button
                 onClick={() => setShowDescriptions(!showDescriptions)}
@@ -452,7 +452,7 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* ── Satisfaction guarantee ── */}
+        {/* Satisfaction guarantee */}
         <section className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4 max-w-2xl text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">100% Satisfaction Guaranteed</h2>
