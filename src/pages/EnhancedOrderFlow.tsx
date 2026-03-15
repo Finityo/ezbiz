@@ -94,7 +94,8 @@ const EnhancedOrderFlow = () => {
       return sum + (addon?.price || 0);
     }, 0);
     const speedFee = PROCESSING_PRICES[processingSpeed]?.price || 0;
-    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE;
+    const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE : 0;
+    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE + whiteGloveFee;
   };
 
   const isStepValid = (step: number): boolean => {
