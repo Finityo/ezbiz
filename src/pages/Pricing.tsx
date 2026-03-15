@@ -243,21 +243,24 @@ const Pricing = () => {
 
       <main>
         {/* Hero */}
-        <section className="bg-gradient-primary text-white py-12 md:py-20">
+        <section className="bg-gradient-primary text-white py-10 md:py-14">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <div className="flex justify-center mb-6">
-              <div className="bg-white rounded-2xl p-4 shadow-lg">
+            <div className="flex justify-center mb-5">
+              <div className="bg-white rounded-xl p-3 shadow-lg">
                 <img
                   src={heroLogo}
                   alt="EZ Biz Filing logo"
-                  className="h-24 md:h-36 w-auto"
+                  className="w-56 md:w-80 object-contain"
                 />
               </div>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
-              Choose Your Business Formation Package
+            <p className="text-base md:text-lg text-white/80 mb-2">
+              Veteran-owned business formation guidance
+            </p>
+            <h1 className="text-3xl md:text-5xl font-bold mb-3">
+              Choose Your Package &amp; Launch Today
             </h1>
-            <p className="text-lg text-white/90">
+            <p className="text-base text-white/90">
               Each package is backed by our 100% Satisfaction Guarantee.
             </p>
           </div>
