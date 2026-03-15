@@ -9,7 +9,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Check, Plus, Eye, EyeOff } from "lucide-react";
+import { Check } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
 const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
