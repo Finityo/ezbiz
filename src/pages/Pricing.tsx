@@ -1,5 +1,4 @@
 import SEOHead from "@/components/SEOHead";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
@@ -9,105 +8,24 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Check, Plus, Eye, EyeOff } from "lucide-react";
+import { Check } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
-const packages = [
-  {
-    key: "basic" as const,
-    name: PACKAGE_PRICES.basic.name,
-    price: PACKAGE_PRICES.basic.price,
-    registeredAgent: "60 days free then $149/year",
-    ein: false,
-    operatingAgreement: false,
-    llcKit: false,
-  },
-  {
-    key: "deluxe" as const,
-    name: PACKAGE_PRICES.deluxe.name,
-    price: PACKAGE_PRICES.deluxe.price,
-    registeredAgent: "1 year free then $149/year",
-    ein: true,
-    operatingAgreement: false,
-    llcKit: false,
-    popular: true,
-  },
-  {
-    key: "complete" as const,
-    name: PACKAGE_PRICES.complete.name,
-    price: PACKAGE_PRICES.complete.price,
-    registeredAgent: "1 year free then $149/year",
-    ein: true,
-    operatingAgreement: true,
-    llcKit: true,
-  },
-];
+const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
 
-const features = [
-  {
-    name: "Name Availability Check",
-    description: "Search to confirm your business name is available before filing.",
-  },
-  {
-    name: "File Articles of Organization",
-    description: "Official filing with the Secretary of State to form your LLC.",
-  },
-  {
-    name: "Corporate Compliance Tool",
-    description:
-      "Business Information Zone provides reminders for filings, tax deadlines and stores your documents securely.",
-  },
-  {
-    name: "Registered Agent",
-    description:
-      "Required for all LLCs and corporations. Keeps your address private and accepts legal service on behalf of your company.",
-  },
-  {
-    name: "Business License Research",
-    description:
-      "Identifies every license and permit your business may need based on location and industry.",
-  },
-  {
-    name: "Custom Operating Agreement",
-    description:
-      "Prepared document with your company details and optional custom provisions.",
-  },
-  {
-    name: "Custom LLC Kit & Seal",
-    description:
-      "Professional binder, LLC seal, and member certificates for your company records.",
-  },
-  {
-    name: "Federal Tax ID (EIN)",
-    description:
-      "We obtain your EIN from the IRS once your formation is approved.",
-  },
-];
-
-function getCellValue(featureName: string, pkg: (typeof packages)[number]) {
-  switch (featureName) {
-    case "Registered Agent":
-      return { type: "text" as const, value: pkg.registeredAgent };
-    case "Federal Tax ID (EIN)":
-      return pkg.ein
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    case "Custom Operating Agreement":
-      return pkg.operatingAgreement
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    case "Custom LLC Kit & Seal":
-      return pkg.llcKit
-        ? { type: "included" as const }
-        : { type: "addon" as const };
-    default:
-      return { type: "included" as const };
-  }
-}
+const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRICES["basic"]][]).map(
+  ([key, pkg]) => ({
+    key,
+    name: pkg.name,
+    price: pkg.price,
+    description: pkg.description,
+    features: [...pkg.features],
+    popular: !!POPULAR_MAP[key],
+  })
+);
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [showDescriptions, setShowDescriptions] = useState(false);
 
   const handleStart = (packageKey: string) => {
     const params = new URLSearchParams();
@@ -139,26 +57,7 @@ const Pricing = () => {
         {/* Comparison Table */}
         <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="flex justify-end mb-6">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDescriptions(!showDescriptions)}
-                className="gap-2"
-              >
-                {showDescriptions ? (
-                  <>
-                    <EyeOff className="h-4 w-4" /> Hide Descriptions
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4" /> Show Descriptions
-                  </>
-                )}
-              </Button>
-            </div>
 
-            {/* Desktop table */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse max-w-5xl mx-auto">
                 <thead>
@@ -188,37 +87,29 @@ const Pricing = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {features.map((feature, idx) => (
-                    <tr key={feature.name} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+                  {/* Feature rows: use the longest feature list length */}
+                  {Array.from({ length: Math.max(...packages.map((p) => p.features.length)) }).map((_, idx) => (
+                    <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
                       <td className="border border-border p-4">
-                        <div className="font-semibold text-foreground">{feature.name}</div>
-                        {showDescriptions && (
-                          <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
-                        )}
+                        <div className="font-semibold text-foreground">
+                          {/* Use complete package feature name as row label */}
+                          {packages[packages.length - 1]?.features[idx] || ""}
+                        </div>
                       </td>
-                      {packages.map((pkg) => {
-                        const cell = getCellValue(feature.name, pkg);
-                        return (
-                          <td
-                            key={pkg.key}
-                            className={`border border-border p-4 text-center ${
-                              pkg.popular ? "bg-primary/5" : ""
-                            }`}
-                          >
-                            {cell.type === "included" && (
-                              <Check className="h-5 w-5 text-primary mx-auto" />
-                            )}
-                            {cell.type === "addon" && (
-                              <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-                                <Plus className="h-3.5 w-3.5" /> Add-On
-                              </span>
-                            )}
-                            {cell.type === "text" && (
-                              <span className="text-sm text-foreground">{cell.value}</span>
-                            )}
-                          </td>
-                        );
-                      })}
+                      {packages.map((pkg) => (
+                        <td
+                          key={pkg.key}
+                          className={`border border-border p-4 text-center ${
+                            pkg.popular ? "bg-primary/5" : ""
+                          }`}
+                        >
+                          {idx < pkg.features.length ? (
+                            <Check className="h-5 w-5 text-primary mx-auto" />
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                   {/* CTA row */}
@@ -271,29 +162,12 @@ const Pricing = () => {
                   <p className="text-xs text-muted-foreground text-center mb-4">+ state filing fee</p>
 
                   <ul className="space-y-3 mb-5">
-                    {features.map((feature) => {
-                      const cell = getCellValue(feature.name, pkg);
-                      return (
-                        <li key={feature.name} className="flex items-start gap-3">
-                          {cell.type === "included" ? (
-                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          ) : cell.type === "addon" ? (
-                            <Plus className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                          ) : (
-                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          )}
-                          <div>
-                            <span className="text-sm font-medium text-foreground">{feature.name}</span>
-                            {cell.type === "text" && (
-                              <span className="text-xs text-muted-foreground block">{cell.value}</span>
-                            )}
-                            {cell.type === "addon" && (
-                              <span className="text-xs text-muted-foreground block">Available as add-on</span>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {pkg.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm font-medium text-foreground">{feature}</span>
+                      </li>
+                    ))}
                   </ul>
 
                   <Button

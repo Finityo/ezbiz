@@ -7,25 +7,46 @@ export type ProcessingType = "standard" | "express";
 
 export const PACKAGE_PRICES: Record<
   PackageType,
-  { name: string; price: number; stripePriceId: string; description: string }
+  { name: string; price: number; stripePriceId: string; description: string; features: readonly string[] }
 > = {
   basic: {
     name: "Basic",
     price: 149,
     stripePriceId: "price_1TAjRYIUysiSR1zwBUBS2jDQ",
     description: "Business formation with required filing documents",
+    features: [
+      "Prepare & File Articles of Organization",
+      "Name Availability Search",
+      "Digital Filing Documents",
+      "Order Tracking Dashboard",
+      "Lifetime Customer Support",
+    ],
   },
   deluxe: {
     name: "Deluxe",
     price: 329,
     stripePriceId: "price_1TAjRsIUysiSR1zwaDwDhUBl",
     description: "Formation plus essential compliance documents",
+    features: [
+      "Everything in Basic",
+      "Operating Agreement",
+      "Banking Resolution",
+      "Initial Compliance Instructions",
+      "Priority Support",
+    ],
   },
   complete: {
     name: "Complete",
     price: 399,
     stripePriceId: "price_1TAjSCIUysiSR1zwLXwe8C0Z",
     description: "Full formation package with compliance and filings",
+    features: [
+      "Everything in Deluxe",
+      "EIN Filing Service",
+      "S-Corp Election Filing",
+      "Business License Research",
+      "Compliance Alerts",
+    ],
   },
 };
 

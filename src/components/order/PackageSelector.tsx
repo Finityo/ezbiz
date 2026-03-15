@@ -4,63 +4,20 @@ import { Check } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { PACKAGE_PRICES, type PackageType } from "@/lib/pricing";
 
-interface Package {
-  id: PackageType;
-  name: string;
-  price: number;
-  features: string[];
-  badge?: string;
-  processingTime: string;
-}
+const BADGE_MAP: Partial<Record<PackageType, string>> = {
+  deluxe: "Most Popular",
+  complete: "Best Value",
+};
 
-const packages: Package[] = [
-  {
-    id: "basic",
-    name: PACKAGE_PRICES.basic.name,
-    price: PACKAGE_PRICES.basic.price,
-    processingTime: "15-20 business days",
-    features: [
-      "Name availability check",
-      "Articles of organization filing",
-      "Registered agent (1 year FREE)",
-      "Federal Tax ID (EIN)",
-      "Operating agreement template",
-      "Email delivery of documents",
-    ],
-  },
-  {
-    id: "deluxe",
-    name: PACKAGE_PRICES.deluxe.name,
-    price: PACKAGE_PRICES.deluxe.price,
-    badge: "Most Popular",
-    processingTime: "10-15 business days",
-    features: [
-      "Everything in Basic",
-      "Expedited filing service",
-      "Custom operating agreement",
-      "Banking resolution",
-      "Organizational minutes",
-      "Membership certificates",
-      "Priority support",
-    ],
-  },
-  {
-    id: "complete",
-    name: PACKAGE_PRICES.complete.name,
-    price: PACKAGE_PRICES.complete.price,
-    badge: "Best Value",
-    processingTime: "5-7 business days",
-    features: [
-      "Everything in Deluxe",
-      "Rush processing",
-      "S-Corp tax election filing",
-      "Business license research",
-      "Compliance calendar",
-      "Annual report filing (1 year)",
-      "Dedicated account manager",
-    ],
-  },
-];
+const packages = (Object.entries(PACKAGE_PRICES) as [PackageType, typeof PACKAGE_PRICES[PackageType]][]).map(
+  ([id, pkg]) => ({
+    id,
+    name: pkg.name,
+    price: pkg.price,
+    features: [...pkg.features],
+    badge: BADGE_MAP[id],
+  })
+);
 
 interface PackageSelectorProps {
   selected: string;
@@ -99,7 +56,7 @@ const PackageSelector = ({ selected, onSelect, stateFees = 0 }: PackageSelectorP
               {stateFees > 0 && (
                 <p className="text-sm text-muted-foreground">+ ${formatPrice(stateFees)} state fees</p>
               )}
-              <p className="text-xs text-muted-foreground mt-2">{pkg.processingTime}</p>
+              
             </div>
 
             <ul className="space-y-3 mb-6 min-h-[280px]">
