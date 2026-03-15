@@ -267,7 +267,7 @@ const Pricing = () => {
         </section>
 
         {/* ── DESKTOP TABLE ── */}
-        <section className="hidden md:block py-10 md:py-16">
+        <section className="hidden md:block py-4 md:py-8">
           <div className="container mx-auto px-4 max-w-6xl">
             <table className="w-full border-collapse">
               {/* Sticky header */}
