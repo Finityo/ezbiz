@@ -56,7 +56,7 @@ const PackageSelector = ({ selected, onSelect, stateFees = 0 }: PackageSelectorP
               {stateFees > 0 && (
                 <p className="text-sm text-muted-foreground">+ ${formatPrice(stateFees)} state fees</p>
               )}
-              <p className="text-xs text-muted-foreground mt-2">{pkg.processingTime}</p>
+              
             </div>
 
             <ul className="space-y-3 mb-6 min-h-[280px]">

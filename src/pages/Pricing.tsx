@@ -78,7 +78,6 @@ const Pricing = () => {
               </Button>
             </div>
 
-            {/* Desktop table */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse max-w-5xl mx-auto">
                 <thead>
@@ -108,37 +107,29 @@ const Pricing = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {features.map((feature, idx) => (
-                    <tr key={feature.name} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+                  {/* Feature rows: use the longest feature list length */}
+                  {Array.from({ length: Math.max(...packages.map((p) => p.features.length)) }).map((_, idx) => (
+                    <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
                       <td className="border border-border p-4">
-                        <div className="font-semibold text-foreground">{feature.name}</div>
-                        {showDescriptions && (
-                          <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
-                        )}
+                        <div className="font-semibold text-foreground">
+                          {/* Use complete package feature name as row label */}
+                          {packages[packages.length - 1]?.features[idx] || ""}
+                        </div>
                       </td>
-                      {packages.map((pkg) => {
-                        const cell = getCellValue(feature.name, pkg);
-                        return (
-                          <td
-                            key={pkg.key}
-                            className={`border border-border p-4 text-center ${
-                              pkg.popular ? "bg-primary/5" : ""
-                            }`}
-                          >
-                            {cell.type === "included" && (
-                              <Check className="h-5 w-5 text-primary mx-auto" />
-                            )}
-                            {cell.type === "addon" && (
-                              <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-                                <Plus className="h-3.5 w-3.5" /> Add-On
-                              </span>
-                            )}
-                            {cell.type === "text" && (
-                              <span className="text-sm text-foreground">{cell.value}</span>
-                            )}
-                          </td>
-                        );
-                      })}
+                      {packages.map((pkg) => (
+                        <td
+                          key={pkg.key}
+                          className={`border border-border p-4 text-center ${
+                            pkg.popular ? "bg-primary/5" : ""
+                          }`}
+                        >
+                          {idx < pkg.features.length ? (
+                            <Check className="h-5 w-5 text-primary mx-auto" />
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                   {/* CTA row */}
