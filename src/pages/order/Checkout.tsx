@@ -9,6 +9,7 @@ import { trackCheckoutStart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import OrderProgressBar from "@/components/order/OrderProgressBar";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
