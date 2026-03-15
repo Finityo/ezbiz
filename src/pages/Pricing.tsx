@@ -178,7 +178,10 @@ const Pricing = () => {
                   <p className="text-3xl font-bold text-primary text-center mt-1">
                     ${formatPrice(pkg.price)}
                   </p>
-                  <p className="text-xs text-muted-foreground text-center mb-4">+ state filing fee</p>
+                  <p className="text-xs text-muted-foreground text-center mb-2">+ state filing fee</p>
+                  {showDescriptions && (
+                    <p className="text-xs text-muted-foreground text-center mb-4 italic">{pkg.description}</p>
+                  )}
 
                   <ul className="space-y-3 mb-5">
                     {pkg.features.map((feature) => (
