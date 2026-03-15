@@ -39,6 +39,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const EnhancedOrderFlow = lazy(() => import("./pages/EnhancedOrderFlow"));
 const CompanyInfo = lazy(() => import("./pages/order/CompanyInfo"));
+const ProcessingSpeedPage = lazy(() => import("./pages/order/ProcessingSpeed"));
 const IrsContact = lazy(() => import("./pages/order/IrsContact"));
 const OrderTerms = lazy(() => import("./pages/order/Terms"));
 const OrderCheckout = lazy(() => import("./pages/order/Checkout"));
