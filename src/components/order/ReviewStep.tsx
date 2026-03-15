@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGES, ADDONS, type PackageId, type AddonId, calculateOrderTotal, getStripeLineItems } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, type ProcessingSpeed, calculateOrderTotal, getStripeLineItems } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -28,6 +28,7 @@ interface ReviewStepProps {
   selectedAddOns: string[];
   addonQuantities: AddonQuantities;
   businessDetails: BusinessDetails;
+  processingSpeed?: ProcessingSpeed;
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
@@ -51,6 +52,7 @@ const ReviewStep = ({
   selectedAddOns,
   addonQuantities,
   businessDetails,
+  processingSpeed = "standard",
   mode = "guided",
   serviceDetails,
   onEdit,
@@ -68,10 +70,16 @@ const ReviewStep = ({
       : getStateFee(state)
     : 0;
 
+  const speedConfig = PROCESSING_SPEEDS[processingSpeed];
+  const speedFee = speedConfig?.price || 0;
+  const shippingFee = SHIPPING.price;
+
+  // calculateOrderTotal already includes processingSpeed + shipping
   const baseTotal = calculateOrderTotal(
     selectedPackage as PackageId,
     selectedAddOns as AddonId[],
-    stateFee
+    stateFee,
+    processingSpeed
   );
 
   const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_PRICE : 0;
@@ -81,7 +89,7 @@ const ReviewStep = ({
     const lineItems = getStripeLineItems(
       selectedPackage as PackageId,
       selectedAddOns as AddonId[],
-      { mode }
+      { mode, processingSpeed }
     );
 
     onCheckoutStarted();
@@ -202,6 +210,18 @@ const ReviewStep = ({
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
           <span>${formatPrice(stateFee)}</span>
+        </div>
+
+        {speedFee > 0 && (
+          <div className="flex justify-between text-sm">
+            <span>{speedConfig.name}</span>
+            <span>${formatPrice(speedFee)}</span>
+          </div>
+        )}
+
+        <div className="flex justify-between text-sm">
+          <span>{SHIPPING.name}</span>
+          <span>${formatPrice(shippingFee)}</span>
         </div>
 
         {mode === "whiteglove" && (
