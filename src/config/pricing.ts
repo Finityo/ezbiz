@@ -67,78 +67,78 @@ export const ADDONS: Record<
     name: "EIN Filing Service",
     price: 89,
     stripePriceId: "price_1TAIMzIUysiSR1zw3s47ma4C",
-    description:
-      "We obtain your EIN from the IRS so you can open bank accounts and hire employees.",
+    description: "We obtain your EIN from the IRS so you can open bank accounts and hire employees.",
+    availableInCheckout: true,
   },
   operatingAgreement: {
     name: "Operating Agreement",
     price: 149,
     stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
-    description:
-      "Defines ownership and operating procedures for your LLC.",
+    description: "Defines ownership and operating procedures for your LLC.",
+    availableInCheckout: true,
   },
   registeredAgent: {
     name: "Registered Agent Service",
     price: 149,
     stripePriceId: "price_1TAIO1IUysiSR1zwAm501dWv",
-    description:
-      "Maintains a legal address to receive official government documents.",
+    description: "Maintains a legal address to receive official government documents.",
+    availableInCheckout: true,
   },
   sCorp: {
     name: "S-Corp Election",
     price: 149,
     stripePriceId: "price_1T0yYLIUysiSR1zwkctIi3Th",
-    description:
-      "We prepare and file IRS Form 2553 for S-Corp tax election status.",
+    description: "We prepare and file IRS Form 2553 for S-Corp tax election status.",
+    availableInCheckout: true,
   },
   licenseResearch: {
     name: "Business License Research",
     price: 149,
     stripePriceId: "price_1TAISYIUysiSR1zw9QGizV8b",
-    description:
-      "Identifies all licenses required based on business type and location.",
+    description: "Identifies all licenses required based on business type and location.",
+    availableInCheckout: true,
   },
   dba: {
     name: "DBA Filing",
     price: 149,
     stripePriceId: "price_1TAjoKIUysiSR1zwBWcDQxr8",
-    description:
-      "File a Doing Business As name with your state or county.",
+    description: "File a Doing Business As name with your state or county.",
+    availableInCheckout: true,
   },
   annualReport: {
     name: "Annual Report Filing",
     price: 224,
     stripePriceId: "price_1TAjudIUysiSR1zw5wkbfPVv",
-    description:
-      "We prepare and file your annual report with the state.",
+    description: "We prepare and file your annual report with the state.",
+    availableInCheckout: true,
   },
   corporateKit: {
     name: "Corporate Kit",
     price: 59,
     stripePriceId: "price_1TAjy8IUysiSR1zwnphHwavq",
-    description:
-      "Professional binder, seal, and member certificates for your company records.",
+    description: "Professional binder, seal, and member certificates for your company records.",
+    availableInCheckout: true,
   },
   complianceAlerts: {
     name: "Compliance Alerts",
     price: 103,
     stripePriceId: "price_1TAjzBIUysiSR1zwapC53gXv",
-    description:
-      "Automated reminders for filings, tax deadlines, and compliance requirements.",
+    description: "Automated reminders for filings, tax deadlines, and compliance requirements.",
+    availableInCheckout: true,
   },
   whiteGloveBase: {
     name: "White Glove Concierge Filing (First 2 Hours)",
     price: 150,
     stripePriceId: "price_1TAkcOIUysiSR1zwNvOiYDnD",
-    description:
-      "In-person mobile filing service — first 2 hours included.",
+    description: "In-person mobile filing service — first 2 hours included.",
+    availableInCheckout: false,
   },
   whiteGloveHourly: {
     name: "White Glove Additional Hour",
     price: 80,
     stripePriceId: "price_1TAkckIUysiSR1zw6EQcZ3lo",
-    description:
-      "Additional hour of White Glove concierge filing beyond the first 2 hours.",
+    description: "Additional hour of White Glove concierge filing beyond the first 2 hours.",
+    availableInCheckout: false,
   },
 };
 
