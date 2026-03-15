@@ -245,6 +245,15 @@ const Pricing = () => {
         {/* Hero */}
         <section className="bg-gradient-primary text-white py-12 md:py-20">
           <div className="container mx-auto px-4 text-center max-w-3xl">
+            <div className="flex justify-center mb-6">
+              <div className="bg-white rounded-2xl p-4 shadow-lg">
+                <img
+                  src={heroLogo}
+                  alt="EZ Biz Filing logo"
+                  className="h-16 md:h-24 w-auto"
+                />
+              </div>
+            </div>
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Choose Your Business Formation Package
             </h1>
