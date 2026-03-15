@@ -19,7 +19,7 @@ type ServiceDetails = {
   notes: string;
 };
 
-const WHITE_GLOVE_PRICE = ADDONS.whiteGloveBase.price;
+const WHITE_GLOVE_PRICE = ADDON_PRICES.whiteGloveBase.price;
 
 interface ReviewStepProps {
   state: string;
@@ -28,7 +28,7 @@ interface ReviewStepProps {
   selectedAddOns: string[];
   addonQuantities: AddonQuantities;
   businessDetails: BusinessDetails;
-  processingSpeed?: ProcessingSpeed;
+  processingSpeed?: ProcessingType;
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
@@ -62,7 +62,7 @@ const ReviewStep = ({
   const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
   const { checkout, loading, error, clearError } = useStripeCheckout();
 
-  const pkg = PACKAGES[selectedPackage as PackageId];
+  const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
   const isCorpType = CORP_ENTITIES.includes(entityType);
   const stateFee = state
     ? isCorpType
@@ -70,24 +70,26 @@ const ReviewStep = ({
       : getStateFee(state)
     : 0;
 
-  const speedConfig = PROCESSING_SPEEDS[processingSpeed];
+  const speedConfig = PROCESSING_PRICES[processingSpeed];
   const speedFee = speedConfig?.price || 0;
-  const shippingFee = SHIPPING.price;
+  const shippingFee = SHIPPING_PRICE;
 
-  // calculateOrderTotal includes processingSpeed + shipping + whiteGlove base
+  const isWhiteGlove = mode === "whiteglove";
+
   const total = calculateOrderTotal(
-    selectedPackage as PackageId,
-    selectedAddOns as AddonId[],
+    selectedPackage as PackageType,
+    selectedAddOns,
     stateFee,
     processingSpeed,
-    mode
+    isWhiteGlove,
   );
 
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
-      selectedPackage as PackageId,
-      selectedAddOns as AddonId[],
-      { mode, processingSpeed }
+      selectedPackage as PackageType,
+      selectedAddOns,
+      processingSpeed,
+      isWhiteGlove,
     );
 
     onCheckoutStarted();
@@ -115,7 +117,7 @@ const ReviewStep = ({
   return (
     <Card className="p-4 sm:p-6 space-y-5">
       {/* White Glove appointment details */}
-      {mode === "whiteglove" && serviceDetails && (
+      {isWhiteGlove && serviceDetails && (
         <>
           <Section title="White Glove Appointment" step={3}>
             <div className="space-y-1 text-sm">
@@ -175,7 +177,7 @@ const ReviewStep = ({
           <Section title="Add-on Services" step={2}>
             <ul className="space-y-1">
               {selectedAddOns.map((id) => {
-                const addon = ADDONS[id as AddonId];
+                const addon = ADDON_PRICES[id as AddonId];
                 return addon ? (
                   <li key={id} className="flex justify-between text-sm">
                     <span>{addon.name}</span>
@@ -197,7 +199,7 @@ const ReviewStep = ({
           <span>${formatPrice(pkg?.price || 0)}</span>
         </div>
         {selectedAddOns.map((id) => {
-          const addon = ADDONS[id as AddonId];
+          const addon = ADDON_PRICES[id as AddonId];
           return addon ? (
             <div key={id} className="flex justify-between text-sm">
               <span>{addon.name}</span>
@@ -218,11 +220,11 @@ const ReviewStep = ({
         )}
 
         <div className="flex justify-between text-sm">
-          <span>{SHIPPING.name}</span>
+          <span>Shipping & Handling</span>
           <span>${formatPrice(shippingFee)}</span>
         </div>
 
-        {mode === "whiteglove" && (
+        {isWhiteGlove && (
           <div className="flex justify-between text-sm">
             <span>White Glove Mobile Service (First 2 Hours)</span>
             <span>${formatPrice(WHITE_GLOVE_PRICE)}</span>
@@ -234,7 +236,7 @@ const ReviewStep = ({
           <span>Total (charged today)</span>
           <span className="text-primary">${formatPrice(total)}</span>
         </div>
-        {mode === "whiteglove" && (
+        {isWhiteGlove && (
           <p className="text-xs text-muted-foreground">
             Overage ($80/hr after 2 hours) is charged on-site separately.
           </p>

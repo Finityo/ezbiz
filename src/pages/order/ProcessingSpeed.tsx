@@ -38,7 +38,7 @@ export default function ProcessingSpeed() {
               onValueChange={(v) => updateField("processingSpeed", v as ProcessingSpeedType)}
               className="space-y-2"
             >
-              {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeedType, typeof PROCESSING_SPEEDS[ProcessingSpeedType]][]).map(
+              {(Object.entries(PROCESSING_PRICES) as [ProcessingSpeedType, typeof PROCESSING_PRICES[ProcessingSpeedType]][]).map(
                 ([key, speed]) => (
                   <div
                     key={key}
