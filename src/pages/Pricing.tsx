@@ -399,7 +399,7 @@ const Pricing = () => {
         </section>
 
         {/* ── MOBILE CARDS ── */}
-        <section className="md:hidden py-10">
+        <section className="md:hidden py-4">
           <div className="container mx-auto px-4">
             <div className="flex justify-start mb-4">
               <button
