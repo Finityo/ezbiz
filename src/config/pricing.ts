@@ -189,14 +189,18 @@ export function calculateOrderTotal(
   packageId: PackageId,
   addons: AddonId[],
   stateFee: number,
-  processingSpeed: ProcessingSpeed = "standard"
+  processingSpeed: ProcessingSpeed = "standard",
+  mode?: string
 ) {
   const packagePrice = PACKAGES[packageId].price;
   const addonsTotal = addons.reduce((sum, addonId) => {
-    return sum + ADDONS[addonId].price;
+    const addon = ADDONS[addonId];
+    if (!addon || addon.availableInCheckout === false) return sum;
+    return sum + addon.price;
   }, 0);
   const processingFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
-  return packagePrice + addonsTotal + stateFee + processingFee + SHIPPING.price;
+  const whiteGloveBase = mode === "whiteglove" ? ADDONS.whiteGloveBase.price : 0;
+  return packagePrice + addonsTotal + stateFee + processingFee + SHIPPING.price + whiteGloveBase;
 }
 
 export function getStripeLineItems(
@@ -212,12 +216,21 @@ export function getStripeLineItems(
   if (pkg?.stripePriceId) {
     items.push({ priceId: pkg.stripePriceId, quantity: 1 });
   }
+
+  // Only checkout-eligible addons with valid Stripe price IDs
   addons.forEach((addonId) => {
     const addon = ADDONS[addonId];
-    if (addon?.stripePriceId && addon.stripePriceId.length > 0) {
+    if (
+      addon &&
+      addon.availableInCheckout !== false &&
+      addon.stripePriceId &&
+      addon.stripePriceId.length > 0
+    ) {
       items.push({ priceId: addon.stripePriceId, quantity: 1 });
     }
   });
+
+  // White Glove base fee (NOT hourly — that's admin-billed later)
   if (options?.mode === "whiteglove") {
     const wg = ADDONS.whiteGloveBase;
     if (wg?.stripePriceId) {
