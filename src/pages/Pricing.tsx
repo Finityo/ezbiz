@@ -58,24 +58,6 @@ const Pricing = () => {
         {/* Comparison Table */}
         <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
-            <div className="flex justify-end mb-6">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDescriptions(!showDescriptions)}
-                className="gap-2"
-              >
-                {showDescriptions ? (
-                  <>
-                    <EyeOff className="h-4 w-4" /> Hide Descriptions
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4" /> Show Descriptions
-                  </>
-                )}
-              </Button>
-            </div>
 
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse max-w-5xl mx-auto">
