@@ -277,6 +277,47 @@ const EnhancedOrderFlow = () => {
                     />
                   </div>
 
+                  {/* Processing Speed */}
+                  <div className="border-t pt-6 space-y-4">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-primary" /> Processing Speed
+                    </h3>
+                    <RadioGroup
+                      value={processingSpeed}
+                      onValueChange={(v) => setProcessingSpeed(v as ProcessingSpeed)}
+                      className="space-y-2"
+                    >
+                      {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeed, typeof PROCESSING_SPEEDS[ProcessingSpeed]][]).map(
+                        ([key, speed]) => (
+                          <div
+                            key={key}
+                            className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors ${
+                              processingSpeed === key ? "border-primary bg-primary/5" : "hover:bg-muted/50"
+                            }`}
+                          >
+                            <RadioGroupItem value={key} id={`speed-${key}`} />
+                            <Label htmlFor={`speed-${key}`} className="cursor-pointer flex-1">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  {key === "express" ? (
+                                    <Zap className="h-4 w-4 text-primary" />
+                                  ) : (
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                  <span className="font-medium">{speed.name}</span>
+                                </div>
+                                <span className="font-semibold text-primary">
+                                  {speed.price === 0 ? "Included" : `+$${formatPrice(speed.price)}`}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1 ml-6">{speed.description}</p>
+                            </Label>
+                          </div>
+                        )
+                      )}
+                    </RadioGroup>
+                  </div>
+
                   <div className="flex justify-between">
                     <Button onClick={goBack} variant="outline">Back</Button>
                     <Button onClick={goNext} disabled={!isStepValid(2)}>Continue</Button>
