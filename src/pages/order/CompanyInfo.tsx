@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { AddressAutocomplete, type ParsedAddress } from "@/components/ui/address-autocomplete";
 import { type ProcessingSpeed } from "@/config/pricing";
 import { formatPrice } from "@/lib/utils";
