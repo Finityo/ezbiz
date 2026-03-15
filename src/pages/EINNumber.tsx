@@ -14,6 +14,7 @@ const cardIcons = [Building, Shield, FileText, Clock];
 const EINNumber = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="EIN Number Filing" description="Get your Employer Identification Number (EIN) from the IRS. Required for business bank accounts, hiring, and tax filing." path="/ein-number" />
       <ServiceJsonLd serviceName="EIN Number Filing" description="Get your Employer Identification Number (EIN) from the IRS. Required for business bank accounts, hiring employees, and tax filing." url="/ein-number" />
       <Navigation />
       

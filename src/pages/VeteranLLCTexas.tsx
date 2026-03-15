@@ -36,6 +36,7 @@ export default function VeteranLLCTexas() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Texas Veteran LLC Benefits & Fee Exemptions" description="Texas veteran-owned businesses formed after Jan 2022 may qualify for filing fee relief and franchise tax exemption for up to 5 years." path="/veteran-llc-texas" />
       <ServiceJsonLd
         serviceName="Texas Veteran-Owned LLC Formation"
         description="Professional LLC formation services for Texas veterans. Qualify for filing fee relief and franchise tax exemption for up to five years."
