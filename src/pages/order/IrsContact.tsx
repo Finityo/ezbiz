@@ -141,7 +141,7 @@ export default function IrsContact() {
           </Card>
 
           <div className="flex justify-between items-center pt-2">
-            <Button variant="outline" onClick={() => navigate("/order/company-info")} disabled={saving}>
+            <Button variant="outline" onClick={() => navigate("/order/processing-speed")} disabled={saving}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
             <Button onClick={handleContinue} disabled={saving} size="lg">

@@ -118,6 +118,7 @@ function App() {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/order-flow" element={<EnhancedOrderFlow />} />
               <Route path="/order/company-info" element={<CompanyInfo />} />
+              <Route path="/order/processing-speed" element={<ProcessingSpeedPage />} />
               <Route path="/order/irs-contact" element={<IrsContact />} />
               <Route path="/order/terms" element={<OrderTerms />} />
               <Route path="/order/checkout" element={<OrderCheckout />} />
