@@ -4,9 +4,10 @@ import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { PROCESSING_SPEEDS, type ProcessingSpeed as ProcessingSpeedType } from "@/config/pricing";
 import { formatPrice } from "@/lib/utils";
+import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowRight, ArrowLeft, Zap, Clock } from "lucide-react";
@@ -21,10 +22,7 @@ export default function ProcessingSpeed() {
       <Navigation />
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
         <div className="max-w-2xl mx-auto space-y-6">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Badge className="bg-primary text-primary-foreground">Step 2 of 5</Badge>
-            <span>Processing Speed</span>
-          </div>
+          <OrderProgressBar currentStep={2} />
 
           <h1 className="text-2xl sm:text-3xl font-bold text-center">Choose Your Processing Speed</h1>
           <p className="text-center text-muted-foreground">
