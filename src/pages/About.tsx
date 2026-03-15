@@ -23,6 +23,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="About Us" description="Learn about EZ BIZ FILE SERVICE, LLC — trusted business formation experts helping entrepreneurs start their businesses with confidence." path="/about" />
       <Navigation />
       <FloatingCTA />
       <BackToTop />
