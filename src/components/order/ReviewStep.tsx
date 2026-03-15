@@ -70,6 +70,10 @@ const ReviewStep = ({
       : getStateFee(state)
     : 0;
 
+  const speedConfig = PROCESSING_SPEEDS[processingSpeed];
+  const speedFee = speedConfig?.price || 0;
+  const shippingFee = SHIPPING.price;
+
   const baseTotal = calculateOrderTotal(
     selectedPackage as PackageId,
     selectedAddOns as AddonId[],
@@ -77,7 +81,7 @@ const ReviewStep = ({
   );
 
   const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_PRICE : 0;
-  const total = baseTotal + whiteGloveFee;
+  const total = baseTotal + whiteGloveFee + speedFee + shippingFee;
 
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
