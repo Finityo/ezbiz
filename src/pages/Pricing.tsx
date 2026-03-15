@@ -243,7 +243,7 @@ const Pricing = () => {
 
       <main>
         {/* Hero */}
-        <section className="bg-gradient-primary text-white py-10 md:py-14">
+        <section className="gradient-primary text-white py-10 md:py-14">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             <div className="flex justify-center mb-5">
               <div className="bg-white rounded-xl p-3 shadow-lg">
