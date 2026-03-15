@@ -15,8 +15,8 @@ import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 const packages = [
   {
     key: "basic" as const,
-    name: PACKAGES.basic.name,
-    price: PACKAGES.basic.price,
+    name: PACKAGE_PRICES.basic.name,
+    price: PACKAGE_PRICES.basic.price,
     registeredAgent: "60 days free then $149/year",
     ein: false,
     operatingAgreement: false,
@@ -24,8 +24,8 @@ const packages = [
   },
   {
     key: "deluxe" as const,
-    name: PACKAGES.deluxe.name,
-    price: PACKAGES.deluxe.price,
+    name: PACKAGE_PRICES.deluxe.name,
+    price: PACKAGE_PRICES.deluxe.price,
     registeredAgent: "1 year free then $149/year",
     ein: true,
     operatingAgreement: false,
@@ -34,8 +34,8 @@ const packages = [
   },
   {
     key: "complete" as const,
-    name: PACKAGES.complete.name,
-    price: PACKAGES.complete.price,
+    name: PACKAGE_PRICES.complete.name,
+    price: PACKAGE_PRICES.complete.price,
     registeredAgent: "1 year free then $149/year",
     ein: true,
     operatingAgreement: true,
