@@ -210,7 +210,12 @@ const Pricing = () => {
                     {pkg.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
                         <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-sm font-medium text-foreground">{feature}</span>
+                        <div>
+                          <span className="text-sm font-medium text-foreground">{feature}</span>
+                          {showDescriptions && FEATURE_DESCRIPTIONS[feature] && (
+                            <p className="text-xs text-muted-foreground mt-0.5 italic">{FEATURE_DESCRIPTIONS[feature]}</p>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
