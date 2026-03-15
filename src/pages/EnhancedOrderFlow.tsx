@@ -18,12 +18,14 @@ import AddOnServices from "@/components/order/AddOnServices";
 import BusinessDetailsForm, { type BusinessDetails } from "@/components/order/BusinessDetailsForm";
 import AccountStep from "@/components/order/AccountStep";
 import ReviewStep from "@/components/order/ReviewStep";
-import { PACKAGES, ADDONS, type PackageId, type AddonId } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, type ProcessingSpeed } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { trackOrderFlowView, trackFormStart, trackEvent } from "@/lib/analytics";
-import { Car, MessageCircle, MapPin, Clock } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 
 export type OrderMode = "guided" | "whiteglove";
 
