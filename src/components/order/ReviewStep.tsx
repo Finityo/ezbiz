@@ -227,7 +227,7 @@ const ReviewStep = ({
         {isWhiteGlove && (
           <div className="flex justify-between text-sm">
             <span>White Glove Mobile Service (First 2 Hours)</span>
-            <span>${formatPrice(WHITE_GLOVE_PRICE)}</span>
+            <span>${formatPrice(WHITE_GLOVE_BASE)}</span>
           </div>
         )}
 
