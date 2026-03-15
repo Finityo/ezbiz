@@ -163,7 +163,8 @@ function App() {
          </BrowserRouter>
        </AuthProvider>
      </TooltipProvider>
-   </QueryClientProvider>
+    </QueryClientProvider>
+    </HelmetProvider>
    );
  }
 
