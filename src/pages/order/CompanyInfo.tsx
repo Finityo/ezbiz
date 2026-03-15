@@ -20,6 +20,7 @@ import {
   User, Building2, MapPin, Shield, Users, Plus, Trash2, ArrowRight, Save, Loader2, Zap, Clock,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { z } from "zod";
 
 // ──── Validation ────
