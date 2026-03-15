@@ -52,6 +52,7 @@ const ReviewStep = ({
   selectedAddOns,
   addonQuantities,
   businessDetails,
+  processingSpeed = "standard",
   mode = "guided",
   serviceDetails,
   onEdit,
