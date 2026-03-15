@@ -28,6 +28,7 @@ interface ReviewStepProps {
   selectedAddOns: string[];
   addonQuantities: AddonQuantities;
   businessDetails: BusinessDetails;
+  processingSpeed?: ProcessingSpeed;
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
