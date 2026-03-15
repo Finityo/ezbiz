@@ -2,6 +2,15 @@
 
 export type PackageId = "basic" | "deluxe" | "complete";
 
+// Maps UI keys → Stripe-side keys (used for external references)
+export const PACKAGE_KEY_MAP = {
+  basic: "basic",
+  deluxe: "standard",
+  complete: "premium",
+} as const;
+
+export type PackageUIKey = keyof typeof PACKAGE_KEY_MAP;
+
 export type AddonId =
   | "ein"
   | "operatingAgreement"
