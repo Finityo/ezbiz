@@ -250,7 +250,7 @@ const Pricing = () => {
                 <img
                   src={heroLogo}
                   alt="EZ Biz Filing logo"
-                  className="h-16 md:h-24 w-auto"
+                  className="h-24 md:h-36 w-auto"
                 />
               </div>
             </div>
