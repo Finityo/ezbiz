@@ -10,7 +10,7 @@ import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Check, Plus, Eye, EyeOff } from "lucide-react";
-import { PACKAGES, ADDONS } from "@/config/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
 const packages = [
   {

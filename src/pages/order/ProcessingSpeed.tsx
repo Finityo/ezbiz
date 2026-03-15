@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
-import { PROCESSING_SPEEDS, type ProcessingSpeed as ProcessingSpeedType } from "@/config/pricing";
+import { PROCESSING_PRICES, type ProcessingType as ProcessingSpeedType } from "@/lib/pricing";
 import { formatPrice } from "@/lib/utils";
 import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Button } from "@/components/ui/button";

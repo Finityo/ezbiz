@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InfoIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ADDONS, type AddonId } from "@/config/pricing";
+import { ADDON_PRICES, type AddonId } from "@/lib/pricing";
 
 interface AddOn {
   id: AddonId;
@@ -13,63 +13,26 @@ interface AddOn {
   recommended?: boolean;
 }
 
-const addOns: AddOn[] = [
-  {
-    id: "ein",
-    name: ADDONS.ein.name,
-    price: ADDONS.ein.price,
-    description: ADDONS.ein.description,
-    recommended: true,
-  },
-  {
-    id: "operatingAgreement",
-    name: ADDONS.operatingAgreement.name,
-    price: ADDONS.operatingAgreement.price,
-    description: ADDONS.operatingAgreement.description,
-  },
-  {
-    id: "registeredAgent",
-    name: ADDONS.registeredAgent.name,
-    price: ADDONS.registeredAgent.price,
-    description: ADDONS.registeredAgent.description,
-  },
-  {
-    id: "sCorp",
-    name: ADDONS.sCorp.name,
-    price: ADDONS.sCorp.price,
-    description: ADDONS.sCorp.description,
-  },
-  {
-    id: "licenseResearch",
-    name: ADDONS.licenseResearch.name,
-    price: ADDONS.licenseResearch.price,
-    description: ADDONS.licenseResearch.description,
-  },
-  {
-    id: "dba",
-    name: ADDONS.dba.name,
-    price: ADDONS.dba.price,
-    description: ADDONS.dba.description,
-  },
-  {
-    id: "annualReport",
-    name: ADDONS.annualReport.name,
-    price: ADDONS.annualReport.price,
-    description: ADDONS.annualReport.description,
-  },
-  {
-    id: "corporateKit",
-    name: ADDONS.corporateKit.name,
-    price: ADDONS.corporateKit.price,
-    description: ADDONS.corporateKit.description,
-  },
-  {
-    id: "complianceAlerts",
-    name: ADDONS.complianceAlerts.name,
-    price: ADDONS.complianceAlerts.price,
-    description: ADDONS.complianceAlerts.description,
-  },
+// Only checkout-eligible add-ons (excludes whiteGloveBase/whiteGloveHourly)
+const CHECKOUT_ADDON_IDS: AddonId[] = [
+  "ein",
+  "operatingAgreement",
+  "registeredAgent",
+  "sCorp",
+  "licenseResearch",
+  "dba",
+  "annualReport",
+  "corporateKit",
+  "complianceAlerts",
 ];
+
+const addOns: AddOn[] = CHECKOUT_ADDON_IDS.map((id) => ({
+  id,
+  name: ADDON_PRICES[id].name,
+  price: ADDON_PRICES[id].price,
+  description: ADDON_PRICES[id].description,
+  ...(id === "ein" ? { recommended: true } : {}),
+}));
 
 export interface AddonQuantities {
   [addonId: string]: number;
