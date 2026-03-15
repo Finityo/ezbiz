@@ -70,7 +70,7 @@ export default function IrsContact() {
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Badge className="bg-primary text-primary-foreground">Step 2 of 4</Badge>
+            <Badge className="bg-primary text-primary-foreground">Step 3 of 5</Badge>
             <span>IRS Responsible Party</span>
           </div>
 
