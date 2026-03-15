@@ -8,7 +8,7 @@ import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Separator } from "@/components/ui/separator";
 import {
   Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
