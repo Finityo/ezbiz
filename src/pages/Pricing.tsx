@@ -130,9 +130,13 @@ const Pricing = () => {
                     <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
                       <td className="border border-border p-4">
                         <div className="font-semibold text-foreground">
-                          {/* Use complete package feature name as row label */}
                           {packages[packages.length - 1]?.features[idx] || ""}
                         </div>
+                        {showDescriptions && FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""] && (
+                          <p className="text-xs text-muted-foreground mt-1 italic">
+                            {FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""]}
+                          </p>
+                        )}
                       </td>
                       {packages.map((pkg) => (
                         <td
