@@ -93,7 +93,8 @@ const EnhancedOrderFlow = () => {
       const addon = ADDONS[id as AddonId];
       return sum + (addon?.price || 0);
     }, 0);
-    return pkgPrice + addonsTotal + stateFee;
+    const speedFee = PROCESSING_SPEEDS[processingSpeed]?.price || 0;
+    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING.price;
   };
 
   const isStepValid = (step: number): boolean => {
