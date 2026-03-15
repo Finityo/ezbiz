@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { AddressAutocomplete, type ParsedAddress } from "@/components/ui/address-autocomplete";
 import {
   User, Building2, MapPin, Shield, Users, Plus, Trash2, ArrowRight, Save, Loader2,
 } from "lucide-react";
@@ -147,50 +148,69 @@ export default function CompanyInfo() {
     addr: typeof order.businessAddress;
     setter: (f: string, v: string) => void;
     disabled?: boolean;
-  }) => (
-    <div className="space-y-4">
-      <h3 className="text-base font-semibold flex items-center gap-2">
-        <MapPin className="h-4 w-4 text-primary" /> {label}
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="md:col-span-2">
-          <Label>Street Address *</Label>
-          <Input value={addr.address1} onChange={(e) => setter("address1", e.target.value)} disabled={disabled} placeholder="123 Main St" />
-          <FieldError name={`${prefix}.address1`} />
-        </div>
-        <div className="md:col-span-2">
-          <Label>Address Line 2</Label>
-          <Input value={addr.address2} onChange={(e) => setter("address2", e.target.value)} disabled={disabled} placeholder="Suite, Apt, Unit" />
-        </div>
-        <div>
-          <Label>City *</Label>
-          <Input value={addr.city} onChange={(e) => setter("city", e.target.value)} disabled={disabled} />
-          <FieldError name={`${prefix}.city`} />
-        </div>
-        <div>
-          <Label>State *</Label>
-          <Select value={addr.state} onValueChange={(v) => setter("state", v)} disabled={disabled}>
-            <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
-            <SelectContent>
-              {US_STATES.map((s) => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FieldError name={`${prefix}.state`} />
-        </div>
-        <div>
-          <Label>ZIP Code *</Label>
-          <Input value={addr.zip} onChange={(e) => setter("zip", e.target.value)} disabled={disabled} maxLength={10} />
-          <FieldError name={`${prefix}.zip`} />
-        </div>
-        <div>
-          <Label>Country</Label>
-          <Input value={addr.country} disabled className="bg-muted" />
+  }) => {
+    const handleAddressSelect = (parsed: ParsedAddress) => {
+      setter("address1", parsed.address1);
+      setter("address2", parsed.address2);
+      setter("city", parsed.city);
+      setter("state", parsed.state);
+      setter("zip", parsed.zip);
+      setter("country", parsed.country);
+    };
+
+    return (
+      <div className="space-y-4">
+        {label && (
+          <h3 className="text-base font-semibold flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-primary" /> {label}
+          </h3>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <Label>Street Address *</Label>
+            <AddressAutocomplete
+              value={addr.address1}
+              onChange={(v) => setter("address1", v)}
+              onSelect={handleAddressSelect}
+              placeholder="Start typing an address..."
+              disabled={disabled}
+            />
+            <FieldError name={`${prefix}.address1`} />
+          </div>
+          <div className="md:col-span-2">
+            <Label>Address Line 2</Label>
+            <Input value={addr.address2} onChange={(e) => setter("address2", e.target.value)} disabled={disabled} placeholder="Suite, Apt, Unit" />
+          </div>
+          <div>
+            <Label>City *</Label>
+            <Input value={addr.city} onChange={(e) => setter("city", e.target.value)} disabled={disabled} />
+            <FieldError name={`${prefix}.city`} />
+          </div>
+          <div>
+            <Label>State *</Label>
+            <Select value={addr.state} onValueChange={(v) => setter("state", v)} disabled={disabled}>
+              <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+              <SelectContent>
+                {US_STATES.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FieldError name={`${prefix}.state`} />
+          </div>
+          <div>
+            <Label>ZIP Code *</Label>
+            <Input value={addr.zip} onChange={(e) => setter("zip", e.target.value)} disabled={disabled} maxLength={10} />
+            <FieldError name={`${prefix}.zip`} />
+          </div>
+          <div>
+            <Label>Country</Label>
+            <Input value={addr.country} disabled className="bg-muted" />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
