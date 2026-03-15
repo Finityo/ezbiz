@@ -21,10 +21,7 @@ export default function ProcessingSpeed() {
       <Navigation />
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
         <div className="max-w-2xl mx-auto space-y-6">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Badge className="bg-primary text-primary-foreground">Step 2 of 5</Badge>
-            <span>Processing Speed</span>
-          </div>
+          <OrderProgressBar currentStep={2} />
 
           <h1 className="text-2xl sm:text-3xl font-bold text-center">Choose Your Processing Speed</h1>
           <p className="text-center text-muted-foreground">
