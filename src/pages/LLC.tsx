@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { trackClick } from "@/hooks/useAnalytics";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
