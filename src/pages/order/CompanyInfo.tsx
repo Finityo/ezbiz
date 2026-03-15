@@ -14,8 +14,10 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { AddressAutocomplete, type ParsedAddress } from "@/components/ui/address-autocomplete";
+import { PROCESSING_SPEEDS, type ProcessingSpeed } from "@/config/pricing";
+import { formatPrice } from "@/lib/utils";
 import {
-  User, Building2, MapPin, Shield, Users, Plus, Trash2, ArrowRight, Save, Loader2,
+  User, Building2, MapPin, Shield, Users, Plus, Trash2, ArrowRight, Save, Loader2, Zap, Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
