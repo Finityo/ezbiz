@@ -276,19 +276,26 @@ const Pricing = () => {
                   {PACKAGES.map((pkg) => (
                     <th
                       key={pkg.key}
-                      className={`border border-border p-5 text-center align-top ${
-                        pkg.popular ? "bg-primary/5 ring-2 ring-primary ring-inset" : "bg-muted/30"
+                      className={`border border-border p-5 text-center align-top transition-transform ${
+                        pkg.popular
+                          ? "bg-primary/5 ring-2 ring-primary ring-inset scale-[1.02] shadow-sm"
+                          : "bg-muted/30"
                       }`}
                     >
                       {pkg.popular && (
                         <span className="inline-block text-[10px] font-bold text-primary-foreground bg-primary rounded-full px-3 py-0.5 uppercase tracking-wider mb-2">
-                          Best Value
+                          Most Popular
                         </span>
                       )}
                       <h3 className="text-xl font-bold text-foreground">{pkg.name}</h3>
                       <p className="text-xs text-muted-foreground">one-time fee</p>
                       <p className="text-2xl font-bold text-primary mt-1">${formatPrice(pkg.price)}</p>
                       <p className="text-xs text-muted-foreground mt-1">+ State Fees</p>
+                      {pkg.popular && (
+                        <p className="text-xs text-primary font-medium mt-2">
+                          Best balance of protection &amp; value
+                        </p>
+                      )}
                       {showDescriptions && (
                         <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
                       )}
