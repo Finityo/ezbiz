@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
@@ -8,7 +9,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Eye, EyeOff } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
 const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
@@ -26,6 +27,7 @@ const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRIC
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const [showDescriptions, setShowDescriptions] = useState(false);
 
   const handleStart = (packageKey: string) => {
     const params = new URLSearchParams();
@@ -58,6 +60,20 @@ const Pricing = () => {
         <AnimatedSection className="py-10 md:py-16">
           <div className="container mx-auto px-4">
 
+            {/* Description Toggle */}
+            <div className="flex justify-end mb-4 max-w-5xl mx-auto">
+              <button
+                onClick={() => setShowDescriptions(!showDescriptions)}
+                className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
+              >
+                {showDescriptions ? (
+                  <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
+                ) : (
+                  <><Eye className="h-4 w-4" /> Show Descriptions</>
+                )}
+              </button>
+            </div>
+
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse max-w-5xl mx-auto">
                 <thead>
@@ -82,6 +98,9 @@ const Pricing = () => {
                           ${formatPrice(pkg.price)}
                         </p>
                         <p className="text-xs text-muted-foreground">+ state filing fee</p>
+                        {showDescriptions && (
+                          <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
+                        )}
                       </th>
                     ))}
                   </tr>
@@ -159,7 +178,10 @@ const Pricing = () => {
                   <p className="text-3xl font-bold text-primary text-center mt-1">
                     ${formatPrice(pkg.price)}
                   </p>
-                  <p className="text-xs text-muted-foreground text-center mb-4">+ state filing fee</p>
+                  <p className="text-xs text-muted-foreground text-center mb-2">+ state filing fee</p>
+                  {showDescriptions && (
+                    <p className="text-xs text-muted-foreground text-center mb-4 italic">{pkg.description}</p>
+                  )}
 
                   <ul className="space-y-3 mb-5">
                     {pkg.features.map((feature) => (
