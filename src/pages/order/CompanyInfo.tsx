@@ -324,6 +324,50 @@ export default function CompanyInfo() {
             )}
           </Card>
 
+          {/* ── Processing Speed ── */}
+          <Card className="p-5 sm:p-6 space-y-4">
+            <h3 className="text-base font-semibold flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" /> Processing Speed
+            </h3>
+            <RadioGroup
+              value={order.processingSpeed}
+              onValueChange={(v) => updateField("processingSpeed", v)}
+              className="space-y-2"
+            >
+              {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeed, typeof PROCESSING_SPEEDS[ProcessingSpeed]][]).map(
+                ([key, speed]) => (
+                  <div
+                    key={key}
+                    className={cn(
+                      "flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors",
+                      order.processingSpeed === key
+                        ? "border-primary bg-primary/5"
+                        : "hover:bg-muted/50"
+                    )}
+                  >
+                    <RadioGroupItem value={key} id={`speed-${key}`} />
+                    <Label htmlFor={`speed-${key}`} className="cursor-pointer flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {key === "express" ? (
+                            <Zap className="h-4 w-4 text-amber-500" />
+                          ) : (
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                          )}
+                          <span className="font-medium">{speed.name}</span>
+                        </div>
+                        <span className="font-semibold text-primary">
+                          {speed.price === 0 ? "Included" : `+$${formatPrice(speed.price)}`}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1 ml-6">{speed.description}</p>
+                    </Label>
+                  </div>
+                )
+              )}
+            </RadioGroup>
+          </Card>
+
           {/* ── Registered Agent ── */}
           <Card className="p-5 sm:p-6 space-y-4">
             <h3 className="text-base font-semibold flex items-center gap-2">
