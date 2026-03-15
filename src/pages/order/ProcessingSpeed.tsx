@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/utils";
 import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowRight, ArrowLeft, Zap, Clock } from "lucide-react";
