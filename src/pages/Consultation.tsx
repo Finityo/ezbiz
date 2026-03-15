@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react"
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackFormStart, trackFormSubmit, trackConsultationClick } from "@/lib/analytics";

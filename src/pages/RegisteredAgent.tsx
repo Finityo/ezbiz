@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
