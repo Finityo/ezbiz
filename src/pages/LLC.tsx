@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { trackClick } from "@/hooks/useAnalytics";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
@@ -37,6 +38,7 @@ const LLC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="LLC Formation Services" description="Form your Limited Liability Company quickly and affordably. Expert LLC formation in all 50 states with liability protection and tax flexibility." path="/form-llc" />
       <ServiceJsonLd serviceName="LLC Formation Services" description="Form your Limited Liability Company quickly and affordably. Expert LLC formation in all 50 states with liability protection and tax flexibility." url="/form-llc" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

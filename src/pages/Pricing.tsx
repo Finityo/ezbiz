@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
@@ -117,6 +118,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Pricing" description="Transparent, affordable business formation packages starting at $0 + state fees. Compare Basic, Standard, and Premium plans." path="/pricing" />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

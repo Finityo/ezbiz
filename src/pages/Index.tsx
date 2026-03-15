@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { trackClick } from "@/hooks/useAnalytics";
 import { EZBIZ_COPY } from "@/content/ezbizCopy";
@@ -123,6 +124,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead path="/" />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

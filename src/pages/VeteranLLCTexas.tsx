@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -30,22 +31,12 @@ export default function VeteranLLCTexas() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Texas Veteran LLC Benefits & Fee Exemptions | EZ BIZ FILE SERVICE";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = "Texas veteran-owned businesses formed after Jan 2022 may qualify for filing fee relief and franchise tax exemption for up to 5 years. Check eligibility and start your LLC today.";
-    if (metaDesc) {
-      metaDesc.setAttribute("content", descContent);
-    } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
-      meta.content = descContent;
-      document.head.appendChild(meta);
-    }
-    return () => { document.title = "EZ BIZ FILE SERVICE"; };
+    // No longer needed - SEOHead handles this
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Texas Veteran LLC Benefits & Fee Exemptions" description="Texas veteran-owned businesses formed after Jan 2022 may qualify for filing fee relief and franchise tax exemption for up to 5 years." path="/veteran-llc-texas" />
       <ServiceJsonLd
         serviceName="Texas Veteran-Owned LLC Formation"
         description="Professional LLC formation services for Texas veterans. Qualify for filing fee relief and franchise tax exemption for up to five years."

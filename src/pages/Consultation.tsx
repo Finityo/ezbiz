@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react"
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackFormStart, trackFormSubmit, trackConsultationClick } from "@/lib/analytics";
@@ -138,6 +139,7 @@ const Consultation = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Consultation" description="Schedule a consultation with our business formation experts. Get personalized guidance for your LLC, corporation, or nonprofit." path="/consultation" />
       <Navigation />
       <FloatingCTA />
       <BackToTop />

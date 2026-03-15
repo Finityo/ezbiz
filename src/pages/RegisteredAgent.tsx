@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +29,7 @@ const states = [
 const RegisteredAgent = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Registered Agent Service" description="Professional registered agent service in all 50 states. Privacy protection, compliance assurance, and reliable document handling." path="/registered-agent" />
       <ServiceJsonLd serviceName="Registered Agent Service" description="Professional registered agent service in all 50 states. Privacy protection, compliance assurance, and reliable document handling." url="/registered-agent" />
       <Navigation />
       <FloatingCTA />

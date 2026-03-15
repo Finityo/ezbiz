@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useEffect } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -62,6 +63,7 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={post.title} description={post.excerpt} path={`/blog/${slug}`} />
       <Navigation />
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">

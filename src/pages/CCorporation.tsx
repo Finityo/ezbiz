@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
@@ -20,6 +21,7 @@ const CCorporation = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="C Corporation Formation" description="Incorporate your C Corporation for unlimited growth potential and investor attraction. Professional formation in all 50 states." path="/c-corporation" />
       <ServiceJsonLd serviceName="C Corporation Formation" description="Incorporate your C Corporation for unlimited growth potential, investor attraction, and IPO readiness. Professional formation in all 50 states." url="/c-corporation" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

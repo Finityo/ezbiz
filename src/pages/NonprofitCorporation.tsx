@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
@@ -17,6 +18,7 @@ const NonprofitCorporation = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Nonprofit Corporation Formation" description="Form your 501(c)(3) nonprofit corporation. Tax-exempt status and charitable organization formation services nationwide." path="/nonprofit-corporation" />
       <ServiceJsonLd serviceName="Nonprofit Corporation Formation" description="Form your 501(c)(3) nonprofit corporation. Tax-exempt status, charitable organization formation services nationwide." url="/nonprofit-corporation" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

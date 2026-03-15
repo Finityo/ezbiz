@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
@@ -20,6 +21,7 @@ const Partnership = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Partnership Formation" description="Form your business partnership with expert guidance. General and limited partnership formation in all 50 states." path="/partnership" />
       <ServiceJsonLd serviceName="Partnership Formation" description="Form your business partnership with expert guidance. General and limited partnership formation services in all 50 states." url="/partnership" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

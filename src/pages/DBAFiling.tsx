@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
@@ -20,6 +21,7 @@ const DBAFiling = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="DBA Filing Service" description="File your Doing Business As (DBA) name professionally. Operate under a trade name with proper legal registration." path="/dba-filing" />
       <ServiceJsonLd serviceName="DBA Filing Service" description="File your Doing Business As (DBA) name professionally. Operate under a trade name with proper legal registration." url="/dba-filing" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

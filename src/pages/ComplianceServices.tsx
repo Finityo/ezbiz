@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { trackClick } from "@/hooks/useAnalytics";
 import Footer from "@/components/Footer";
@@ -14,6 +15,7 @@ const whyIcons = [Shield, Building2];
 const ComplianceServices = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Compliance Services" description="Business compliance services to keep your company in good standing. Annual reports, registered agent, and ongoing compliance support." path="/compliance" />
       <Navigation />
       
       <div className="gradient-hero text-primary-foreground py-16">
