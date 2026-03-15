@@ -222,7 +222,7 @@ export default function CompanyInfo() {
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Badge className="bg-primary text-primary-foreground">Step 1 of 4</Badge>
+            <Badge className="bg-primary text-primary-foreground">Step 1 of 5</Badge>
             <span>Company Information</span>
           </div>
 
