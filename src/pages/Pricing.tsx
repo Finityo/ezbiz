@@ -1,6 +1,5 @@
 import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
 import Navigation from "@/components/Navigation";
