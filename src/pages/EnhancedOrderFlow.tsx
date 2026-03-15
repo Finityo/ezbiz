@@ -390,7 +390,7 @@ const EnhancedOrderFlow = () => {
 
                       <p className="text-xs text-muted-foreground">
                         White Glove service fee:{" "}
-                        <span className="font-medium">$150 for the first 2 hours</span> +{" "}
+                        <span className="font-medium">${formatPrice(WHITE_GLOVE_BASE)} for the first 2 hours</span> +{" "}
                         <span className="font-medium">$80/hr</span> after. Currently serving the San Antonio metro area.
                       </p>
                     </Card>
