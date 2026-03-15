@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGES, ADDONS, type PackageId, type AddonId, calculateOrderTotal, getStripeLineItems } from "@/config/pricing";
+import { PACKAGES, ADDONS, PROCESSING_SPEEDS, SHIPPING, type PackageId, type AddonId, type ProcessingSpeed, calculateOrderTotal, getStripeLineItems } from "@/config/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
