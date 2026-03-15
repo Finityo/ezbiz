@@ -379,6 +379,9 @@ const Pricing = () => {
             <p className="text-xs text-muted-foreground mt-4 text-center">
               Prices shown are one-time service fees. State filing fees are additional and vary by state.
             </p>
+            <p className="text-sm text-muted-foreground mt-3 text-center">
+              Most customers choose the <span className="font-semibold text-foreground">Deluxe</span> package because it includes the essential compliance documents needed to properly operate and protect a new business.
+            </p>
           </div>
         </section>
 
