@@ -13,6 +13,7 @@ const featureIcons = [Calendar, FileText, CheckCircle];
 const AnnualReport = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Annual Report Filing" description="Stay compliant with annual report filing services. Never miss a deadline with our professional compliance support." path="/annual-report" />
       <Navigation />
       
       <div className="gradient-hero text-primary-foreground py-16">

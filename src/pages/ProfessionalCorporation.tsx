@@ -196,6 +196,7 @@ const ProfessionalCorporation = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Professional Corporation Formation" description="Form your Professional Corporation for licensed professionals. Liability protection for doctors, lawyers, accountants, and more." path="/professional-corporation" />
       <ServiceJsonLd serviceName="Professional Corporation Formation" description="Form your Professional Corporation for licensed professionals. Liability protection for doctors, lawyers, accountants, and more." url="/professional-corporation" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />

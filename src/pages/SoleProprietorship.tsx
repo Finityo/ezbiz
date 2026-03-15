@@ -21,6 +21,7 @@ const SoleProprietorship = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Sole Proprietorship Registration" description="Start your sole proprietorship with expert guidance. The simplest business structure for solo entrepreneurs." path="/sole-proprietorship" />
       <ServiceJsonLd serviceName="Sole Proprietorship Registration" description="Start your sole proprietorship with expert guidance. The simplest business structure for solo entrepreneurs." url="/sole-proprietorship" />
       <FaqJsonLd faqs={faqs} />
       <Navigation />
