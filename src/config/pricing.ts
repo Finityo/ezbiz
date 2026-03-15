@@ -60,6 +60,7 @@ export const ADDONS: Record<
     price: number;
     stripePriceId: string;
     description: string;
+    availableInCheckout: boolean;
   }
 > = {
   ein: {
