@@ -351,7 +351,7 @@ export default function CompanyInfo() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           {key === "express" ? (
-                            <Zap className="h-4 w-4 text-amber-500" />
+                            <Zap className="h-4 w-4 text-primary" />
                           ) : (
                             <Clock className="h-4 w-4 text-muted-foreground" />
                           )}
