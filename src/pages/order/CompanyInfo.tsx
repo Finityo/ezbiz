@@ -132,7 +132,7 @@ export default function CompanyInfo() {
   const handleContinue = async () => {
     if (!validate()) return;
     await saveStep(1);
-    navigate("/order/irs-contact");
+    navigate("/order/processing-speed");
   };
 
   const FieldError = ({ name }: { name: string }) =>
