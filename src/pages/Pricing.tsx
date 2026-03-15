@@ -98,6 +98,9 @@ const Pricing = () => {
                           ${formatPrice(pkg.price)}
                         </p>
                         <p className="text-xs text-muted-foreground">+ state filing fee</p>
+                        {showDescriptions && (
+                          <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
+                        )}
                       </th>
                     ))}
                   </tr>
