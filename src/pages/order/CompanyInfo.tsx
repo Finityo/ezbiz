@@ -332,7 +332,7 @@ export default function CompanyInfo() {
             </h3>
             <RadioGroup
               value={order.processingSpeed}
-              onValueChange={(v) => updateField("processingSpeed", v)}
+              onValueChange={(v) => updateField("processingSpeed", v as ProcessingSpeed)}
               className="space-y-2"
             >
               {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeed, typeof PROCESSING_SPEEDS[ProcessingSpeed]][]).map(
