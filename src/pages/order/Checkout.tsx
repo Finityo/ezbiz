@@ -39,16 +39,16 @@ export default function Checkout() {
       : getStateFee(order.state)
     : 0;
 
-  const addonsTotal = order.selectedAddOns.reduce((sum, id) => {
-    const addon = ADDONS[id as AddonId];
-    return sum + (addon?.price || 0);
-  }, 0);
-
   const speedConfig = PROCESSING_SPEEDS[order.processingSpeed || "standard"];
   const processingFee = speedConfig?.price || 0;
   const shippingFee = SHIPPING.price;
 
-  const total = (pkg?.price || 0) + addonsTotal + stateFee + processingFee + shippingFee;
+  const total = calculateOrderTotal(
+    order.packageId as PackageId,
+    order.selectedAddOns as AddonId[],
+    stateFee,
+    order.processingSpeed || "standard"
+  );
 
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
