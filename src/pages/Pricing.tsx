@@ -7,42 +7,207 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
-import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Check, Eye, EyeOff } from "lucide-react";
-import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
+import {
+  PACKAGE_PRICES,
+  ADDON_PRICES,
+  PROCESSING_PRICES,
+  SHIPPING_PRICE,
+  type PackageType,
+} from "@/lib/pricing";
 
-/** Map feature labels → descriptions from ADDON_PRICES for the toggle */
-const FEATURE_DESCRIPTIONS: Record<string, string> = {
-  "Prepare & File Articles of Organization": "We prepare and file your formation documents with the state on your behalf.",
-  "Name Availability Search": "We verify your desired business name is available in your filing state.",
-  "Digital Filing Documents": "Receive all official formation documents in digital format.",
-  "Order Tracking Dashboard": "Track every step of your filing from submission to approval.",
-  "Lifetime Customer Support": "Get help whenever you need it — no expiration on support access.",
-  "Operating Agreement": ADDON_PRICES.operatingAgreement.description,
-  "Banking Resolution": "Official resolution authorizing your company to open business bank accounts.",
-  "Initial Compliance Instructions": "Step-by-step guide to keep your new business in good standing.",
-  "Priority Support": "Jump to the front of the line with priority response times.",
-  "EIN Filing Service": ADDON_PRICES.ein.description,
-  "S-Corp Election Filing": ADDON_PRICES.sCorp.description,
-  "Business License Research": ADDON_PRICES.licenseResearch.description,
-  "Compliance Alerts": ADDON_PRICES.complianceAlerts.description,
-  "Everything in Basic": "Includes all features from the Basic package.",
-  "Everything in Deluxe": "Includes all features from the Deluxe package.",
-};
+/* ------------------------------------------------------------------ */
+/*  DATA: rows that make up the comparison table                      */
+/* ------------------------------------------------------------------ */
 
-const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
+type CellValue = "included" | "not-included" | { price: number } | string;
 
-const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRICES["basic"]][]).map(
-  ([key, pkg]) => ({
-    key,
-    name: pkg.name,
-    price: pkg.price,
-    description: pkg.description,
-    features: [...pkg.features],
-    popular: !!POPULAR_MAP[key],
-  })
-);
+interface TableRow {
+  label: string;
+  description?: string;
+  section?: string;           // optional section header rendered above
+  basic: CellValue;
+  deluxe: CellValue;
+  complete: CellValue;
+}
+
+const PACKAGES: { key: PackageType; name: string; price: number; popular: boolean; description: string }[] = [
+  { key: "basic", name: "Basic", price: PACKAGE_PRICES.basic.price, popular: false, description: PACKAGE_PRICES.basic.description },
+  { key: "deluxe", name: "Deluxe", price: PACKAGE_PRICES.deluxe.price, popular: true, description: PACKAGE_PRICES.deluxe.description },
+  { key: "complete", name: "Complete", price: PACKAGE_PRICES.complete.price, popular: false, description: PACKAGE_PRICES.complete.description },
+];
+
+const TABLE_ROWS: TableRow[] = [
+  // ── Package features ──
+  {
+    label: "Name Availability Search",
+    description: "We verify your desired business name is available in your filing state.",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Prepare & File Articles of Organization",
+    description: "We prepare and file your formation documents with the state on your behalf.",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Digital Filing Documents",
+    description: "Receive all official formation documents in digital format.",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Order Tracking Dashboard",
+    description: "Track every step of your filing from submission to approval in real time.",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Lifetime Customer Support",
+    description: "Get help whenever you need it — no expiration on support access.",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Operating Agreement",
+    description: ADDON_PRICES.operatingAgreement.description,
+    basic: { price: ADDON_PRICES.operatingAgreement.price },
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Banking Resolution",
+    description: "Official resolution authorizing your company to open business bank accounts.",
+    basic: "not-included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Initial Compliance Instructions",
+    description: "Step-by-step guide to keep your new business in good standing.",
+    basic: "not-included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Priority Support",
+    description: "Jump to the front of the line with priority response times.",
+    basic: "not-included",
+    deluxe: "included",
+    complete: "included",
+  },
+
+  // ── Add-on services ──
+  {
+    label: "EIN Filing Service",
+    description: ADDON_PRICES.ein.description,
+    basic: { price: ADDON_PRICES.ein.price },
+    deluxe: { price: ADDON_PRICES.ein.price },
+    complete: "included",
+  },
+  {
+    label: "S-Corp Election Filing",
+    description: ADDON_PRICES.sCorp.description,
+    basic: { price: ADDON_PRICES.sCorp.price },
+    deluxe: { price: ADDON_PRICES.sCorp.price },
+    complete: "included",
+  },
+  {
+    label: "Business License Research",
+    description: ADDON_PRICES.licenseResearch.description,
+    basic: { price: ADDON_PRICES.licenseResearch.price },
+    deluxe: { price: ADDON_PRICES.licenseResearch.price },
+    complete: "included",
+  },
+  {
+    label: "Compliance Alerts",
+    description: ADDON_PRICES.complianceAlerts.description,
+    basic: { price: ADDON_PRICES.complianceAlerts.price },
+    deluxe: { price: ADDON_PRICES.complianceAlerts.price },
+    complete: "included",
+  },
+  {
+    label: "Corporate Kit",
+    description: ADDON_PRICES.corporateKit.description,
+    basic: { price: ADDON_PRICES.corporateKit.price },
+    deluxe: { price: ADDON_PRICES.corporateKit.price },
+    complete: { price: ADDON_PRICES.corporateKit.price },
+  },
+  {
+    label: "Registered Agent Service",
+    description: ADDON_PRICES.registeredAgent.description,
+    basic: { price: ADDON_PRICES.registeredAgent.price },
+    deluxe: { price: ADDON_PRICES.registeredAgent.price },
+    complete: { price: ADDON_PRICES.registeredAgent.price },
+  },
+  {
+    label: "DBA Filing",
+    description: ADDON_PRICES.dba.description,
+    basic: { price: ADDON_PRICES.dba.price },
+    deluxe: { price: ADDON_PRICES.dba.price },
+    complete: { price: ADDON_PRICES.dba.price },
+  },
+  {
+    label: "Annual Report Filing",
+    description: ADDON_PRICES.annualReport.description,
+    basic: { price: ADDON_PRICES.annualReport.price },
+    deluxe: { price: ADDON_PRICES.annualReport.price },
+    complete: { price: ADDON_PRICES.annualReport.price },
+  },
+
+  // ── Processing & shipping ──
+  {
+    label: "Standard Processing",
+    description: PROCESSING_PRICES.standard.description,
+    section: "Select Speed",
+    basic: "included",
+    deluxe: "included",
+    complete: "included",
+  },
+  {
+    label: "Express Processing",
+    description: PROCESSING_PRICES.express.description,
+    basic: { price: PROCESSING_PRICES.express.price },
+    deluxe: { price: PROCESSING_PRICES.express.price },
+    complete: { price: PROCESSING_PRICES.express.price },
+  },
+  {
+    label: "Shipping & Handling",
+    description: "Includes shipping your approved formation documents via U.S. First Class Priority Mail.",
+    basic: `$${SHIPPING_PRICE}`,
+    deluxe: `$${SHIPPING_PRICE}`,
+    complete: `$${SHIPPING_PRICE}`,
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  CELL RENDERER                                                     */
+/* ------------------------------------------------------------------ */
+
+function CellContent({ value }: { value: CellValue }) {
+  if (value === "included") {
+    return <Check className="h-5 w-5 text-primary mx-auto" />;
+  }
+  if (value === "not-included") {
+    return <span className="text-muted-foreground">—</span>;
+  }
+  if (typeof value === "string") {
+    return <span className="text-sm font-semibold text-primary">{value}</span>;
+  }
+  // price object
+  return <span className="text-sm font-semibold text-foreground">${formatPrice(value.price)}</span>;
+}
+
+/* ------------------------------------------------------------------ */
+/*  PAGE                                                              */
+/* ------------------------------------------------------------------ */
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -57,7 +222,11 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Pricing" description="Transparent, affordable business formation packages starting at $0 + state fees. Compare Basic, Standard, and Premium plans." path="/pricing" />
+      <SEOHead
+        title="Pricing"
+        description="Transparent, affordable business formation packages starting at $149 + state fees. Compare Basic, Deluxe, and Complete plans."
+        path="/pricing"
+      />
       <Navigation />
       <FloatingCTA />
       <BackToTop />
@@ -70,17 +239,146 @@ const Pricing = () => {
               Choose Your Business Formation Package
             </h1>
             <p className="text-lg text-white/90">
-              Transparent pricing. No hidden fees. State filing fees additional.
+              Each package is backed by our 100% Satisfaction Guarantee.
             </p>
           </div>
         </section>
 
-        {/* Comparison Table */}
-        <AnimatedSection className="py-10 md:py-16">
-          <div className="container mx-auto px-4">
+        {/* ── DESKTOP TABLE ── */}
+        <section className="hidden md:block py-10 md:py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <table className="w-full border-collapse">
+              {/* ── Sticky package header ── */}
+              <thead className="sticky top-0 z-20">
+                <tr>
+                  {/* Left column: description toggle */}
+                  <th className="text-left p-4 border border-border bg-background w-[40%] align-bottom">
+                    <button
+                      onClick={() => setShowDescriptions(!showDescriptions)}
+                      className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
+                    >
+                      {showDescriptions ? (
+                        <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
+                      ) : (
+                        <><Eye className="h-4 w-4" /> Show All Product Descriptions</>
+                      )}
+                    </button>
+                  </th>
 
-            {/* Description Toggle */}
-            <div className="flex justify-start mb-4 max-w-5xl mx-auto">
+                  {PACKAGES.map((pkg) => (
+                    <th
+                      key={pkg.key}
+                      className={`border border-border p-5 text-center align-top ${
+                        pkg.popular ? "bg-primary/5 ring-2 ring-primary ring-inset" : "bg-muted/30"
+                      }`}
+                    >
+                      {pkg.popular && (
+                        <span className="inline-block text-[10px] font-bold text-primary-foreground bg-primary rounded-full px-3 py-0.5 uppercase tracking-wider mb-2">
+                          Best Value
+                        </span>
+                      )}
+                      <h3 className="text-xl font-bold text-foreground">{pkg.name}</h3>
+                      <p className="text-xs text-muted-foreground">one-time fee</p>
+                      <p className="text-2xl font-bold text-primary mt-1">${formatPrice(pkg.price)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">+ State Fees</p>
+                      {showDescriptions && (
+                        <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
+                      )}
+                      <Button
+                        className="mt-3 touch-manipulation"
+                        variant={pkg.popular ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleStart(pkg.key)}
+                        style={{ minHeight: "40px" }}
+                      >
+                        Continue
+                      </Button>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              {/* ── Body rows ── */}
+              <tbody>
+                {TABLE_ROWS.map((row, idx) => (
+                  <>
+                    {/* Optional section header */}
+                    {row.section && (
+                      <tr key={`section-${idx}`}>
+                        <td colSpan={4} className="border border-border p-4 bg-muted/40">
+                          <span className="text-sm font-bold text-primary uppercase tracking-wide">
+                            {row.section}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
+
+                    <tr
+                      key={idx}
+                      className={idx % 2 === 0 ? "bg-background" : "bg-muted/10"}
+                    >
+                      {/* Feature label + description */}
+                      <td className="border border-border p-4">
+                        <div className="font-semibold text-foreground">{row.label}</div>
+                        {showDescriptions && row.description && (
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                            {row.description}
+                          </p>
+                        )}
+                      </td>
+
+                      {/* Per-package cells */}
+                      {PACKAGES.map((pkg) => (
+                        <td
+                          key={pkg.key}
+                          className={`border border-border p-4 text-center align-middle ${
+                            pkg.popular ? "bg-primary/5" : ""
+                          }`}
+                        >
+                          <CellContent value={row[pkg.key]} />
+                        </td>
+                      ))}
+                    </tr>
+                  </>
+                ))}
+
+                {/* ── CTA row ── */}
+                <tr className="bg-muted/20">
+                  <td className="border border-border p-4 font-bold text-foreground text-lg">
+                    Start Filing
+                  </td>
+                  {PACKAGES.map((pkg) => (
+                    <td
+                      key={pkg.key}
+                      className={`border border-border p-4 text-center ${
+                        pkg.popular ? "bg-primary/5" : ""
+                      }`}
+                    >
+                      <Button
+                        className="touch-manipulation"
+                        variant={pkg.popular ? "default" : "outline"}
+                        onClick={() => handleStart(pkg.key)}
+                        style={{ minHeight: "44px" }}
+                      >
+                        Start {pkg.name}
+                      </Button>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+
+            <p className="text-xs text-muted-foreground mt-4 text-center">
+              Prices shown are one-time service fees. State filing fees are additional and vary by state.
+            </p>
+          </div>
+        </section>
+
+        {/* ── MOBILE CARDS ── */}
+        <section className="md:hidden py-10">
+          <div className="container mx-auto px-4">
+            {/* Toggle */}
+            <div className="flex justify-start mb-4">
               <button
                 onClick={() => setShowDescriptions(!showDescriptions)}
                 className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
@@ -93,132 +391,48 @@ const Pricing = () => {
               </button>
             </div>
 
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full border-collapse max-w-5xl mx-auto">
-                <thead>
-                  <tr>
-                    <th className="text-left p-4 border border-border bg-muted/50 w-[35%]">
-                      <span className="text-lg font-bold text-foreground">Features</span>
-                    </th>
-                    {packages.map((pkg) => (
-                      <th
-                        key={pkg.key}
-                        className={`border border-border p-4 text-center ${
-                          pkg.popular ? "bg-primary/5 ring-2 ring-primary ring-inset" : "bg-muted/30"
-                        }`}
-                      >
-                        {pkg.popular && (
-                          <div className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
-                            Most Popular
-                          </div>
-                        )}
-                        <h3 className="text-xl font-bold text-foreground">{pkg.name}</h3>
-                        <p className="text-2xl font-bold text-primary mt-1">
-                          ${formatPrice(pkg.price)}
-                        </p>
-                        <p className="text-xs text-muted-foreground">+ state filing fee</p>
-                        {showDescriptions && (
-                          <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
-                        )}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Feature rows: use the longest feature list length */}
-                  {Array.from({ length: Math.max(...packages.map((p) => p.features.length)) }).map((_, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-                      <td className="border border-border p-4">
-                        <div className="font-semibold text-foreground">
-                          {packages[packages.length - 1]?.features[idx] || ""}
-                        </div>
-                        {showDescriptions && FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""] && (
-                          <p className="text-xs text-muted-foreground mt-1 italic">
-                            {FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""]}
-                          </p>
-                        )}
-                      </td>
-                      {packages.map((pkg) => (
-                        <td
-                          key={pkg.key}
-                          className={`border border-border p-4 text-center ${
-                            pkg.popular ? "bg-primary/5" : ""
-                          }`}
-                        >
-                          {idx < pkg.features.length ? (
-                            <Check className="h-5 w-5 text-primary mx-auto" />
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                  {/* CTA row */}
-                  <tr>
-                    <td className="border border-border p-4 font-bold text-foreground">
-                      Start Filing
-                    </td>
-                    {packages.map((pkg) => (
-                      <td
-                        key={pkg.key}
-                        className={`border border-border p-4 text-center ${
-                          pkg.popular ? "bg-primary/5" : ""
-                        }`}
-                      >
-                        <Button
-                          className="touch-manipulation"
-                          variant={pkg.popular ? "default" : "outline"}
-                          onClick={() => handleStart(pkg.key)}
-                          style={{ minHeight: "44px" }}
-                        >
-                          Start {pkg.name}
-                        </Button>
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile cards */}
-            <div className="md:hidden space-y-6">
-              {packages.map((pkg) => (
+            <div className="space-y-6">
+              {PACKAGES.map((pkg) => (
                 <div
                   key={pkg.key}
                   className={`rounded-xl border p-5 ${
-                    pkg.popular
-                      ? "border-primary shadow-lg ring-2 ring-primary/20"
-                      : "border-border"
+                    pkg.popular ? "border-primary shadow-lg ring-2 ring-primary/20" : "border-border"
                   }`}
                 >
                   {pkg.popular && (
                     <div className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 text-center">
-                      Most Popular
+                      Best Value
                     </div>
                   )}
                   <h3 className="text-xl font-bold text-center text-foreground">{pkg.name}</h3>
+                  <p className="text-xs text-muted-foreground text-center">one-time fee</p>
                   <p className="text-3xl font-bold text-primary text-center mt-1">
                     ${formatPrice(pkg.price)}
                   </p>
-                  <p className="text-xs text-muted-foreground text-center mb-2">+ state filing fee</p>
+                  <p className="text-xs text-muted-foreground text-center mb-1">+ State Fees</p>
                   {showDescriptions && (
-                    <p className="text-xs text-muted-foreground text-center mb-4 italic">{pkg.description}</p>
+                    <p className="text-xs text-muted-foreground text-center mb-3 italic">{pkg.description}</p>
                   )}
 
-                  <ul className="space-y-3 mb-5">
-                    {pkg.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                        <div>
-                          <span className="text-sm font-medium text-foreground">{feature}</span>
-                          {showDescriptions && FEATURE_DESCRIPTIONS[feature] && (
-                            <p className="text-xs text-muted-foreground mt-0.5 italic">{FEATURE_DESCRIPTIONS[feature]}</p>
-                          )}
+                  <div className="divide-y divide-border mt-4 mb-5">
+                    {TABLE_ROWS.map((row, idx) => {
+                      const val = row[pkg.key];
+                      if (val === "not-included") return null;
+                      return (
+                        <div key={idx} className="py-3 flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium text-foreground">{row.label}</span>
+                            {showDescriptions && row.description && (
+                              <p className="text-xs text-muted-foreground mt-0.5">{row.description}</p>
+                            )}
+                          </div>
+                          <div className="flex-shrink-0 pt-0.5">
+                            <CellContent value={val} />
+                          </div>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
+                      );
+                    })}
+                  </div>
 
                   <Button
                     className="w-full touch-manipulation"
@@ -226,36 +440,27 @@ const Pricing = () => {
                     onClick={() => handleStart(pkg.key)}
                     style={{ minHeight: "44px" }}
                   >
-                    Start {pkg.name}
+                    Continue
                   </Button>
                 </div>
               ))}
             </div>
-          </div>
-        </AnimatedSection>
 
-        {/* Add-on services */}
-        <AnimatedSection className="py-10 md:py-16 bg-muted/30">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-              Available Add-On Services
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(ADDON_PRICES)
-                .filter(([key]) => !key.startsWith("whiteGlove"))
-                .map(([, addon]) => (
-                <div
-                  key={addon.name}
-                  className="border border-border rounded-lg p-4 bg-background text-center"
-                >
-                  <h3 className="font-semibold text-foreground">{addon.name}</h3>
-                  <p className="text-xl font-bold text-primary mt-1">${formatPrice(addon.price)}</p>
-                  <p className="text-xs text-muted-foreground mt-2">{addon.description}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-xs text-muted-foreground mt-4 text-center">
+              Prices shown are one-time service fees. State filing fees are additional and vary by state.
+            </p>
           </div>
-        </AnimatedSection>
+        </section>
+
+        {/* ── Satisfaction guarantee ── */}
+        <section className="py-10 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-2xl text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">100% Satisfaction Guaranteed</h2>
+            <p className="text-muted-foreground">
+              Or we will refund 100% of our service fees, no questions asked!
+            </p>
+          </div>
+        </section>
       </main>
 
       <Footer />
