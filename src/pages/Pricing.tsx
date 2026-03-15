@@ -182,29 +182,12 @@ const Pricing = () => {
                   <p className="text-xs text-muted-foreground text-center mb-4">+ state filing fee</p>
 
                   <ul className="space-y-3 mb-5">
-                    {features.map((feature) => {
-                      const cell = getCellValue(feature.name, pkg);
-                      return (
-                        <li key={feature.name} className="flex items-start gap-3">
-                          {cell.type === "included" ? (
-                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          ) : cell.type === "addon" ? (
-                            <Plus className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                          ) : (
-                            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          )}
-                          <div>
-                            <span className="text-sm font-medium text-foreground">{feature.name}</span>
-                            {cell.type === "text" && (
-                              <span className="text-xs text-muted-foreground block">{cell.value}</span>
-                            )}
-                            {cell.type === "addon" && (
-                              <span className="text-xs text-muted-foreground block">Available as add-on</span>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {pkg.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm font-medium text-foreground">{feature}</span>
+                      </li>
+                    ))}
                   </ul>
 
                   <Button
