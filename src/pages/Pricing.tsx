@@ -12,6 +12,25 @@ import { Button } from "@/components/ui/button";
 import { Check, Eye, EyeOff } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES } from "@/lib/pricing";
 
+/** Map feature labels → descriptions from ADDON_PRICES for the toggle */
+const FEATURE_DESCRIPTIONS: Record<string, string> = {
+  "Prepare & File Articles of Organization": "We prepare and file your formation documents with the state on your behalf.",
+  "Name Availability Search": "We verify your desired business name is available in your filing state.",
+  "Digital Filing Documents": "Receive all official formation documents in digital format.",
+  "Order Tracking Dashboard": "Track every step of your filing from submission to approval.",
+  "Lifetime Customer Support": "Get help whenever you need it — no expiration on support access.",
+  "Operating Agreement": ADDON_PRICES.operatingAgreement.description,
+  "Banking Resolution": "Official resolution authorizing your company to open business bank accounts.",
+  "Initial Compliance Instructions": "Step-by-step guide to keep your new business in good standing.",
+  "Priority Support": "Jump to the front of the line with priority response times.",
+  "EIN Filing Service": ADDON_PRICES.ein.description,
+  "S-Corp Election Filing": ADDON_PRICES.sCorp.description,
+  "Business License Research": ADDON_PRICES.licenseResearch.description,
+  "Compliance Alerts": ADDON_PRICES.complianceAlerts.description,
+  "Everything in Basic": "Includes all features from the Basic package.",
+  "Everything in Deluxe": "Includes all features from the Deluxe package.",
+};
+
 const POPULAR_MAP: Record<string, boolean> = { deluxe: true };
 
 const packages = (Object.entries(PACKAGE_PRICES) as [string, typeof PACKAGE_PRICES["basic"]][]).map(
@@ -111,9 +130,13 @@ const Pricing = () => {
                     <tr key={idx} className={idx % 2 === 0 ? "bg-background" : "bg-muted/20"}>
                       <td className="border border-border p-4">
                         <div className="font-semibold text-foreground">
-                          {/* Use complete package feature name as row label */}
                           {packages[packages.length - 1]?.features[idx] || ""}
                         </div>
+                        {showDescriptions && FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""] && (
+                          <p className="text-xs text-muted-foreground mt-1 italic">
+                            {FEATURE_DESCRIPTIONS[packages[packages.length - 1]?.features[idx] || ""]}
+                          </p>
+                        )}
                       </td>
                       {packages.map((pkg) => (
                         <td
@@ -187,7 +210,12 @@ const Pricing = () => {
                     {pkg.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
                         <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-sm font-medium text-foreground">{feature}</span>
+                        <div>
+                          <span className="text-sm font-medium text-foreground">{feature}</span>
+                          {showDescriptions && FEATURE_DESCRIPTIONS[feature] && (
+                            <p className="text-xs text-muted-foreground mt-0.5 italic">{FEATURE_DESCRIPTIONS[feature]}</p>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
