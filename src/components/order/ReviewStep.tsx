@@ -19,7 +19,7 @@ type ServiceDetails = {
   notes: string;
 };
 
-const WHITE_GLOVE_PRICE = ADDON_PRICES.whiteGloveBase.price;
+// WHITE_GLOVE_BASE is imported from @/lib/pricing
 
 interface ReviewStepProps {
   state: string;
