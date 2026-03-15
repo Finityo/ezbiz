@@ -284,10 +284,10 @@ const EnhancedOrderFlow = () => {
                     </h3>
                     <RadioGroup
                       value={processingSpeed}
-                      onValueChange={(v) => setProcessingSpeed(v as ProcessingSpeed)}
+                      onValueChange={(v) => setProcessingSpeed(v as ProcessingType)}
                       className="space-y-2"
                     >
-                      {(Object.entries(PROCESSING_SPEEDS) as [ProcessingSpeed, typeof PROCESSING_SPEEDS[ProcessingSpeed]][]).map(
+                      {(Object.entries(PROCESSING_PRICES) as [ProcessingType, typeof PROCESSING_PRICES[ProcessingType]][]).map(
                         ([key, speed]) => (
                           <div
                             key={key}
