@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -19,7 +19,7 @@ type ServiceDetails = {
   notes: string;
 };
 
-const WHITE_GLOVE_PRICE = ADDON_PRICES.whiteGloveBase.price;
+// WHITE_GLOVE_BASE is imported from @/lib/pricing
 
 interface ReviewStepProps {
   state: string;
@@ -127,7 +127,7 @@ const ReviewStep = ({
                 <p><span className="text-muted-foreground">Notes:</span> {serviceDetails.notes}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                White Glove base fee: ${formatPrice(WHITE_GLOVE_PRICE)} (first 2 hours) — charged today.
+                White Glove base fee: ${formatPrice(WHITE_GLOVE_BASE)} (first 2 hours) — charged today.
                 {" "}Overage: $80/hr after 2 hours — charged on-site.
               </p>
             </div>
@@ -227,7 +227,7 @@ const ReviewStep = ({
         {isWhiteGlove && (
           <div className="flex justify-between text-sm">
             <span>White Glove Mobile Service (First 2 Hours)</span>
-            <span>${formatPrice(WHITE_GLOVE_PRICE)}</span>
+            <span>${formatPrice(WHITE_GLOVE_BASE)}</span>
           </div>
         )}
 
