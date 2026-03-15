@@ -66,6 +66,7 @@ const EnhancedOrderFlow = () => {
   const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
+  const [processingSpeed, setProcessingSpeed] = useState<ProcessingSpeed>("standard");
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
     businessName: "",
     designator: "",
