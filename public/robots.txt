@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://ezbizs.com/sitemap.xml
+Sitemap: https://ezbiz-fs.com/sitemap.xml
