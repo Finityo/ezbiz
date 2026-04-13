@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-const BASE_URL = "https://ezbizs.com";
+const BASE_URL = "https://ezbiz-fs.com";
 const DEFAULT_TITLE = "EZ BIZ FILE SERVICE - Professional Business Formation";
 const DEFAULT_DESCRIPTION =
   "Professional business formation services. Start your LLC, Corporation, or other business entity quickly and affordably with expert guidance. Trusted by entrepreneurs nationwide.";

@@ -46,7 +46,7 @@ export const RecoveryEmail = ({
         <Text style={footer}>
           If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>

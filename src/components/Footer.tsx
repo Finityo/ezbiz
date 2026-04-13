@@ -145,7 +145,7 @@ const Footer = () => {
                 <span>📍 1101 Thorpe Lane Ste 105-1028</span>
                 <span className="ml-5">San Marcos, TX 78666</span>
                 <a href="tel:+18308371955" onClick={() => trackPhoneClick('(830) 837-1955')} className="hover:text-foreground transition-colors">📞 (830) 837-1955</a>
-                <a href="mailto:support@ezbizfile.com" onClick={() => trackEmailClick('support@ezbizfile.com')} className="hover:text-foreground transition-colors">✉️ support@ezbizfile.com</a>
+                <a href="mailto:info@ezbiz-fs.com" onClick={() => trackEmailClick('info@ezbiz-fs.com')} className="hover:text-foreground transition-colors">✉️ info@ezbiz-fs.com</a>
                 <span>🕒 Mon-Fri 9AM-6PM EST</span>
               </div>
             </div>

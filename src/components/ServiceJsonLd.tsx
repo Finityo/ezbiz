@@ -11,11 +11,11 @@ const ServiceJsonLd = ({ serviceName, description, url, priceRange = "$$" }: Ser
     "@type": "Service",
     "name": serviceName,
     "description": description,
-    "url": `https://ezbizs.com${url}`,
+    "url": `https://ezbiz-fs.com${url}`,
     "provider": {
       "@type": "ProfessionalService",
       "name": "EZ BIZ FILE SERVICE",
-      "url": "https://ezbizs.com"
+      "url": "https://ezbiz-fs.com"
     },
     "areaServed": {
       "@type": "Country",
