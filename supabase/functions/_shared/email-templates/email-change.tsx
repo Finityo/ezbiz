@@ -54,7 +54,7 @@ export const EmailChangeEmail = ({
         <Text style={footer}>
           If you didn't request this change, please secure your account immediately.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>
