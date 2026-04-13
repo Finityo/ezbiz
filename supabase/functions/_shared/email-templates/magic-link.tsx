@@ -45,7 +45,7 @@ export const MagicLinkEmail = ({
         <Text style={footer}>
           If you didn't request this link, you can safely ignore this email.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>

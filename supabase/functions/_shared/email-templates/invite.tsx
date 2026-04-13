@@ -52,7 +52,7 @@ export const InviteEmail = ({
         <Text style={footer}>
           If you weren't expecting this invitation, you can safely ignore this email.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>

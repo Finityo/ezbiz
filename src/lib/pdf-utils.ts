@@ -64,7 +64,7 @@ export const addFooter = (doc: jsPDF, pageNum: number, totalPages: number) => {
   doc.text('EZ BIZ FILE SERVICE', marginLeft, pageHeight - marginBottom);
   
   // Center - website
-  const websiteText = 'ezbiz.lovable.app';
+  const websiteText = 'ezbiz-fs.com';
   const websiteWidth = doc.getTextWidth(websiteText);
   doc.text(websiteText, (pageWidth - websiteWidth) / 2, pageHeight - marginBottom);
   
@@ -251,7 +251,7 @@ export const addCoverPage = (doc: jsPDF, title: string, subtitle: string) => {
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   setColor(doc, PDF_COLORS.warmBronze);
-  const website = 'ezbiz.lovable.app';
+  const website = 'ezbiz-fs.com';
   const websiteWidth = doc.getTextWidth(website);
   doc.text(website, (pageWidth - websiteWidth) / 2, pageHeight - 40);
   
@@ -368,7 +368,7 @@ Whether you're forming an LLC, incorporating a business, or need ongoing complia
   doc.setFontSize(PDF_FONTS.body);
   doc.setFont('helvetica', 'normal');
   setColor(doc, PDF_COLORS.warmBronze);
-  const ctaText = 'Visit ezbiz.lovable.app or call us today for a free consultation';
+  const ctaText = 'Visit ezbiz-fs.com or call us today for a free consultation';
   const ctaTextWidth = doc.getTextWidth(ctaText);
   doc.text(ctaText, (pageWidth - ctaTextWidth) / 2, y + 24);
   

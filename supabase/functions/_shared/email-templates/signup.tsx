@@ -61,7 +61,7 @@ export const SignupEmail = ({
         <Text style={footer}>
           If you didn't create an account, you can safely ignore this email.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>

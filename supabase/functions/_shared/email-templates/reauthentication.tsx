@@ -36,7 +36,7 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
         <Text style={footer}>
           This code will expire shortly. If you didn't request this, you can safely ignore this email.
         </Text>
-        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbizs.com</Text>
+        <Text style={footer}>© EZ BIZ FILE SERVICE · ezbiz-fs.com</Text>
       </Container>
     </Body>
   </Html>
