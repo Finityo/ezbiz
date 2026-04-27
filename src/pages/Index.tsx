@@ -25,6 +25,7 @@ import LeadCaptureForm from "@/components/LeadCaptureForm";
 import TrustStrip from "@/components/TrustStrip";
 import HowItWorks from "@/components/HowItWorks";
 import BetaLaunchCountdown from "@/components/BetaLaunchCountdown";
+import christianPortrait from "@/assets/christian-talavera.jpg";
 
 // Homepage component
 const Index = () => {
