@@ -341,7 +341,7 @@ const Index = () => {
               <div className="relative group">
                 <div className="absolute -inset-3 rounded-full bg-gradient-to-tr from-secondary/40 via-primary/20 to-secondary/40 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
                 <div
-                  className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-1 ring-secondary/40 shadow-elegant"
+                  className="relative w-52 h-52 md:w-64 md:h-64 rounded-full overflow-hidden ring-1 ring-secondary/40 shadow-elegant"
                   style={{
                     WebkitMaskImage:
                       "radial-gradient(circle at center, black 55%, rgba(0,0,0,0.85) 72%, transparent 100%)",
