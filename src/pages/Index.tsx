@@ -353,7 +353,8 @@ const Index = () => {
                     src={christianPortrait}
                     alt="Christian Talavera, MBA, MSL — Founder of EZ BIZ File Service"
                     loading="lazy"
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    style={{ objectPosition: "center 30%" }}
                   />
                 </div>
               </div>
