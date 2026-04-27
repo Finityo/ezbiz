@@ -25,6 +25,7 @@ import LeadCaptureForm from "@/components/LeadCaptureForm";
 import TrustStrip from "@/components/TrustStrip";
 import HowItWorks from "@/components/HowItWorks";
 import BetaLaunchCountdown from "@/components/BetaLaunchCountdown";
+import christianPortrait from "@/assets/christian-talavera.jpg";
 
 // Homepage component
 const Index = () => {
@@ -335,8 +336,27 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center space-y-4">
             <div className="accent-line-center mb-6"></div>
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-2">
-              <Award className="h-8 w-8" />
+            {/* Founder Portrait with fade vignette */}
+            <div className="flex justify-center mb-4">
+              <div className="relative group">
+                <div className="absolute -inset-3 rounded-full bg-gradient-to-tr from-secondary/40 via-primary/20 to-secondary/40 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
+                <div
+                  className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-1 ring-secondary/40 shadow-elegant"
+                  style={{
+                    WebkitMaskImage:
+                      "radial-gradient(circle at center, black 55%, rgba(0,0,0,0.85) 72%, transparent 100%)",
+                    maskImage:
+                      "radial-gradient(circle at center, black 55%, rgba(0,0,0,0.85) 72%, transparent 100%)",
+                  }}
+                >
+                  <img
+                    src={christianPortrait}
+                    alt="Christian Talavera, MBA, MSL — Founder of EZ BIZ File Service"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              </div>
             </div>
              <h3 className="text-xl md:text-2xl font-bold font-display">{EZBIZ_COPY.founder.name}</h3>
              <p className="text-sm text-muted-foreground font-body">

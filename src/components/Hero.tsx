@@ -5,7 +5,6 @@ import { Flag, Zap, Globe, MessageCircle, BookOpen } from "lucide-react";
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackHeroPath, trackCorpNetClick, trackConsultationClickHero, trackLearnClick } from "@/lib/analytics";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
-import christianImage from "@/assets/christian-talavera.jpg";
 
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
 
@@ -15,43 +14,6 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-background text-foreground py-20 px-6 text-center">
       <div className="max-w-5xl mx-auto">
-        {/* FOUNDER PORTRAIT */}
-        <motion.div
-          className="flex flex-col items-center mb-8"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-        >
-          <div className="relative group">
-            {/* Soft glow ring */}
-            <div className="absolute -inset-3 rounded-full bg-gradient-to-tr from-secondary/40 via-primary/20 to-secondary/40 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
-            {/* Image with fade vignette mask */}
-            <div
-              className="relative w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-1 ring-secondary/40 shadow-elegant"
-              style={{
-                WebkitMaskImage:
-                  "radial-gradient(circle at center, black 55%, rgba(0,0,0,0.85) 70%, transparent 100%)",
-                maskImage:
-                  "radial-gradient(circle at center, black 55%, rgba(0,0,0,0.85) 70%, transparent 100%)",
-              }}
-            >
-              <img
-                src={christianImage}
-                alt="Christian Talavera, MBA, MSL — Founder of EZ BIZ File Service"
-                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-          </div>
-          <div className="mt-4 text-center">
-            <p className="text-lg md:text-xl font-semibold tracking-tight text-foreground">
-              Christian Talavera, MBA, MSL
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Founder &amp; Veteran Business Strategist
-            </p>
-          </div>
-        </motion.div>
-
         {/* ENLARGED HERO LOGO */}
         <motion.div
           className="flex justify-center mb-8"
