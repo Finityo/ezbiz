@@ -5,7 +5,6 @@ import { Flag, Zap, Globe, MessageCircle, BookOpen } from "lucide-react";
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackHeroPath, trackCorpNetClick, trackConsultationClickHero, trackLearnClick } from "@/lib/analytics";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
-import christianImage from "@/assets/christian-talavera.jpg";
 
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
 
