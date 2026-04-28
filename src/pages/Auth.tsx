@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -60,6 +61,7 @@ const Auth = () => {
   if (showEmailVerification) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <SEOHead title="Sign In" description="Sign in to your EZ BIZ FILE SERVICE account." path="/auth" noIndex />
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
