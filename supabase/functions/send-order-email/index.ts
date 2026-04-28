@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { logAndBuildErrorResponse, newRequestId } from "../_shared/error-logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
