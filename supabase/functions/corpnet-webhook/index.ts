@@ -36,21 +36,44 @@ interface CorpNetWebhookPayload {
 
 const VALID_STATUSES = ['pending', 'processing', 'filed', 'completed', 'rejected'];
 
-async function verifyWebhookSignature(body: string, signature: string | null, secret: string): Promise<boolean> {
-  if (!signature || !secret) return false;
+// Constant-time comparison to prevent timing attacks.
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+async function computeHmacSha256Hex(body: string, secret: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",
     encoder.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["sign"]
+    ["sign"],
   );
   const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
-  const expectedSig = Array.from(new Uint8Array(sig))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-  return signature === expectedSig;
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function verifyWebhookSignature(
+  body: string,
+  signatureHeader: string | null,
+  secret: string,
+): Promise<boolean> {
+  if (!signatureHeader || !secret) return false;
+  // Accept either raw hex or "sha256=<hex>" formats.
+  const provided = signatureHeader.startsWith("sha256=")
+    ? signatureHeader.slice("sha256=".length)
+    : signatureHeader;
+  if (!/^[0-9a-f]+$/i.test(provided)) return false;
+  const expected = await computeHmacSha256Hex(body, secret);
+  return timingSafeEqualHex(provided.toLowerCase(), expected.toLowerCase());
 }
 
 serve(async (req) => {
