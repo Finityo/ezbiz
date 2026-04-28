@@ -188,13 +188,18 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing webhook:', error);
-    return new Response(
-      JSON.stringify({ success: false, error: 'Webhook processing failed.' }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      }
-    );
+    return logAndBuildErrorResponse({
+      functionName: 'corpnet-webhook',
+      error,
+      requestId,
+      corsHeaders,
+      fallbackStatus: 400,
+      fallbackMessage: 'Webhook processing failed.',
+      mappings: [
+        { match: 'Missing or invalid orderId', status: 400, userMessage: 'Invalid payload.' },
+        { match: 'Invalid status', status: 400, userMessage: 'Invalid payload.' },
+        { match: 'Invalid orderId format', status: 400, userMessage: 'Invalid payload.' },
+      ],
+    });
   }
 });
