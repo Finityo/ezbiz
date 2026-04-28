@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { formatPrice } from "@/lib/utils";
 import Footer from "@/components/Footer";
