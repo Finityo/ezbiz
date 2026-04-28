@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { logAndBuildErrorResponse, newRequestId } from "../_shared/error-logger.ts";
 
 // Restrict CORS to known partner/admin origins for the webhook endpoint.
 const ALLOWED_ORIGINS = new Set<string>([
@@ -35,21 +36,44 @@ interface CorpNetWebhookPayload {
 
 const VALID_STATUSES = ['pending', 'processing', 'filed', 'completed', 'rejected'];
 
-async function verifyWebhookSignature(body: string, signature: string | null, secret: string): Promise<boolean> {
-  if (!signature || !secret) return false;
+// Constant-time comparison to prevent timing attacks.
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+async function computeHmacSha256Hex(body: string, secret: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",
     encoder.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["sign"]
+    ["sign"],
   );
   const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
-  const expectedSig = Array.from(new Uint8Array(sig))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-  return signature === expectedSig;
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function verifyWebhookSignature(
+  body: string,
+  signatureHeader: string | null,
+  secret: string,
+): Promise<boolean> {
+  if (!signatureHeader || !secret) return false;
+  // Accept either raw hex or "sha256=<hex>" formats.
+  const provided = signatureHeader.startsWith("sha256=")
+    ? signatureHeader.slice("sha256=".length)
+    : signatureHeader;
+  if (!/^[0-9a-f]+$/i.test(provided)) return false;
+  const expected = await computeHmacSha256Hex(body, secret);
+  return timingSafeEqualHex(provided.toLowerCase(), expected.toLowerCase());
 }
 
 serve(async (req) => {
@@ -59,23 +83,40 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = newRequestId();
   try {
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 405,
+      });
+    }
+
     const body = await req.text();
-    
-    // Verify webhook signature
+
+    // Verify webhook signature (HMAC-SHA256, constant-time compare).
     const webhookSecret = Deno.env.get('CORPNET_WEBHOOK_SECRET');
     if (!webhookSecret) {
-      console.error('CORPNET_WEBHOOK_SECRET not configured');
-      return new Response(JSON.stringify({ success: false, error: 'Webhook not configured' }), {
+      console.error(JSON.stringify({ level: 'error', fn: 'corpnet-webhook', requestId, message: 'CORPNET_WEBHOOK_SECRET not configured' }));
+      return new Response(JSON.stringify({ success: false, error: 'Webhook not configured', requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       });
     }
-    const signature = req.headers.get('X-CorpNet-Signature');
+
+    const signature = req.headers.get('X-CorpNet-Signature') || req.headers.get('x-corpnet-signature');
+    if (!signature) {
+      console.warn(JSON.stringify({ level: 'warn', fn: 'corpnet-webhook', requestId, message: 'Missing signature header', origin: req.headers.get('origin') }));
+      return new Response(JSON.stringify({ success: false, error: 'Missing signature', requestId }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
     const isValid = await verifyWebhookSignature(body, signature, webhookSecret);
     if (!isValid) {
-      console.error('Invalid webhook signature');
-      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+      console.warn(JSON.stringify({ level: 'warn', fn: 'corpnet-webhook', requestId, message: 'Invalid signature', origin: req.headers.get('origin') }));
+      return new Response(JSON.stringify({ success: false, error: 'Invalid signature', requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       });
@@ -147,13 +188,18 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing webhook:', error);
-    return new Response(
-      JSON.stringify({ success: false, error: 'Webhook processing failed.' }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      }
-    );
+    return logAndBuildErrorResponse({
+      functionName: 'corpnet-webhook',
+      error,
+      requestId,
+      corsHeaders,
+      fallbackStatus: 400,
+      fallbackMessage: 'Webhook processing failed.',
+      mappings: [
+        { match: 'Missing or invalid orderId', status: 400, userMessage: 'Invalid payload.' },
+        { match: 'Invalid status', status: 400, userMessage: 'Invalid payload.' },
+        { match: 'Invalid orderId format', status: 400, userMessage: 'Invalid payload.' },
+      ],
+    });
   }
 });
