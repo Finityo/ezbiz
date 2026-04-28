@@ -72,6 +72,7 @@ const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
 const StartOrder = lazy(() => import("./pages/StartOrder"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
