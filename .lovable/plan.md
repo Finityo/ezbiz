@@ -1,126 +1,43 @@
-# Domain Canonicalization + Facebook Scraper Diagnostics Plan
+## Current State (verified just now via live curl)
 
-Goal: Eliminate every apex/legacy domain reference, give you live in-app tooling to see exactly what Facebook sees, ship a proper 1200x630 OG image, and refresh the sitemap so social crawlers always land on the canonical `https://www.ezbiz-fs.com` URLs.
+| Check | Result |
+|---|---|
+| `curl -A facebookexternalhit https://ezbiz-fs.com/` | **302 → www** (NOT 403 anymore) |
+| `curl -A facebookexternalhit https://www.ezbiz-fs.com/` | **200 OK** ✅ |
+| `https://www.ezbiz-fs.com/og-image.png` | **200 OK**, 670KB PNG ✅ |
+| `https://www.ezbiz-fs.com/og-preview.png` | **404** ❌ (filename you spec'd doesn't exist) |
+| `robots.txt` | Already allows `facebookexternalhit` + `Facebot` ✅ |
+| OG tags in `index.html` | Already complete (title/desc/image/url/type + twitter card) ✅ |
+| Cloudflare WAF | Not blocking — apex returns 302, not 403 |
 
-Note: Items 2 and 3 in your message are duplicates ("Social Preview Tester"). I'm treating them as one feature. If you actually wanted a second, distinct tool there, tell me what and I'll add it.
+**The 403 you saw in Meta Sharing Debugger is almost certainly a cached result from before the previous turn's fixes deployed.** The site is now serving 200 to Facebook's UA on both apex (via redirect) and www.
 
----
+## What's actually missing
 
-## 1. Code cleanup — force `https://www.ezbiz-fs.com` everywhere
+Only one real gap: the file path you specified (`/og-preview.png`) doesn't exist. We have `/og-image.png` instead. Two options — I recommend Option A:
 
-Files to update:
+### Option A (recommended): Add `og-preview.png` as a copy
+- Copy `public/og-image.png` → `public/og-preview.png` (same 1200×630 asset, both URLs work)
+- No meta tag changes needed — existing `og-image.png` references stay valid
+- New `og-preview.png` URL also works for any external references that use it
 
-- `src/components/ServiceJsonLd.tsx` — change `https://ezbiz-fs.com` → `https://www.ezbiz-fs.com` for `url` and `provider.url`.
-- `supabase/functions/send-order-email/index.ts` — replace `https://ezbiz-fs.com/dashboard` (and any other apex links in the email HTML) with `https://www.ezbiz-fs.com/...`.
-- `supabase/functions/create-checkout/index.ts` — fallback `origin` becomes `https://www.ezbiz-fs.com` (origin header still wins for non-prod environments).
-- `supabase/functions/corpnet-webhook/index.ts` — remove the stale `https://ezbiz.lovable.app` entry from `ALLOWED_ORIGINS`. Default-allow-origin already `https://www.ezbiz-fs.com` (good).
-- `src/lib/pdf-utils.ts` and `src/lib/pdf-generators/llc-guide.ts` — display strings change `ezbiz-fs.com` → `www.ezbiz-fs.com` for consistency in printed PDFs.
-- `scripts/robots.config.mjs` — `prod` already correct; no change.
+### Option B: Rename and update all references
+- Rename file + update `index.html`, `SEOHead.tsx`, `site.ts` defaults
+- Higher regression risk, no functional benefit
 
-New centralized constant (so this never drifts again):
+## Plan (Option A)
 
-- `src/lib/site.ts` exports `SITE_URL = "https://www.ezbiz-fs.com"` and `siteUrl(path)`. Refactor `SEOHead.tsx`, `ServiceJsonLd.tsx`, and any future need to import from there.
+1. **Add `public/og-preview.png`** — duplicate of existing `og-image.png` (1200×630 PNG, already QA'd)
+2. **Verify `robots.txt`** — already correct, no change
+3. **Verify OG tags** — already correct in `index.html`, no change
+4. **Keep canonical as `www.ezbiz-fs.com`** — apex 302→www is FB-scraper-safe (Meta follows redirects); flipping canonical to apex would re-introduce the redirect-hop issue we just fixed last turn
+5. **Post-deploy verification steps for you:**
+   - Visit Meta Sharing Debugger → enter `https://www.ezbiz-fs.com/` → click **"Scrape Again" twice** (first scrape clears cache, second shows fresh result)
+   - Also try `https://ezbiz-fs.com/` — should show "redirected to www" notice but still preview correctly
+   - Use the in-app `/admin/social-preview` tester (built last turn) to confirm 200 responses across all 11 scraper UAs
 
-Acceptance: `rg "https://ezbiz-fs\.com|ezbiz\.lovable\.app"` returns zero hits in `src/` and `supabase/functions/`.
+## Files changed
+- `public/og-preview.png` (new, copied from og-image.png)
 
----
-
-## 2/3. In-app "Social Preview Tester" (admin-only)
-
-New page at `/admin/social-preview` (gated by existing `useAdminAuth`).
-
-UI:
-- Input for URL (defaults to current site).
-- User-Agent dropdown: `facebookexternalhit/1.1`, `Twitterbot/1.0`, `LinkedInBot/1.0`, `Slackbot-LinkExpanding 1.0`, `Googlebot/2.1`, plus a custom field.
-- Submit → calls a new edge function `social-preview-fetch` and renders:
-  - Final URL after redirects, redirect chain (status + Location at each hop)
-  - Final HTTP status, status text
-  - Response headers (server, cf-ray, set-cookie, content-type, x-robots-tag, etc.)
-  - Detected meta tags: `og:title`, `og:description`, `og:image`, `og:url`, `twitter:card`, `canonical`
-  - Inline preview card mimicking Facebook's layout
-  - Raw HTML (collapsible, truncated to ~50 KB)
-
-Backend: `supabase/functions/social-preview-fetch/index.ts`
-- Validates input with Zod (`url` https-only, `userAgent` optional string ≤200 chars).
-- Manually follows up to 5 redirects (`fetch` with `redirect: "manual"`) so we can capture the chain.
-- Parses HTML with a tiny regex/`DOMParser`-equivalent (deno-dom) to pull meta tags.
-- Returns JSON: `{ chain, finalStatus, headers, meta, html }`.
-- `verify_jwt` stays default; admin gating happens client-side + server checks the caller's JWT and `has_role(uid,'admin')` before responding (so it can't be abused as an open proxy).
-
-Add link in `AdminDashboard.tsx` sidebar/nav: "Social Preview Tester".
-
----
-
-## 4. Generate a real 1200x630 OG image
-
-Approach: pre-rendered static asset (no runtime cost, scrapers love it).
-
-- Add a Node script `scripts/generate-og-image.mjs` using `@vercel/og` or `satori` + `sharp` to render a 1200x630 PNG from a JSX template (logo, brand gradient navy→gold, "EZ BIZ FILE SERVICE", tagline, phone). Run once, commit output to `public/og-image.png`.
-- Update `index.html` `og:image` and `twitter:image` to `https://www.ezbiz-fs.com/og-image.png` plus `og:image:width=1200`, `og:image:height=630`, `og:image:type=image/png`, `og:image:alt`.
-- Update `SEOHead.tsx` `DEFAULT_IMAGE` to the same.
-- Keep the old GCS image as a fallback secondary `og:image` (Facebook accepts multiple).
-
-Acceptance: `curl -A facebookexternalhit https://www.ezbiz-fs.com/og-image.png` returns 200 PNG, exactly 1200x630.
-
----
-
-## 5. Automated scraper diagnostics report
-
-New edge function `social-diagnostics` + admin UI tab "Diagnostics" on the same `/admin/social-preview` page.
-
-- Runs the fetch above with a battery of User-Agents in parallel: facebookexternalhit (both 1.1 and the newer one), Twitterbot, LinkedInBot, Slackbot, Discordbot, WhatsApp, Googlebot, plain `curl/8`, and a real Chrome UA.
-- For each: records DNS resolution success (via `Deno.resolveDns`), TCP/TLS reachability, redirect chain, every status code, presence of Cloudflare challenge markers (`cf-mitigated`, `cf-chl-bypass`, `__cf_bm`, 403 with `server: cloudflare`), and final body length.
-- Classifies the failure point: `DNS` | `TLS` | `Redirect loop` | `Edge challenge (Cloudflare)` | `App 4xx/5xx` | `OK`.
-- Returns a single structured report; UI shows a color-coded table and a "Copy as Markdown" button so you can paste into a Lovable support ticket.
-- Persists each run to a new table `social_diagnostics_runs` (admin-only RLS) so we have history.
-
-Migration:
-```sql
-create table public.social_diagnostics_runs (
-  id uuid primary key default gen_random_uuid(),
-  url text not null,
-  report jsonb not null,
-  created_by uuid references auth.users(id),
-  created_at timestamptz default now()
-);
-alter table public.social_diagnostics_runs enable row level security;
-create policy "admins read" on public.social_diagnostics_runs
-  for select to authenticated using (public.has_role(auth.uid(),'admin'));
-create policy "admins insert" on public.social_diagnostics_runs
-  for insert to authenticated with check (public.has_role(auth.uid(),'admin'));
-```
-
----
-
-## 6. Sitemap regeneration + sitemap index
-
-- Rewrite `public/sitemap.xml` so every `<loc>` uses `https://www.ezbiz-fs.com` (already true) AND bump every `<lastmod>` to today's date (`2026-04-28`) so Facebook/Google retry.
-- Add missing routes I found in `App.tsx` that aren't in the sitemap: `/blog`, `/entrepreneurs` (already there), `/start-order` (intentionally skip — transactional). Audit pass to confirm coverage.
-- New `public/sitemap-index.xml` referencing `sitemap.xml` (room to split later by section). Update `public/robots.txt` (via `scripts/robots.config.mjs`) to point `Sitemap:` at the index.
-- Add a `scripts/generate-sitemap.mjs` that walks `App.tsx` routes and writes both files, so it stays in sync. Run it once now and commit the output.
-
-Acceptance: `curl https://www.ezbiz-fs.com/sitemap-index.xml` → 200 XML; FB sharing debugger shows the canonical www URL with no redirect hops.
-
----
-
-## Why this fixes the Facebook 403 (or proves it isn't us)
-
-Right now the live site returns the correct OG tags to a Facebook UA, but Facebook still 403s. The diagnostics tool above will pinpoint whether the 403 happens at:
-
-1. **DNS** (IONOS misroute) — unlikely, you confirmed records.
-2. **Cloudflare edge challenge** at Lovable's hosting layer — most likely; the report will show `server: cloudflare` + 403 + `cf-mitigated: challenge`. That's a screenshot you can hand to Lovable Support to allowlist Facebook's UA.
-3. **App 5xx** — the diagnostics will surface a stack trace path.
-
-Combined with the canonical-URL cleanup (no apex→www 301 hop) and a proper 1200x630 image, the Facebook debugger should re-validate cleanly the moment Cloudflare stops challenging the bot.
-
----
-
-## Technical details (for the dev pass)
-
-- All new edge functions: Deno + Zod validation, generic 500 errors to client, structured logs server-side, admin JWT check via `supabase.auth.getUser` + `has_role`.
-- No client-side admin trust — server validates every diagnostics call.
-- `social-preview-fetch` adds a 10s timeout per fetch, max body 1 MB, blocks private IP ranges (SSRF guard).
-- New page lazy-loaded in `App.tsx` to keep main bundle small.
-- Memory updates: add a `mem://features/social-preview-tester` note pointing at admin-only diagnostics tooling.
-
-After approval I'll execute steps 1→6 in order, deploy edge functions, run `social-diagnostics` against `https://www.ezbiz-fs.com/`, and report back with the actual classification of where the 403 originates.
+## Why not change canonical to apex
+Your task spec uses `https://ezbiz-fs.com/` in OG tags, but the entire previous-turn refactor canonicalized everything to `www` precisely to eliminate the redirect hop that Cloudflare's bot challenge sometimes intercepts. Reverting OG URLs to apex would undo that hardening. Cloudflare's 302 on apex is clean (verified above), so keeping `www` canonical is the safer call.
