@@ -1,10 +1,25 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// Restrict CORS to known partner/admin origins for the webhook endpoint.
+const ALLOWED_ORIGINS = new Set<string>([
+  'https://www.ezbiz-fs.com',
+  'https://ezbiz-fs.com',
+  'https://ezbiz.lovable.app',
+  'https://api.corpnet.com',
+]);
+
+function buildCorsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') || '';
+  const allowOrigin = ALLOWED_ORIGINS.has(origin) ? origin : 'https://www.ezbiz-fs.com';
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Headers':
+      'authorization, x-client-info, apikey, content-type, x-corpnet-signature',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Vary': 'Origin',
+  };
+}
 
 interface CorpNetWebhookPayload {
   orderId: string;
@@ -38,6 +53,8 @@ async function verifyWebhookSignature(body: string, signature: string | null, se
 }
 
 serve(async (req) => {
+  const corsHeaders = buildCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
