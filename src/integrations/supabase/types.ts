@@ -761,6 +761,30 @@ export type Database = {
         }
         Relationships: []
       }
+      social_diagnostics_runs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          report: Json
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          report: Json
+          url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          report?: Json
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
