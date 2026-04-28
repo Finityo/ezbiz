@@ -129,6 +129,7 @@ const BusinessFilings = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Filings" description="Annual reports, amendments, dissolutions, and ongoing business filing services from EZ BIZ FILE SERVICE." path="/business-filings" />
       <Navigation />
       
       {/* Hero Section */}

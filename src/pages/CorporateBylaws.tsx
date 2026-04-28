@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,6 +50,7 @@ const CorporateBylaws = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Corporate Bylaws" description="Professional corporate bylaws drafting service. Define governance and stay compliant with EZ BIZ FILE SERVICE." path="/corporate-bylaws" />
       <Navigation />
       
       <main>

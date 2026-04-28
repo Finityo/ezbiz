@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { Card } from "@/components/ui/card";
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Terms of Service" description="Terms of Service for EZ BIZ FILE SERVICE business formation and compliance services." path="/terms" />
       <Navigation />
       
       <div className="container mx-auto px-4 py-12">

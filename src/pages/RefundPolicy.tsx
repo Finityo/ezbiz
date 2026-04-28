@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { AlertTriangle, CheckCircle } from "lucide-react";
 const RefundPolicy = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Refund Policy" description="Refund Policy for EZ BIZ FILE SERVICE business formation services." path="/refund-policy" />
       <Navigation />
       
       <div className="container mx-auto px-4 py-12">

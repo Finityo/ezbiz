@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -210,6 +211,7 @@ const BusinessGuide = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Formation Guide" description="Step-by-step guide to forming your LLC or corporation. Free downloadable resources from EZ BIZ FILE SERVICE." path="/business-guide" />
       <Navigation />
       
       <main>

@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -151,6 +152,7 @@ const BusinessTemplates = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Document Templates" description="Free LLC operating agreements, corporate bylaws, and meeting minutes templates from EZ BIZ FILE SERVICE." path="/business-templates" />
       <Navigation />
       
       {/* Hero Section */}

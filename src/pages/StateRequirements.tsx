@@ -93,6 +93,7 @@ const StateRequirements = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="State Filing Requirements" description="Compare LLC and corporation filing fees, processing times, and requirements across all 50 states." path="/state-requirements" />
       <Navigation />
       
       <main>
