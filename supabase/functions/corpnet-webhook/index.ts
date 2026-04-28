@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { logAndBuildErrorResponse, newRequestId } from "../_shared/error-logger.ts";
 
 // Restrict CORS to known partner/admin origins for the webhook endpoint.
 const ALLOWED_ORIGINS = new Set<string>([
