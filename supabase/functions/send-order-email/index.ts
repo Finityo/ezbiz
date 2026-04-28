@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { logAndBuildErrorResponse, newRequestId } from "../_shared/error-logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -95,8 +96,10 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = newRequestId();
+  let payload: EmailPayload | undefined;
   try {
-    const payload: EmailPayload = await req.json();
+    payload = await req.json() as EmailPayload;
     
     console.log('Sending order notification email:', {
       to: payload.to,
@@ -149,11 +152,14 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing email:', error);
-    
-    return new Response(
-      JSON.stringify({ success: false, error: 'Unable to send email notification.' }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-    );
+    return logAndBuildErrorResponse({
+      functionName: 'send-order-email',
+      error,
+      requestId,
+      context: { to: payload?.to, orderId: payload?.orderId, status: payload?.status },
+      corsHeaders,
+      fallbackStatus: 400,
+      fallbackMessage: 'Unable to send email notification.',
+    });
   }
 });
