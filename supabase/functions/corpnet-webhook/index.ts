@@ -83,23 +83,40 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = newRequestId();
   try {
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 405,
+      });
+    }
+
     const body = await req.text();
-    
-    // Verify webhook signature
+
+    // Verify webhook signature (HMAC-SHA256, constant-time compare).
     const webhookSecret = Deno.env.get('CORPNET_WEBHOOK_SECRET');
     if (!webhookSecret) {
-      console.error('CORPNET_WEBHOOK_SECRET not configured');
-      return new Response(JSON.stringify({ success: false, error: 'Webhook not configured' }), {
+      console.error(JSON.stringify({ level: 'error', fn: 'corpnet-webhook', requestId, message: 'CORPNET_WEBHOOK_SECRET not configured' }));
+      return new Response(JSON.stringify({ success: false, error: 'Webhook not configured', requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       });
     }
-    const signature = req.headers.get('X-CorpNet-Signature');
+
+    const signature = req.headers.get('X-CorpNet-Signature') || req.headers.get('x-corpnet-signature');
+    if (!signature) {
+      console.warn(JSON.stringify({ level: 'warn', fn: 'corpnet-webhook', requestId, message: 'Missing signature header', origin: req.headers.get('origin') }));
+      return new Response(JSON.stringify({ success: false, error: 'Missing signature', requestId }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
     const isValid = await verifyWebhookSignature(body, signature, webhookSecret);
     if (!isValid) {
-      console.error('Invalid webhook signature');
-      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+      console.warn(JSON.stringify({ level: 'warn', fn: 'corpnet-webhook', requestId, message: 'Invalid signature', origin: req.headers.get('origin') }));
+      return new Response(JSON.stringify({ success: false, error: 'Invalid signature', requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       });
