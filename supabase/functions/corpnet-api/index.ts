@@ -162,30 +162,18 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    // Log full error details server-side only.
-    console.error('Error in corpnet-api:', error);
-
-    // Map known auth errors to specific status codes; everything else is generic.
-    const raw = error instanceof Error ? error.message : '';
-    let status = 500;
-    let userMessage = 'Unable to process request. Please try again.';
-    if (raw === 'No authorization header' || raw === 'Unauthorized') {
-      status = 401;
-      userMessage = 'Authentication required.';
-    } else if (raw === 'Admin access required') {
-      status = 403;
-      userMessage = 'Admin access required.';
-    } else if (raw === 'order_id is required') {
-      status = 400;
-      userMessage = 'Invalid request.';
-    }
-
-    return new Response(
-      JSON.stringify({ success: false, error: userMessage }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status,
-      }
-    );
+    return logAndBuildErrorResponse({
+      functionName: 'corpnet-api',
+      error,
+      requestId,
+      context: { order_id: orderIdForLog },
+      corsHeaders,
+      mappings: [
+        { match: 'No authorization header', status: 401, userMessage: 'Authentication required.' },
+        { match: 'Unauthorized', status: 401, userMessage: 'Authentication required.' },
+        { match: 'Admin access required', status: 403, userMessage: 'Admin access required.' },
+        { match: 'order_id is required', status: 400, userMessage: 'Invalid request.' },
+      ],
+    });
   }
 });
