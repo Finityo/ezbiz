@@ -96,8 +96,10 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = newRequestId();
+  let payload: EmailPayload | undefined;
   try {
-    const payload: EmailPayload = await req.json();
+    payload = await req.json() as EmailPayload;
     
     console.log('Sending order notification email:', {
       to: payload.to,
