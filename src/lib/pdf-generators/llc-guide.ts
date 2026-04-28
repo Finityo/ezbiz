@@ -373,7 +373,7 @@ export const generateLLCGuide = (): jsPDF => {
   
   y += 5;
   y = addSubsectionHeader(doc, 'Next Steps', y);
-  y = addParagraph(doc, `Ready to form your LLC? EZ BIZ FILE SERVICE can handle the entire process for you—from filing your Articles of Organization to obtaining your EIN. Visit ezbiz-fs.com to get started today, or contact us for a free consultation.`, y);
+  y = addParagraph(doc, `Ready to form your LLC? EZ BIZ FILE SERVICE can handle the entire process for you—from filing your Articles of Organization to obtaining your EIN. Visit www.ezbiz-fs.com to get started today, or contact us for a free consultation.`, y);
   
   // About page
   addAboutPage(doc);
