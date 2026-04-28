@@ -152,11 +152,14 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing email:', error);
-    
-    return new Response(
-      JSON.stringify({ success: false, error: 'Unable to send email notification.' }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-    );
+    return logAndBuildErrorResponse({
+      functionName: 'send-order-email',
+      error,
+      requestId,
+      context: { to: payload?.to, orderId: payload?.orderId, status: payload?.status },
+      corsHeaders,
+      fallbackStatus: 400,
+      fallbackMessage: 'Unable to send email notification.',
+    });
   }
 });
