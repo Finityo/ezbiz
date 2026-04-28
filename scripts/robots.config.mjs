@@ -24,7 +24,7 @@ const ALLOWED_BOTS = [
 
 /** @param {"dev"|"staging"|"prod"} env */
 export function buildRobotsTxt(env) {
-  const sitemap = `${SITE_URL[env]}/sitemap.xml`;
+  const sitemap = `${SITE_URL[env]}/sitemap-index.xml`;
 
   if (env === "dev" || env === "staging") {
     return [

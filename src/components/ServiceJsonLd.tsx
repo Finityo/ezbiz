@@ -1,3 +1,5 @@
+import { SITE_URL, siteUrl } from "@/lib/site";
+
 interface ServiceJsonLdProps {
   serviceName: string;
   description: string;
@@ -11,17 +13,17 @@ const ServiceJsonLd = ({ serviceName, description, url, priceRange = "$$" }: Ser
     "@type": "Service",
     "name": serviceName,
     "description": description,
-    "url": `https://ezbiz-fs.com${url}`,
+    "url": siteUrl(url),
     "provider": {
       "@type": "ProfessionalService",
       "name": "EZ BIZ FILE SERVICE",
-      "url": "https://ezbiz-fs.com"
+      "url": SITE_URL,
     },
     "areaServed": {
       "@type": "Country",
-      "name": "United States"
+      "name": "United States",
     },
-    "priceRange": priceRange
+    "priceRange": priceRange,
   };
 
   return (

@@ -80,7 +80,7 @@ serve(async (req) => {
       finalOrderId = order?.id;
     }
 
-    const origin = req.headers.get("origin") || "https://ezbiz-fs.com";
+    const origin = req.headers.get("origin") || "https://www.ezbiz-fs.com";
 
     // Build Stripe line items
     const stripeLineItems: any[] = lineItems.map((item: { priceId: string; quantity?: number; description?: string }) => {

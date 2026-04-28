@@ -6,7 +6,6 @@ import { logAndBuildErrorResponse, newRequestId } from "../_shared/error-logger.
 const ALLOWED_ORIGINS = new Set<string>([
   'https://www.ezbiz-fs.com',
   'https://ezbiz-fs.com',
-  'https://ezbiz.lovable.app',
   'https://api.corpnet.com',
 ]);
 
