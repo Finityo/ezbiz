@@ -14,25 +14,27 @@ const BUCKET = "email-assets";
 
 const anon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function fetchPublicUrl(path: string): Promise<number> {
-  const { data } = anon.storage.from(BUCKET).getPublicUrl(path);
-  const res = await fetch(data.publicUrl, { method: "GET" });
-  await res.body?.cancel(); // free the stream
-  return res.status;
+async function anonCanRead(path: string): Promise<{ ok: boolean; status?: number; error?: string }> {
+  // Hit the storage REST endpoint directly with the anon key so RLS applies.
+  const url = `${SUPABASE_URL}/storage/v1/object/email-assets/${path}`;
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  });
+  await res.body?.cancel();
+  return { ok: res.ok, status: res.status };
 }
 
-Deno.test("email-assets: public/ prefix object is readable", async () => {
-  // logo.png is expected to live at public/logo.png after the storage hardening migration.
-  const status = await fetchPublicUrl("public/logo.png");
-  assert(
-    status === 200,
-    `Expected public/logo.png to be readable (200), got ${status}`,
-  );
+Deno.test("email-assets: public/ prefix object is readable by anon (via SELECT policy)", async () => {
+  const { ok, status } = await anonCanRead("public/logo.png");
+  assert(ok, `Expected public/logo.png to be readable, got status ${status}`);
 });
 
-Deno.test("email-assets: object outside public/ is NOT readable", async () => {
-  // This path should not exist OR should be blocked by the scoped SELECT policy.
-  const status = await fetchPublicUrl("private/should-not-be-readable.png");
+Deno.test("email-assets: object outside public/ is NOT readable by anon", async () => {
+  const { status } = await anonCanRead("private/should-not-be-readable.png");
   assert(
     status === 400 || status === 403 || status === 404,
     `Expected non-public path to be blocked (400/403/404), got ${status}`,
