@@ -43,6 +43,7 @@ serve(async (req) => {
 
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
+    orderIdForLog = order_id;
 
     // Fetch all order data from normalized tables
     const [order, contact, bizInfo, address, agent, mgmt, participants, irs] = await Promise.all([
