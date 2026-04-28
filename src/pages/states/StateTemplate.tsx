@@ -30,8 +30,15 @@ const StateTemplate = ({
     ? "Limited Liability Company" 
     : "Corporation";
 
+  const slugState = stateName.toLowerCase().replace(/\s+/g, "-");
+  const slugEntity = entityType === "llc" ? "llc" : "corporation";
+  const seoPath = `/state/${slugState}/${slugEntity}`;
+  const seoTitle = `Form a ${stateName} ${entityLabel} — State Filing Service`;
+  const seoDesc = `Start your ${stateName} ${entityFull} with EZ BIZ FILE SERVICE. State fee ${formatPrice(stateFee)}. Processing in ${processingTime}.`;
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={seoTitle} description={seoDesc} path={seoPath} />
       <Navigation />
       
       <StateHeroSection
