@@ -1,9 +1,9 @@
 import { Helmet } from "react-helmet-async";
 
-const BASE_URL = "https://ezbiz-fs.com";
+const BASE_URL = "https://www.ezbiz-fs.com";
 const DEFAULT_TITLE = "EZ BIZ FILE SERVICE - Professional Business Formation";
 const DEFAULT_DESCRIPTION =
-  "Professional business formation services. Start your LLC, Corporation, or other business entity quickly and affordably with expert guidance. Trusted by entrepreneurs nationwide.";
+  "Form your LLC, Corporation, or business entity online. Expert guidance, fast filings, and trusted nationwide service from EZ BIZ FILE SERVICE.";
 const DEFAULT_IMAGE =
   "https://storage.googleapis.com/gpt-engineer-file-uploads/Qz9gBE0xxVYuqMA5hDpEauIykus2/social-images/social-1768619319988-IMG_2929.PNG";
 
