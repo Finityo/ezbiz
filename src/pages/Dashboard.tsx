@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -252,6 +253,7 @@ function InfoRow({
 function DashboardSkeleton() {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Dashboard" description="Your EZ BIZ FILE SERVICE client dashboard." path="/dashboard" noIndex />
       <Navigation />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-6">

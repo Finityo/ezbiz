@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,6 +57,7 @@ export default function StartOrder() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEOHead title="Start Your Order" description="Start your business formation order." path="/start-order" noIndex />
       <Navigation />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto space-y-8">

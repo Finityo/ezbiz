@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -217,6 +218,7 @@ export default function CompanyInfo() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Company Info" description="Order step: company information." path="/order/company-info" noIndex />
       <Navigation />
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
         <div className="max-w-3xl mx-auto space-y-6">

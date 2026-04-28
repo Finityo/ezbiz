@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -177,6 +178,7 @@ const EnhancedOrderFlow = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Order Flow" description="Complete your business formation order with EZ BIZ FILE SERVICE." path="/order-flow" noIndex />
       <Navigation />
 
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">

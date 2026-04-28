@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -333,6 +334,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
+        <SEOHead title="Admin" description="Admin dashboard." path="/admin" noIndex />
         <Navigation />
         <div className="container mx-auto px-4 py-20">
           <div className="text-center">Loading admin dashboard...</div>

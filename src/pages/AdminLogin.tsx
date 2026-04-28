@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -52,6 +53,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
+      <SEOHead title="Admin Login" description="Admin login." path="/admin/login" noIndex />
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">

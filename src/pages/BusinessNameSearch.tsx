@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 import { Button } from "@/components/ui/button";
@@ -108,6 +109,7 @@ const BusinessNameSearch = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Name Search" description="Business name availability search." path="/name-search" noIndex />
       <Navigation />
       
       <main>

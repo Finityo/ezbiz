@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -31,6 +32,7 @@ export default function Terms() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Order Terms" description="Order step: terms." path="/order/terms" noIndex />
       <Navigation />
       <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
         <div className="max-w-2xl mx-auto space-y-6">

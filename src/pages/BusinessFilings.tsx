@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -128,6 +129,7 @@ const BusinessFilings = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Business Filings" description="Annual reports, amendments, dissolutions, and ongoing business filing services from EZ BIZ FILE SERVICE." path="/business-filings" />
       <Navigation />
       
       {/* Hero Section */}

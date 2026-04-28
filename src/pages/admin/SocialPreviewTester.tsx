@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
@@ -108,6 +109,7 @@ export default function SocialPreviewTester() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Social Preview Tester" description="Admin social preview diagnostic tool." path="/admin/social-preview" noIndex />
       <Helmet>
         <title>Social Preview Tester | Admin</title>
         <meta name="robots" content="noindex,nofollow" />

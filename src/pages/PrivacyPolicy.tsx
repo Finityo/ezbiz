@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { Card } from "@/components/ui/card";
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Privacy Policy" description="Privacy Policy for EZ BIZ FILE SERVICE — how we collect, use, and protect your information." path="/privacy" />
       <Navigation />
       
       <div className="container mx-auto px-4 py-12">

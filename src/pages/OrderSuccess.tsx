@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -18,6 +19,7 @@ export default function OrderSuccess() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead title="Order Confirmed" description="Your order has been confirmed." path="/order-success" noIndex />
       <Navigation />
       <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 py-16 px-4">
         <motion.div
