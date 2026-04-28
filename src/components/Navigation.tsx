@@ -306,6 +306,9 @@ const Navigation = () => {
             <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-fast">
               Pricing
             </Link>
+            <Link to="/entrepreneurs" className="text-muted-foreground hover:text-foreground transition-fast">
+              For Founders
+            </Link>
             <Link to="/about" className="text-muted-foreground hover:text-foreground transition-fast">
               About
             </Link>
