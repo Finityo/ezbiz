@@ -350,11 +350,19 @@ const AdminDashboard = () => {
       <Navigation />
       
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Manage consultation requests and client contacts
-          </p>
+        <div className="mb-6 sm:mb-8 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Manage consultation requests and client contacts
+            </p>
+          </div>
+          <a
+            href="/admin/social-preview"
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Social Preview Tester →
+          </a>
         </div>
 
         <Tabs defaultValue="orders" className="space-y-6 sm:space-y-8">
