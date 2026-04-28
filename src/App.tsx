@@ -153,6 +153,7 @@ function App() {
               <Route path="/start-order" element={<StartOrder />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/entrepreneurs" element={<Entrepreneurs />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
