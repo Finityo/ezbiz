@@ -139,6 +139,30 @@ const Index = () => {
       {/* How It Works */}
       <HowItWorks />
 
+      {/* Founders teaser → /entrepreneurs */}
+      <section className="py-12 md:py-16 bg-card border-y border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-xs font-semibold tracking-widest text-secondary uppercase mb-3">
+              For Founders & Idea Holders
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-3">
+              Have an idea? We'll handle the legal.
+            </h2>
+            <p className="text-muted-foreground font-body mb-6 max-w-2xl mx-auto">
+              See how EZ Biz takes you from "I should start a business" to a filed entity, EIN, and
+              bank-ready docs — usually in under 15 minutes.
+            </p>
+            <a
+              href="/entrepreneurs"
+              className="inline-flex items-center gap-2 text-secondary font-semibold hover:underline"
+            >
+              See the founder's path →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Beta Launch Countdown */}
       <BetaLaunchCountdown />
 
