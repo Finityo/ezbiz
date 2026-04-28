@@ -72,6 +72,7 @@ const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
 const StartOrder = lazy(() => import("./pages/StartOrder"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
@@ -152,6 +153,7 @@ function App() {
               <Route path="/start-order" element={<StartOrder />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/entrepreneurs" element={<Entrepreneurs />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
