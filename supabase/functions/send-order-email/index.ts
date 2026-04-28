@@ -133,10 +133,11 @@ serve(async (req) => {
     const resendData = await resendRes.json();
 
     if (!resendRes.ok) {
+      // Log provider response server-side; return generic message to client.
       console.error('Resend API error:', resendData);
       return new Response(
-        JSON.stringify({ success: false, error: resendData }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+        JSON.stringify({ success: false, error: 'Unable to send email notification.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 502 }
       );
     }
 
