@@ -6,13 +6,14 @@ import { PACKAGE_PRICES, type PackageType } from "@/lib/pricing";
 
 const BADGE_MAP: Partial<Record<PackageType, string>> = {
   deluxe: "Most Popular",
-  complete: "Best Value",
 };
 
 const packages = (Object.entries(PACKAGE_PRICES) as [PackageType, typeof PACKAGE_PRICES[PackageType]][]).map(
   ([id, pkg]) => ({
     id,
     name: pkg.name,
+    label: pkg.label,
+    subtitle: pkg.subtitle,
     price: pkg.price,
     features: [...pkg.features],
     badge: BADGE_MAP[id],
@@ -49,14 +50,14 @@ const PackageSelector = ({ selected, onSelect, stateFees = 0 }: PackageSelectorP
             )}
             
             <div className="text-center mb-6 pt-2">
-              <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+              <h3 className="text-2xl font-bold mb-1">{pkg.label}</h3>
+              <p className="text-xs text-muted-foreground mb-3 min-h-[2rem]">{pkg.subtitle}</p>
               <div className="flex items-baseline justify-center gap-1 mb-1">
                 <span className="text-4xl font-bold text-primary">${formatPrice(pkg.price)}</span>
               </div>
-              {stateFees > 0 && (
-                <p className="text-sm text-muted-foreground">+ ${formatPrice(stateFees)} state fees</p>
-              )}
-              
+              <p className="text-sm text-muted-foreground">
+                + {stateFees > 0 ? `$${formatPrice(stateFees)}` : ""} state fees
+              </p>
             </div>
 
             <ul className="space-y-3 mb-6 min-h-[280px]">
