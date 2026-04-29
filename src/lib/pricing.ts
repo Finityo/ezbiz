@@ -63,8 +63,7 @@ export const PACKAGE_PRICES: Record<
     label: "Full Support",
     subtitle: "Complete formation and document support",
     price: 349,
-    // TODO: Update Stripe Price ID to match $349 (current ID is for $399).
-    stripePriceId: "price_1TAjSCIUysiSR1zwLXwe8C0Z",
+    stripePriceId: "price_1TRVK3IUysiSR1zw7hfeeub7",
     description: "Full formation package with compliance and filings",
     features: [
       "Everything in Deluxe",
