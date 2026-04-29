@@ -34,7 +34,7 @@ export default function TrustStrip() {
           <div className="text-3xl mb-2">💬</div>
           <div className="font-semibold">Real Guidance Available</div>
           <p className="text-sm text-muted-foreground">
-            Schedule a consultation if you want help choosing the right structure.
+            Use our guided order flow if you want help choosing the right structure.
           </p>
         </div>
       </div>
