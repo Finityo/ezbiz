@@ -57,6 +57,13 @@ const EXPECTED_PRICE_CENTS_TEST: Record<string, number> = {
   "price_1TRWWoIUysiSR1zwSmodfF9J":  2900, // Shipping & Handling $29
 };
 
+const TEST_PRICE_ID_BY_LIVE_ID: Record<string, string> = {
+  "price_1TRVJJIUysiSR1zwmUpJg0gy": "price_1TRWTlIUysiSR1zwZxdGtoik", // Basic $129
+  "price_1TRVJjIUysiSR1zwaDaz3ics": "price_1TRWVAIUysiSR1zwnyhVFD5p", // Deluxe $279
+  "price_1TRVYvIUysiSR1zwCZJc1iHf": "price_1TRWWDIUysiSR1zwcDP98wz9", // Business License Research $149
+  "price_1TAwu6IUysiSR1zw8TGxG4RI": "price_1TRWWoIUysiSR1zwSmodfF9J", // Shipping & Handling $29
+};
+
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked
 const STRICT_UNKNOWN_PRICES_TEST = true; // test: unknown test IDs also blocked
 
@@ -129,10 +136,17 @@ serve(async (req) => {
     const expectedMap = useTestMode ? EXPECTED_PRICE_CENTS_TEST : EXPECTED_PRICE_CENTS;
     const strictUnknown = useTestMode ? STRICT_UNKNOWN_PRICES_TEST : STRICT_UNKNOWN_PRICES;
 
+    const activeLineItems = useTestMode
+      ? lineItems.map((item: { priceId: string; quantity?: number }) => ({
+          ...item,
+          priceId: TEST_PRICE_ID_BY_LIVE_ID[item.priceId] || item.priceId,
+        }))
+      : lineItems;
+
     // ── Price-amount guard ──────────────────────────────────────────────
     const uniquePriceIds: string[] = Array.from(
       new Set(
-        lineItems
+        activeLineItems
           .map((li: { priceId?: string }) => li?.priceId)
           .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
       )
@@ -236,7 +250,7 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://www.ezbiz-fs.com";
 
-    const stripeLineItems: any[] = lineItems.map(
+    const stripeLineItems: any[] = activeLineItems.map(
       (item: { priceId: string; quantity?: number }) => ({
         price: item.priceId,
         quantity: item.quantity || 1,
