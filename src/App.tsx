@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FeedbackWidget from "./components/FeedbackWidget";
 import ExitIntentModal from "./components/ExitIntentModal";
+import GADebugPanel from "./components/GADebugPanel";
 
 // Lazy-loaded routes for code splitting
 const LLC = lazy(() => import("./pages/LLC"));
@@ -93,6 +94,7 @@ function App() {
         <AuthProvider>
            <BrowserRouter>
             <AnalyticsWrapper>
+            <GADebugPanel />
             <OrderProvider>
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
               <Routes>
