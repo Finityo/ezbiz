@@ -1,6 +1,6 @@
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackEvent } from "@/lib/analytics";
-import { openAcuityPopup } from "@/components/consultation/ConsultationTypeCard";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -139,41 +139,25 @@ const ChooseYourPath = () => {
                 information, and submit the order with you.
               </p>
 
-              <div className="flex flex-col gap-2">
-                <Button
-                  size="lg"
-                  className="w-full group bg-secondary hover:bg-secondary-light text-secondary-foreground"
-                  onClick={() => {
-                    trackEvent("choose_path_click", {
-                      option: "guided_filing",
-                      destination: "/order-flow?mode=guided",
-                    });
-                    trackClick(
-                      "Start Guided Order Flow",
-                      "choose_path_guided",
-                      "/order-flow?mode=guided"
-                    );
-                    navigate("/order-flow?mode=guided");
-                  }}
-                >
-                  Start Guided Order Flow
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full group border-secondary/30 text-secondary hover:bg-secondary/5"
-                  onClick={() => {
-                    trackEvent("choose_path_click", {
-                      option: "guided_schedule_call",
-                      destination: "acuity_popup",
-                    });
-                    openAcuityPopup(ACUITY_OWNER_ID);
-                  }}
-                >
-                  <Phone className="h-4 w-4 mr-2" />
-                  Schedule a Call
-                </Button>
-              </div>
+              <Button
+                size="lg"
+                className="w-full group bg-secondary hover:bg-secondary-light text-secondary-foreground"
+                onClick={() => {
+                  trackEvent("choose_path_click", {
+                    option: "guided_filing",
+                    destination: "/order-flow?mode=guided",
+                  });
+                  trackClick(
+                    "Start Guided Order Flow",
+                    "choose_path_guided",
+                    "/order-flow?mode=guided"
+                  );
+                  navigate("/order-flow?mode=guided");
+                }}
+              >
+                Start Guided Order Flow
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
 
               <p className="text-[10px] text-muted-foreground/70 font-body leading-snug">
                 The guided flow collects your details first, then we
