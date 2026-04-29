@@ -107,11 +107,11 @@ serve(async (req) => {
     );
 
     // Hard reject when a KNOWN price's live amount differs from expected.
-    // Unknown prices (not in EXPECTED_PRICE_CENTS) are governed by the
-    // STRICT_UNKNOWN_PRICES flag below — flip to true once the checkout
-    // audit is complete so unfamiliar production price IDs cannot silently
-    // pass through.
-    const STRICT_UNKNOWN_PRICES = false; // TODO: flip to true after PAC checkout audit
+    // STRICT_UNKNOWN_PRICES is now ENABLED for production: any price ID not
+    // present in EXPECTED_PRICE_CENTS will also be rejected with HTTP 409.
+    // To intentionally allow a new Stripe price ID, add it to
+    // EXPECTED_PRICE_CENTS (above) and to src/lib/pricing.ts, then redeploy.
+    const STRICT_UNKNOWN_PRICES = true; // PRODUCTION: unknown price IDs are blocked
     const mismatches = priceChecks.filter((c) => {
       const expected = EXPECTED_PRICE_CENTS[c.id];
       if (expected === undefined) return STRICT_UNKNOWN_PRICES; // unknown → block when strict
@@ -128,22 +128,42 @@ serve(async (req) => {
     }
 
     if (mismatches.length > 0) {
+      const unknownIds = mismatches
+        .filter((m) => EXPECTED_PRICE_CENTS[m.id] === undefined)
+        .map((m) => m.id);
+      const knownMismatchIds = mismatches
+        .filter((m) => EXPECTED_PRICE_CENTS[m.id] !== undefined)
+        .map((m) => m.id);
+
       console.error(
-        "Price guard rejected checkout. Mismatches:",
-        JSON.stringify(
-          mismatches.map((m) => ({
-            id: m.id,
-            stripeAmount: m.amount,
-            expected: EXPECTED_PRICE_CENTS[m.id],
-            error: m.error,
-          }))
-        )
-      );
-      return new Response(
+        "Price guard rejected checkout.",
         JSON.stringify({
-          error:
-            "We're updating our pricing. Checkout is temporarily unavailable for the selected items. Please contact support or try again shortly.",
-        }),
+          unknownIds,
+          knownMismatches: mismatches
+            .filter((m) => EXPECTED_PRICE_CENTS[m.id] !== undefined)
+            .map((m) => ({
+              id: m.id,
+              stripeAmount: m.amount,
+              expected: EXPECTED_PRICE_CENTS[m.id],
+              error: m.error,
+            })),
+        })
+      );
+
+      let userMessage =
+        "We're updating our pricing. Checkout is temporarily unavailable for the selected items. Please contact support or try again shortly.";
+      if (unknownIds.length > 0) {
+        userMessage = `Checkout blocked: unrecognized Stripe price ID(s) ${unknownIds.join(
+          ", "
+        )}. If this is intentional, an administrator must add the ID(s) to EXPECTED_PRICE_CENTS in supabase/functions/create-checkout/index.ts (and mirror in src/lib/pricing.ts) before checkout will be allowed.`;
+      } else if (knownMismatchIds.length > 0) {
+        userMessage = `Checkout blocked: Stripe price amount mismatch for ${knownMismatchIds.join(
+          ", "
+        )}. The live Stripe unit_amount no longer matches EXPECTED_PRICE_CENTS — update the expected map or fix the Stripe price.`;
+      }
+
+      return new Response(
+        JSON.stringify({ error: userMessage }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
       );
     }
