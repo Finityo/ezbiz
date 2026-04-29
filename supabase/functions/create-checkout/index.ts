@@ -74,6 +74,59 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
+    // ── Price-amount guard ──────────────────────────────────────────────
+    // Verify each Stripe Price's live unit_amount matches what the app
+    // expects. Refuse the session if any price is mismatched (or missing
+    // from the expected map). This blocks accidental wrong charges when
+    // displayed prices change before new Stripe Price IDs are created.
+    const uniquePriceIds: string[] = Array.from(
+      new Set(
+        lineItems
+          .map((li: { priceId?: string }) => li?.priceId)
+          .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
+      )
+    );
+
+    const priceChecks = await Promise.all(
+      uniquePriceIds.map(async (id) => {
+        try {
+          const price = await stripe.prices.retrieve(id);
+          return { id, amount: price.unit_amount ?? null, error: null as string | null };
+        } catch (e: any) {
+          return { id, amount: null, error: e?.message || "retrieve failed" };
+        }
+      })
+    );
+
+    const mismatches = priceChecks.filter((c) => {
+      const expected = EXPECTED_PRICE_CENTS[c.id];
+      if (expected === undefined) return true; // unknown price → reject
+      if (c.amount === null) return true;
+      return c.amount !== expected;
+    });
+
+    if (mismatches.length > 0) {
+      console.error(
+        "Price guard rejected checkout. Mismatches:",
+        JSON.stringify(
+          mismatches.map((m) => ({
+            id: m.id,
+            stripeAmount: m.amount,
+            expected: EXPECTED_PRICE_CENTS[m.id] ?? "(not in expected map)",
+            error: m.error,
+          }))
+        )
+      );
+      return new Response(
+        JSON.stringify({
+          error:
+            "We're updating our pricing. Checkout is temporarily unavailable for the selected items. Please contact support or try again shortly.",
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
+      );
+    }
+    // ────────────────────────────────────────────────────────────────────
+
     // Find existing Stripe customer
     if (userEmail) {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
