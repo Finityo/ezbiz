@@ -12,11 +12,11 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative overflow-hidden bg-background text-foreground py-20 px-6 text-center">
+    <section className="relative overflow-hidden bg-background text-foreground pt-6 pb-20 px-6 text-center">
       <div className="max-w-5xl mx-auto">
         {/* ENLARGED HERO LOGO */}
         <motion.div
-          className="flex justify-center mb-8"
+          className="flex justify-center mb-8 -mt-2"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
