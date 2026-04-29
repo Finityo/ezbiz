@@ -106,18 +106,21 @@ serve(async (req) => {
       })
     );
 
-    // Hard reject only when a KNOWN price's live amount differs from
-    // expected (prevents wrong-amount charges). Unknown prices (not in the
-    // expected map) are allowed but logged as a warning so we can backfill.
+    // Hard reject when a KNOWN price's live amount differs from expected.
+    // Unknown prices (not in EXPECTED_PRICE_CENTS) are governed by the
+    // STRICT_UNKNOWN_PRICES flag below — flip to true once the checkout
+    // audit is complete so unfamiliar production price IDs cannot silently
+    // pass through.
+    const STRICT_UNKNOWN_PRICES = false; // TODO: flip to true after PAC checkout audit
     const mismatches = priceChecks.filter((c) => {
       const expected = EXPECTED_PRICE_CENTS[c.id];
-      if (expected === undefined) return false; // unknown → warn, don't block
+      if (expected === undefined) return STRICT_UNKNOWN_PRICES; // unknown → block when strict
       if (c.amount === null) return true;       // retrieve failed → block
       return c.amount !== expected;              // wrong amount → block
     });
 
     const unknowns = priceChecks.filter((c) => EXPECTED_PRICE_CENTS[c.id] === undefined);
-    if (unknowns.length > 0) {
+    if (unknowns.length > 0 && !STRICT_UNKNOWN_PRICES) {
       console.warn(
         "Price guard: unknown prices (not in EXPECTED_PRICE_CENTS) allowed through. Backfill expected map.",
         JSON.stringify(unknowns.map((u) => ({ id: u.id, stripeAmount: u.amount, error: u.error })))
