@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle } from "lucide-react";
+import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle, FlaskConical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
