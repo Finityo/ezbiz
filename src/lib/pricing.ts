@@ -116,16 +116,14 @@ export const ADDON_PRICES: Record<
   operatingAgreement: {
     name: "Operating Agreement",
     price: 129,
-    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
-    stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
+    stripePriceId: "price_1TRVKdIUysiSR1zw1HP19iOp",
     description: "Often requested by banks and partners.",
     availableInCheckout: true,
   },
   bylawsMinutes: {
     name: "Bylaws / Minutes",
     price: 129,
-    // TODO: Create new Stripe Price for $129 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVLJIUysiSR1zwWwikkHZo",
     description: "Corporate bylaws and initial meeting minutes for corporations.",
     availableInCheckout: true,
   },
@@ -139,8 +137,7 @@ export const ADDON_PRICES: Record<
   sCorp: {
     name: "S-Corp Election",
     price: 129,
-    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
-    stripePriceId: "price_1T0yYLIUysiSR1zwkctIi3Th",
+    stripePriceId: "price_1TRVLlIUysiSR1zwmHR4FjJs",
     description: "We prepare and file IRS Form 2553 for S-Corp tax election status.",
     availableInCheckout: true,
   },
@@ -154,72 +151,63 @@ export const ADDON_PRICES: Record<
   dba: {
     name: "DBA Filing",
     price: 89,
-    // TODO: Update Stripe Price ID to match $89 (current ID is for $149).
-    stripePriceId: "price_1TAjoKIUysiSR1zwBWcDQxr8",
+    stripePriceId: "price_1TRVMCIUysiSR1zwVo7ifJBd",
     description: "File a Doing Business As name with your state or county. State/county fees additional.",
     availableInCheckout: true,
   },
   annualReport: {
     name: "Annual Report Filing",
     price: 129,
-    // TODO: Update Stripe Price ID to match $129 (current ID is for $224).
-    stripePriceId: "price_1TAjudIUysiSR1zw5wkbfPVv",
+    stripePriceId: "price_1TRVMYIUysiSR1zwVtaPc60F",
     description: "We prepare and file your annual report with the state.",
     availableInCheckout: true,
   },
   amendmentFiling: {
     name: "Amendment Filing",
     price: 249,
-    // TODO: Create new Stripe Price for $249 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVMtIUysiSR1zwFNe49mLG",
     description: "Amend your formation documents with the state.",
     availableInCheckout: true,
   },
   dissolution: {
     name: "Dissolution",
     price: 379,
-    // TODO: Create new Stripe Price for $379 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVNLIUysiSR1zwJCnMKUrt",
     description: "Formally dissolve your business entity with the state.",
     availableInCheckout: true,
   },
   foreignQualification: {
     name: "Foreign Qualification",
     price: 309,
-    // TODO: Create new Stripe Price for $309 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVNkIUysiSR1zwfBfD2Png",
     description: "Register your business to operate in additional states.",
     availableInCheckout: true,
   },
   boiReport: {
     name: "BOI Report",
     price: 249,
-    // TODO: Create new Stripe Price for $249 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVOFIUysiSR1zw3KJWpCt3",
     description: "Federal compliance filing support.",
     availableInCheckout: true,
   },
   trademarkWord: {
     name: "Trademark Word Search",
     price: 379,
-    // TODO: Create new Stripe Price for $379 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVOnIUysiSR1zw83x4pjmf",
     description: "Search for existing trademarks on your proposed brand name.",
     availableInCheckout: true,
   },
   trademarkLogo: {
     name: "Trademark Logo Search",
     price: 499,
-    // TODO: Create new Stripe Price for $499 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVPGIUysiSR1zwgnm6BOaV",
     description: "Search for existing trademarks on your proposed logo design.",
     availableInCheckout: true,
   },
   trademarkWordLogo: {
     name: "Trademark Word + Logo Search",
     price: 629,
-    // TODO: Create new Stripe Price for $629 and paste ID here.
-    stripePriceId: null,
+    stripePriceId: "price_1TRVPsIUysiSR1zw4R0pqYEr",
     description: "Combined word and logo trademark search.",
     availableInCheckout: true,
   },
