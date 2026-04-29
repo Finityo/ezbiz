@@ -10,7 +10,7 @@ import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
 import type { BusinessDetails } from "./BusinessDetailsForm";
 import type { AddonQuantities } from "./AddOnServices";
-import AcuityScheduler from "./AcuityScheduler";
+
 
 type OrderMode = "guided" | "whiteglove";
 type ServiceDetails = {
@@ -58,8 +58,6 @@ const ReviewStep = ({
   onEdit,
   onCheckoutStarted,
 }: ReviewStepProps) => {
-  const [guidedScheduled, setGuidedScheduled] = React.useState(false);
-  const guidedGateOk = mode !== "guided" ? true : guidedScheduled;
   const { checkout, loading, error, clearError } = useStripeCheckout();
 
   const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
@@ -243,30 +241,6 @@ const ReviewStep = ({
         )}
       </div>
 
-      {mode === "guided" && (
-        <>
-          <Section title="Schedule Your Guided Filing Call" step={3}>
-            <Card className="p-4">
-              <p className="text-sm text-muted-foreground">
-                Schedule your Zoom/call below. After scheduling, confirm the checkbox to unlock payment.
-              </p>
-              <AcuityScheduler />
-              <div className="mt-4">
-                <label className="flex items-start gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={guidedScheduled}
-                    onChange={(e) => setGuidedScheduled(e.target.checked)}
-                  />
-                  <span>I scheduled my call and I'm ready to continue to payment.</span>
-                </label>
-              </div>
-            </Card>
-          </Section>
-          <Separator />
-        </>
-      )}
-
       {error && (
         <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive text-center">
           {error}
@@ -274,15 +248,10 @@ const ReviewStep = ({
         </div>
       )}
 
-      <Button onClick={handleCheckout} disabled={loading || !guidedGateOk} className="w-full" size="lg">
+      <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
         <Lock className="h-4 w-4 mr-2" />
         {loading ? "Processing..." : "Proceed to Stripe Checkout"}
       </Button>
-      {mode === "guided" && !guidedGateOk && (
-        <div className="mt-2 text-xs text-muted-foreground text-center">
-          Schedule your call above and confirm the checkbox to continue.
-        </div>
-      )}
       <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
         <Lock className="h-3 w-3" /> Secure payment powered by Stripe
       </p>

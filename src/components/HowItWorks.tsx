@@ -22,7 +22,7 @@ export default function HowItWorks() {
             </h3>
             <p className="text-sm text-muted-foreground">
               Decide whether an LLC, S-Corp, or C-Corp best fits your goals.
-              If you're unsure, schedule a consultation for guidance.
+              If you're unsure, our guided order flow walks you through every step.
             </p>
           </div>
 

@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { OrderProvider } from "@/contexts/OrderContext";
@@ -117,7 +117,7 @@ function App() {
               <Route path="/business-templates" element={<BusinessTemplates />} />
               <Route path="/state-requirements" element={<StateRequirements />} />
               <Route path="/business-filings" element={<BusinessFilings />} />
-              <Route path="/consultation" element={<Consultation />} />
+              <Route path="/consultation" element={<Navigate to="/order-flow" replace />} />
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
