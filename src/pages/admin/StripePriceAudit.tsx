@@ -111,7 +111,7 @@ export default function StripePriceAudit() {
   const [loading, setLoading] = useState(false);
   const [testMode, setTestMode] = useState<boolean>(() => {
     try {
-      return sessionStorage.getItem("ezbiz_stripe_test_mode") === "1";
+      return localStorage.getItem("ezbiz_stripe_test_mode") === "1";
     } catch {
       return false;
     }
@@ -120,10 +120,15 @@ export default function StripePriceAudit() {
   const handleToggleTestMode = (next: boolean) => {
     setTestMode(next);
     try {
-      if (next) sessionStorage.setItem("ezbiz_stripe_test_mode", "1");
-      else sessionStorage.removeItem("ezbiz_stripe_test_mode");
+      if (next) {
+        localStorage.setItem("ezbiz_stripe_test_mode", "1");
+        sessionStorage.setItem("ezbiz_stripe_test_mode", "1");
+      } else {
+        localStorage.removeItem("ezbiz_stripe_test_mode");
+        sessionStorage.removeItem("ezbiz_stripe_test_mode");
+      }
     } catch {
-      /* sessionStorage unavailable */
+      /* storage unavailable */
     }
     toast({
       title: next ? "Test mode ON" : "Test mode OFF",
