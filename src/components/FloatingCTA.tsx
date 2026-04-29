@@ -61,8 +61,8 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
             <button
               onClick={() => {
                 trackConsultationClickHero();
-                trackClick("Talk to an Expert", "sticky_bar_consult", "/consultation");
-                navigate("/consultation");
+                trackClick("Start My Order", "sticky_bar_order", "/order-flow");
+                navigate("/order-flow");
               }}
               className={cn(
                 "flex-1 sm:flex-none inline-flex items-center justify-center gap-2",
@@ -71,8 +71,8 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
               )}
             >
               <MessageCircle className="h-4 w-4" />
-              <span className="hidden xs:inline">Talk to an Expert</span>
-              <span className="xs:hidden">Get Help</span>
+              <span className="hidden xs:inline">Start My Order</span>
+              <span className="xs:hidden">Order</span>
             </button>
           </div>
         </div>
