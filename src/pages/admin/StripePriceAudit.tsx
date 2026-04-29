@@ -205,6 +205,47 @@ export default function StripePriceAudit() {
           </Button>
         </div>
 
+        <Card
+          className={`mb-6 border-2 ${
+            testMode ? "border-amber-500 bg-amber-50" : "border-border"
+          }`}
+        >
+          <CardHeader>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FlaskConical className="h-5 w-5" />
+                  Stripe Test Mode (Admin only)
+                </CardTitle>
+                <CardDescription>
+                  When ON, checkout calls use <code>STRIPE_SECRET_KEY_TEST</code> and the{" "}
+                  <code>EXPECTED_PRICE_CENTS_TEST</code> map. Use Stripe test card{" "}
+                  <code>4242 4242 4242 4242</code>. Setting persists for this browser session only.
+                  Live checkout is unaffected for everyone else.
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <Label htmlFor="test-mode-switch" className="text-sm font-medium">
+                  {testMode ? "ON" : "OFF"}
+                </Label>
+                <Switch
+                  id="test-mode-switch"
+                  checked={testMode}
+                  onCheckedChange={handleToggleTestMode}
+                />
+              </div>
+            </div>
+          </CardHeader>
+          {testMode && (
+            <CardContent className="text-xs text-amber-900">
+              ⚠️ Test mode active in this session. Any checkout you start will hit Stripe TEST. No
+              real charges. Test-mode price IDs must be added to{" "}
+              <code>EXPECTED_PRICE_CENTS_TEST</code> in{" "}
+              <code>supabase/functions/create-checkout/index.ts</code> or checkout will be blocked.
+            </CardContent>
+          )}
+        </Card>
+
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Summary</CardTitle>
