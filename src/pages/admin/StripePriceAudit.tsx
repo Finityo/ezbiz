@@ -109,6 +109,29 @@ export default function StripePriceAudit() {
   const [results, setResults] = useState<AuditResult[]>([]);
   const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [testMode, setTestMode] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem("ezbiz_stripe_test_mode") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleTestMode = (next: boolean) => {
+    setTestMode(next);
+    try {
+      if (next) sessionStorage.setItem("ezbiz_stripe_test_mode", "1");
+      else sessionStorage.removeItem("ezbiz_stripe_test_mode");
+    } catch {
+      /* sessionStorage unavailable */
+    }
+    toast({
+      title: next ? "Test mode ON" : "Test mode OFF",
+      description: next
+        ? "Checkout will use Stripe TEST keys for THIS browser session only. Use card 4242 4242 4242 4242."
+        : "Checkout will use LIVE Stripe keys.",
+    });
+  };
 
   const runAudit = async () => {
     setLoading(true);
