@@ -3,7 +3,7 @@ import { Zap, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { trackClick } from "@/hooks/useAnalytics";
-import { trackCorpNetClick, trackConsultationClickHero } from "@/lib/analytics";
+import { trackCorpNetClick, trackStartOrderClickHero } from "@/lib/analytics";
 
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
 
@@ -60,7 +60,7 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
             {/* Talk to an Expert */}
             <button
               onClick={() => {
-                trackConsultationClickHero();
+                trackStartOrderClickHero();
                 trackClick("Start My Order", "sticky_bar_order", "/order-flow");
                 navigate("/order-flow");
               }}
