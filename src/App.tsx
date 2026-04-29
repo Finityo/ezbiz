@@ -74,6 +74,7 @@ const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 const SocialPreviewTester = lazy(() => import("./pages/admin/SocialPreviewTester"));
+const StripePriceAudit = lazy(() => import("./pages/admin/StripePriceAudit"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
@@ -156,6 +157,7 @@ function App() {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/entrepreneurs" element={<Entrepreneurs />} />
               <Route path="/admin/social-preview" element={<SocialPreviewTester />} />
+              <Route path="/admin/stripe-prices" element={<StripePriceAudit />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
