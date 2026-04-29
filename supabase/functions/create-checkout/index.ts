@@ -20,17 +20,25 @@ const corsHeaders = {
  */
 const EXPECTED_PRICE_CENTS: Record<string, number> = {
   // Packages
-  "price_1TAjRYIUysiSR1zwBUBS2jDQ": 12900, // Basic $129
-  "price_1TAjRsIUysiSR1zwaDwDhUBl": 27900, // Deluxe $279
-  "price_1TAjSCIUysiSR1zwLXwe8C0Z": 34900, // Complete $349
+  "price_1TRVJJIUysiSR1zwmUpJg0gy": 12900, // Basic $129
+  "price_1TRVJjIUysiSR1zwaDaz3ics": 27900, // Deluxe $279
+  "price_1TRVK3IUysiSR1zw7hfeeub7": 34900, // Complete $349
   // Add-ons
   "price_1TAIMzIUysiSR1zw3s47ma4C": 8900,  // EIN $89
-  "price_1TAINYIUysiSR1zwwd2NQAiE": 12900, // Operating Agreement $129
+  "price_1TRVKdIUysiSR1zw1HP19iOp": 12900, // Operating Agreement $129
+  "price_1TRVLJIUysiSR1zwWwikkHZo": 12900, // Bylaws / Minutes $129
   "price_1TAIO1IUysiSR1zwAm501dWv": 14900, // Registered Agent $149
-  "price_1T0yYLIUysiSR1zwkctIi3Th": 12900, // S-Corp $129
+  "price_1TRVLlIUysiSR1zwmHR4FjJs": 12900, // S-Corp $129
   "price_1TAISYIUysiSR1zw9QGizV8b": 14900, // License Research $149
-  "price_1TAjoKIUysiSR1zwBWcDQxr8": 8900,  // DBA $89
-  "price_1TAjudIUysiSR1zw5wkbfPVv": 12900, // Annual Report $129
+  "price_1TRVMCIUysiSR1zwVo7ifJBd": 8900,  // DBA $89
+  "price_1TRVMYIUysiSR1zwVtaPc60F": 12900, // Annual Report $129
+  "price_1TRVMtIUysiSR1zwFNe49mLG": 24900, // Amendment $249
+  "price_1TRVNLIUysiSR1zwJCnMKUrt": 37900, // Dissolution $379
+  "price_1TRVNkIUysiSR1zwfBfD2Png": 30900, // Foreign Qualification $309
+  "price_1TRVOFIUysiSR1zw3KJWpCt3": 24900, // BOI Report $249
+  "price_1TRVOnIUysiSR1zw83x4pjmf": 37900, // Trademark Word $379
+  "price_1TRVPGIUysiSR1zwgnm6BOaV": 49900, // Trademark Logo $499
+  "price_1TRVPsIUysiSR1zw4R0pqYEr": 62900, // Trademark Word + Logo $629
   "price_1TAjy8IUysiSR1zwnphHwavq": 5900,  // Corporate Kit $59
   "price_1TAjzBIUysiSR1zwapC53gXv": 10300, // Compliance Alerts $103
   "price_1TAkcOIUysiSR1zwNvOiYDnD": 15000, // White Glove Base $150
