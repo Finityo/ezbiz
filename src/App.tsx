@@ -74,6 +74,7 @@ const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 const SocialPreviewTester = lazy(() => import("./pages/admin/SocialPreviewTester"));
+const StripePriceAudit = lazy(() => import("./pages/admin/StripePriceAudit"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
   useAnalytics();
