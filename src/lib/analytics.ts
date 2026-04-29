@@ -188,8 +188,11 @@ export const trackHeroPath = (option: "file_instantly" | "talk_expert" | "learn_
 export const trackCorpNetClick = () =>
   trackEvent("corpnet_affiliate_click", { partner: "corpnet", location: "hero" });
 
-export const trackConsultationClickHero = () =>
-  trackEvent("consultation_click", { location: "hero" });
+export const trackStartOrderClickHero = () =>
+  trackEvent("start_order_click", { location: "hero", destination: "/order-flow" });
+
+/** @deprecated Use trackStartOrderClickHero. */
+export const trackConsultationClickHero = trackStartOrderClickHero;
 
 export const trackLearnClick = () =>
   trackEvent("learn_click", { location: "hero" });
