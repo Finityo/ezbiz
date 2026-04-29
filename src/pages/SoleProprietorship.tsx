@@ -335,7 +335,7 @@ const SoleProprietorship = () => {
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <Button variant="outline" asChild><Link to="/form-llc">Learn About LLCs</Link></Button>
                 <Button variant="outline" asChild><Link to="/s-corporation">Learn About S Corps</Link></Button>
-                <Button variant="outline" asChild><Link to="/dba">Learn About DBAs</Link></Button>
+                <Button variant="outline" asChild><Link to="/dba-filing">Learn About DBAs</Link></Button>
               </div>
             </div>
           </div>
