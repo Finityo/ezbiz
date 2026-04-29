@@ -29,7 +29,7 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
   "price_1TRVLJIUysiSR1zwWwikkHZo": 12900, // Bylaws / Minutes $129
   "price_1TAIO1IUysiSR1zwAm501dWv": 14900, // Registered Agent $149
   "price_1TRVLlIUysiSR1zwmHR4FjJs": 12900, // S-Corp $129
-  "price_1TAISYIUysiSR1zw9QGizV8b": 14900, // License Research $149
+  "price_1TRVYvIUysiSR1zwCZJc1iHf": 14900, // License Research $149
   "price_1TRVMCIUysiSR1zwVo7ifJBd": 8900,  // DBA $89
   "price_1TRVMYIUysiSR1zwVtaPc60F": 12900, // Annual Report $129
   "price_1TRVMtIUysiSR1zwFNe49mLG": 24900, // Amendment $249
