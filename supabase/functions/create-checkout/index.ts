@@ -51,11 +51,12 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
  * test-mode checkout will be blocked by STRICT_UNKNOWN_PRICES.
  */
 const EXPECTED_PRICE_CENTS_TEST: Record<string, number> = {
-  // Example shape — replace with real test Price IDs after creation:
-  // "price_TEST_xxx_basic":   12900,
-  // "price_TEST_xxx_deluxe":  27900,
-  // "price_TEST_xxx_license": 14900,
-  // "price_TEST_xxx_ship":     2900,
+  "price_1TRWWoIUysiSR1zwSmodfF9J": 12900, // Basic $129 (also submitted as Shipping — verify)
+  "price_1TRWVAIUysiSR1zwnyhVFD5p": 27900, // Deluxe $279
+  "price_1TRWWDIUysiSR1zwcDP98wz9": 14900, // Business License Research $149
+  // NOTE: Shipping ($29) test price ID was duplicated with Basic. Add the
+  // correct test-mode shipping price here once obtained, e.g.:
+  // "price_TEST_shipping_xxx": 2900,
 };
 
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked
