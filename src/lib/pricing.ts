@@ -48,8 +48,7 @@ export const PACKAGE_PRICES: Record<
     label: "Most Popular",
     subtitle: "Best balance of filing support and business setup",
     price: 279,
-    // TODO: Update Stripe Price ID to match $279 (current ID is for $329).
-    stripePriceId: "price_1TAjRsIUysiSR1zwaDwDhUBl",
+    stripePriceId: "price_1TRVJjIUysiSR1zwaDaz3ics",
     description: "Formation plus essential compliance documents",
     features: [
       "Everything in Basic",
