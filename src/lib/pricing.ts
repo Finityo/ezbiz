@@ -33,8 +33,7 @@ export const PACKAGE_PRICES: Record<
     label: "Starter",
     subtitle: "Essential filing support",
     price: 129,
-    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
-    stripePriceId: "price_1TAjRYIUysiSR1zwBUBS2jDQ",
+    stripePriceId: "price_1TRVJJIUysiSR1zwmUpJg0gy",
     description: "Business formation with required filing documents",
     features: [
       "Prepare & File Articles of Organization",
