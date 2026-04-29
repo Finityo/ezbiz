@@ -114,29 +114,16 @@ serve(async (req) => {
     }
 
     // ── Test-mode authorization ────────────────────────────────────────
-    // Test mode is admin-only AND requires STRIPE_SECRET_KEY_TEST to be set.
-    // Any non-admin attempting testMode silently falls back to live? NO —
-    // we reject explicitly so misuse is loud, not silent.
-    const useTestMode = testMode === true;
-    if (useTestMode && !isAdmin) {
-      return new Response(
-        JSON.stringify({ error: "Test mode is restricted to administrators." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
-      );
-    }
+    // Admins are AUTOMATICALLY routed to Stripe TEST mode (so they can safely
+    // verify checkout with the 4242 card). Non-admins always use LIVE mode.
+    // The `testMode` flag from the client is treated as a hint only — the
+    // server makes the final decision based on admin role + key availability.
+    const hasTestKey = !!Deno.env.get("STRIPE_SECRET_KEY_TEST");
+    const useTestMode = isAdmin && hasTestKey;
 
     const stripeKey = useTestMode
       ? Deno.env.get("STRIPE_SECRET_KEY_TEST") || ""
       : Deno.env.get("STRIPE_SECRET_KEY") || "";
-
-    if (useTestMode && !stripeKey) {
-      return new Response(
-        JSON.stringify({
-          error: "Test mode is not configured (STRIPE_SECRET_KEY_TEST missing).",
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
-    }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const expectedMap = useTestMode ? EXPECTED_PRICE_CENTS_TEST : EXPECTED_PRICE_CENTS;
