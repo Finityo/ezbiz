@@ -101,8 +101,16 @@ export const trackFormStart = (formName: string) =>
 export const trackFormSubmit = (formName: string) =>
   trackEvent('form_submit', { form_name: formName });
 
+/**
+ * Renamed from trackConsultationClick → trackStartOrderClick.
+ * Checkout funnel now routes directly to /order-flow + Stripe (no booking).
+ */
+export const trackStartOrderClick = (location: string = 'unknown') =>
+  trackEvent('start_order_click', { destination: '/order-flow', location });
+
+/** @deprecated Use trackStartOrderClick. Kept as a thin alias to avoid runtime breakage. */
 export const trackConsultationClick = (type: string) =>
-  trackEvent('consultation_click', { consultation_type: type });
+  trackStartOrderClick(type);
 
 export const trackPhoneClick = (number: string) =>
   trackEvent('phone_click', { phone_number: number });
