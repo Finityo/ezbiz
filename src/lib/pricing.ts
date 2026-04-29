@@ -144,7 +144,7 @@ export const ADDON_PRICES: Record<
   licenseResearch: {
     name: "Business License Research",
     price: 149,
-    stripePriceId: "price_1TAISYIUysiSR1zw9QGizV8b",
+    stripePriceId: "price_1TRVYvIUysiSR1zwCZJc1iHf",
     description: "Identifies licenses commonly required based on business type and location.",
     availableInCheckout: true,
   },
