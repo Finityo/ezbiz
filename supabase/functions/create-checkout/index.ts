@@ -134,8 +134,14 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const expectedMap = useTestMode ? EXPECTED_PRICE_CENTS_TEST : EXPECTED_PRICE_CENTS;
-    const strictUnknown = useTestMode ? STRICT_UNKNOWN_PRICES_TEST : STRICT_UNKNOWN_PRICES;
+    // In TEST mode we no longer hard-block on unknown IDs — we synthesize
+    // inline price_data from the LIVE catalog so admins can validate the
+    // full real-world cart with the 4242 card without recreating every
+    // price in the test account.
+    const strictUnknown = useTestMode ? false : STRICT_UNKNOWN_PRICES;
 
+    // Map known LIVE → TEST IDs first; anything still pointing at a LIVE
+    // ID will be resolved to inline price_data below.
     const activeLineItems = useTestMode
       ? lineItems.map((item: { priceId: string; quantity?: number }) => ({
           ...item,
