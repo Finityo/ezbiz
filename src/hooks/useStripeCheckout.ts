@@ -50,9 +50,11 @@ export const useStripeCheckout = () => {
       // re-validates admin role and key presence — this is a hint only.
       let testMode = false;
       try {
-        testMode = sessionStorage.getItem("ezbiz_stripe_test_mode") === "1";
+        testMode =
+          localStorage.getItem("ezbiz_stripe_test_mode") === "1" ||
+          sessionStorage.getItem("ezbiz_stripe_test_mode") === "1";
       } catch {
-        /* sessionStorage unavailable */
+        /* storage unavailable */
       }
 
       try {
