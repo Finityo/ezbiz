@@ -13,14 +13,10 @@ import {
   Zap,
   Star,
   Crown,
-  Phone,
-  Video,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AnimatedSection from "@/components/AnimatedSection";
 import StaggeredGrid from "@/components/StaggeredGrid";
-
-const ACUITY_OWNER_ID = "38549422";
 
 const ChooseYourPath = () => {
   const navigate = useNavigate();
