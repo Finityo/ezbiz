@@ -106,12 +106,23 @@ serve(async (req) => {
       })
     );
 
+    // Hard reject only when a KNOWN price's live amount differs from
+    // expected (prevents wrong-amount charges). Unknown prices (not in the
+    // expected map) are allowed but logged as a warning so we can backfill.
     const mismatches = priceChecks.filter((c) => {
       const expected = EXPECTED_PRICE_CENTS[c.id];
-      if (expected === undefined) return true; // unknown price → reject
-      if (c.amount === null) return true;
-      return c.amount !== expected;
+      if (expected === undefined) return false; // unknown → warn, don't block
+      if (c.amount === null) return true;       // retrieve failed → block
+      return c.amount !== expected;              // wrong amount → block
     });
+
+    const unknowns = priceChecks.filter((c) => EXPECTED_PRICE_CENTS[c.id] === undefined);
+    if (unknowns.length > 0) {
+      console.warn(
+        "Price guard: unknown prices (not in EXPECTED_PRICE_CENTS) allowed through. Backfill expected map.",
+        JSON.stringify(unknowns.map((u) => ({ id: u.id, stripeAmount: u.amount, error: u.error })))
+      );
+    }
 
     if (mismatches.length > 0) {
       console.error(
@@ -120,7 +131,7 @@ serve(async (req) => {
           mismatches.map((m) => ({
             id: m.id,
             stripeAmount: m.amount,
-            expected: EXPECTED_PRICE_CENTS[m.id] ?? "(not in expected map)",
+            expected: EXPECTED_PRICE_CENTS[m.id],
             error: m.error,
           }))
         )
