@@ -213,9 +213,20 @@ export default function Checkout() {
               <Separator />
 
               <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+                <span>Estimated Total</span>
                 <span className="text-primary">${formatPrice(total)}</span>
               </div>
+            </div>
+
+            <div className="pt-3 border-t space-y-1.5 text-xs text-muted-foreground">
+              <p>
+                Prices do not include state filing fees, shipping, or third-party government
+                fees unless specifically stated.
+              </p>
+              <p>
+                EZ BIZ File Service is a filing assistance service and does not provide legal,
+                tax, or financial advice.
+              </p>
             </div>
           </Card>
 

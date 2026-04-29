@@ -1,5 +1,16 @@
 // Canonical pricing engine for EZ Biz checkout
 // Single source of truth for all pricing, Stripe IDs, and total calculations.
+//
+// PRICING POLICY (Nov 2026 update):
+//  - All CorpNet-based services use a 30% markup, rounded to public-display tiers.
+//  - DBA is the only exception → flat $89.
+//  - Public display prices are conversion-optimized (see PAC pricing brief).
+//
+// IMPORTANT: When a `price` here changes, the matching Stripe Price ID must
+// be replaced with a new ID created at the new amount. The `create-checkout`
+// edge function validates each Stripe price's unit_amount against
+// EXPECTED_PRICE_CENTS below at session-creation time and refuses to charge
+// a wrong amount. Update both `price` AND `EXPECTED_PRICE_CENTS` in lockstep.
 
 export type PackageType = "basic" | "deluxe" | "complete";
 
@@ -7,11 +18,22 @@ export type ProcessingType = "standard" | "express";
 
 export const PACKAGE_PRICES: Record<
   PackageType,
-  { name: string; price: number; stripePriceId: string; description: string; features: readonly string[] }
+  {
+    name: string;
+    label: string;
+    subtitle: string;
+    price: number;
+    stripePriceId: string;
+    description: string;
+    features: readonly string[];
+  }
 > = {
   basic: {
     name: "Basic",
-    price: 149,
+    label: "Starter",
+    subtitle: "Essential filing support",
+    price: 129,
+    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
     stripePriceId: "price_1TAjRYIUysiSR1zwBUBS2jDQ",
     description: "Business formation with required filing documents",
     features: [
@@ -24,7 +46,10 @@ export const PACKAGE_PRICES: Record<
   },
   deluxe: {
     name: "Deluxe",
-    price: 329,
+    label: "Most Popular",
+    subtitle: "Best balance of filing support and business setup",
+    price: 279,
+    // TODO: Update Stripe Price ID to match $279 (current ID is for $329).
     stripePriceId: "price_1TAjRsIUysiSR1zwaDwDhUBl",
     description: "Formation plus essential compliance documents",
     features: [
@@ -37,7 +62,10 @@ export const PACKAGE_PRICES: Record<
   },
   complete: {
     name: "Complete",
-    price: 399,
+    label: "Full Support",
+    subtitle: "Complete formation and document support",
+    price: 349,
+    // TODO: Update Stripe Price ID to match $349 (current ID is for $399).
     stripePriceId: "price_1TAjSCIUysiSR1zwLXwe8C0Z",
     description: "Full formation package with compliance and filings",
     features: [
@@ -53,11 +81,19 @@ export const PACKAGE_PRICES: Record<
 export type AddonId =
   | "ein"
   | "operatingAgreement"
+  | "bylawsMinutes"
   | "registeredAgent"
   | "sCorp"
   | "licenseResearch"
   | "dba"
   | "annualReport"
+  | "amendmentFiling"
+  | "dissolution"
+  | "foreignQualification"
+  | "boiReport"
+  | "trademarkWord"
+  | "trademarkLogo"
+  | "trademarkWordLogo"
   | "corporateKit"
   | "complianceAlerts"
   | "whiteGloveBase"
@@ -68,35 +104,45 @@ export const ADDON_PRICES: Record<
   {
     name: string;
     price: number;
-    stripePriceId: string;
+    stripePriceId: string | null;
     description: string;
     availableInCheckout: boolean;
   }
 > = {
   ein: {
-    name: "EIN Filing Service",
+    name: "EIN Online",
     price: 89,
     stripePriceId: "price_1TAIMzIUysiSR1zw3s47ma4C",
-    description: "We obtain your EIN from the IRS so you can open bank accounts and hire employees.",
+    description: "Recommended for most businesses opening a bank account or hiring.",
     availableInCheckout: true,
   },
   operatingAgreement: {
     name: "Operating Agreement",
-    price: 149,
+    price: 129,
+    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
     stripePriceId: "price_1TAINYIUysiSR1zwwd2NQAiE",
-    description: "Defines ownership and operating procedures for your LLC.",
+    description: "Often requested by banks and partners.",
+    availableInCheckout: true,
+  },
+  bylawsMinutes: {
+    name: "Bylaws / Minutes",
+    price: 129,
+    // TODO: Create new Stripe Price for $129 and paste ID here.
+    stripePriceId: null,
+    description: "Corporate bylaws and initial meeting minutes for corporations.",
     availableInCheckout: true,
   },
   registeredAgent: {
     name: "Registered Agent Service",
     price: 149,
     stripePriceId: "price_1TAIO1IUysiSR1zwAm501dWv",
-    description: "Maintains a legal address to receive official government documents.",
+    description: "Professional registered agent service where available.",
     availableInCheckout: true,
   },
   sCorp: {
     name: "S-Corp Election",
-    price: 149,
+    price: 129,
+    // TODO: Update Stripe Price ID to match $129 (current ID is for $149).
     stripePriceId: "price_1T0yYLIUysiSR1zwkctIi3Th",
     description: "We prepare and file IRS Form 2553 for S-Corp tax election status.",
     availableInCheckout: true,
@@ -105,21 +151,79 @@ export const ADDON_PRICES: Record<
     name: "Business License Research",
     price: 149,
     stripePriceId: "price_1TAISYIUysiSR1zw9QGizV8b",
-    description: "Identifies all licenses required based on business type and location.",
+    description: "Identifies licenses commonly required based on business type and location.",
     availableInCheckout: true,
   },
   dba: {
     name: "DBA Filing",
-    price: 149,
+    price: 89,
+    // TODO: Update Stripe Price ID to match $89 (current ID is for $149).
     stripePriceId: "price_1TAjoKIUysiSR1zwBWcDQxr8",
-    description: "File a Doing Business As name with your state or county.",
+    description: "File a Doing Business As name with your state or county. State/county fees additional.",
     availableInCheckout: true,
   },
   annualReport: {
     name: "Annual Report Filing",
-    price: 224,
+    price: 129,
+    // TODO: Update Stripe Price ID to match $129 (current ID is for $224).
     stripePriceId: "price_1TAjudIUysiSR1zw5wkbfPVv",
     description: "We prepare and file your annual report with the state.",
+    availableInCheckout: true,
+  },
+  amendmentFiling: {
+    name: "Amendment Filing",
+    price: 249,
+    // TODO: Create new Stripe Price for $249 and paste ID here.
+    stripePriceId: null,
+    description: "Amend your formation documents with the state.",
+    availableInCheckout: true,
+  },
+  dissolution: {
+    name: "Dissolution",
+    price: 379,
+    // TODO: Create new Stripe Price for $379 and paste ID here.
+    stripePriceId: null,
+    description: "Formally dissolve your business entity with the state.",
+    availableInCheckout: true,
+  },
+  foreignQualification: {
+    name: "Foreign Qualification",
+    price: 309,
+    // TODO: Create new Stripe Price for $309 and paste ID here.
+    stripePriceId: null,
+    description: "Register your business to operate in additional states.",
+    availableInCheckout: true,
+  },
+  boiReport: {
+    name: "BOI Report",
+    price: 249,
+    // TODO: Create new Stripe Price for $249 and paste ID here.
+    stripePriceId: null,
+    description: "Federal compliance filing support.",
+    availableInCheckout: true,
+  },
+  trademarkWord: {
+    name: "Trademark Word Search",
+    price: 379,
+    // TODO: Create new Stripe Price for $379 and paste ID here.
+    stripePriceId: null,
+    description: "Search for existing trademarks on your proposed brand name.",
+    availableInCheckout: true,
+  },
+  trademarkLogo: {
+    name: "Trademark Logo Search",
+    price: 499,
+    // TODO: Create new Stripe Price for $499 and paste ID here.
+    stripePriceId: null,
+    description: "Search for existing trademarks on your proposed logo design.",
+    availableInCheckout: true,
+  },
+  trademarkWordLogo: {
+    name: "Trademark Word + Logo Search",
+    price: 629,
+    // TODO: Create new Stripe Price for $629 and paste ID here.
+    stripePriceId: null,
+    description: "Combined word and logo trademark search.",
     availableInCheckout: true,
   },
   corporateKit: {
@@ -175,6 +279,28 @@ export const SHIPPING_STRIPE_PRICE_ID = "price_1TAwu6IUysiSR1zw8TGxG4RI";
 
 export const WHITE_GLOVE_BASE = ADDON_PRICES.whiteGloveBase.price;
 
+/**
+ * Map of stripePriceId → expected unit_amount in cents.
+ * The `create-checkout` edge function fetches each Price from Stripe and
+ * refuses to create a session if the live amount doesn't match.
+ * This prevents charging old amounts during the gap between updating
+ * config prices and creating new Stripe Price IDs.
+ */
+export const EXPECTED_PRICE_CENTS: Record<string, number> = (() => {
+  const map: Record<string, number> = {};
+  for (const pkg of Object.values(PACKAGE_PRICES)) {
+    if (pkg.stripePriceId) map[pkg.stripePriceId] = pkg.price * 100;
+  }
+  for (const addon of Object.values(ADDON_PRICES)) {
+    if (addon.stripePriceId) map[addon.stripePriceId] = addon.price * 100;
+  }
+  for (const speed of Object.values(PROCESSING_PRICES)) {
+    if (speed.stripePriceId) map[speed.stripePriceId] = speed.price * 100;
+  }
+  map[SHIPPING_STRIPE_PRICE_ID] = SHIPPING_PRICE * 100;
+  return map;
+})();
+
 export function calculateOrderTotal(
   pkg: PackageType,
   addons: string[],
@@ -182,7 +308,7 @@ export function calculateOrderTotal(
   processing: ProcessingType = "standard",
   whiteGloveSelected: boolean = false,
 ): number {
-  const packagePrice = PACKAGE_PRICES[pkg].price;
+  const packagePrice = PACKAGE_PRICES[pkg]?.price || 0;
 
   const addonTotal = addons.reduce((sum, addon) => {
     const config = ADDON_PRICES[addon as AddonId];
@@ -210,7 +336,7 @@ export function getStripeLineItems(
     items.push({ priceId: pkgConfig.stripePriceId, quantity: 1 });
   }
 
-  // Checkout-eligible add-ons
+  // Checkout-eligible add-ons (skip ones without a Stripe ID yet)
   addons.forEach((addonId) => {
     const config = ADDON_PRICES[addonId as AddonId];
     if (config && config.availableInCheckout && config.stripePriceId) {
