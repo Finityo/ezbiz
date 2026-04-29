@@ -48,46 +48,46 @@ const Footer = () => {
   const guides = [
     { name: "Business Formation Guide", href: "/business-guide" },
     { name: "State Requirements", href: "/state-requirements" },
-    { name: "LLC vs Corporation Guide", href: "/consultation" },
-    { name: "Tax Election Guide", href: "/consultation" },
-    { name: "Compliance Checklist", href: "/consultation" },
-    { name: "Business License Guide", href: "/consultation" },
+    { name: "LLC vs Corporation Guide", href: "/business-guide" },
+    { name: "Tax Election Guide", href: "/business-guide" },
+    { name: "Compliance Checklist", href: "/business-guide" },
+    { name: "Business License Guide", href: "/business-guide" },
   ];
 
   const templates = [
     { name: "LLC Operating Agreement", href: "/business-guide" },
     { name: "Corporate Bylaws Template", href: "/business-guide" },
-    { name: "Meeting Minutes Template", href: "/consultation" },
+    { name: "Meeting Minutes Template", href: "/business-guide" },
     { name: "Business License Checklist", href: "/business-guide" },
     { name: "Tax Election Forms", href: "/business-guide" },
-    { name: "Articles of Amendment", href: "/consultation" },
+    { name: "Articles of Amendment", href: "/business-guide" },
   ];
 
   const learningCenter = [
-    { name: "How to Start a Business", href: "/consultation" },
-    { name: "Choosing Business Structure", href: "/consultation" },
-    { name: "Business Banking Guide", href: "/consultation" },
-    { name: "Business Insurance Guide", href: "/consultation" },
-    { name: "Annual Compliance Guide", href: "/consultation" },
-    { name: "Business Tax Guide", href: "/consultation" },
+    { name: "How to Start a Business", href: "/business-guide" },
+    { name: "Choosing Business Structure", href: "/business-guide" },
+    { name: "Business Banking Guide", href: "/business-guide" },
+    { name: "Business Insurance Guide", href: "/business-guide" },
+    { name: "Annual Compliance Guide", href: "/business-guide" },
+    { name: "Business Tax Guide", href: "/business-guide" },
   ];
 
   const tools = [
     { name: "Business Name Search", href: "/name-search" },
     { name: "State Fee Calculator", href: "/state-requirements" },
-    { name: "Business Structure Quiz", href: "/consultation" },
-    { name: "Compliance Calendar", href: "/consultation" },
-    { name: "Document Checklist", href: "/consultation" },
-    { name: "Free Consultation", href: "/consultation" },
+    { name: "Business Structure Quiz", href: "/business-guide" },
+    { name: "Compliance Calendar", href: "/business-guide" },
+    { name: "Document Checklist", href: "/business-guide" },
+    { name: "Start Your Filing", href: "/order-flow" },
   ];
 
   const company = [
     { name: "About EZ BIZ", href: "/about" },
     { name: "Our Process", href: "/about" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Customer Reviews", href: "/consultation" },
-    { name: "Contact Us", href: "/consultation" },
-    { name: "Support Center", href: "/consultation" },
+    { name: "Customer Reviews", href: "/about" },
+    { name: "Contact Us", href: "/about" },
+    { name: "Support Center", href: "/about" },
     { name: "Admin Access", href: "/admin/login" },
   ];
 
@@ -95,8 +95,8 @@ const Footer = () => {
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Terms of Service", href: "/terms" },
     { name: "Refund Policy", href: "/refund-policy" },
-    { name: "Security", href: "/consultation" },
-    { name: "Accessibility", href: "/consultation" },
+    { name: "Security", href: "/business-guide" },
+    { name: "Accessibility", href: "/business-guide" },
   ];
 
   const FooterLink = ({ item }: { item: { name: string; href: string; isDownload?: boolean } }) => {
