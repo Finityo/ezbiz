@@ -157,6 +157,7 @@ function App() {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/entrepreneurs" element={<Entrepreneurs />} />
               <Route path="/admin/social-preview" element={<SocialPreviewTester />} />
+              <Route path="/admin/stripe-prices" element={<StripePriceAudit />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
