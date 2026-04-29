@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Flag, Zap, Globe, MessageCircle, BookOpen } from "lucide-react";
 import { trackClick } from "@/hooks/useAnalytics";
-import { trackHeroPath, trackCorpNetClick, trackConsultationClickHero, trackLearnClick } from "@/lib/analytics";
+import { trackHeroPath, trackCorpNetClick, trackStartOrderClickHero, trackLearnClick } from "@/lib/analytics";
 import logoImage from "@/assets/logo-ezbiz-final.webp";
 
 const CORPNET_AFFILIATE_LINK = "https://www.corpnet.com/?pid=16443";
@@ -109,8 +109,8 @@ export default function Hero() {
             <button
               onClick={() => {
                 trackHeroPath("talk_expert");
-                trackConsultationClickHero();
-                trackClick("Start Order", "hero_start_order", "/order-flow");
+                trackStartOrderClickHero();
+                trackClick("Start My Order", "hero_start_order", "/order-flow");
                 navigate("/order-flow");
               }}
               className="inline-flex items-center justify-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer w-full sm:w-auto"
