@@ -8,6 +8,38 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+/**
+ * EXPECTED PRICE GUARD
+ * Mirror of `EXPECTED_PRICE_CENTS` in src/lib/pricing.ts.
+ * Refuses to create a Stripe Checkout Session if the live Stripe Price's
+ * unit_amount differs from what the app config expects. Prevents charging
+ * old amounts during the gap between updating displayed prices and
+ * creating new Stripe Price IDs.
+ *
+ * Keep this in lockstep with src/lib/pricing.ts whenever prices change.
+ */
+const EXPECTED_PRICE_CENTS: Record<string, number> = {
+  // Packages
+  "price_1TAjRYIUysiSR1zwBUBS2jDQ": 12900, // Basic $129
+  "price_1TAjRsIUysiSR1zwaDwDhUBl": 27900, // Deluxe $279
+  "price_1TAjSCIUysiSR1zwLXwe8C0Z": 34900, // Complete $349
+  // Add-ons
+  "price_1TAIMzIUysiSR1zw3s47ma4C": 8900,  // EIN $89
+  "price_1TAINYIUysiSR1zwwd2NQAiE": 12900, // Operating Agreement $129
+  "price_1TAIO1IUysiSR1zwAm501dWv": 14900, // Registered Agent $149
+  "price_1T0yYLIUysiSR1zwkctIi3Th": 12900, // S-Corp $129
+  "price_1TAISYIUysiSR1zw9QGizV8b": 14900, // License Research $149
+  "price_1TAjoKIUysiSR1zwBWcDQxr8": 8900,  // DBA $89
+  "price_1TAjudIUysiSR1zw5wkbfPVv": 12900, // Annual Report $129
+  "price_1TAjy8IUysiSR1zwnphHwavq": 5900,  // Corporate Kit $59
+  "price_1TAjzBIUysiSR1zwapC53gXv": 10300, // Compliance Alerts $103
+  "price_1TAkcOIUysiSR1zwNvOiYDnD": 15000, // White Glove Base $150
+  "price_1TAkckIUysiSR1zw6EQcZ3lo": 8000,  // White Glove Hourly $80
+  // Processing & shipping
+  "price_1TAwtjIUysiSR1zwrXt9vICY": 15000, // Express Processing $150
+  "price_1TAwu6IUysiSR1zw8TGxG4RI": 2900,  // Shipping & Handling $29
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
