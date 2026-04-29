@@ -275,8 +275,8 @@ export default function StripePriceAudit() {
 
         <p className="text-xs text-muted-foreground mt-4">
           Replacement IDs entered here are NOT applied automatically. After copying, paste the
-          replacements into <code>src/lib/pricing.ts</code> and the <code>EXPECTED_PRICE_CENTS</code>{" "}
-          map in <code>supabase/functions/create-checkout/index.ts</code>.
+          replacements into the pricing config (<code>src/lib/pricing.ts</code>) and the matching
+          <code>EXPECTED_PRICE_CENTS</code> map in the Lovable Cloud checkout function.
         </p>
       </div>
     </div>
