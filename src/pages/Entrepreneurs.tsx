@@ -104,26 +104,41 @@ const STEPS = [
 
 const PRICING_TEASER = [
   {
-    name: "Starter",
-    price: "$0",
+    name: "Basic",
+    price: "$129",
     note: "+ state fee",
-    features: ["LLC or Corporation filing", "Articles prep & submission", "Lifetime alerts"],
-    cta: "Start free",
+    features: [
+      "Prepare & file Articles of Organization",
+      "Name availability search",
+      "Digital filing documents",
+      "Lifetime customer support",
+    ],
+    cta: "Get Started",
   },
   {
-    name: "Growth",
-    price: "$249",
+    name: "Deluxe",
+    price: "$279",
     note: "+ state fee",
     highlight: true,
-    features: ["Everything in Starter", "EIN + Operating Agreement", "1 yr Registered Agent", "Compliance tracking"],
+    features: [
+      "Everything in Basic",
+      "Operating Agreement",
+      "Banking Resolution",
+      "Priority support",
+    ],
     cta: "Most popular",
   },
   {
-    name: "White Glove",
-    price: "$799",
+    name: "Complete",
+    price: "$349",
     note: "+ state fee",
-    features: ["Everything in Growth", "Dedicated specialist", "1:1 onboarding call", "Priority filing"],
-    cta: "Talk to a specialist",
+    features: [
+      "Everything in Deluxe",
+      "EIN filing service",
+      "S-Corp election filing",
+      "Business license research",
+    ],
+    cta: "Choose Complete",
   },
 ];
 
@@ -317,7 +332,7 @@ const Entrepreneurs = () => {
                   Pick a plan that matches your stage
                 </h2>
                 <p className="text-muted-foreground mt-4 font-body">
-                  Start free or get full white-glove service. State fees shown upfront — no surprises.
+                  Transparent flat-rate packages. State fees shown upfront — no surprises.
                 </p>
               </div>
               <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
