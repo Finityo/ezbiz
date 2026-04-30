@@ -102,9 +102,13 @@ const STEPS = [
   },
 ];
 
+// Map each plan to the canonical PackageType in src/lib/pricing.ts.
+// The order flow reads ?package= and passes the corresponding stripePriceId
+// to create-checkout, guaranteeing the right Stripe Price is charged.
 const PRICING_TEASER = [
   {
     name: "Basic",
+    packageId: "basic",
     price: "$129",
     note: "+ state fee",
     features: [
@@ -113,10 +117,11 @@ const PRICING_TEASER = [
       "Digital filing documents",
       "Lifetime customer support",
     ],
-    cta: "Get Started",
+    cta: "Start with Basic",
   },
   {
     name: "Deluxe",
+    packageId: "deluxe",
     price: "$279",
     note: "+ state fee",
     highlight: true,
@@ -126,10 +131,11 @@ const PRICING_TEASER = [
       "Banking Resolution",
       "Priority support",
     ],
-    cta: "Most popular",
+    cta: "Start with Deluxe",
   },
   {
     name: "Complete",
+    packageId: "complete",
     price: "$349",
     note: "+ state fee",
     features: [
@@ -138,7 +144,7 @@ const PRICING_TEASER = [
       "S-Corp election filing",
       "Business license research",
     ],
-    cta: "Choose Complete",
+    cta: "Start with Complete",
   },
 ];
 
