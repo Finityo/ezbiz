@@ -85,6 +85,7 @@ serve(async (req) => {
       cancelPath = "/pricing",
       orderId,
       applicationId,
+      orderEnrichment,
       testMode = false,
     } = await req.json();
 
@@ -228,31 +229,109 @@ serve(async (req) => {
       }
     }
 
+    // Use service-role client for orders + child-table writes so RLS doesn't
+    // block server-side persistence of order metadata before checkout.
+    const dbClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
     let finalOrderId = orderId;
 
+    // Build the orders payload, including any enrichment passed from the order flow.
+    const ordersPayload: Record<string, unknown> = {
+      package_id: lineItems[0]?.priceId,
+      state_fee: stateFee?.amount || 0,
+      status: "Pending Payment",
+    };
+    if (orderEnrichment?.entityType) ordersPayload.entity_type = orderEnrichment.entityType;
+    if (orderEnrichment?.packageLabel) ordersPayload.package = orderEnrichment.packageLabel;
+    if (applicationId) ordersPayload.application_id = applicationId;
+
     if (orderId) {
-      await supabaseClient
-        .from("orders")
-        .update({
-          package_id: lineItems[0]?.priceId,
-          state_fee: stateFee?.amount || 0,
-          status: "Pending Payment",
-        })
-        .eq("id", orderId);
+      await dbClient.from("orders").update(ordersPayload).eq("id", orderId);
     } else {
-      const { data: order } = await supabaseClient
+      const { data: order, error: insertErr } = await dbClient
         .from("orders")
         .insert({
+          ...ordersPayload,
           user_id: userId,
-          email: userEmail,
-          package_id: lineItems[0]?.priceId,
+          email: userEmail ?? orderEnrichment?.contactEmail,
           state: stateFee?.stateName,
-          state_fee: stateFee?.amount || 0,
-          status: "Pending Payment",
         })
-        .select()
+        .select("id")
         .single();
+      if (insertErr) {
+        console.error("orders insert failed", insertErr);
+      }
       finalOrderId = order?.id;
+    }
+
+    // Persist child rows (business_information, contact_information) so the
+    // admin Orders tab + per-order detail dialog show the same rich data the
+    // user entered in /order-flow.
+    if (finalOrderId && orderEnrichment) {
+      try {
+        if (orderEnrichment.businessName) {
+          await dbClient.from("business_information").insert({
+            order_id: finalOrderId,
+            company_name: orderEnrichment.businessName,
+          });
+        }
+        if (orderEnrichment.businessAddress || orderEnrichment.businessCity || orderEnrichment.businessZip) {
+          await dbClient.from("addresses").insert({
+            order_id: finalOrderId,
+            type: "business",
+            address1: orderEnrichment.businessAddress ?? null,
+            city: orderEnrichment.businessCity ?? null,
+            state: stateFee?.stateName ?? null,
+            zip: orderEnrichment.businessZip ?? null,
+          });
+        }
+        const contactEmail = orderEnrichment.contactEmail || userEmail;
+        if (contactEmail || orderEnrichment.contactFirstName) {
+          await dbClient.from("contact_information").insert({
+            order_id: finalOrderId,
+            first_name: orderEnrichment.contactFirstName ?? null,
+            last_name: orderEnrichment.contactLastName ?? null,
+            email: contactEmail ?? null,
+            phone: orderEnrichment.contactPhone ?? null,
+          });
+        }
+        await dbClient.from("order_events").insert({
+          order_id: finalOrderId,
+          event_type: "checkout_started",
+          actor: "system",
+          metadata: {
+            application_id: applicationId ?? null,
+            package_id: orderEnrichment.packageId ?? null,
+            total: orderEnrichment.totalAmount ?? null,
+          },
+        });
+      } catch (childErr) {
+        console.error("child-row inserts failed", childErr);
+      }
+    }
+
+    // Cross-link the business_application back to the orders row.
+    if (applicationId && finalOrderId) {
+      try {
+        const { data: existingApp } = await dbClient
+          .from("business_applications")
+          .select("application_data")
+          .eq("id", applicationId)
+          .maybeSingle();
+        const merged = {
+          ...((existingApp?.application_data as Record<string, unknown>) ?? {}),
+          orderId: finalOrderId,
+        };
+        await dbClient
+          .from("business_applications")
+          .update({ application_data: merged })
+          .eq("id", applicationId);
+      } catch (linkErr) {
+        console.error("application <-> order link failed", linkErr);
+      }
     }
 
     const origin = req.headers.get("origin") || "https://www.ezbiz-fs.com";
@@ -363,7 +442,7 @@ serve(async (req) => {
     });
 
     if (finalOrderId) {
-      await supabaseClient
+      await dbClient
         .from("orders")
         .update({
           stripe_session_id: session.id,

@@ -12,6 +12,22 @@ interface StateFee {
   stateName: string;
 }
 
+interface OrderEnrichment {
+  entityType?: string;
+  packageId?: string;
+  packageLabel?: string;
+  businessName?: string;
+  businessAddress?: string;
+  businessCity?: string;
+  businessZip?: string;
+  managementStructure?: string;
+  contactFirstName?: string;
+  contactLastName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  totalAmount?: number;
+}
+
 interface CheckoutOptions {
   stateFee?: StateFee;
   successPath?: string;
@@ -19,6 +35,8 @@ interface CheckoutOptions {
   orderId?: string;
   /** business_applications.id created before checkout — surfaced to Stripe via metadata + client_reference_id */
   applicationId?: string;
+  /** Rich order data persisted to `orders` + child tables for the admin Orders tab. */
+  orderEnrichment?: OrderEnrichment;
 }
 
 export const useStripeCheckout = () => {
@@ -73,6 +91,7 @@ export const useStripeCheckout = () => {
               orderId: options?.orderId,
               applicationId: options?.applicationId,
               testMode,
+              orderEnrichment: options?.orderEnrichment,
             },
           }
         );
