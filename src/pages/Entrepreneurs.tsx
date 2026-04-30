@@ -332,7 +332,7 @@ const Entrepreneurs = () => {
                   Pick a plan that matches your stage
                 </h2>
                 <p className="text-muted-foreground mt-4 font-body">
-                  Start free or get full white-glove service. State fees shown upfront — no surprises.
+                  Transparent flat-rate packages. State fees shown upfront — no surprises.
                 </p>
               </div>
               <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
