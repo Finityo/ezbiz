@@ -1,6 +1,7 @@
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Navigate } from "react-router-dom";
+import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
 import VeteranEligibilityGate from "@/components/order/VeteranEligibilityGate";
@@ -48,6 +49,21 @@ const EnhancedOrderFlow = () => {
   const { user } = useAuth();
 
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
+
+  // Guard: in guided mode the URL MUST include a valid package param.
+  // This prevents any page from dropping users into a generic pricing flow
+  // by linking to /order-flow without a plan.
+  const rawPackage = searchParams.get("package");
+  const isValidPackage =
+    !!rawPackage && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, rawPackage);
+  const requiresPackage = mode !== "whiteglove";
+  const missingPackage = requiresPackage && !isValidPackage;
+
+  useEffect(() => {
+    if (missingPackage) {
+      toast.error("Please choose a package to start your order.");
+    }
+  }, [missingPackage]);
 
   useEffect(() => {
     const raw = searchParams.get("mode");
@@ -191,6 +207,11 @@ const EnhancedOrderFlow = () => {
     if (applicationId) return applicationId;
     return await saveOrderToDb();
   };
+
+  // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
+  if (missingPackage) {
+    return <Navigate to="/pricing" replace />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
