@@ -334,6 +334,35 @@ export default function Dashboard() {
     if (user) loadDashboard();
   }, [user]);
 
+  // ─── Realtime: refresh dashboard when admin updates orders/events/documents ───
+  useEffect(() => {
+    if (!user || !data.order?.id) return;
+    const orderId = data.order.id;
+
+    const channel = supabase
+      .channel(`dashboard-order-${orderId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
+        () => loadDashboard()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "order_events", filter: `order_id=eq.${orderId}` },
+        () => loadDashboard()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "documents", filter: `order_id=eq.${orderId}` },
+        () => loadDashboard()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, data.order?.id]);
+
   const progressPercent = useMemo(() => getProgressPercent(data.order?.status), [data.order?.status]);
   const primaryAction = useMemo(() => getPrimaryNextAction(data.order?.status), [data.order?.status]);
 
