@@ -133,7 +133,7 @@ serve(async (req) => {
         .map((m) => m.id);
 
       console.error(
-        `Price guard rejected checkout (${useTestMode ? "TEST" : "LIVE"}).`,
+        `Price guard rejected checkout (LIVE).`,
         JSON.stringify({
           unknownIds,
           knownMismatches: mismatches
@@ -147,7 +147,7 @@ serve(async (req) => {
         })
       );
 
-      const mapName = useTestMode ? "EXPECTED_PRICE_CENTS_TEST" : "EXPECTED_PRICE_CENTS";
+      const mapName = "EXPECTED_PRICE_CENTS";
       let userMessage =
         "We're updating our pricing. Checkout is temporarily unavailable for the selected items.";
       if (unknownIds.length > 0) {
@@ -167,7 +167,7 @@ serve(async (req) => {
     }
     // ────────────────────────────────────────────────────────────────────
 
-    // Find existing Stripe customer (in the active mode's account)
+    // Find existing Stripe customer (LIVE account)
     if (userEmail) {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
       if (customers.data.length > 0) {
