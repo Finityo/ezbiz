@@ -155,6 +155,12 @@ serve(async (req) => {
         stripeSessionId: session.id,
         expiredAt: new Date().toISOString(),
       });
+      // Mirror to orders
+      const { data: ord } = await supabase
+        .from("orders").select("id").eq("application_id", applicationId).maybeSingle();
+      if (ord?.id) {
+        await supabase.from("orders").update({ status: "cancelled" }).eq("id", ord.id);
+      }
     }
   } else if (event.type === "payment_intent.payment_failed") {
     const intent = event.data.object as any;
@@ -166,6 +172,11 @@ serve(async (req) => {
         failureMessage: intent.last_payment_error?.message ?? null,
         failedAt: new Date().toISOString(),
       });
+      const { data: ord } = await supabase
+        .from("orders").select("id").eq("application_id", applicationId).maybeSingle();
+      if (ord?.id) {
+        await supabase.from("orders").update({ status: "Pending Payment" }).eq("id", ord.id);
+      }
     }
   }
 
