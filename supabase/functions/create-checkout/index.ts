@@ -85,6 +85,7 @@ serve(async (req) => {
       cancelPath = "/pricing",
       orderId,
       applicationId,
+      orderEnrichment,
       testMode = false,
     } = await req.json();
 
