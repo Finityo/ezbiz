@@ -91,6 +91,7 @@ export const useStripeCheckout = () => {
               orderId: options?.orderId,
               applicationId: options?.applicationId,
               testMode,
+              orderEnrichment: options?.orderEnrichment,
             },
           }
         );
