@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle, FlaskConical } from "lucide-react";
+import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -109,34 +107,16 @@ export default function StripePriceAudit() {
   const [results, setResults] = useState<AuditResult[]>([]);
   const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [testMode, setTestMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem("ezbiz_stripe_test_mode") === "1";
-    } catch {
-      return false;
-    }
-  });
 
-  const handleToggleTestMode = (next: boolean) => {
-    setTestMode(next);
+  // Clean up any stale test-mode flag from prior versions on mount.
+  useEffect(() => {
     try {
-      if (next) {
-        localStorage.setItem("ezbiz_stripe_test_mode", "1");
-        sessionStorage.setItem("ezbiz_stripe_test_mode", "1");
-      } else {
-        localStorage.removeItem("ezbiz_stripe_test_mode");
-        sessionStorage.removeItem("ezbiz_stripe_test_mode");
-      }
+      localStorage.removeItem("ezbiz_stripe_test_mode");
+      sessionStorage.removeItem("ezbiz_stripe_test_mode");
     } catch {
       /* storage unavailable */
     }
-    toast({
-      title: next ? "Test mode ON" : "Test mode OFF",
-      description: next
-        ? "Checkout will use Stripe TEST keys for THIS browser session only. Use card 4242 4242 4242 4242."
-        : "Checkout will use LIVE Stripe keys.",
-    });
-  };
+  }, []);
 
   const runAudit = async () => {
     setLoading(true);
@@ -210,45 +190,14 @@ export default function StripePriceAudit() {
           </Button>
         </div>
 
-        <Card
-          className={`mb-6 border-2 ${
-            testMode ? "border-amber-500 bg-amber-50" : "border-border"
-          }`}
-        >
+        <Card className="mb-6 border-2 border-emerald-500 bg-emerald-50">
           <CardHeader>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <FlaskConical className="h-5 w-5" />
-                  Stripe Test Mode (Admin only)
-                </CardTitle>
-                <CardDescription>
-                  When ON, checkout calls use <code>STRIPE_SECRET_KEY_TEST</code> and the{" "}
-                  <code>EXPECTED_PRICE_CENTS_TEST</code> map. Use Stripe test card{" "}
-                  <code>4242 4242 4242 4242</code>. Setting persists for this browser session only.
-                  Live checkout is unaffected for everyone else.
-                </CardDescription>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <Label htmlFor="test-mode-switch" className="text-sm font-medium">
-                  {testMode ? "ON" : "OFF"}
-                </Label>
-                <Switch
-                  id="test-mode-switch"
-                  checked={testMode}
-                  onCheckedChange={handleToggleTestMode}
-                />
-              </div>
-            </div>
+            <CardTitle className="text-emerald-900">Stripe LIVE mode</CardTitle>
+            <CardDescription className="text-emerald-900">
+              Checkout always uses <code>STRIPE_SECRET_KEY</code> (sk_live_…). Test-mode bypass has
+              been removed for production safety.
+            </CardDescription>
           </CardHeader>
-          {testMode && (
-            <CardContent className="text-xs text-amber-900">
-              ⚠️ Test mode active in this session. Any checkout you start will hit Stripe TEST. No
-              real charges. Test-mode price IDs must be added to{" "}
-              <code>EXPECTED_PRICE_CENTS_TEST</code> in{" "}
-              <code>supabase/functions/create-checkout/index.ts</code> or checkout will be blocked.
-            </CardContent>
-          )}
         </Card>
 
         <Card className="mb-6">

@@ -9,10 +9,14 @@ const corsHeaders = {
 };
 
 /**
- * EXPECTED PRICE GUARD — LIVE
+ * EXPECTED PRICE GUARD — LIVE ONLY
  * Mirror of `EXPECTED_PRICE_CENTS` in src/lib/pricing.ts.
  * Refuses to create a Stripe Checkout Session if the live Stripe Price's
  * unit_amount differs from what the app config expects.
+ *
+ * NOTE: Production is LIVE-ONLY. All test-mode bypasses have been removed —
+ * checkout always uses STRIPE_SECRET_KEY (sk_live_…). To validate Stripe
+ * changes safely, use a separate non-production project, not this one.
  */
 const EXPECTED_PRICE_CENTS: Record<string, number> = {
   // Packages
@@ -44,28 +48,7 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
   "price_1TAwu6IUysiSR1zw8TGxG4RI": 2900,
 };
 
-/**
- * EXPECTED PRICE GUARD — TEST MODE
- * Populate this map with the Stripe TEST-MODE price IDs (sk_test_) the
- * admin creates for safe 4242-card validation. Until populated, any
- * test-mode checkout will be blocked by STRICT_UNKNOWN_PRICES.
- */
-const EXPECTED_PRICE_CENTS_TEST: Record<string, number> = {
-  "price_1TRWTlIUysiSR1zwZxdGtoik": 12900, // Basic $129
-  "price_1TRWVAIUysiSR1zwnyhVFD5p": 27900, // Deluxe $279
-  "price_1TRWWDIUysiSR1zwcDP98wz9": 14900, // Business License Research $149
-  "price_1TRWWoIUysiSR1zwSmodfF9J":  2900, // Shipping & Handling $29
-};
-
-const TEST_PRICE_ID_BY_LIVE_ID: Record<string, string> = {
-  "price_1TRVJJIUysiSR1zwmUpJg0gy": "price_1TRWTlIUysiSR1zwZxdGtoik", // Basic $129
-  "price_1TRVJjIUysiSR1zwaDaz3ics": "price_1TRWVAIUysiSR1zwnyhVFD5p", // Deluxe $279
-  "price_1TRVYvIUysiSR1zwCZJc1iHf": "price_1TRWWDIUysiSR1zwcDP98wz9", // Business License Research $149
-  "price_1TAwu6IUysiSR1zw8TGxG4RI": "price_1TRWWoIUysiSR1zwSmodfF9J", // Shipping & Handling $29
-};
-
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked
-const STRICT_UNKNOWN_PRICES_TEST = true; // test: unknown test IDs also blocked
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -86,7 +69,6 @@ serve(async (req) => {
       orderId,
       applicationId,
       orderEnrichment,
-      testMode = false,
     } = await req.json();
 
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
@@ -97,7 +79,6 @@ serve(async (req) => {
     let userEmail: string | undefined;
     let userId: string | undefined;
     let customerId: string | undefined;
-    let isAdmin = false;
     const authHeader = req.headers.get("Authorization");
 
     if (authHeader) {
@@ -105,51 +86,16 @@ serve(async (req) => {
       const { data } = await supabaseClient.auth.getUser(token);
       userEmail = data.user?.email ?? undefined;
       userId = data.user?.id;
-
-      if (userId) {
-        // Use service-role client to bypass RLS for the role lookup
-        const adminClient = createClient(
-          Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-        const { data: roleRow } = await adminClient
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userId)
-          .eq("role", "admin")
-          .maybeSingle();
-        isAdmin = !!roleRow;
-      }
     }
 
-    // ── Test-mode authorization ────────────────────────────────────────
-    // Admins are AUTOMATICALLY routed to Stripe TEST mode (so they can safely
-    // verify checkout with the 4242 card). Non-admins always use LIVE mode.
-    // The `testMode` flag from the client is treated as a hint only — the
-    // server makes the final decision based on admin role + key availability.
-    const hasTestKey = !!Deno.env.get("STRIPE_SECRET_KEY_TEST");
-    const useTestMode = isAdmin && hasTestKey;
-
-    const stripeKey = useTestMode
-      ? Deno.env.get("STRIPE_SECRET_KEY_TEST") || ""
-      : Deno.env.get("STRIPE_SECRET_KEY") || "";
-
+    // ── LIVE-ONLY Stripe client ────────────────────────────────────────
+    // Production posture: always use STRIPE_SECRET_KEY (sk_live_…). No
+    // test-mode bypass, no admin override, no client-supplied flags.
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const expectedMap = useTestMode ? EXPECTED_PRICE_CENTS_TEST : EXPECTED_PRICE_CENTS;
-    // In TEST mode we no longer hard-block on unknown IDs — we synthesize
-    // inline price_data from the LIVE catalog so admins can validate the
-    // full real-world cart with the 4242 card without recreating every
-    // price in the test account.
-    const strictUnknown = useTestMode ? false : STRICT_UNKNOWN_PRICES;
-
-    // Map known LIVE → TEST IDs first; anything still pointing at a LIVE
-    // ID will be resolved to inline price_data below.
-    const activeLineItems = useTestMode
-      ? lineItems.map((item: { priceId: string; quantity?: number }) => ({
-          ...item,
-          priceId: TEST_PRICE_ID_BY_LIVE_ID[item.priceId] || item.priceId,
-        }))
-      : lineItems;
+    const expectedMap = EXPECTED_PRICE_CENTS;
+    const strictUnknown = STRICT_UNKNOWN_PRICES;
+    const activeLineItems = lineItems;
 
     // ── Price-amount guard ──────────────────────────────────────────────
     const uniquePriceIds: string[] = Array.from(
@@ -187,7 +133,7 @@ serve(async (req) => {
         .map((m) => m.id);
 
       console.error(
-        `Price guard rejected checkout (${useTestMode ? "TEST" : "LIVE"}).`,
+        `Price guard rejected checkout (LIVE).`,
         JSON.stringify({
           unknownIds,
           knownMismatches: mismatches
@@ -201,7 +147,7 @@ serve(async (req) => {
         })
       );
 
-      const mapName = useTestMode ? "EXPECTED_PRICE_CENTS_TEST" : "EXPECTED_PRICE_CENTS";
+      const mapName = "EXPECTED_PRICE_CENTS";
       let userMessage =
         "We're updating our pricing. Checkout is temporarily unavailable for the selected items.";
       if (unknownIds.length > 0) {
@@ -221,7 +167,7 @@ serve(async (req) => {
     }
     // ────────────────────────────────────────────────────────────────────
 
-    // Find existing Stripe customer (in the active mode's account)
+    // Find existing Stripe customer (LIVE account)
     if (userEmail) {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
       if (customers.data.length > 0) {
@@ -336,69 +282,10 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://www.ezbiz-fs.com";
 
-    // Build the Stripe line items.
-    // In TEST mode, any priceId that isn't a known TEST price is resolved by
-    // looking up the matching LIVE price (using STRIPE_SECRET_KEY) and
-    // synthesizing inline price_data with the same name + amount. This lets
-    // admins validate the full real cart with the 4242 card without having
-    // to recreate every price in the test account.
-    const liveStripeForLookup =
-      useTestMode && Deno.env.get("STRIPE_SECRET_KEY")
-        ? new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-            apiVersion: "2025-08-27.basil",
-          })
-        : null;
-
+    // Build the Stripe line items (LIVE only).
     const stripeLineItems: any[] = [];
     for (const item of activeLineItems as Array<{ priceId: string; quantity?: number }>) {
       const qty = item.quantity || 1;
-
-      // Try to use the price ID directly in the active mode.
-      let priceExistsHere = false;
-      try {
-        await stripe.prices.retrieve(item.priceId);
-        priceExistsHere = true;
-      } catch {
-        priceExistsHere = false;
-      }
-
-      if (priceExistsHere) {
-        stripeLineItems.push({ price: item.priceId, quantity: qty });
-        continue;
-      }
-
-      // Fallback (test mode only): look the price up in LIVE and clone it
-      // as inline price_data so test checkout still works end-to-end.
-      if (useTestMode && liveStripeForLookup) {
-        try {
-          const livePrice = await liveStripeForLookup.prices.retrieve(item.priceId, {
-            expand: ["product"],
-          });
-          const productName =
-            (livePrice.product as any)?.name || "EZ BIZ Service";
-          const productDescription =
-            (livePrice.product as any)?.description || undefined;
-          stripeLineItems.push({
-            price_data: {
-              currency: livePrice.currency || "usd",
-              product_data: {
-                name: productName,
-                ...(productDescription ? { description: productDescription } : {}),
-              },
-              unit_amount: livePrice.unit_amount ?? 0,
-            },
-            quantity: qty,
-          });
-          continue;
-        } catch (e) {
-          console.error(
-            `Test-mode fallback failed for ${item.priceId}:`,
-            (e as any)?.message,
-          );
-        }
-      }
-
-      // Last resort: pass through (Stripe will surface a clear error).
       stripeLineItems.push({ price: item.priceId, quantity: qty });
     }
 
@@ -427,14 +314,11 @@ serve(async (req) => {
         ...(applicationId ? { application_id: applicationId } : {}),
         ...(userId ? { user_id: userId } : {}),
         source: "ezbiz_order_flow",
-        test_mode: useTestMode ? "true" : "false",
       },
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: useTestMode
-            ? "EZ BIZ File Service - TEST MODE - Business Formation"
-            : "EZ BIZ File Service - Business Formation",
+          description: "EZ BIZ File Service - Business Formation",
         },
       },
       success_url: `${origin}${successPath}`,
@@ -452,7 +336,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ url: session.url, testMode: useTestMode }),
+      JSON.stringify({ url: session.url }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
