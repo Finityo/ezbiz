@@ -523,6 +523,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          application_id: string | null
           created_at: string | null
           ein_service: boolean | null
           email: string | null
@@ -541,6 +542,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          application_id?: string | null
           created_at?: string | null
           ein_service?: boolean | null
           email?: string | null
@@ -559,6 +561,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          application_id?: string | null
           created_at?: string | null
           ein_service?: boolean | null
           email?: string | null
