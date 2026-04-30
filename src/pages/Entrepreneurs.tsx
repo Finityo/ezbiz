@@ -121,7 +121,7 @@ const FAQS = [
   },
   {
     q: "What does ‘registered agent’ mean and do I need one?",
-    a: "Every state requires a registered agent — a person or service that receives legal mail on your business’s behalf. We include it in Growth and White Glove.",
+    a: "Every state requires a registered agent — a person or service that receives legal mail on your business’s behalf. You can add Registered Agent Service to any package (Basic, Deluxe, or Complete) at checkout.",
   },
   {
     q: "How fast can I get filed?",
