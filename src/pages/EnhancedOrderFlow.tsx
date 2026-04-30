@@ -50,6 +50,21 @@ const EnhancedOrderFlow = () => {
 
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
 
+  // Guard: in guided mode the URL MUST include a valid package param.
+  // This prevents any page from dropping users into a generic pricing flow
+  // by linking to /order-flow without a plan.
+  const rawPackage = searchParams.get("package");
+  const isValidPackage =
+    !!rawPackage && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, rawPackage);
+  const requiresPackage = mode !== "whiteglove";
+  const missingPackage = requiresPackage && !isValidPackage;
+
+  useEffect(() => {
+    if (missingPackage) {
+      toast.error("Please choose a package to start your order.");
+    }
+  }, [missingPackage]);
+
   useEffect(() => {
     const raw = searchParams.get("mode");
     const normalized = normalizeMode(raw);
