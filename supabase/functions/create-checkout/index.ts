@@ -84,6 +84,7 @@ serve(async (req) => {
       successPath = "/dashboard",
       cancelPath = "/pricing",
       orderId,
+      applicationId,
       testMode = false,
     } = await req.json();
 
@@ -341,8 +342,12 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
+      ...(applicationId ? { client_reference_id: applicationId } : {}),
       metadata: {
         orderId: finalOrderId,
+        ...(applicationId ? { application_id: applicationId } : {}),
+        ...(userId ? { user_id: userId } : {}),
+        source: "ezbiz_order_flow",
         test_mode: useTestMode ? "true" : "false",
       },
       invoice_creation: {
