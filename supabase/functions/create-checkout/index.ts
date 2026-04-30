@@ -314,14 +314,11 @@ serve(async (req) => {
         ...(applicationId ? { application_id: applicationId } : {}),
         ...(userId ? { user_id: userId } : {}),
         source: "ezbiz_order_flow",
-        test_mode: useTestMode ? "true" : "false",
       },
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: useTestMode
-            ? "EZ BIZ File Service - TEST MODE - Business Formation"
-            : "EZ BIZ File Service - Business Formation",
+          description: "EZ BIZ File Service - Business Formation",
         },
       },
       success_url: `${origin}${successPath}`,
@@ -339,7 +336,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ url: session.url, testMode: useTestMode }),
+      JSON.stringify({ url: session.url }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
