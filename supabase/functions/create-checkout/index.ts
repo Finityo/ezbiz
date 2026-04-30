@@ -282,69 +282,10 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://www.ezbiz-fs.com";
 
-    // Build the Stripe line items.
-    // In TEST mode, any priceId that isn't a known TEST price is resolved by
-    // looking up the matching LIVE price (using STRIPE_SECRET_KEY) and
-    // synthesizing inline price_data with the same name + amount. This lets
-    // admins validate the full real cart with the 4242 card without having
-    // to recreate every price in the test account.
-    const liveStripeForLookup =
-      useTestMode && Deno.env.get("STRIPE_SECRET_KEY")
-        ? new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-            apiVersion: "2025-08-27.basil",
-          })
-        : null;
-
+    // Build the Stripe line items (LIVE only).
     const stripeLineItems: any[] = [];
     for (const item of activeLineItems as Array<{ priceId: string; quantity?: number }>) {
       const qty = item.quantity || 1;
-
-      // Try to use the price ID directly in the active mode.
-      let priceExistsHere = false;
-      try {
-        await stripe.prices.retrieve(item.priceId);
-        priceExistsHere = true;
-      } catch {
-        priceExistsHere = false;
-      }
-
-      if (priceExistsHere) {
-        stripeLineItems.push({ price: item.priceId, quantity: qty });
-        continue;
-      }
-
-      // Fallback (test mode only): look the price up in LIVE and clone it
-      // as inline price_data so test checkout still works end-to-end.
-      if (useTestMode && liveStripeForLookup) {
-        try {
-          const livePrice = await liveStripeForLookup.prices.retrieve(item.priceId, {
-            expand: ["product"],
-          });
-          const productName =
-            (livePrice.product as any)?.name || "EZ BIZ Service";
-          const productDescription =
-            (livePrice.product as any)?.description || undefined;
-          stripeLineItems.push({
-            price_data: {
-              currency: livePrice.currency || "usd",
-              product_data: {
-                name: productName,
-                ...(productDescription ? { description: productDescription } : {}),
-              },
-              unit_amount: livePrice.unit_amount ?? 0,
-            },
-            quantity: qty,
-          });
-          continue;
-        } catch (e) {
-          console.error(
-            `Test-mode fallback failed for ${item.priceId}:`,
-            (e as any)?.message,
-          );
-        }
-      }
-
-      // Last resort: pass through (Stripe will surface a clear error).
       stripeLineItems.push({ price: item.priceId, quantity: qty });
     }
 
