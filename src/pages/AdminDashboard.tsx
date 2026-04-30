@@ -137,15 +137,15 @@ const AdminDashboard = () => {
       if (error) throw error;
       
       // Map email_list data to consultation format
-      const consultationData = (data || []).map(item => ({
+      const consultationData = (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         email: item.email,
-        phone: null,
-        business_type: '',
+        phone: item.phone ?? null,
+        business_type: item.business_type ?? '',
         consultation_type: item.source.replace('consultation_', ''),
         questions: null,
-        status: 'pending',
+        status: item.status || 'pending',
         created_at: item.created_at,
         updated_at: item.updated_at
       }));
@@ -166,14 +166,17 @@ const AdminDashboard = () => {
 
   const updateConsultationStatus = async (id: string, newStatus: string) => {
     try {
-      // Note: Status updates not supported for email_list entries
-      // This is a placeholder for when consultation_requests table is created
-      console.log('Status update requested:', id, newStatus);
+      const { error } = await supabase
+        .from('email_list')
+        .update({ status: newStatus } as any)
+        .eq('id', id);
 
-      setConsultations(prev => 
+      if (error) throw error;
+
+      setConsultations(prev =>
         prev.map(c => c.id === id ? { ...c, status: newStatus } : c)
       );
-      setFilteredConsultations(prev => 
+      setFilteredConsultations(prev =>
         prev.map(c => c.id === id ? { ...c, status: newStatus } : c)
       );
 
