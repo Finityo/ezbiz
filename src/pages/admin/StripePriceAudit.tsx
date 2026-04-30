@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle, FlaskConical } from "lucide-react";
+import { ArrowLeft, RefreshCw, Copy, AlertTriangle, CheckCircle2, HelpCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -109,34 +107,16 @@ export default function StripePriceAudit() {
   const [results, setResults] = useState<AuditResult[]>([]);
   const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [testMode, setTestMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem("ezbiz_stripe_test_mode") === "1";
-    } catch {
-      return false;
-    }
-  });
 
-  const handleToggleTestMode = (next: boolean) => {
-    setTestMode(next);
+  // Clean up any stale test-mode flag from prior versions on mount.
+  useEffect(() => {
     try {
-      if (next) {
-        localStorage.setItem("ezbiz_stripe_test_mode", "1");
-        sessionStorage.setItem("ezbiz_stripe_test_mode", "1");
-      } else {
-        localStorage.removeItem("ezbiz_stripe_test_mode");
-        sessionStorage.removeItem("ezbiz_stripe_test_mode");
-      }
+      localStorage.removeItem("ezbiz_stripe_test_mode");
+      sessionStorage.removeItem("ezbiz_stripe_test_mode");
     } catch {
       /* storage unavailable */
     }
-    toast({
-      title: next ? "Test mode ON" : "Test mode OFF",
-      description: next
-        ? "Checkout will use Stripe TEST keys for THIS browser session only. Use card 4242 4242 4242 4242."
-        : "Checkout will use LIVE Stripe keys.",
-    });
-  };
+  }, []);
 
   const runAudit = async () => {
     setLoading(true);
