@@ -379,7 +379,7 @@ const Entrepreneurs = () => {
                         variant={tier.highlight ? "default" : "outline"}
                         className="w-full"
                       >
-                        <Link to="/pricing">{tier.cta}</Link>
+                        <Link to={`/order-flow?package=${tier.packageId}`}>{tier.cta}</Link>
                       </Button>
                     </CardContent>
                   </Card>
