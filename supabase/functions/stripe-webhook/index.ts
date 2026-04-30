@@ -52,11 +52,33 @@ serve(async (req) => {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
-    const orderId = session.metadata?.orderId;
     const applicationId =
       session.metadata?.application_id || session.client_reference_id || null;
 
-    // Existing normalized `orders` flow — preserved
+    // Resolve the matching `orders` row. Prefer explicit metadata.orderId,
+    // then fall back to (application_id) and (stripe_session_id) so /order-flow
+    // checkouts — which only stamp application_id — still flip status.
+    let orderId: string | null = session.metadata?.orderId ?? null;
+
+    if (!orderId && applicationId) {
+      const { data: byApp } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("application_id", applicationId)
+        .maybeSingle();
+      orderId = byApp?.id ?? null;
+    }
+
+    if (!orderId && session.id) {
+      const { data: bySession } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("stripe_session_id", session.id)
+        .maybeSingle();
+      orderId = bySession?.id ?? null;
+    }
+
+    // Existing normalized `orders` flow — single source of truth for admin
     if (orderId) {
       await supabase
         .from("orders")
@@ -76,9 +98,27 @@ serve(async (req) => {
           amount: (session.amount_total || 0) / 100,
           status: "paid",
         });
+
+      await supabase
+        .from("order_events")
+        .insert({
+          order_id: orderId,
+          event_type: "payment_complete",
+          actor: "stripe_webhook",
+          metadata: {
+            session_id: session.id,
+            payment_intent: session.payment_intent,
+            application_id: applicationId,
+          },
+        });
+    } else {
+      console.warn("checkout.session.completed: no matching orders row", {
+        sessionId: session.id,
+        applicationId,
+      });
     }
 
-    // New business_applications flow (used by /order-flow + AdminDashboard)
+    // Mirror flow into business_applications (audit only)
     if (applicationId) {
       await updateApplication(applicationId, "paid", {
         paymentStatus: "paid",
@@ -87,6 +127,7 @@ serve(async (req) => {
         paidAt: new Date().toISOString(),
         amountTotal: (session.amount_total || 0) / 100,
         currency: session.currency,
+        orderId: orderId,
       });
     }
 
@@ -114,6 +155,12 @@ serve(async (req) => {
         stripeSessionId: session.id,
         expiredAt: new Date().toISOString(),
       });
+      // Mirror to orders
+      const { data: ord } = await supabase
+        .from("orders").select("id").eq("application_id", applicationId).maybeSingle();
+      if (ord?.id) {
+        await supabase.from("orders").update({ status: "cancelled" }).eq("id", ord.id);
+      }
     }
   } else if (event.type === "payment_intent.payment_failed") {
     const intent = event.data.object as any;
@@ -125,6 +172,11 @@ serve(async (req) => {
         failureMessage: intent.last_payment_error?.message ?? null,
         failedAt: new Date().toISOString(),
       });
+      const { data: ord } = await supabase
+        .from("orders").select("id").eq("application_id", applicationId).maybeSingle();
+      if (ord?.id) {
+        await supabase.from("orders").update({ status: "Pending Payment" }).eq("id", ord.id);
+      }
     }
   }
 
