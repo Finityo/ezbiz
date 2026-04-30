@@ -18,9 +18,12 @@ import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
-import ConsultationTypeCard, { openAcuityPopup } from "@/components/consultation/ConsultationTypeCard"
+import ConsultationTypeCard from "@/components/consultation/ConsultationTypeCard"
+import { Link } from "react-router-dom"
 
-const ACUITY_OWNER_ID = "38549422";
+const CONTACT_PHONE_TEL = "+18308371955";
+const CONTACT_PHONE_DISPLAY = "(830) 837-1955";
+const CONTACT_EMAIL = "info@ezbiz-fs.com";
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
@@ -154,10 +157,24 @@ const Consultation = () => {
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Get Expert Guidance for Your <span className="gradient-hero bg-clip-text text-transparent">Business Formation</span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-                Schedule a free consultation with our business formation experts. Get personalized advice, 
-                understand your options, and make informed decisions about your business structure.
+              <p className="text-xl text-muted-foreground mb-6 max-w-3xl mx-auto">
+                Free consultations are available by phone or Zoom. Call us or send a message and we'll coordinate directly — no booking system required. Consultations are optional and not required to place an order.
               </p>
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+                <Button asChild size="lg" variant="hero">
+                  <a href={`tel:${CONTACT_PHONE_TEL}`}>
+                    <Phone className="h-4 w-4 mr-2" /> Call Now {CONTACT_PHONE_DISPLAY}
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="default">
+                  <Link to="/order-flow">Start Filing Now</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <a href={`mailto:${CONTACT_EMAIL}`}>
+                    <MessageCircle className="h-4 w-4 mr-2" /> Email Us
+                  </a>
+                </Button>
+              </div>
               <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="h-5 w-5 text-success" />
@@ -192,7 +209,6 @@ const Consultation = () => {
                 <ConsultationTypeCard 
                   key={index} 
                   type={type} 
-                  acuityOwnerId={ACUITY_OWNER_ID} 
                 />
               ))}
             </div>
@@ -417,8 +433,17 @@ const Consultation = () => {
                 Don't navigate business formation alone. Get personalized advice from our experts - completely free.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => openAcuityPopup(ACUITY_OWNER_ID)}>Schedule Free Consultation</Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">Call (555) 123-4567</Button>
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-4">
+                  <a href={`tel:${CONTACT_PHONE_TEL}`}>
+                    <Phone className="h-5 w-5 mr-2" /> Call {CONTACT_PHONE_DISPLAY}
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-primary">
+                  <a href={`mailto:${CONTACT_EMAIL}`}>Email Us</a>
+                </Button>
+                <Button asChild size="lg" variant="default" className="text-lg px-8 py-4">
+                  <Link to="/order-flow">Start Filing Now</Link>
+                </Button>
               </div>
             </div>
           </div>

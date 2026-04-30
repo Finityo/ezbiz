@@ -147,33 +147,49 @@ const EnhancedOrderFlow = () => {
     );
   };
 
-  const saveOrderToDb = async () => {
-    if (!user) return;
+  const [applicationId, setApplicationId] = useState<string | null>(null);
+
+  const saveOrderToDb = async (): Promise<string | null> => {
+    if (!user) return null;
     try {
-      await supabase.from("business_applications").insert([{
-        user_id: user.id,
-        business_name: `${businessDetails.businessName} ${businessDetails.designator}`.trim(),
-        business_type: selectedEntity,
-        state: selectedState,
-        status: "pending",
-        application_data: {
-          mode,
-          guidedScheduling: "inside",
-          package: selectedPackage,
-          addOns: selectedAddOns,
-          addonQuantities,
-          businessDetails,
-          serviceDetails: mode === "whiteglove" ? serviceDetails : null,
-          stateFee,
-        } as any,
-      }]);
+      const { data, error } = await supabase
+        .from("business_applications")
+        .insert([{
+          user_id: user.id,
+          business_name: `${businessDetails.businessName} ${businessDetails.designator}`.trim(),
+          business_type: selectedEntity,
+          state: selectedState,
+          status: "pending_payment",
+          application_data: {
+            mode,
+            guidedScheduling: "inside",
+            package: selectedPackage,
+            addOns: selectedAddOns,
+            addonQuantities,
+            businessDetails,
+            serviceDetails: mode === "whiteglove" ? serviceDetails : null,
+            stateFee,
+            estimatedTotal: runningTotal(),
+            paymentStatus: "pending",
+            source: "order-flow",
+          } as any,
+        }])
+        .select("id")
+        .single();
+      if (error) throw error;
+      const newId = data?.id ?? null;
+      if (newId) setApplicationId(newId);
+      return newId;
     } catch (err) {
       console.error("Failed to save order:", err);
+      return null;
     }
   };
 
-  const handleCheckoutStarted = async () => {
-    await saveOrderToDb();
+  const handleCheckoutStarted = async (): Promise<string | null> => {
+    // Reuse the application row across checkout retries within the same session
+    if (applicationId) return applicationId;
+    return await saveOrderToDb();
   };
 
   return (

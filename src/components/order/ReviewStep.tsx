@@ -32,7 +32,7 @@ interface ReviewStepProps {
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
-  onCheckoutStarted: () => void;
+  onCheckoutStarted: () => Promise<string | null> | string | null | void;
 }
 
 const ENTITY_LABELS: Record<string, string> = {
@@ -90,13 +90,16 @@ const ReviewStep = ({
       isWhiteGlove,
     );
 
-    onCheckoutStarted();
+    // Persist the business_application BEFORE starting Stripe so the webhook
+    // can match `metadata.application_id` back to a real DB row.
+    const appId = (await onCheckoutStarted()) || undefined;
     trackCheckoutStart(pkg?.name || selectedPackage, total);
 
     await checkout(lineItems, {
       stateFee: { amount: stateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
+      applicationId: appId,
     });
   };
 

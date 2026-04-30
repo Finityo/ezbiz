@@ -23,39 +23,109 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
+  // Helper: merge application_data and update business_applications by id
+  const updateApplication = async (
+    applicationId: string,
+    status: string,
+    extraData: Record<string, unknown>,
+  ) => {
+    try {
+      const { data: existing } = await supabase
+        .from("business_applications")
+        .select("application_data")
+        .eq("id", applicationId)
+        .maybeSingle();
+
+      const merged = {
+        ...((existing?.application_data as Record<string, unknown>) ?? {}),
+        ...extraData,
+      };
+
+      await supabase
+        .from("business_applications")
+        .update({ status, application_data: merged })
+        .eq("id", applicationId);
+    } catch (err) {
+      console.error("Failed to update business_application", applicationId, err);
+    }
+  };
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
-    const orderId = session.metadata.orderId;
+    const orderId = session.metadata?.orderId;
+    const applicationId =
+      session.metadata?.application_id || session.client_reference_id || null;
 
-    // Update order status
-    await supabase
-      .from("orders")
-      .update({
-        status: "payment_complete",
-        stripe_session_id: session.id,
-        stripe_payment_intent: session.payment_intent,
-        total_amount: (session.amount_total || 0) / 100,
-      })
-      .eq("id", orderId);
+    // Existing normalized `orders` flow — preserved
+    if (orderId) {
+      await supabase
+        .from("orders")
+        .update({
+          status: "payment_complete",
+          stripe_session_id: session.id,
+          stripe_payment_intent: session.payment_intent,
+          total_amount: (session.amount_total || 0) / 100,
+        })
+        .eq("id", orderId);
 
-    // Create payment record
-    await supabase
-      .from("payments")
-      .insert({
-        order_id: orderId,
-        stripe_payment_id: session.payment_intent,
-        amount: (session.amount_total || 0) / 100,
-        status: "paid",
+      await supabase
+        .from("payments")
+        .insert({
+          order_id: orderId,
+          stripe_payment_id: session.payment_intent,
+          amount: (session.amount_total || 0) / 100,
+          status: "paid",
+        });
+    }
+
+    // New business_applications flow (used by /order-flow + AdminDashboard)
+    if (applicationId) {
+      await updateApplication(applicationId, "paid", {
+        paymentStatus: "paid",
+        stripeSessionId: session.id,
+        stripePaymentIntent: session.payment_intent,
+        paidAt: new Date().toISOString(),
+        amountTotal: (session.amount_total || 0) / 100,
+        currency: session.currency,
       });
+    }
 
-    // Trigger confirmation email
-    await supabase.functions.invoke("send-order-email", {
-      body: {
-        orderId,
-        email: session.customer_email || session.customer_details?.email,
-        status: "payment_complete",
-      },
-    });
+    // Trigger confirmation email (best-effort)
+    if (orderId) {
+      try {
+        await supabase.functions.invoke("send-order-email", {
+          body: {
+            orderId,
+            email: session.customer_email || session.customer_details?.email,
+            status: "payment_complete",
+          },
+        });
+      } catch (err) {
+        console.error("send-order-email failed", err);
+      }
+    }
+  } else if (event.type === "checkout.session.expired") {
+    const session = event.data.object as any;
+    const applicationId =
+      session.metadata?.application_id || session.client_reference_id || null;
+    if (applicationId) {
+      await updateApplication(applicationId, "payment_expired", {
+        paymentStatus: "expired",
+        stripeSessionId: session.id,
+        expiredAt: new Date().toISOString(),
+      });
+    }
+  } else if (event.type === "payment_intent.payment_failed") {
+    const intent = event.data.object as any;
+    const applicationId = intent.metadata?.application_id || null;
+    if (applicationId) {
+      await updateApplication(applicationId, "payment_failed", {
+        paymentStatus: "failed",
+        stripePaymentIntent: intent.id,
+        failureMessage: intent.last_payment_error?.message ?? null,
+        failedAt: new Date().toISOString(),
+      });
+    }
   }
 
   return new Response("ok", { status: 200 });

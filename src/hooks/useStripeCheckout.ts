@@ -17,6 +17,8 @@ interface CheckoutOptions {
   successPath?: string;
   cancelPath?: string;
   orderId?: string;
+  /** business_applications.id created before checkout — surfaced to Stripe via metadata + client_reference_id */
+  applicationId?: string;
 }
 
 export const useStripeCheckout = () => {
@@ -69,6 +71,7 @@ export const useStripeCheckout = () => {
               successPath: options?.successPath || "/order-success",
               cancelPath: options?.cancelPath || "/pricing",
               orderId: options?.orderId,
+              applicationId: options?.applicationId,
               testMode,
             },
           }

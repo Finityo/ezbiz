@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+import { Phone } from "lucide-react";
+const CONTACT_PHONE_TEL = "+18308371955";
 
 interface ConsultationType {
   title: string;
@@ -13,22 +14,20 @@ interface ConsultationType {
 
 interface ConsultationTypeCardProps {
   type: ConsultationType;
-  acuityOwnerId: string;
+  /** Retained for backward compatibility — no longer used. */
+  acuityOwnerId?: string;
 }
 
-const openAcuityPopup = (ownerId: string) => {
-  const width = 600;
-  const height = 800;
-  const left = (window.screen.width - width) / 2;
-  const top = (window.screen.height - height) / 2;
-  window.open(
-    `https://app.acuityscheduling.com/schedule.php?owner=${ownerId}`,
-    'acuity',
-    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
-  );
+// Backward-compat export: old call sites import this. It now opens a tel: link
+// instead of an Acuity scheduling popup.
+const openAcuityPopup = (_ownerId?: string) => {
+  if (typeof window !== "undefined") {
+    window.location.href = `tel:${CONTACT_PHONE_TEL}`;
+  }
 };
 
-const ConsultationTypeCard = ({ type, acuityOwnerId }: ConsultationTypeCardProps) => {
+const ConsultationTypeCard = ({ type }: ConsultationTypeCardProps) => {
+  const phoneHref = `tel:${CONTACT_PHONE_TEL}`;
   return (
     <Card className="text-center hover:shadow-lg transition-shadow flex flex-col">
       <CardHeader>
@@ -47,9 +46,11 @@ const ConsultationTypeCard = ({ type, acuityOwnerId }: ConsultationTypeCardProps
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <p className="text-muted-foreground mb-4 flex-1">{type.description}</p>
-        <Button onClick={() => openAcuityPopup(acuityOwnerId)} className="w-full mt-auto">
-          <Calendar className="h-4 w-4 mr-2" />
-          {type.price === "Free" ? "Schedule Free Call" : "Book Now"}
+        <Button asChild className="w-full mt-auto">
+          <a href={phoneHref}>
+            <Phone className="h-4 w-4 mr-2" />
+            Call Us to Discuss
+          </a>
         </Button>
       </CardContent>
     </Card>
