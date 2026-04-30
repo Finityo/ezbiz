@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
+import PackagePricingCTA from "@/components/PackagePricingCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -102,51 +103,8 @@ const STEPS = [
   },
 ];
 
-// Map each plan to the canonical PackageType in src/lib/pricing.ts.
-// The order flow reads ?package= and passes the corresponding stripePriceId
-// to create-checkout, guaranteeing the right Stripe Price is charged.
-const PRICING_TEASER = [
-  {
-    name: "Basic",
-    packageId: "basic",
-    price: "$129",
-    note: "+ state fee",
-    features: [
-      "Prepare & file Articles of Organization",
-      "Name availability search",
-      "Digital filing documents",
-      "Lifetime customer support",
-    ],
-    cta: "Start with Basic",
-  },
-  {
-    name: "Deluxe",
-    packageId: "deluxe",
-    price: "$279",
-    note: "+ state fee",
-    highlight: true,
-    features: [
-      "Everything in Basic",
-      "Operating Agreement",
-      "Banking Resolution",
-      "Priority support",
-    ],
-    cta: "Start with Deluxe",
-  },
-  {
-    name: "Complete",
-    packageId: "complete",
-    price: "$349",
-    note: "+ state fee",
-    features: [
-      "Everything in Deluxe",
-      "EIN filing service",
-      "S-Corp election filing",
-      "Business license research",
-    ],
-    cta: "Start with Complete",
-  },
-];
+// Pricing tiers are rendered by <PackagePricingCTA />, sourced from src/lib/pricing.ts.
+
 
 const FAQS = [
   {
@@ -326,75 +284,9 @@ const Entrepreneurs = () => {
           </section>
         </AnimatedSection>
 
-        {/* Pricing Teaser */}
+        {/* Pricing Teaser — package-aware CTAs deep-link to /order-flow?package=... */}
         <AnimatedSection>
-          <section className="py-20 bg-background">
-            <div className="container mx-auto px-4">
-              <div className="max-w-3xl mx-auto text-center mb-12">
-                <p className="text-sm font-semibold tracking-widest text-secondary uppercase mb-3">
-                  Pricing
-                </p>
-                <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">
-                  Pick a plan that matches your stage
-                </h2>
-                <p className="text-muted-foreground mt-4 font-body">
-                  Transparent flat-rate packages. State fees shown upfront — no surprises.
-                </p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                {PRICING_TEASER.map((tier) => (
-                  <Card
-                    key={tier.name}
-                    className={
-                      tier.highlight
-                        ? "border-secondary border-2 shadow-xl relative"
-                        : "border-border/60"
-                    }
-                  >
-                    {tier.highlight && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                        MOST POPULAR
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="font-display">{tier.name}</CardTitle>
-                      <div className="flex items-baseline gap-2 pt-2">
-                        <span className="text-4xl font-bold font-display text-primary">
-                          {tier.price}
-                        </span>
-                        <span className="text-sm text-muted-foreground">{tier.note}</span>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2 mb-6">
-                        {tier.features.map((f) => (
-                          <li key={f} className="flex items-start gap-2 text-sm font-body">
-                            <CheckCircle2 className="h-4 w-4 text-secondary mt-0.5 flex-shrink-0" />
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        asChild
-                        variant={tier.highlight ? "default" : "outline"}
-                        className="w-full"
-                      >
-                        <Link to={`/order-flow?package=${tier.packageId}`}>{tier.cta}</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <div className="text-center mt-8">
-                <Link
-                  to="/pricing"
-                  className="text-sm text-secondary font-semibold hover:underline inline-flex items-center gap-1"
-                >
-                  Compare full pricing <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          </section>
+          <PackagePricingCTA highlightPackage="deluxe" />
         </AnimatedSection>
 
         {/* FAQ */}
