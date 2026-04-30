@@ -48,28 +48,7 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
   "price_1TAwu6IUysiSR1zw8TGxG4RI": 2900,
 };
 
-/**
- * EXPECTED PRICE GUARD — TEST MODE
- * Populate this map with the Stripe TEST-MODE price IDs (sk_test_) the
- * admin creates for safe 4242-card validation. Until populated, any
- * test-mode checkout will be blocked by STRICT_UNKNOWN_PRICES.
- */
-const EXPECTED_PRICE_CENTS_TEST: Record<string, number> = {
-  "price_1TRWTlIUysiSR1zwZxdGtoik": 12900, // Basic $129
-  "price_1TRWVAIUysiSR1zwnyhVFD5p": 27900, // Deluxe $279
-  "price_1TRWWDIUysiSR1zwcDP98wz9": 14900, // Business License Research $149
-  "price_1TRWWoIUysiSR1zwSmodfF9J":  2900, // Shipping & Handling $29
-};
-
-const TEST_PRICE_ID_BY_LIVE_ID: Record<string, string> = {
-  "price_1TRVJJIUysiSR1zwmUpJg0gy": "price_1TRWTlIUysiSR1zwZxdGtoik", // Basic $129
-  "price_1TRVJjIUysiSR1zwaDaz3ics": "price_1TRWVAIUysiSR1zwnyhVFD5p", // Deluxe $279
-  "price_1TRVYvIUysiSR1zwCZJc1iHf": "price_1TRWWDIUysiSR1zwcDP98wz9", // Business License Research $149
-  "price_1TAwu6IUysiSR1zw8TGxG4RI": "price_1TRWWoIUysiSR1zwSmodfF9J", // Shipping & Handling $29
-};
-
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked
-const STRICT_UNKNOWN_PRICES_TEST = true; // test: unknown test IDs also blocked
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
