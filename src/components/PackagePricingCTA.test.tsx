@@ -52,4 +52,59 @@ describe("PackagePricingCTA", () => {
     renderWithRouter(<PackagePricingCTA highlightPackage="complete" />);
     expect(screen.getByText(/most popular/i)).toBeInTheDocument();
   });
+
+  describe.each(["basic", "deluxe", "complete"] as const)(
+    "highlightPackage=%s",
+    (highlight) => {
+      it(`renders the MOST POPULAR badge exactly once, attached to the ${highlight} card`, () => {
+        renderWithRouter(<PackagePricingCTA highlightPackage={highlight} />);
+
+        // Badge text appears exactly once
+        const badges = screen.getAllByText(/most popular/i);
+        expect(badges).toHaveLength(1);
+        const badge = badges[0];
+
+        // Badge has the secondary-accent styling
+        expect(badge.className).toMatch(/bg-secondary/);
+        expect(badge.className).toMatch(/text-secondary-foreground/);
+
+        // Badge lives inside the card whose CTA links to the highlighted package
+        const card = badge.closest("div.relative");
+        expect(card, "highlighted card should have relative wrapper").not.toBeNull();
+        const ctaLink = within(card as HTMLElement).getByRole("link");
+        expect(ctaLink.getAttribute("data-package")).toBe(highlight);
+        expect(ctaLink.getAttribute("href")).toBe(
+          `/order-flow?package=${highlight}`,
+        );
+
+        // Highlighted card carries the accent border + shadow classes
+        expect((card as HTMLElement).className).toMatch(/border-secondary/);
+        expect((card as HTMLElement).className).toMatch(/border-2/);
+        expect((card as HTMLElement).className).toMatch(/shadow-xl/);
+
+        // The highlighted CTA uses the filled "default" button variant
+        // (non-highlighted cards use the "outline" variant which has border classes)
+        expect(ctaLink.className).not.toMatch(/\bborder-input\b/);
+      });
+
+      it(`renders the other two cards as non-highlighted when highlightPackage=${highlight}`, () => {
+        renderWithRouter(<PackagePricingCTA highlightPackage={highlight} />);
+        const others = (["basic", "deluxe", "complete"] as const).filter(
+          (p) => p !== highlight,
+        );
+        for (const pkg of others) {
+          const link = document.querySelector<HTMLAnchorElement>(
+            `a[data-package="${pkg}"]`,
+          );
+          expect(link).not.toBeNull();
+          // Non-highlighted card wrapper should NOT have the accent border
+          // Walk up to find the Card root (it has border-border/60)
+          const card = link!.closest('[class*="border-border"]');
+          expect(card, `${pkg} card should be non-highlighted`).not.toBeNull();
+          expect((card as HTMLElement).className).not.toMatch(/border-secondary/);
+          expect((card as HTMLElement).className).not.toMatch(/shadow-xl/);
+        }
+      });
+    },
+  );
 });
