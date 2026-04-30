@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
-import { CONTACT } from "@/content/contact";
+const CONTACT_PHONE_TEL = "+18308371955";
 
 interface ConsultationType {
   title: string;
@@ -22,12 +22,12 @@ interface ConsultationTypeCardProps {
 // instead of an Acuity scheduling popup.
 const openAcuityPopup = (_ownerId?: string) => {
   if (typeof window !== "undefined") {
-    window.location.href = `tel:${CONTACT?.phoneTel ?? ""}`;
+    window.location.href = `tel:${CONTACT_PHONE_TEL}`;
   }
 };
 
 const ConsultationTypeCard = ({ type }: ConsultationTypeCardProps) => {
-  const phoneHref = `tel:${CONTACT?.phoneTel ?? ""}`;
+  const phoneHref = `tel:${CONTACT_PHONE_TEL}`;
   return (
     <Card className="text-center hover:shadow-lg transition-shadow flex flex-col">
       <CardHeader>
