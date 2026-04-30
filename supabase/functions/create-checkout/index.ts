@@ -442,7 +442,7 @@ serve(async (req) => {
     });
 
     if (finalOrderId) {
-      await supabaseClient
+      await dbClient
         .from("orders")
         .update({
           stripe_session_id: session.id,
