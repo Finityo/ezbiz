@@ -39,6 +39,7 @@ export default function OrderTimeline({ orderId }: OrderTimelineProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const loadEvents = async () => {
       setLoading(true);
       const { data } = await supabase
@@ -47,12 +48,27 @@ export default function OrderTimeline({ orderId }: OrderTimelineProps) {
         .eq("order_id", orderId)
         .order("created_at", { ascending: true });
 
+      if (cancelled) return;
       console.log("TIMELINE EVENTS LOADED", data);
       setEvents((data as OrderEvent[]) || []);
       setLoading(false);
     };
 
     loadEvents();
+
+    const channel = supabase
+      .channel(`order-timeline-${orderId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "order_events", filter: `order_id=eq.${orderId}` },
+        () => loadEvents()
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
   }, [orderId]);
 
   if (loading) {
