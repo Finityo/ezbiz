@@ -79,7 +79,6 @@ serve(async (req) => {
     let userEmail: string | undefined;
     let userId: string | undefined;
     let customerId: string | undefined;
-    let isAdmin = false;
     const authHeader = req.headers.get("Authorization");
 
     if (authHeader) {
@@ -87,51 +86,16 @@ serve(async (req) => {
       const { data } = await supabaseClient.auth.getUser(token);
       userEmail = data.user?.email ?? undefined;
       userId = data.user?.id;
-
-      if (userId) {
-        // Use service-role client to bypass RLS for the role lookup
-        const adminClient = createClient(
-          Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-        const { data: roleRow } = await adminClient
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userId)
-          .eq("role", "admin")
-          .maybeSingle();
-        isAdmin = !!roleRow;
-      }
     }
 
-    // ── Test-mode authorization ────────────────────────────────────────
-    // Admins are AUTOMATICALLY routed to Stripe TEST mode (so they can safely
-    // verify checkout with the 4242 card). Non-admins always use LIVE mode.
-    // The `testMode` flag from the client is treated as a hint only — the
-    // server makes the final decision based on admin role + key availability.
-    const hasTestKey = !!Deno.env.get("STRIPE_SECRET_KEY_TEST");
-    const useTestMode = isAdmin && hasTestKey;
-
-    const stripeKey = useTestMode
-      ? Deno.env.get("STRIPE_SECRET_KEY_TEST") || ""
-      : Deno.env.get("STRIPE_SECRET_KEY") || "";
-
+    // ── LIVE-ONLY Stripe client ────────────────────────────────────────
+    // Production posture: always use STRIPE_SECRET_KEY (sk_live_…). No
+    // test-mode bypass, no admin override, no client-supplied flags.
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const expectedMap = useTestMode ? EXPECTED_PRICE_CENTS_TEST : EXPECTED_PRICE_CENTS;
-    // In TEST mode we no longer hard-block on unknown IDs — we synthesize
-    // inline price_data from the LIVE catalog so admins can validate the
-    // full real-world cart with the 4242 card without recreating every
-    // price in the test account.
-    const strictUnknown = useTestMode ? false : STRICT_UNKNOWN_PRICES;
-
-    // Map known LIVE → TEST IDs first; anything still pointing at a LIVE
-    // ID will be resolved to inline price_data below.
-    const activeLineItems = useTestMode
-      ? lineItems.map((item: { priceId: string; quantity?: number }) => ({
-          ...item,
-          priceId: TEST_PRICE_ID_BY_LIVE_ID[item.priceId] || item.priceId,
-        }))
-      : lineItems;
+    const expectedMap = EXPECTED_PRICE_CENTS;
+    const strictUnknown = STRICT_UNKNOWN_PRICES;
+    const activeLineItems = lineItems;
 
     // ── Price-amount guard ──────────────────────────────────────────────
     const uniquePriceIds: string[] = Array.from(
