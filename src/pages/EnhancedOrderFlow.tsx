@@ -208,6 +208,11 @@ const EnhancedOrderFlow = () => {
     return await saveOrderToDb();
   };
 
+  // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
+  if (missingPackage) {
+    return <Navigate to="/pricing" replace />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead title="Order Flow" description="Complete your business formation order with EZ BIZ FILE SERVICE." path="/order-flow" noIndex />
