@@ -69,7 +69,6 @@ serve(async (req) => {
       orderId,
       applicationId,
       orderEnrichment,
-      testMode = false,
     } = await req.json();
 
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
