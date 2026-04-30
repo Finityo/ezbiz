@@ -66,17 +66,6 @@ export const useStripeCheckout = () => {
         return;
       }
 
-      // Admin-only test mode flag (set from /admin/stripe-prices). Server
-      // re-validates admin role and key presence — this is a hint only.
-      let testMode = false;
-      try {
-        testMode =
-          localStorage.getItem("ezbiz_stripe_test_mode") === "1" ||
-          sessionStorage.getItem("ezbiz_stripe_test_mode") === "1";
-      } catch {
-        /* storage unavailable */
-      }
-
       try {
         const { data, error: fnError } = await supabase.functions.invoke(
           "create-checkout",
@@ -90,7 +79,6 @@ export const useStripeCheckout = () => {
               cancelPath: options?.cancelPath || "/pricing",
               orderId: options?.orderId,
               applicationId: options?.applicationId,
-              testMode,
               orderEnrichment: options?.orderEnrichment,
             },
           }
