@@ -117,7 +117,7 @@ function App() {
               <Route path="/business-templates" element={<BusinessTemplates />} />
               <Route path="/state-requirements" element={<StateRequirements />} />
               <Route path="/business-filings" element={<BusinessFilings />} />
-              <Route path="/consultation" element={<Navigate to="/order-flow" replace />} />
+              <Route path="/consultation" element={<Consultation />} />
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
