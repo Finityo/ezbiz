@@ -9,10 +9,14 @@ const corsHeaders = {
 };
 
 /**
- * EXPECTED PRICE GUARD — LIVE
+ * EXPECTED PRICE GUARD — LIVE ONLY
  * Mirror of `EXPECTED_PRICE_CENTS` in src/lib/pricing.ts.
  * Refuses to create a Stripe Checkout Session if the live Stripe Price's
  * unit_amount differs from what the app config expects.
+ *
+ * NOTE: Production is LIVE-ONLY. All test-mode bypasses have been removed —
+ * checkout always uses STRIPE_SECRET_KEY (sk_live_…). To validate Stripe
+ * changes safely, use a separate non-production project, not this one.
  */
 const EXPECTED_PRICE_CENTS: Record<string, number> = {
   // Packages
