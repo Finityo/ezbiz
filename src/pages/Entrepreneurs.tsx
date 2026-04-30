@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import AnimatedSection from "@/components/AnimatedSection";
+import PackagePricingCTA from "@/components/PackagePricingCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
