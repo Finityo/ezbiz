@@ -100,6 +100,17 @@ const ReviewStep = ({
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
       applicationId: appId,
+      orderEnrichment: {
+        entityType,
+        packageId: selectedPackage,
+        packageLabel: pkg?.name,
+        businessName: `${businessDetails.businessName ?? ""} ${businessDetails.designator ?? ""}`.trim(),
+        businessAddress: businessDetails.address,
+        businessCity: businessDetails.city,
+        businessZip: businessDetails.zipCode,
+        managementStructure: businessDetails.managementStructure,
+        totalAmount: total,
+      },
     });
   };
 
