@@ -5,3 +5,5 @@ project_id = "umzyxzhqlrykygjbeusu"
     verify_jwt = false
   [functions.stripe-webhook]
     verify_jwt = false
+  [functions.send-lead-notification]
+    verify_jwt = false

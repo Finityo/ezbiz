@@ -39,6 +39,14 @@ const ExitIntentModal = () => {
 
       if (error) throw error;
 
+      supabase.functions.invoke("send-lead-notification", {
+        body: {
+          source: "exit_intent",
+          email: email.trim(),
+          page: typeof window !== "undefined" ? window.location.pathname : null,
+        },
+      }).catch((e) => console.error("notify error:", e));
+
       setSubmitted(true);
       toast({ title: "You're on the list! 🎉" });
       setTimeout(() => setShowModal(false), 2500);

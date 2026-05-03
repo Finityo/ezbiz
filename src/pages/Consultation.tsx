@@ -100,6 +100,18 @@ const Consultation = () => {
 
       if (error) throw error;
 
+      supabase.functions.invoke("send-lead-notification", {
+        body: {
+          source: `consultation_${formData.consultationType || "general"}`,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+          business_type: formData.businessType || null,
+          message: formData.questions || null,
+          page: typeof window !== "undefined" ? window.location.pathname : null,
+        },
+      }).catch((e) => console.error("notify error:", e));
+
       toast({
         title: "Consultation Request Submitted!",
         description: "We'll contact you within 24 hours to schedule your free consultation.",
