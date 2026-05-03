@@ -31,6 +31,17 @@ const LeadCaptureForm = () => {
 
       if (error) throw error;
 
+      supabase.functions.invoke("send-lead-notification", {
+        body: {
+          source: "lead_capture",
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim() || null,
+          business_type: form.businessType || null,
+          page: typeof window !== "undefined" ? window.location.pathname : null,
+        },
+      }).catch((e) => console.error("notify error:", e));
+
       setSubmitted(true);
       toast({ title: "We'll be in touch! 🎉" });
     } catch (err) {
