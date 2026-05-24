@@ -33,10 +33,11 @@ Deno.serve(async (req) => {
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    // Use the legacy JWT anon key — the new sb_publishable_* env value is
-    // rejected by the gateway with UNAUTHORIZED_INVALID_JWT_FORMAT.
-    const anonKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtenl4emhxbHJ5a3lnamJldXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTU3NjIsImV4cCI6MjA4NzU3MTc2Mn0.jfEDSfqhoPKns7fJWy4KzlvK1hde3xpfcaXg4mi4ihQ'
+    // Forward the caller's Authorization header (frontend supabase client
+    // sends a valid publishable JWT). Falls back to the apikey header.
+    const incomingAuth =
+      req.headers.get('Authorization') ||
+      (req.headers.get('apikey') ? `Bearer ${req.headers.get('apikey')}` : '')
 
     const idempotencyKey = `lead-${body.source}-${body.email}-${Date.now()}`
 
@@ -44,8 +45,8 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${anonKey}`,
-        apikey: anonKey,
+        Authorization: incomingAuth,
+        apikey: req.headers.get('apikey') || incomingAuth.replace(/^Bearer\s+/i, ''),
       },
       body: JSON.stringify({
         templateName: 'lead-notification',

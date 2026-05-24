@@ -21,5 +21,3 @@ project_id = "umzyxzhqlrykygjbeusu"
     verify_jwt = false
   [functions.handle-email-suppression]
     verify_jwt = false
-  [functions.envcheck]
-    verify_jwt = false
