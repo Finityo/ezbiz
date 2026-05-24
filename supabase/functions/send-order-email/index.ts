@@ -27,7 +27,23 @@ const STATUS_SUBJECTS: Record<string, string> = {
   Submitted: "Your LLC Filing Has Been Submitted",
 };
 
-const buildEmailHtml = (payload: EmailPayload): string => `
+function escapeHtml(s: string): string {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]!));
+}
+
+const buildEmailHtml = (payload: EmailPayload): string => {
+  const businessName = escapeHtml(payload.businessName);
+  const entityType = escapeHtml(payload.entityType);
+  const state = escapeHtml(payload.state);
+  const status = escapeHtml(payload.status);
+  const orderId = escapeHtml(payload.orderId);
+  return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,26 +69,26 @@ const buildEmailHtml = (payload: EmailPayload): string => `
               <table width="100%" cellpadding="12" cellspacing="0" style="background-color:#f7fafc;border-radius:6px;margin-bottom:24px;">
                 <tr>
                   <td style="color:#718096;font-size:13px;border-bottom:1px solid #e2e8f0;">Business Name</td>
-                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${payload.businessName}</td>
+                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${businessName}</td>
                 </tr>
                 <tr>
                   <td style="color:#718096;font-size:13px;border-bottom:1px solid #e2e8f0;">Entity Type</td>
-                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${payload.entityType}</td>
+                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${entityType}</td>
                 </tr>
                 <tr>
                   <td style="color:#718096;font-size:13px;border-bottom:1px solid #e2e8f0;">State</td>
-                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${payload.state}</td>
+                  <td style="color:#1a202c;font-size:14px;font-weight:600;border-bottom:1px solid #e2e8f0;">${state}</td>
                 </tr>
                 <tr>
                   <td style="color:#718096;font-size:13px;">Status</td>
-                  <td style="color:#2b6cb0;font-size:14px;font-weight:700;text-transform:uppercase;">${payload.status}</td>
+                  <td style="color:#2b6cb0;font-size:14px;font-weight:700;text-transform:uppercase;">${status}</td>
                 </tr>
               </table>
               <a href="https://www.ezbiz-fs.com/dashboard" style="display:inline-block;background-color:#2b6cb0;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;">
                 View Your Dashboard
               </a>
               <p style="color:#a0aec0;font-size:12px;margin-top:24px;">
-                Order ID: ${payload.orderId}
+                Order ID: ${orderId}
               </p>
             </td>
           </tr>
@@ -90,24 +106,38 @@ const buildEmailHtml = (payload: EmailPayload): string => `
 </body>
 </html>
 `;
+};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Restrict to service-role callers only (server-to-server).
+  // Browsers/users cannot obtain the service-role key, so this blocks
+  // outside abuse of the company's email-sending domain.
+  const authHeader = req.headers.get('Authorization') || '';
+  const token = authHeader.replace('Bearer ', '').trim();
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+  if (!token || !serviceKey || token !== serviceKey) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+    );
+  }
+
   const requestId = newRequestId();
   let payload: EmailPayload | undefined;
   try {
     payload = await req.json() as EmailPayload;
-    
+
     console.log('Sending order notification email:', {
       to: payload.to,
       orderId: payload.orderId,
       status: payload.status
     });
 
-    const subject = STATUS_SUBJECTS[payload.status] || `Order Update: ${payload.businessName}`;
+    const subject = STATUS_SUBJECTS[payload.status] || `Order Update: ${escapeHtml(payload.businessName)}`;
     const html = buildEmailHtml(payload);
 
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -136,7 +166,6 @@ serve(async (req) => {
     const resendData = await resendRes.json();
 
     if (!resendRes.ok) {
-      // Log provider response server-side; return generic message to client.
       console.error('Resend API error:', resendData);
       return new Response(
         JSON.stringify({ success: false, error: 'Unable to send email notification.' }),
