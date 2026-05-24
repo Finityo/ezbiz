@@ -1,7 +1,7 @@
 // Sends a notification email to the EZ Biz inbox whenever a lead/contact form is submitted.
 // Public endpoint (verify_jwt = false). Forwards to Lovable Emails via send-transactional-email.
 
-import { createClient } from 'npm:@supabase/supabase-js@2'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,12 +34,17 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const admin = createClient(supabaseUrl, serviceKey)
 
     const idempotencyKey = `lead-${body.source}-${body.email}-${Date.now()}`
 
-    const { data, error } = await admin.functions.invoke('send-transactional-email', {
-      body: {
+    const res = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
+      },
+      body: JSON.stringify({
         templateName: 'lead-notification',
         recipientEmail: NOTIFY_TO,
         idempotencyKey,
@@ -52,12 +57,13 @@ Deno.serve(async (req) => {
           message: body.message ?? undefined,
           page: body.page ?? undefined,
         },
-      },
+      }),
     })
 
-    if (error) {
-      console.error('send-transactional-email error:', error)
-      return new Response(JSON.stringify({ error: 'send failed' }), {
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      console.error('send-transactional-email error:', res.status, data)
+      return new Response(JSON.stringify({ error: 'send failed', detail: data }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
