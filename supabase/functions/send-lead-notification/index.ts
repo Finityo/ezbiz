@@ -33,7 +33,10 @@ Deno.serve(async (req) => {
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
+    // Use the legacy JWT anon key — the new sb_publishable_* env value is
+    // rejected by the gateway with UNAUTHORIZED_INVALID_JWT_FORMAT.
+    const anonKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtenl4emhxbHJ5a3lnamJldXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTU3NjIsImV4cCI6MjA4NzU3MTc2Mn0.jfEDSfqhoPKns7fJWy4KzlvK1hde3xpfcaXg4mi4ihQ'
 
     const idempotencyKey = `lead-${body.source}-${body.email}-${Date.now()}`
 
