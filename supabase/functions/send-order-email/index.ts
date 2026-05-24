@@ -115,18 +115,41 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Restrict to service-role callers only (server-to-server).
-  // Browsers/users cannot obtain the service-role key, so this blocks
-  // outside abuse of the company's email-sending domain.
+  // AuthN/AuthZ: require an authenticated admin caller (status emails are
+  // triggered by admin status changes). Blocks anonymous abuse of the
+  // company's email-sending domain.
   const authHeader = req.headers.get('Authorization') || '';
   const token = authHeader.replace('Bearer ', '').trim();
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
-  if (!token || !serviceKey || token !== serviceKey) {
+  if (!token) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
     );
   }
+  const supabaseAdmin = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  );
+  const { data: userRes, error: userErr } = await supabaseAdmin.auth.getUser(token);
+  if (userErr || !userRes?.user) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+    );
+  }
+  const { data: roleRow } = await supabaseAdmin
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userRes.user.id)
+    .eq('role', 'admin')
+    .maybeSingle();
+  if (!roleRow) {
+    return new Response(
+      JSON.stringify({ error: 'Forbidden' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+    );
+  }
+
 
   const requestId = newRequestId();
   let payload: EmailPayload | undefined;
