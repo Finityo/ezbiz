@@ -76,6 +76,7 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 const SocialPreviewTester = lazy(() => import("./pages/admin/SocialPreviewTester"));
 const StripePriceAudit = lazy(() => import("./pages/admin/StripePriceAudit"));
+const EmailDeliveryLog = lazy(() => import("./pages/admin/EmailDeliveryLog"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
@@ -161,6 +162,7 @@ function App() {
               <Route path="/entrepreneurs" element={<Entrepreneurs />} />
               <Route path="/admin/social-preview" element={<SocialPreviewTester />} />
               <Route path="/admin/stripe-prices" element={<StripePriceAudit />} />
+              <Route path="/admin/email-log" element={<EmailDeliveryLog />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
