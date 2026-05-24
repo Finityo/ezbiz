@@ -362,12 +362,26 @@ const AdminDashboard = () => {
               Manage consultation requests and client contacts
             </p>
           </div>
-          <a
-            href="/admin/social-preview"
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            Social Preview Tester →
-          </a>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <a
+              href="/admin/social-preview"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Social Preview Tester →
+            </a>
+            <a
+              href="/admin/stripe-prices"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Stripe Price Audit →
+            </a>
+            <a
+              href="/admin/email-log"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Email Delivery Log →
+            </a>
+          </div>
         </div>
 
         <Tabs defaultValue="orders" className="space-y-6 sm:space-y-8">
