@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
+import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 
 /* ─── Types ─── */
 
@@ -289,6 +290,8 @@ export default function Dashboard() {
     if (!authLoading && !user) navigate("/auth");
   }, [authLoading, user, navigate]);
 
+  const emailVerified = !!user?.email_confirmed_at;
+
   const loadDashboard = async () => {
     if (!user) return;
     setLoading(true);
@@ -331,8 +334,8 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (user) loadDashboard();
-  }, [user]);
+    if (user && emailVerified) loadDashboard();
+  }, [user, emailVerified]);
 
   // ─── Realtime: refresh dashboard when admin updates orders/events/documents ───
   useEffect(() => {
