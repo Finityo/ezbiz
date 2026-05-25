@@ -1,44 +1,92 @@
-# Email Verification on Signup
-
 ## Goal
-New clients must verify their email before they can access the Dashboard. Existing verified users are unaffected.
+When a customer pays, automatically send the order (with full CSV attached) to the account manager via Lovable Email, and move the order to "In Processing." Admins keep a manual "Re-send" button in the dashboard for any order.
 
-## Changes
+## Architecture
 
-### 1. Auth configuration
-- Ensure auto-confirm email is **disabled** so Supabase sends the verification email on signup (uses the existing branded `auth-email-hook` → `signup.tsx` template).
-- Set `emailRedirectTo` on `signUp()` to `${origin}/auth/callback?next=/dashboard` (or keep `/` — see below) so the confirmation link returns the user to the app and logs them in.
+```text
+Customer pays
+   │
+   ▼
+Stripe webhook (stripe-webhook)
+   │  resolves orders.id, writes payment row, sets status "Paid"
+   ▼
+NEW: invoke send-order-to-account-manager(order_id)
+   │
+   ├─► Pulls order + all related tables (reuse export-order-csv internals)
+   ├─► Builds CorpNet-format CSV (single row export)
+   ├─► Renders branded template: account-manager-order-handoff
+   ├─► send-transactional-email
+   │      to: ACCOUNT_MANAGER_EMAIL (secret)
+   │      attachment: order-<id>.csv
+   ├─► Updates orders.status → "In Processing"
+   └─► Logs order_events: { event_type: "sent_to_account_manager",
+                            metadata: { recipient, message_id } }
 
-### 2. Signup UX (`src/hooks/useAuth.tsx`, `src/components/order/AccountStep.tsx`, `src/pages/Auth.tsx`)
-- After `signUp`, do NOT treat the user as authenticated for protected flows. Show a "Check your email to verify" state (Auth.tsx already does this; AccountStep does not — add the same).
-- In `AccountStep`, after successful signup, instead of calling `onAuthenticated()`, render a "Verify your email to continue" panel with a resend button.
+Admin Dashboard (OrdersTab)
+   └─► "Resend to Account Manager" button per order row
+        → calls the same edge function
+```
 
-### 3. Gate the Dashboard on verified email
-- In `src/pages/Dashboard.tsx` (and any route guard / `useAuth` consumer for protected routes), check `user.email_confirmed_at`. If missing, show an "Email not verified" screen with:
-  - Message + the email address
-  - "Resend verification email" button (`supabase.auth.resend({ type: 'signup', email })`)
-  - Sign out button
-- Same gate applied to the order flow's post-account steps (Review/Checkout) so unverified users can't proceed to payment.
+## What gets built
 
-### 4. Resend endpoint usage
-- Use `supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo } })` for the resend button. No backend change needed — flows through existing `auth-email-hook`.
+### 1. Secret
+- Add `ACCOUNT_MANAGER_EMAIL` runtime secret (prompted via add_secret).
 
-### 5. Toast copy
-- Update signup success toast to: "Check your email — we sent a verification link to {email}."
+### 2. Shared CSV builder
+- Extract the CSV row-building logic from `export-order-csv/index.ts` into `supabase/functions/_shared/build-order-csv.ts` so both the existing admin export AND the new handoff function use one source of truth (no drift, same CorpNet format).
 
-## Out of scope
-- Email template styling (already branded).
-- Password reset flow (already implemented).
-- Social/Google sign-in (not currently enabled).
+### 3. New edge function: `send-order-to-account-manager`
+- Input: `{ order_id: string }`
+- Auth: `verify_jwt = true` for admin re-send path; webhook calls it server-side using service role.
+- Steps:
+  1. Fetch order + related tables (service role).
+  2. Build CSV via shared helper.
+  3. Invoke `send-transactional-email` with:
+     - `templateName: "account-manager-order-handoff"`
+     - `recipientEmail: ACCOUNT_MANAGER_EMAIL`
+     - `idempotencyKey: handoff-<order_id>` (prevents dup sends on webhook retries)
+     - `attachments: [{ filename: "order-<id>.csv", content: base64 }]`
+     - `templateData`: order summary fields for the email body
+  4. `UPDATE orders SET status = 'In Processing'` (only if currently "Paid" — don't overwrite later statuses).
+  5. Insert `order_events` row.
+- Returns `{ ok, message_id }`.
+
+### 4. New email template: `account-manager-order-handoff`
+- Add `supabase/functions/_shared/transactional-email-templates/account-manager-order-handoff.tsx`
+- Register in `registry.ts`.
+- Branded (Slate Navy + Gold, Playfair/Inter).
+- Content: customer name, company, entity type, state, package, total, filing speed, EIN flag, link to `/admin/orders/<id>`, note that CSV is attached.
+
+### 5. Wire into `stripe-webhook`
+- After successful `checkout.session.completed` processing and order status set to "Paid", invoke the new function with `order_id`.
+- Wrapped in try/catch — handoff failures must NOT fail the webhook (already covered by queue retries inside send-transactional-email).
+
+### 6. Admin UI — manual re-send
+- In `src/components/admin/OrdersTab.tsx` and/or `OrderDetailDialog.tsx`, add a "Send to Account Manager" button.
+- Calls `supabase.functions.invoke('send-order-to-account-manager', { body: { order_id }})`.
+- Toast on success, shows last-sent timestamp from `order_events`.
+
+### 7. Audit visibility
+- In `OrderDetailDialog`, show a small "Handoff history" panel reading `order_events` rows with `event_type = 'sent_to_account_manager'` (recipient + timestamp).
 
 ## Files touched
-- `src/hooks/useAuth.tsx` — signup return signal + redirect URL
-- `src/components/order/AccountStep.tsx` — post-signup verification panel
-- `src/pages/Dashboard.tsx` — unverified gate
-- `src/pages/EnhancedOrderFlow.tsx` (or wherever step progression is gated) — block step 5 if unverified
-- Supabase auth config: `auto_confirm_email = false`
+- **New**: `supabase/functions/send-order-to-account-manager/index.ts`
+- **New**: `supabase/functions/_shared/build-order-csv.ts`
+- **New**: `supabase/functions/_shared/transactional-email-templates/account-manager-order-handoff.tsx`
+- **Edit**: `supabase/functions/_shared/transactional-email-templates/registry.ts`
+- **Edit**: `supabase/functions/export-order-csv/index.ts` (use shared helper)
+- **Edit**: `supabase/functions/stripe-webhook/index.ts` (trigger handoff)
+- **Edit**: `supabase/config.toml` (register new function)
+- **Edit**: `src/components/admin/OrdersTab.tsx` and `OrderDetailDialog.tsx` (re-send button + history)
 
-## Verification
-- Sign up with a fresh email → no dashboard access, verification email arrives.
-- Click link → redirected, `email_confirmed_at` set, dashboard loads.
-- Resend works and is rate-limited by Supabase defaults.
+## Safeguards
+- **Idempotency**: `handoff-<order_id>` key prevents duplicate emails if Stripe retries the webhook.
+- **Status guard**: only auto-advance "Paid" → "In Processing" (don't regress later states).
+- **Suppression**: account manager email goes through Lovable queue → respects `suppressed_emails`.
+- **Auditability**: every send recorded in both `email_send_log` and `order_events`.
+- **No PII leakage**: SSN remains `ssn_encrypted` placeholder in CSV (matches current export behavior).
+
+## Open follow-ups (not in this plan)
+- Multi-manager routing by state/entity type
+- Daily digest mode
+- Slack mirror of the handoff
