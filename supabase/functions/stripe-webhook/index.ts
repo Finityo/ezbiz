@@ -131,18 +131,36 @@ serve(async (req) => {
       });
     }
 
-    // Trigger confirmation email (best-effort)
-    if (orderId) {
+    // Trigger customer order-confirmation email (best-effort)
+    const customerEmail =
+      session.customer_email || session.customer_details?.email || null;
+    if (orderId && customerEmail) {
       try {
-        await supabase.functions.invoke("send-order-email", {
+        // Fetch order details to enrich the email
+        const { data: orderRow } = await supabase
+          .from("orders")
+          .select("business_name, entity_type, state, customer_name")
+          .eq("id", orderId)
+          .maybeSingle();
+
+        await supabase.functions.invoke("send-transactional-email", {
           body: {
-            orderId,
-            email: session.customer_email || session.customer_details?.email,
-            status: "payment_complete",
+            templateName: "order-confirmation",
+            recipientEmail: customerEmail,
+            idempotencyKey: `order-confirmation-${orderId}`,
+            templateData: {
+              name: orderRow?.customer_name || session.customer_details?.name || undefined,
+              businessName: orderRow?.business_name || undefined,
+              entityType: orderRow?.entity_type || undefined,
+              state: orderRow?.state || undefined,
+              orderId,
+              amountTotal: (session.amount_total || 0) / 100,
+              receiptUrl: session.receipt_url || undefined,
+            },
           },
         });
       } catch (err) {
-        console.error("send-order-email failed", err);
+        console.error("order-confirmation email failed", err);
       }
     }
   } else if (event.type === "checkout.session.expired") {
