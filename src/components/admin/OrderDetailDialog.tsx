@@ -249,7 +249,20 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
             <div className="space-y-4">
               {/* ── Order Summary ── */}
               <EditableSection icon={FileText} title="Order Summary" editing={orderEdit.editing} dirty={!!orderEdit.dirty} saving={orderEdit.saving}
-                onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}>
+                onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}
+                headerExtra={
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2 text-xs gap-1"
+                    onClick={sendToAccountManager}
+                    disabled={handoffSending}
+                    title="Email this order (with CSV) to the account manager"
+                  >
+                    {handoffSending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                    {handoffSending ? 'Sending…' : 'Send to Account Mgr'}
+                  </Button>
+                }>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
                     <ReadField label="Order ID" value={detail.order?.id} />
