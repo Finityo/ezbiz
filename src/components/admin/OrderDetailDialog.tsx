@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   Eye, Loader2, Building2, User, MapPin, Users, Shield, FileText,
-  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2,
+  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send,
 } from 'lucide-react';
 
 interface OrderDetailDialogProps {
