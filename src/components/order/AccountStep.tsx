@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { CheckCircle, LogIn, UserPlus } from "lucide-react";
 
+import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
+
 interface AccountStepProps {
   onAuthenticated: () => void;
 }
@@ -33,6 +35,9 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
 
   // Already logged in
   if (user) {
+    if (!user.email_confirmed_at) {
+      return <VerifyEmailNotice email={user.email || ""} compact />;
+    }
     return (
       <div className="text-center py-8 space-y-4">
         <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
@@ -56,7 +61,9 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
     setLoading(true);
     const { error } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
     setLoading(false);
-    if (!error) onAuthenticated();
+    // Do NOT advance — user must verify email first. The "Already logged in"
+    // branch above will render the VerifyEmailNotice once the session is set.
+    if (error) return;
   };
 
   const handleSignIn = async () => {
