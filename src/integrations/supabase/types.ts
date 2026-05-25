@@ -613,6 +613,10 @@ export type Database = {
       }
       orders: {
         Row: {
+          account_manager_email_message_id: string | null
+          account_manager_email_status: string | null
+          account_manager_sent_at: string | null
+          account_manager_sent_to: string | null
           application_id: string | null
           created_at: string | null
           ein_service: boolean | null
@@ -632,6 +636,10 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          account_manager_email_message_id?: string | null
+          account_manager_email_status?: string | null
+          account_manager_sent_at?: string | null
+          account_manager_sent_to?: string | null
           application_id?: string | null
           created_at?: string | null
           ein_service?: boolean | null
@@ -651,6 +659,10 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          account_manager_email_message_id?: string | null
+          account_manager_email_status?: string | null
+          account_manager_sent_at?: string | null
+          account_manager_sent_to?: string | null
           application_id?: string | null
           created_at?: string | null
           ein_service?: boolean | null
