@@ -42,6 +42,19 @@ const LeadCaptureForm = () => {
         },
       }).catch((e) => console.error("notify error:", e));
 
+      // Customer-facing acknowledgment
+      supabase.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "consultation-confirmation",
+          recipientEmail: form.email.trim(),
+          idempotencyKey: `lead-confirm-${form.email.trim()}-${Date.now()}`,
+          templateData: {
+            name: form.name.trim() || undefined,
+            businessType: form.businessType || undefined,
+          },
+        },
+      }).catch((e) => console.error("lead confirm error:", e));
+
       setSubmitted(true);
       toast({ title: "We'll be in touch! 🎉" });
     } catch (err) {
