@@ -508,6 +508,14 @@ const OrdersTab = () => {
                           title={eligible ? undefined : 'Order must be paid before sending to account manager'}
                         />
                       </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {order.id.substring(0, 8)}...
+                        {order.account_manager_sent_at && (
+                          <div className="text-[10px] text-muted-foreground mt-1">
+                            Handoff: {order.account_manager_email_status === 'failed' ? '⚠ failed' : '✓ sent'}
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell className="font-medium">{biz?.company_name || '—'}</TableCell>
                       <TableCell>
                         <div className="text-sm">
