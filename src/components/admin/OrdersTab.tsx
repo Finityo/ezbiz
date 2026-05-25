@@ -138,6 +138,91 @@ const OrdersTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [exporting, setExporting] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [recipientOverride, setRecipientOverride] = useState('');
+  const [sendingHandoff, setSendingHandoff] = useState(false);
+
+  const PAYABLE_HANDOFF_STATUSES = new Set([
+    'payment_complete',
+    'In Processing',
+    'ready_for_submission',
+    'submitted_to_corpnet',
+    'processing',
+    'filed',
+    'completed',
+  ]);
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    if (!checked) {
+      setSelectedIds(new Set());
+      return;
+    }
+    setSelectedIds(new Set(filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).map((o) => o.id)));
+  };
+
+  const sendSelectedToAccountManager = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+
+    // Block if any selected order is not in a payable/handoff-eligible status
+    const ineligible = orders.filter((o) => ids.includes(o.id) && !PAYABLE_HANDOFF_STATUSES.has(o.status || ''));
+    if (ineligible.length > 0) {
+      toast({
+        title: 'Some orders are ineligible',
+        description: `${ineligible.length} selected order(s) have not been paid yet. Unselect them and try again.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setSendingHandoff(true);
+    try {
+      const body: Record<string, unknown> = { order_ids: ids };
+      const overrideTrimmed = recipientOverride.trim();
+      if (overrideTrimmed) body.recipient_override = overrideTrimmed;
+
+      const { data, error } = await supabase.functions.invoke('send-order-to-account-manager', { body });
+      if (error) throw error;
+
+      const results = (data as any)?.results ?? [];
+      const successCount = results.filter((r: any) => r.ok && !r.skipped).length;
+      const skippedCount = results.filter((r: any) => r.skipped).length;
+      const failedCount = results.filter((r: any) => !r.ok).length;
+
+      if (failedCount > 0) {
+        toast({
+          title: 'Sent with errors',
+          description: `${successCount} sent, ${skippedCount} skipped, ${failedCount} failed. Check order details for the failure reason.`,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Sent to account manager',
+          description: `${successCount} order(s) emailed${skippedCount ? `, ${skippedCount} skipped (already sent)` : ''}.`,
+        });
+      }
+      setSelectedIds(new Set());
+      setRecipientOverride('');
+      await fetchOrders();
+    } catch (err: any) {
+      toast({
+        title: 'Send failed',
+        description: err?.message || 'Could not send orders to account manager.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingHandoff(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrders();
