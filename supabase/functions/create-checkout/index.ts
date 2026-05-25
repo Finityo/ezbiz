@@ -75,7 +75,11 @@ serve(async (req) => {
       throw new Error("lineItems array is required");
     }
 
-    // Authenticate user (optional - supports guest checkout)
+    // Authenticate user — REQUIRED. The order flow gates checkout behind
+    // sign-in at Step 4, so an authenticated user_id must always be present.
+    // Refusing unauthenticated checkouts guarantees every order row has a
+    // non-null user_id and is covered by the owner-scoped SELECT RLS policy
+    // (no orphaned guest rows invisible to their eventual owner).
     let userEmail: string | undefined;
     let userId: string | undefined;
     let customerId: string | undefined;
@@ -86,6 +90,13 @@ serve(async (req) => {
       const { data } = await supabaseClient.auth.getUser(token);
       userEmail = data.user?.email ?? undefined;
       userId = data.user?.id;
+    }
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "Please sign in to complete checkout." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
     }
 
     // ── LIVE-ONLY Stripe client ────────────────────────────────────────
