@@ -167,6 +167,17 @@ serve(async (req) => {
         console.error("order-confirmation email failed", err);
       }
     }
+
+    // Auto-handoff to account manager (CSV + email + status advance)
+    if (orderId) {
+      try {
+        await supabase.functions.invoke("send-order-to-account-manager", {
+          body: { order_id: orderId },
+        });
+      } catch (err) {
+        console.error("account-manager handoff failed", err);
+      }
+    }
   } else if (event.type === "checkout.session.expired") {
     const session = event.data.object as any;
     const applicationId =
