@@ -405,7 +405,22 @@ export default function Dashboard() {
     },
   ];
 
-  if (authLoading || loading) return <DashboardSkeleton />;
+  if (authLoading) return <DashboardSkeleton />;
+
+  /* ── Email verification gate ── */
+  if (user && !emailVerified) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navigation />
+        <main className="flex-grow">
+          <VerifyEmailNotice email={user.email || ""} onSignOut={() => navigate("/auth")} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (loading) return <DashboardSkeleton />;
 
   /* ── Empty state ── */
   if (!data.order) {

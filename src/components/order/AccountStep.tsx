@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { CheckCircle, LogIn, UserPlus } from "lucide-react";
 
+import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
+
 interface AccountStepProps {
   onAuthenticated: () => void;
 }
