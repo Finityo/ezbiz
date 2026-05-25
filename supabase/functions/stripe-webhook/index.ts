@@ -168,12 +168,25 @@ serve(async (req) => {
       }
     }
 
-    // Auto-handoff to account manager (CSV + email + status advance)
-    if (orderId) {
+    // Auto-handoff to account manager (CSV + email + status advance).
+    // Gated by ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF (defaults to enabled when unset).
+    // Skips if this order was already handed off (account_manager_sent_at set).
+    const autoHandoffEnabled =
+      (Deno.env.get("ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF") ?? "true").toLowerCase() !== "false";
+    if (orderId && autoHandoffEnabled) {
       try {
-        await supabase.functions.invoke("send-order-to-account-manager", {
-          body: { order_id: orderId },
-        });
+        const { data: handoffCheck } = await supabase
+          .from("orders")
+          .select("account_manager_sent_at")
+          .eq("id", orderId)
+          .maybeSingle();
+        if (!handoffCheck?.account_manager_sent_at) {
+          await supabase.functions.invoke("send-order-to-account-manager", {
+            body: { order_ids: [orderId] },
+          });
+        } else {
+          console.log("account-manager handoff skipped — already sent", { orderId });
+        }
       } catch (err) {
         console.error("account-manager handoff failed", err);
       }

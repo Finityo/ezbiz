@@ -8,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText, Send } from 'lucide-react';
 import OrderDetailDialog from './OrderDetailDialog';
 import { updateOrderStatus as engineUpdateStatus, ORDER_STATUSES, OrderStatus } from '@/lib/orderStatusEngine';
 
@@ -24,6 +25,9 @@ interface Order {
   state_fee: number | null;
   created_at: string | null;
   updated_at: string | null;
+  account_manager_sent_at?: string | null;
+  account_manager_sent_to?: string | null;
+  account_manager_email_status?: string | null;
 }
 
 interface ContactInfo {
@@ -134,6 +138,91 @@ const OrdersTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [exporting, setExporting] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [recipientOverride, setRecipientOverride] = useState('');
+  const [sendingHandoff, setSendingHandoff] = useState(false);
+
+  const PAYABLE_HANDOFF_STATUSES = new Set([
+    'payment_complete',
+    'In Processing',
+    'ready_for_submission',
+    'submitted_to_corpnet',
+    'processing',
+    'filed',
+    'completed',
+  ]);
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    if (!checked) {
+      setSelectedIds(new Set());
+      return;
+    }
+    setSelectedIds(new Set(filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).map((o) => o.id)));
+  };
+
+  const sendSelectedToAccountManager = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+
+    // Block if any selected order is not in a payable/handoff-eligible status
+    const ineligible = orders.filter((o) => ids.includes(o.id) && !PAYABLE_HANDOFF_STATUSES.has(o.status || ''));
+    if (ineligible.length > 0) {
+      toast({
+        title: 'Some orders are ineligible',
+        description: `${ineligible.length} selected order(s) have not been paid yet. Unselect them and try again.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setSendingHandoff(true);
+    try {
+      const body: Record<string, unknown> = { order_ids: ids };
+      const overrideTrimmed = recipientOverride.trim();
+      if (overrideTrimmed) body.recipient_override = overrideTrimmed;
+
+      const { data, error } = await supabase.functions.invoke('send-order-to-account-manager', { body });
+      if (error) throw error;
+
+      const results = (data as any)?.results ?? [];
+      const successCount = results.filter((r: any) => r.ok && !r.skipped).length;
+      const skippedCount = results.filter((r: any) => r.skipped).length;
+      const failedCount = results.filter((r: any) => !r.ok).length;
+
+      if (failedCount > 0) {
+        toast({
+          title: 'Sent with errors',
+          description: `${successCount} sent, ${skippedCount} skipped, ${failedCount} failed. Check order details for the failure reason.`,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Sent to account manager',
+          description: `${successCount} order(s) emailed${skippedCount ? `, ${skippedCount} skipped (already sent)` : ''}.`,
+        });
+      }
+      setSelectedIds(new Set());
+      setRecipientOverride('');
+      await fetchOrders();
+    } catch (err: any) {
+      toast({
+        title: 'Send failed',
+        description: err?.message || 'Could not send orders to account manager.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingHandoff(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -337,6 +426,39 @@ const OrdersTab = () => {
         </CardContent>
       </Card>
 
+      {/* Bulk handoff bar */}
+      {selectedIds.size > 0 && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="py-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <div className="text-sm font-medium shrink-0">
+                {selectedIds.size} selected
+              </div>
+              <Input
+                placeholder="Recipient override (optional — uses default account manager email if blank)"
+                value={recipientOverride}
+                onChange={(e) => setRecipientOverride(e.target.value)}
+                type="email"
+                className="flex-1"
+                disabled={sendingHandoff}
+              />
+              <div className="flex gap-2">
+                <Button onClick={sendSelectedToAccountManager} disabled={sendingHandoff}>
+                  {sendingHandoff ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending…</>
+                  ) : (
+                    <><Send className="h-4 w-4 mr-2" /> Send to Account Manager</>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={() => setSelectedIds(new Set())} disabled={sendingHandoff}>
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Orders Table */}
       <Card>
         <CardHeader>
@@ -348,6 +470,17 @@ const OrdersTab = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox
+                      aria-label="Select all eligible orders"
+                      checked={
+                        filteredOrders.length > 0 &&
+                        filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).every((o) => selectedIds.has(o.id)) &&
+                        filteredOrders.some((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || ''))
+                      }
+                      onCheckedChange={(c) => toggleSelectAll(!!c)}
+                    />
+                  </TableHead>
                   <TableHead>Order</TableHead>
                   <TableHead>Company</TableHead>
                   <TableHead>Contact</TableHead>
@@ -363,9 +496,26 @@ const OrdersTab = () => {
                 {filteredOrders.map(order => {
                   const contact = contactMap.get(order.id);
                   const biz = bizMap.get(order.id);
+                  const eligible = PAYABLE_HANDOFF_STATUSES.has(order.status || '');
                   return (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-mono text-xs">{order.id.substring(0, 8)}...</TableCell>
+                    <TableRow key={order.id} data-state={selectedIds.has(order.id) ? 'selected' : undefined}>
+                      <TableCell>
+                        <Checkbox
+                          aria-label={`Select order ${order.id.substring(0, 8)}`}
+                          checked={selectedIds.has(order.id)}
+                          onCheckedChange={(c) => toggleSelect(order.id, !!c)}
+                          disabled={!eligible}
+                          title={eligible ? undefined : 'Order must be paid before sending to account manager'}
+                        />
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {order.id.substring(0, 8)}...
+                        {order.account_manager_sent_at && (
+                          <div className="text-[10px] text-muted-foreground mt-1">
+                            Handoff: {order.account_manager_email_status === 'failed' ? '⚠ failed' : '✓ sent'}
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell className="font-medium">{biz?.company_name || '—'}</TableCell>
                       <TableCell>
                         <div className="text-sm">

@@ -247,6 +247,31 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
             </div>
           ) : detail ? (
             <div className="space-y-4">
+              {/* Handoff status banner */}
+              {detail.order?.account_manager_sent_at && (
+                <div
+                  className={`rounded-lg border p-3 text-xs ${
+                    detail.order?.account_manager_email_status === 'failed'
+                      ? 'border-destructive/40 bg-destructive/5 text-destructive'
+                      : 'border-primary/30 bg-primary/5 text-foreground'
+                  }`}
+                >
+                  <div className="font-semibold mb-1">
+                    {detail.order?.account_manager_email_status === 'failed'
+                      ? '⚠ Last handoff failed'
+                      : '✓ Sent to account manager'}
+                  </div>
+                  <div className="text-muted-foreground">
+                    {detail.order?.account_manager_sent_to || '—'} ·{' '}
+                    {new Date(detail.order.account_manager_sent_at).toLocaleString()}
+                  </div>
+                </div>
+              )}
+              {detail.order?.account_manager_email_status === 'failed' && !detail.order?.account_manager_sent_at && (
+                <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-xs text-destructive">
+                  ⚠ Last handoff attempt failed. Order remains in its previous status. Try "Send to Account Mgr" again.
+                </div>
+              )}
               {/* ── Order Summary ── */}
               <EditableSection icon={FileText} title="Order Summary" editing={orderEdit.editing} dirty={!!orderEdit.dirty} saving={orderEdit.saving}
                 onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}
