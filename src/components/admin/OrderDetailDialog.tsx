@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   Eye, Loader2, Building2, User, MapPin, Users, Shield, FileText,
-  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2,
+  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send,
 } from 'lucide-react';
 
 interface OrderDetailDialogProps {
@@ -143,6 +143,32 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
   const [detail, setDetail] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [handoffSending, setHandoffSending] = useState(false);
+
+  const sendToAccountManager = async () => {
+    setHandoffSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'send-order-to-account-manager',
+        { body: { order_id: orderId } },
+      );
+      if (error) throw error;
+      toast({
+        title: 'Sent to account manager',
+        description: `Order CSV emailed to ${(data as any)?.recipient || 'account manager'}.`,
+      });
+      await fetchDetails(true);
+      onUpdated?.();
+    } catch (err: any) {
+      toast({
+        title: 'Send failed',
+        description: err?.message || 'Could not send order to account manager.',
+        variant: 'destructive',
+      });
+    } finally {
+      setHandoffSending(false);
+    }
+  };
 
   const orderEdit = useSectionEdit(detail?.order);
   const bizEdit = useSectionEdit(detail?.businessInfo);
@@ -223,7 +249,20 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
             <div className="space-y-4">
               {/* ── Order Summary ── */}
               <EditableSection icon={FileText} title="Order Summary" editing={orderEdit.editing} dirty={!!orderEdit.dirty} saving={orderEdit.saving}
-                onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}>
+                onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}
+                headerExtra={
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2 text-xs gap-1"
+                    onClick={sendToAccountManager}
+                    disabled={handoffSending}
+                    title="Email this order (with CSV) to the account manager"
+                  >
+                    {handoffSending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                    {handoffSending ? 'Sending…' : 'Send to Account Mgr'}
+                  </Button>
+                }>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
                     <ReadField label="Order ID" value={detail.order?.id} />
