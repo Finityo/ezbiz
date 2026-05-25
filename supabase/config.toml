@@ -21,3 +21,6 @@ project_id = "umzyxzhqlrykygjbeusu"
     verify_jwt = false
   [functions.handle-email-suppression]
     verify_jwt = false
+  [functions.send-order-to-account-manager]
+    verify_jwt = false
+
