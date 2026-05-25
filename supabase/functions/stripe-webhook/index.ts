@@ -136,11 +136,16 @@ serve(async (req) => {
       session.customer_email || session.customer_details?.email || null;
     if (orderId && customerEmail) {
       try {
-        // Fetch order details to enrich the email
         const { data: orderRow } = await supabase
           .from("orders")
-          .select("business_name, entity_type, state, customer_name")
+          .select("entity_type, state")
           .eq("id", orderId)
+          .maybeSingle();
+
+        const { data: bizInfo } = await supabase
+          .from("business_information")
+          .select("business_name")
+          .eq("order_id", orderId)
           .maybeSingle();
 
         await supabase.functions.invoke("send-transactional-email", {
@@ -149,13 +154,12 @@ serve(async (req) => {
             recipientEmail: customerEmail,
             idempotencyKey: `order-confirmation-${orderId}`,
             templateData: {
-              name: orderRow?.customer_name || session.customer_details?.name || undefined,
-              businessName: orderRow?.business_name || undefined,
+              name: session.customer_details?.name || undefined,
+              businessName: bizInfo?.business_name || undefined,
               entityType: orderRow?.entity_type || undefined,
               state: orderRow?.state || undefined,
               orderId,
               amountTotal: (session.amount_total || 0) / 100,
-              receiptUrl: session.receipt_url || undefined,
             },
           },
         });
