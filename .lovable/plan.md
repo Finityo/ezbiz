@@ -1,43 +1,44 @@
-## Current State (verified just now via live curl)
+# Email Verification on Signup
 
-| Check | Result |
-|---|---|
-| `curl -A facebookexternalhit https://ezbiz-fs.com/` | **302 → www** (NOT 403 anymore) |
-| `curl -A facebookexternalhit https://www.ezbiz-fs.com/` | **200 OK** ✅ |
-| `https://www.ezbiz-fs.com/og-image.png` | **200 OK**, 670KB PNG ✅ |
-| `https://www.ezbiz-fs.com/og-preview.png` | **404** ❌ (filename you spec'd doesn't exist) |
-| `robots.txt` | Already allows `facebookexternalhit` + `Facebot` ✅ |
-| OG tags in `index.html` | Already complete (title/desc/image/url/type + twitter card) ✅ |
-| Cloudflare WAF | Not blocking — apex returns 302, not 403 |
+## Goal
+New clients must verify their email before they can access the Dashboard. Existing verified users are unaffected.
 
-**The 403 you saw in Meta Sharing Debugger is almost certainly a cached result from before the previous turn's fixes deployed.** The site is now serving 200 to Facebook's UA on both apex (via redirect) and www.
+## Changes
 
-## What's actually missing
+### 1. Auth configuration
+- Ensure auto-confirm email is **disabled** so Supabase sends the verification email on signup (uses the existing branded `auth-email-hook` → `signup.tsx` template).
+- Set `emailRedirectTo` on `signUp()` to `${origin}/auth/callback?next=/dashboard` (or keep `/` — see below) so the confirmation link returns the user to the app and logs them in.
 
-Only one real gap: the file path you specified (`/og-preview.png`) doesn't exist. We have `/og-image.png` instead. Two options — I recommend Option A:
+### 2. Signup UX (`src/hooks/useAuth.tsx`, `src/components/order/AccountStep.tsx`, `src/pages/Auth.tsx`)
+- After `signUp`, do NOT treat the user as authenticated for protected flows. Show a "Check your email to verify" state (Auth.tsx already does this; AccountStep does not — add the same).
+- In `AccountStep`, after successful signup, instead of calling `onAuthenticated()`, render a "Verify your email to continue" panel with a resend button.
 
-### Option A (recommended): Add `og-preview.png` as a copy
-- Copy `public/og-image.png` → `public/og-preview.png` (same 1200×630 asset, both URLs work)
-- No meta tag changes needed — existing `og-image.png` references stay valid
-- New `og-preview.png` URL also works for any external references that use it
+### 3. Gate the Dashboard on verified email
+- In `src/pages/Dashboard.tsx` (and any route guard / `useAuth` consumer for protected routes), check `user.email_confirmed_at`. If missing, show an "Email not verified" screen with:
+  - Message + the email address
+  - "Resend verification email" button (`supabase.auth.resend({ type: 'signup', email })`)
+  - Sign out button
+- Same gate applied to the order flow's post-account steps (Review/Checkout) so unverified users can't proceed to payment.
 
-### Option B: Rename and update all references
-- Rename file + update `index.html`, `SEOHead.tsx`, `site.ts` defaults
-- Higher regression risk, no functional benefit
+### 4. Resend endpoint usage
+- Use `supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo } })` for the resend button. No backend change needed — flows through existing `auth-email-hook`.
 
-## Plan (Option A)
+### 5. Toast copy
+- Update signup success toast to: "Check your email — we sent a verification link to {email}."
 
-1. **Add `public/og-preview.png`** — duplicate of existing `og-image.png` (1200×630 PNG, already QA'd)
-2. **Verify `robots.txt`** — already correct, no change
-3. **Verify OG tags** — already correct in `index.html`, no change
-4. **Keep canonical as `www.ezbiz-fs.com`** — apex 302→www is FB-scraper-safe (Meta follows redirects); flipping canonical to apex would re-introduce the redirect-hop issue we just fixed last turn
-5. **Post-deploy verification steps for you:**
-   - Visit Meta Sharing Debugger → enter `https://www.ezbiz-fs.com/` → click **"Scrape Again" twice** (first scrape clears cache, second shows fresh result)
-   - Also try `https://ezbiz-fs.com/` — should show "redirected to www" notice but still preview correctly
-   - Use the in-app `/admin/social-preview` tester (built last turn) to confirm 200 responses across all 11 scraper UAs
+## Out of scope
+- Email template styling (already branded).
+- Password reset flow (already implemented).
+- Social/Google sign-in (not currently enabled).
 
-## Files changed
-- `public/og-preview.png` (new, copied from og-image.png)
+## Files touched
+- `src/hooks/useAuth.tsx` — signup return signal + redirect URL
+- `src/components/order/AccountStep.tsx` — post-signup verification panel
+- `src/pages/Dashboard.tsx` — unverified gate
+- `src/pages/EnhancedOrderFlow.tsx` (or wherever step progression is gated) — block step 5 if unverified
+- Supabase auth config: `auto_confirm_email = false`
 
-## Why not change canonical to apex
-Your task spec uses `https://ezbiz-fs.com/` in OG tags, but the entire previous-turn refactor canonicalized everything to `www` precisely to eliminate the redirect hop that Cloudflare's bot challenge sometimes intercepts. Reverting OG URLs to apex would undo that hardening. Cloudflare's 302 on apex is clean (verified above), so keeping `www` canonical is the safer call.
+## Verification
+- Sign up with a fresh email → no dashboard access, verification email arrives.
+- Click link → redirected, `email_confirmed_at` set, dashboard loads.
+- Resend works and is rate-limited by Supabase defaults.
