@@ -426,6 +426,39 @@ const OrdersTab = () => {
         </CardContent>
       </Card>
 
+      {/* Bulk handoff bar */}
+      {selectedIds.size > 0 && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="py-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <div className="text-sm font-medium shrink-0">
+                {selectedIds.size} selected
+              </div>
+              <Input
+                placeholder="Recipient override (optional — uses default account manager email if blank)"
+                value={recipientOverride}
+                onChange={(e) => setRecipientOverride(e.target.value)}
+                type="email"
+                className="flex-1"
+                disabled={sendingHandoff}
+              />
+              <div className="flex gap-2">
+                <Button onClick={sendSelectedToAccountManager} disabled={sendingHandoff}>
+                  {sendingHandoff ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending…</>
+                  ) : (
+                    <><Send className="h-4 w-4 mr-2" /> Send to Account Manager</>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={() => setSelectedIds(new Set())} disabled={sendingHandoff}>
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Orders Table */}
       <Card>
         <CardHeader>
@@ -437,6 +470,17 @@ const OrdersTab = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox
+                      aria-label="Select all eligible orders"
+                      checked={
+                        filteredOrders.length > 0 &&
+                        filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).every((o) => selectedIds.has(o.id)) &&
+                        filteredOrders.some((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || ''))
+                      }
+                      onCheckedChange={(c) => toggleSelectAll(!!c)}
+                    />
+                  </TableHead>
                   <TableHead>Order</TableHead>
                   <TableHead>Company</TableHead>
                   <TableHead>Contact</TableHead>
@@ -452,9 +496,18 @@ const OrdersTab = () => {
                 {filteredOrders.map(order => {
                   const contact = contactMap.get(order.id);
                   const biz = bizMap.get(order.id);
+                  const eligible = PAYABLE_HANDOFF_STATUSES.has(order.status || '');
                   return (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-mono text-xs">{order.id.substring(0, 8)}...</TableCell>
+                    <TableRow key={order.id} data-state={selectedIds.has(order.id) ? 'selected' : undefined}>
+                      <TableCell>
+                        <Checkbox
+                          aria-label={`Select order ${order.id.substring(0, 8)}`}
+                          checked={selectedIds.has(order.id)}
+                          onCheckedChange={(c) => toggleSelect(order.id, !!c)}
+                          disabled={!eligible}
+                          title={eligible ? undefined : 'Order must be paid before sending to account manager'}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{biz?.company_name || '—'}</TableCell>
                       <TableCell>
                         <div className="text-sm">
