@@ -131,18 +131,40 @@ serve(async (req) => {
       });
     }
 
-    // Trigger confirmation email (best-effort)
-    if (orderId) {
+    // Trigger customer order-confirmation email (best-effort)
+    const customerEmail =
+      session.customer_email || session.customer_details?.email || null;
+    if (orderId && customerEmail) {
       try {
-        await supabase.functions.invoke("send-order-email", {
+        const { data: orderRow } = await supabase
+          .from("orders")
+          .select("entity_type, state")
+          .eq("id", orderId)
+          .maybeSingle();
+
+        const { data: bizInfo } = await supabase
+          .from("business_information")
+          .select("business_name")
+          .eq("order_id", orderId)
+          .maybeSingle();
+
+        await supabase.functions.invoke("send-transactional-email", {
           body: {
-            orderId,
-            email: session.customer_email || session.customer_details?.email,
-            status: "payment_complete",
+            templateName: "order-confirmation",
+            recipientEmail: customerEmail,
+            idempotencyKey: `order-confirmation-${orderId}`,
+            templateData: {
+              name: session.customer_details?.name || undefined,
+              businessName: bizInfo?.business_name || undefined,
+              entityType: orderRow?.entity_type || undefined,
+              state: orderRow?.state || undefined,
+              orderId,
+              amountTotal: (session.amount_total || 0) / 100,
+            },
           },
         });
       } catch (err) {
-        console.error("send-order-email failed", err);
+        console.error("order-confirmation email failed", err);
       }
     }
   } else if (event.type === "checkout.session.expired") {

@@ -47,6 +47,16 @@ const ExitIntentModal = () => {
         },
       }).catch((e) => console.error("notify error:", e));
 
+      // Customer-facing acknowledgment
+      supabase.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "consultation-confirmation",
+          recipientEmail: email.trim(),
+          idempotencyKey: `exit-confirm-${email.trim()}-${Date.now()}`,
+          templateData: {},
+        },
+      }).catch((e) => console.error("exit confirm error:", e));
+
       setSubmitted(true);
       toast({ title: "You're on the list! 🎉" });
       setTimeout(() => setShowModal(false), 2500);

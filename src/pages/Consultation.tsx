@@ -112,6 +112,20 @@ const Consultation = () => {
         },
       }).catch((e) => console.error("notify error:", e));
 
+      // Customer-facing confirmation
+      supabase.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "consultation-confirmation",
+          recipientEmail: formData.email,
+          idempotencyKey: `consultation-confirm-${formData.email}-${Date.now()}`,
+          templateData: {
+            name: formData.name || undefined,
+            consultationType: formData.consultationType || undefined,
+            businessType: formData.businessType || undefined,
+          },
+        },
+      }).catch((e) => console.error("consultation confirm error:", e));
+
       toast({
         title: "Consultation Request Submitted!",
         description: "We'll contact you within 24 hours to schedule your free consultation.",
