@@ -7,17 +7,18 @@ interface SendStatusEmailParams {
   entityType: string | null;
   state: string | null;
   newStatus: string;
+  customerName?: string | null;
 }
 
-const STATUS_SUBJECTS: Record<string, string> = {
-  draft: 'Your order has been received.',
-  processing: 'Your formation has entered processing.',
-  payment_complete: 'Payment confirmed. We are preparing your filing.',
-  submitted: 'Your formation has been submitted to the state.',
-  state_processing: 'Your filing is being processed by the state.',
-  filed: 'Your business has officially been filed.',
-  completed: 'Your formation is complete. Documents are now available.',
-};
+const SUPPORTED_STATUSES = new Set([
+  'draft',
+  'processing',
+  'payment_complete',
+  'submitted',
+  'state_processing',
+  'filed',
+  'completed',
+]);
 
 export const sendOrderStatusEmail = async ({
   orderId,
@@ -26,19 +27,24 @@ export const sendOrderStatusEmail = async ({
   entityType,
   state,
   newStatus,
+  customerName,
 }: SendStatusEmailParams): Promise<void> => {
-  // Only send for statuses that have email messages
-  if (!STATUS_SUBJECTS[newStatus] || !customerEmail) return;
+  if (!customerEmail || !SUPPORTED_STATUSES.has(newStatus)) return;
 
   try {
-    await supabase.functions.invoke('send-order-email', {
+    await supabase.functions.invoke('send-transactional-email', {
       body: {
-        to: customerEmail,
-        orderId,
-        businessName: businessName || 'Your Business',
-        entityType: entityType || 'LLC',
-        state: state || '',
-        status: newStatus,
+        templateName: 'order-status-update',
+        recipientEmail: customerEmail,
+        idempotencyKey: `order-status-${orderId}-${newStatus}`,
+        templateData: {
+          name: customerName || undefined,
+          businessName: businessName || 'Your Business',
+          entityType: entityType || 'LLC',
+          state: state || '',
+          orderId,
+          status: newStatus,
+        },
       },
     });
   } catch (error) {
