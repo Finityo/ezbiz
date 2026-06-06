@@ -624,6 +624,7 @@ export type Database = {
           entity_type: string | null
           filing_speed: string | null
           id: string
+          order_number: number
           package: string | null
           package_id: string | null
           state: string | null
@@ -647,6 +648,7 @@ export type Database = {
           entity_type?: string | null
           filing_speed?: string | null
           id?: string
+          order_number?: number
           package?: string | null
           package_id?: string | null
           state?: string | null
@@ -670,6 +672,7 @@ export type Database = {
           entity_type?: string | null
           filing_speed?: string | null
           id?: string
+          order_number?: number
           package?: string | null
           package_id?: string | null
           state?: string | null
