@@ -15,6 +15,8 @@ const SITE_URL = 'https://www.ezbiz-fs.com';
 const BUCKET = 'order-documents';
 const SIGNED_URL_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 const MAX_BULK = 25;
+const DEFAULT_ACCOUNT_MANAGER_RESEND_FROM =
+  'EZ BIZ FILE SERVICE <notifications@updates.ezbiz-fs.com>';
 
 type HandoffResult = {
   order_id: string;
@@ -314,8 +316,8 @@ async function processOne(opts: {
       messageId = queueJson?.messageId || queueJson?.id || idemKey;
     } else {
 
-      // Attachment mode — Resend direct send (requires a Resend-verified sender domain
-      // distinct from notify.ezbiz-fs.com, which is delegated to Lovable Emails).
+      // Attachment mode — Resend direct send. Attachments require Resend, and the
+      // sender must use a domain verified inside the connected Resend account.
       const resendApiKey = Deno.env.get('RESEND_API_KEY');
       if (!resendApiKey) {
         throw new Error('RESEND_API_KEY is not configured');
@@ -323,7 +325,7 @@ async function processOne(opts: {
 
       const fromAddress =
         Deno.env.get('ACCOUNT_MANAGER_RESEND_FROM') ||
-        'EZ BIZ FILE SERVICE <onboarding@resend.dev>';
+        DEFAULT_ACCOUNT_MANAGER_RESEND_FROM;
       const resendPayload: Record<string, any> = {
         from: fromAddress,
         to: [recipient],
@@ -350,7 +352,11 @@ async function processOne(opts: {
       const resendBody = await resendResp.text();
       if (!resendResp.ok) {
         console.error(`Resend ${resendResp.status} for order ${orderId}: ${resendBody}`);
-        throw new Error(`Resend ${resendResp.status}: ${resendBody.slice(0, 500)}`);
+        const setupHint =
+          resendResp.status === 403
+            ? ` Resend attachment mode needs the sender domain in ${fromAddress} verified in Resend. Verify updates.ezbiz-fs.com in Resend, or set ACCOUNT_MANAGER_RESEND_FROM to another verified sender domain.`
+            : '';
+        throw new Error(`Resend ${resendResp.status}: ${resendBody.slice(0, 500)}${setupHint}`);
       }
       let resendJson: any = null;
       try { resendJson = JSON.parse(resendBody); } catch { /* ignore */ }
