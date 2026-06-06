@@ -305,7 +305,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                 }>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
-                    <ReadField label="Order ID" value={detail.order?.id} />
+                    <ReadField label="Order #" value={detail.order?.order_number ? `#${detail.order.order_number}` : '—'} />
+                    <ReadField label="Internal ID" value={detail.order?.id} />
                     <EditField label="Status" value={str(orderEdit.draft.status)} onChange={(v) => orderEdit.updateField('status', v)} />
                     <EditField label="Entity Type" value={str(orderEdit.draft.entity_type)} onChange={(v) => orderEdit.updateField('entity_type', v)} />
                     <EditField label="State" value={str(orderEdit.draft.state)} onChange={(v) => orderEdit.updateField('state', v)} />
