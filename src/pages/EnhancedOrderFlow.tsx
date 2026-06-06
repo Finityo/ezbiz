@@ -87,10 +87,18 @@ const EnhancedOrderFlow = () => {
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
     businessName: "",
     designator: "",
+    alternateName: "",
+    businessPurpose: "",
+    businessDescription: "",
+    organizerType: "",
+    delayedFiling: false,
     address: "",
     city: "",
     zipCode: "",
     managementStructure: "",
+    contactFirstName: "",
+    contactLastName: "",
+    contactPhone: "",
   });
 
   const [serviceDetails, setServiceDetails] = useState<ServiceDetails>({
