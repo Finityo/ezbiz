@@ -32,7 +32,7 @@ interface ReviewStepProps {
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
-  onCheckoutStarted: () => Promise<string | null> | string | null | void;
+  onCheckoutStarted: () => Promise<{ orderId: string | null; applicationId: string | null }> | { orderId: string | null; applicationId: string | null };
 }
 
 const ENTITY_LABELS: Record<string, string> = {
