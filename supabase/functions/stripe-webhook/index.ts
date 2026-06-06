@@ -94,9 +94,13 @@ serve(async (req) => {
       orderId = bySession?.id ?? null;
     }
 
-    // Existing normalized `orders` flow — single source of truth for admin
+    // Existing normalized `orders` flow — single source of truth for admin.
+    // Atomic guard: only the first event to flip status runs side effects
+    // (insert payments row, log event, send emails). Protects against the
+    // /order-success verify-payment fallback double-firing.
+    let isFirstProcessing = false;
     if (orderId) {
-      await supabase
+      const { data: flipped } = await supabase
         .from("orders")
         .update({
           status: "payment_complete",
@@ -104,20 +108,30 @@ serve(async (req) => {
           stripe_payment_intent: session.payment_intent,
           total_amount: (session.amount_total || 0) / 100,
         })
-        .eq("id", orderId);
+        .eq("id", orderId)
+        .neq("status", "payment_complete")
+        .select("id");
+      isFirstProcessing = (flipped?.length ?? 0) > 0;
 
-      await supabase
-        .from("payments")
-        .insert({
-          order_id: orderId,
-          stripe_payment_id: session.payment_intent,
-          amount: (session.amount_total || 0) / 100,
-          status: "paid",
-        });
+      if (isFirstProcessing) {
+        // Insert payments row only if not already present for this PI
+        if (session.payment_intent) {
+          const { data: existingPay } = await supabase
+            .from("payments")
+            .select("id")
+            .eq("stripe_payment_id", session.payment_intent)
+            .maybeSingle();
+          if (!existingPay) {
+            await supabase.from("payments").insert({
+              order_id: orderId,
+              stripe_payment_id: session.payment_intent,
+              amount: (session.amount_total || 0) / 100,
+              status: "paid",
+            });
+          }
+        }
 
-      await supabase
-        .from("order_events")
-        .insert({
+        await supabase.from("order_events").insert({
           order_id: orderId,
           event_type: "payment_complete",
           actor: "stripe_webhook",
@@ -127,12 +141,24 @@ serve(async (req) => {
             application_id: applicationId,
           },
         });
+      } else {
+        console.log("[stripe-webhook] order already processed — skipping side effects", { orderId });
+        // Still backfill payment_intent if missing (covers race where fallback flipped status without PI)
+        if (session.payment_intent) {
+          await supabase
+            .from("orders")
+            .update({ stripe_payment_intent: session.payment_intent })
+            .eq("id", orderId)
+            .is("stripe_payment_intent", null);
+        }
+      }
     } else {
       console.warn("checkout.session.completed: no matching orders row", {
         sessionId: session.id,
         applicationId,
       });
     }
+
 
     // Mirror flow into business_applications (audit only)
     if (applicationId) {
