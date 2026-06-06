@@ -95,6 +95,16 @@ serve(async (req) => {
         ? body.force_failure.trim().slice(0, 200)
         : null;
 
+    // Delivery mode: 'attachment' (CSV file attached) or 'link' (signed
+    // download link only). Defaults to env ACCOUNT_MANAGER_DELIVERY_MODE,
+    // then 'attachment'.
+    const envDefaultMode =
+      (Deno.env.get('ACCOUNT_MANAGER_DELIVERY_MODE') || 'attachment').toLowerCase();
+    const rawMode =
+      typeof body?.delivery_mode === 'string' ? body.delivery_mode.toLowerCase() : envDefaultMode;
+    const deliveryMode: 'attachment' | 'link' =
+      rawMode === 'link' ? 'link' : 'attachment';
+
     if (orderIds.length === 0) {
       return new Response(JSON.stringify({ error: 'order_id or order_ids is required' }), {
         status: 400,
