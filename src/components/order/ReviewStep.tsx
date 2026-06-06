@@ -183,9 +183,34 @@ const ReviewStep = ({
         <p className="text-sm text-muted-foreground">
           {businessDetails.address}, {businessDetails.city}, {state} {businessDetails.zipCode}
         </p>
+        {businessDetails.alternateName && (
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium">Alternate:</span> {businessDetails.alternateName}
+          </p>
+        )}
+        {businessDetails.businessPurpose && (
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium">Purpose:</span> {businessDetails.businessPurpose}
+          </p>
+        )}
+        {businessDetails.organizerType && (
+          <p className="text-sm text-muted-foreground capitalize">
+            <span className="font-medium">Organizer:</span> {businessDetails.organizerType.replace("_", " ")}
+          </p>
+        )}
+        {businessDetails.delayedFiling && (
+          <p className="text-sm text-muted-foreground">Delayed effective filing date requested</p>
+        )}
         {businessDetails.managementStructure && (
           <p className="text-sm text-muted-foreground capitalize">
-            {businessDetails.managementStructure.replace("-", "-")}
+            {businessDetails.managementStructure.replace("-", " ")}
+          </p>
+        )}
+        {(businessDetails.contactFirstName || businessDetails.contactLastName) && (
+          <p className="text-sm text-muted-foreground pt-2 border-t mt-2">
+            <span className="font-medium">Contact:</span>{" "}
+            {businessDetails.contactFirstName} {businessDetails.contactLastName}
+            {businessDetails.contactPhone ? ` · ${businessDetails.contactPhone}` : ""}
           </p>
         )}
       </Section>
