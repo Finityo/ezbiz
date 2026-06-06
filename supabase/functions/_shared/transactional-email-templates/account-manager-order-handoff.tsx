@@ -68,14 +68,19 @@ const AccountManagerHandoffEmail = ({
             <Row label="Total Paid" value={fmtAmount} />
           </Section>
 
-          {csvDownloadUrl && (
-            <Section style={{ textAlign: 'center', margin: '28px 0' }}>
-              <Button href={csvDownloadUrl} style={btnPrimary}>
-                Download Order CSV
-              </Button>
-              <Text style={hint}>Signed download link · expires in 7 days</Text>
-            </Section>
-          )}
+          <Section style={{ textAlign: 'center', margin: '28px 0' }}>
+            <Text style={hint}>
+              📎 The complete order CSV is attached to this email.
+            </Text>
+            {csvDownloadUrl && (
+              <>
+                <Button href={csvDownloadUrl} style={btnPrimary}>
+                  Download Order CSV (backup link)
+                </Button>
+                <Text style={hint}>Backup signed link · expires in 7 days</Text>
+              </>
+            )}
+          </Section>
 
           {adminDetailUrl && (
             <Section style={{ textAlign: 'center', margin: '12px 0 28px' }}>
