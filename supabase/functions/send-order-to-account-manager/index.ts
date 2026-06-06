@@ -144,8 +144,9 @@ async function processOne(opts: {
   actor: string;
   isManual: boolean;
   triggeredBy: 'admin' | 'webhook';
+  forceFailure?: string | null;
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipient, actor, isManual, triggeredBy } = opts;
+  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure } = opts;
 
   try {
     const { data: order, error: orderErr } = await admin
