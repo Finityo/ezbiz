@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 export interface Order {
   id: string;
+  orderNumber?: number;
   businessName: string;
   entityType: string;
   state: string;
