@@ -118,7 +118,7 @@ const Navigation = () => {
     { title: "Tax Election Guide", description: "Understanding tax elections", generator: generateTaxGuide, filename: "Tax-Election-Guide.pdf" },
   ];
 
-  const adminLink = { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true };
+  
 
   return (
     <nav className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-50">
