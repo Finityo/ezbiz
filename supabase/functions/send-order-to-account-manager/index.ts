@@ -219,64 +219,95 @@ async function processOne(opts: {
       .filter(Boolean)
       .join(' ') || undefined;
 
-    // Idempotency key changes for manual re-sends so admins can force redelivery
-    const idempotencyKey = isManual
-      ? `handoff-${orderId}-${Date.now()}`
-      : `handoff-${orderId}`;
-
-    const payload = {
-      templateName: 'account-manager-order-handoff',
-      recipientEmail: recipient,
-      idempotencyKey,
-      templateData: {
-        orderId,
-        customerName,
-        customerEmail: contactRes.data?.email || (order as any).email || undefined,
-        businessName: bizRes.data?.company_name || undefined,
-        entityType: (order as any).entity_type || undefined,
-        state: (order as any).state || undefined,
-        packageName: (order as any).package || undefined,
-        filingSpeed: (order as any).filing_speed || 'standard',
-        einService: !!(order as any).ein_service,
-        totalAmount:
-          (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
-        csvDownloadUrl: signed.signedUrl,
-        adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
-      },
+    const templateData = {
+      orderId,
+      customerName,
+      customerEmail: contactRes.data?.email || (order as any).email || undefined,
+      businessName: bizRes.data?.company_name || undefined,
+      entityType: (order as any).entity_type || undefined,
+      state: (order as any).state || undefined,
+      packageName: (order as any).package || undefined,
+      filingSpeed: (order as any).filing_speed || 'standard',
+      einService: !!(order as any).ein_service,
+      totalAmount:
+        (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
+      csvDownloadUrl: signed.signedUrl,
+      adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
     };
 
-    // Use direct fetch (not supabase-js functions.invoke) so we can read the
-    // actual error response body if the email function returns non-2xx.
-    // The gateway (verify_jwt=true) requires a legacy-format JWT. The env
-    // SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY are now non-JWT secrets
-    // (sb_publishable_* / sb_secret_*), so we use the legacy public anon JWT
-    // which is safe to embed (already exposed to the browser).
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const LEGACY_ANON_JWT =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtenl4emhxbHJ5a3lnamJldXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTU3NjIsImV4cCI6MjA4NzU3MTc2Mn0.jfEDSfqhoPKns7fJWy4KzlvK1hde3xpfcaXg4mi4ihQ';
-    const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+    // Render the email HTML + subject from the React Email template
+    const html = await renderAsync(
+      React.createElement(handoffTemplate.component as any, templateData),
+    );
+    const subject =
+      typeof handoffTemplate.subject === 'function'
+        ? handoffTemplate.subject(templateData)
+        : handoffTemplate.subject;
+
+    // Build CSV attachment (base64 for Resend)
+    let csvBase64 = '';
+    {
+      let binary = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < csvBytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(
+          null,
+          Array.from(csvBytes.subarray(i, i + chunk)) as any,
+        );
+      }
+      csvBase64 = btoa(binary);
+    }
+    const safeName = (bizRes.data?.company_name || `order-${orderId.slice(0, 8)}`)
+      .replace(/[^a-zA-Z0-9-_]/g, '_')
+      .slice(0, 60);
+    const csvFilename = `${safeName}-${orderId.slice(0, 8)}.csv`;
+
+    // Send via Resend directly — Lovable's queue worker doesn't support
+    // attachments, and we want the CSV delivered as a real file.
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      throw new Error('RESEND_API_KEY is not configured');
+    }
+
+    const fromAddress = 'EZ BIZ FILE SERVICE <noreply@notify.ezbiz-fs.com>';
+    const resendResp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${LEGACY_ANON_JWT}`,
-        apikey: LEGACY_ANON_JWT,
+        Authorization: `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [recipient],
+        reply_to: 'christian@ezbiz-fs.com',
+        subject,
+        html,
+        attachments: [
+          {
+            filename: csvFilename,
+            content: csvBase64,
+            content_type: 'text/csv',
+          },
+        ],
+      }),
     });
-    const emailBodyText = await emailResp.text();
-    if (!emailResp.ok) {
-      console.error(
-        `send-transactional-email ${emailResp.status} for order ${orderId}: ${emailBodyText}`,
-      );
-      throw new Error(
-        `send-transactional-email ${emailResp.status}: ${emailBodyText.slice(0, 500)}`,
-      );
-    }
-    let emailRes: any = null;
-    try { emailRes = JSON.parse(emailBodyText); } catch { /* ignore */ }
 
-    const messageId =
-      (emailRes && typeof emailRes === 'object' && (emailRes as any).message_id) || null;
+    const resendBody = await resendResp.text();
+    if (!resendResp.ok) {
+      console.error(`Resend ${resendResp.status} for order ${orderId}: ${resendBody}`);
+      throw new Error(`Resend ${resendResp.status}: ${resendBody.slice(0, 500)}`);
+    }
+    let resendJson: any = null;
+    try { resendJson = JSON.parse(resendBody); } catch { /* ignore */ }
+    const messageId = resendJson?.id || null;
+
+    // Mirror to email_send_log for the admin email-delivery view
+    await admin.from('email_send_log').insert({
+      message_id: messageId || crypto.randomUUID(),
+      template_name: 'account-manager-order-handoff',
+      recipient_email: recipient,
+      status: 'sent',
+    });
 
     // Advance status only if currently "payment_complete" (don't regress later states)
     const previousStatus = (order as any).status;
