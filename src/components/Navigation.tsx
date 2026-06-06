@@ -407,13 +407,8 @@ const Navigation = () => {
                       <User className="h-4 w-4 mr-2" />
                       Dashboard
                     </Button>
-                    {isAdmin && (
-                      <Button variant="outline" className="justify-start" onClick={() => navigate('/admin')}>
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin Panel
-                      </Button>
-                    )}
                     <Button variant="outline" onClick={signOut}>
+
                       Sign Out
                     </Button>
                   </>
