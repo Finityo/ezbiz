@@ -334,6 +334,10 @@ serve(async (req) => {
           description: "EZ BIZ File Service - Business Formation",
         },
       },
+      // Stripe-issued receipt to the customer email after successful payment
+      payment_intent_data: {
+        receipt_email: userEmail || undefined,
+      },
       success_url: `${origin}${successPath}`,
       cancel_url: `${origin}${cancelPath}`,
     });
