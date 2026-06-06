@@ -1,0 +1,6 @@
+UPDATE public.orders
+SET account_manager_sent_at = NULL,
+    account_manager_sent_to = NULL,
+    account_manager_email_status = NULL,
+    account_manager_email_message_id = NULL
+WHERE id = 'dd576737-f4ba-44b3-946b-63b8f8d86aa9';
