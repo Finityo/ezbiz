@@ -121,6 +121,23 @@ Deno.serve(async (req) => {
   // Create Supabase client with service role (bypasses RLS)
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
+  // Idempotency: if we've already logged a send for this idempotencyKey (= messageId),
+  // skip re-enqueuing. Protects against webhook + /order-success fallback double-firing.
+  const { data: prior } = await supabase
+    .from('email_send_log')
+    .select('id, status')
+    .eq('message_id', messageId)
+    .in('status', ['pending', 'sent', 'suppressed'])
+    .maybeSingle()
+  if (prior) {
+    console.log('Skipping duplicate transactional email send', { messageId, templateName, status: prior.status })
+    return new Response(
+      JSON.stringify({ success: true, deduplicated: true, status: prior.status }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+
   // 2. Check suppression list (fail-closed: if we can't verify, don't send)
   const { data: suppressed, error: suppressionError } = await supabase
     .from('suppressed_emails')
