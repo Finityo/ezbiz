@@ -275,47 +275,71 @@ async function processOne(opts: {
       .slice(0, 60);
     const csvFilename = `${safeName}-${orderId.slice(0, 8)}.csv`;
 
-    // Send via Resend directly — Lovable's queue worker doesn't support
-    // attachments, and we want the CSV delivered as a real file.
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    if (!resendApiKey) {
-      throw new Error('RESEND_API_KEY is not configured');
-    }
+    let messageId: string | null = null;
 
-    const fromAddress = 'EZ BIZ FILE SERVICE <noreply@notify.ezbiz-fs.com>';
-    const resendPayload: Record<string, any> = {
-      from: fromAddress,
-      to: [recipient],
-      reply_to: 'christian@ezbiz-fs.com',
-      subject,
-      html,
-    };
-    if (deliveryMode === 'attachment') {
-      resendPayload.attachments = [
+    if (deliveryMode === 'link') {
+      // Route through Lovable's verified queue (notify.ezbiz-fs.com).
+      // No attachments — recipient downloads CSV via signed link in the email.
+      const idemKey = `am-handoff-link-${orderId}-${Date.now()}`;
+      const { data: invokeData, error: invokeErr } = await admin.functions.invoke(
+        'send-transactional-email',
         {
-          filename: csvFilename,
-          content: csvBase64,
-          content_type: 'text/csv',
+          body: {
+            templateName: 'account-manager-order-handoff',
+            recipientEmail: recipient,
+            idempotencyKey: idemKey,
+            templateData,
+          },
         },
-      ];
-    }
-    const resendResp = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify(resendPayload),
-    });
+      );
+      if (invokeErr) {
+        throw new Error(`Lovable email queue failed: ${invokeErr.message || invokeErr}`);
+      }
+      messageId = (invokeData as any)?.messageId || (invokeData as any)?.id || idemKey;
+    } else {
+      // Attachment mode — Resend direct send (requires a Resend-verified sender domain
+      // distinct from notify.ezbiz-fs.com, which is delegated to Lovable Emails).
+      const resendApiKey = Deno.env.get('RESEND_API_KEY');
+      if (!resendApiKey) {
+        throw new Error('RESEND_API_KEY is not configured');
+      }
 
-    const resendBody = await resendResp.text();
-    if (!resendResp.ok) {
-      console.error(`Resend ${resendResp.status} for order ${orderId}: ${resendBody}`);
-      throw new Error(`Resend ${resendResp.status}: ${resendBody.slice(0, 500)}`);
+      const fromAddress =
+        Deno.env.get('ACCOUNT_MANAGER_RESEND_FROM') ||
+        'EZ BIZ FILE SERVICE <onboarding@resend.dev>';
+      const resendPayload: Record<string, any> = {
+        from: fromAddress,
+        to: [recipient],
+        reply_to: 'christian@ezbiz-fs.com',
+        subject,
+        html,
+        attachments: [
+          {
+            filename: csvFilename,
+            content: csvBase64,
+            content_type: 'text/csv',
+          },
+        ],
+      };
+      const resendResp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify(resendPayload),
+      });
+
+      const resendBody = await resendResp.text();
+      if (!resendResp.ok) {
+        console.error(`Resend ${resendResp.status} for order ${orderId}: ${resendBody}`);
+        throw new Error(`Resend ${resendResp.status}: ${resendBody.slice(0, 500)}`);
+      }
+      let resendJson: any = null;
+      try { resendJson = JSON.parse(resendBody); } catch { /* ignore */ }
+      messageId = resendJson?.id || null;
     }
-    let resendJson: any = null;
-    try { resendJson = JSON.parse(resendBody); } catch { /* ignore */ }
-    const messageId = resendJson?.id || null;
+
 
     // Mirror to email_send_log for the admin email-delivery view
     await admin.from('email_send_log').insert({
