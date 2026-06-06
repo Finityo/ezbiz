@@ -228,16 +228,19 @@ async function processOne(opts: {
 
     // Use direct fetch (not supabase-js functions.invoke) so we can read the
     // actual error response body if the email function returns non-2xx.
+    // The gateway (verify_jwt=true) requires a legacy-format JWT. The env
+    // SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY are now non-JWT secrets
+    // (sb_publishable_* / sb_secret_*), so we use the legacy public anon JWT
+    // which is safe to embed (already exposed to the browser).
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    // Gateway verify_jwt requires a JWT-format token. SUPABASE_SERVICE_ROLE_KEY
-    // is now a non-JWT secret (sb_secret_*), so use the anon JWT for the gateway.
-    const anonJwt = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const LEGACY_ANON_JWT =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtenl4emhxbHJ5a3lnamJldXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTU3NjIsImV4cCI6MjA4NzU3MTc2Mn0.jfEDSfqhoPKns7fJWy4KzlvK1hde3xpfcaXg4mi4ihQ';
     const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${anonJwt}`,
-        apikey: anonJwt,
+        Authorization: `Bearer ${LEGACY_ANON_JWT}`,
+        apikey: LEGACY_ANON_JWT,
       },
       body: JSON.stringify(payload),
     });
