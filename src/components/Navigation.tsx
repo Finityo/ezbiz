@@ -29,7 +29,6 @@ import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -46,29 +45,6 @@ const Navigation = () => {
     }
   };
 
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (user) {
-        try {
-          const { data } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', user.id)
-            .eq('role', 'admin')
-            .maybeSingle();
-          
-          setIsAdmin(!!data);
-        } catch (error) {
-          console.error('Error checking admin status:', error);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    };
-
-    checkAdminStatus();
-  }, [user]);
 
   // Business Structures - organized by category
   const businessStructuresLLC = [
