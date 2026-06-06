@@ -77,6 +77,7 @@ const Entrepreneurs = lazy(() => import("./pages/Entrepreneurs"));
 const SocialPreviewTester = lazy(() => import("./pages/admin/SocialPreviewTester"));
 const StripePriceAudit = lazy(() => import("./pages/admin/StripePriceAudit"));
 const EmailDeliveryLog = lazy(() => import("./pages/admin/EmailDeliveryLog"));
+const WipeOrders = lazy(() => import("./pages/admin/WipeOrders"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 
 function AnalyticsWrapper({ children }: { children: React.ReactNode }) {
