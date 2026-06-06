@@ -177,15 +177,88 @@ const EnhancedOrderFlow = () => {
   };
 
   const [applicationId, setApplicationId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
-  const saveOrderToDb = async (): Promise<string | null> => {
-    if (!user) return null;
+  type CheckoutIds = { orderId: string | null; applicationId: string | null };
+
+  const saveOrderToDb = async (): Promise<CheckoutIds> => {
+    if (!user) return { orderId: null, applicationId: null };
     try {
-      const { data, error } = await supabase
+      const total = runningTotal();
+      const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
+
+      // 1) Orders row — source of truth for the admin dashboard
+      const { data: orderRow, error: orderErr } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          entity_type: selectedEntity,
+          package: selectedPackage,
+          package_id: selectedPackage,
+          state: selectedState,
+          state_fee: stateFee,
+          total_amount: total,
+          filing_speed: processingSpeed,
+          ein_service: selectedAddOns.includes("ein"),
+          status: "Pending Payment",
+        })
+        .select("id")
+        .single();
+
+      if (orderErr) throw orderErr;
+      const newOrderId = orderRow?.id as string;
+      setOrderId(newOrderId);
+
+      // 2) Normalized child rows — these populate the admin "Order Detail" dialog
+      //    and the CorpNet CSV / account-manager handoff email.
+      const childWrites = await Promise.all([
+        supabase.from("business_information").insert({
+          order_id: newOrderId,
+          company_name: fullBusinessName,
+          alternate_company_name: businessDetails.alternateName || null,
+          business_purpose: businessDetails.businessPurpose || null,
+          business_description: businessDetails.businessDescription || null,
+          organizer_type: businessDetails.organizerType || null,
+          delayed_filing: !!businessDetails.delayedFiling,
+        }),
+        supabase.from("contact_information").insert({
+          order_id: newOrderId,
+          first_name: businessDetails.contactFirstName || null,
+          last_name: businessDetails.contactLastName || null,
+          email: user.email || null,
+          phone: businessDetails.contactPhone || null,
+        }),
+        supabase.from("addresses").insert({
+          order_id: newOrderId,
+          type: "business",
+          address1: businessDetails.address || null,
+          city: businessDetails.city || null,
+          state: selectedState || null,
+          zip: businessDetails.zipCode || null,
+          country: "US",
+        }),
+        selectedEntity === "llc"
+          ? supabase.from("company_management").insert({
+              order_id: newOrderId,
+              management_type:
+                businessDetails.managementStructure === "manager-managed"
+                  ? "manager_managed"
+                  : "member_managed",
+            })
+          : Promise.resolve({ error: null } as any),
+      ]);
+      childWrites.forEach((r: any) => {
+        if (r?.error) console.error("Normalized child write failed:", r.error);
+      });
+
+      // 3) Keep legacy business_applications row for back-compat with the
+      //    Stripe webhook resolver chain (orderId → application_id → session_id).
+      const { data: appRow, error: appErr } = await supabase
         .from("business_applications")
         .insert([{
           user_id: user.id,
-          business_name: `${businessDetails.businessName} ${businessDetails.designator}`.trim(),
+          business_name: fullBusinessName,
           business_type: selectedEntity,
           state: selectedState,
           status: "pending_payment",
@@ -198,26 +271,39 @@ const EnhancedOrderFlow = () => {
             businessDetails,
             serviceDetails: mode === "whiteglove" ? serviceDetails : null,
             stateFee,
-            estimatedTotal: runningTotal(),
+            estimatedTotal: total,
             paymentStatus: "pending",
             source: "order-flow",
+            order_id: newOrderId,
           } as any,
         }])
         .select("id")
         .single();
-      if (error) throw error;
-      const newId = data?.id ?? null;
-      if (newId) setApplicationId(newId);
-      return newId;
+
+      if (appErr) throw appErr;
+      const newAppId = appRow?.id ?? null;
+      if (newAppId) setApplicationId(newAppId);
+
+      // 4) Link application_id back onto orders so the webhook can resolve either way
+      if (newAppId) {
+        await supabase
+          .from("orders")
+          .update({ application_id: newAppId })
+          .eq("id", newOrderId);
+      }
+
+      return { orderId: newOrderId, applicationId: newAppId };
     } catch (err) {
       console.error("Failed to save order:", err);
-      return null;
+      return { orderId: null, applicationId: null };
     }
   };
 
-  const handleCheckoutStarted = async (): Promise<string | null> => {
-    // Reuse the application row across checkout retries within the same session
-    if (applicationId) return applicationId;
+  const handleCheckoutStarted = async (): Promise<CheckoutIds> => {
+    // Reuse the rows across checkout retries within the same session
+    if (orderId || applicationId) {
+      return { orderId, applicationId };
+    }
     return await saveOrderToDb();
   };
 
