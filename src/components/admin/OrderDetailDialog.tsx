@@ -318,7 +318,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                   </>
                 ) : (
                   <>
-                    <ReadField label="Order ID" value={detail.order?.id} />
+                    <ReadField label="Order #" value={detail.order?.order_number ? `#${detail.order.order_number}` : '—'} />
+                    <ReadField label="Internal ID" value={detail.order?.id} />
                     <ReadField label="Status" value={detail.order?.status} />
                     <ReadField label="Entity Type" value={detail.order?.entity_type} />
                     <ReadField label="State" value={detail.order?.state} />
