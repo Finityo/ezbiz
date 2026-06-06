@@ -308,12 +308,6 @@ const Navigation = () => {
                   <User className="h-4 w-4 mr-2" />
                   Dashboard
                 </Button>
-                {isAdmin && (
-                  <Button variant="outline" onClick={() => navigate('/admin')}>
-                    <Shield className="h-4 w-4 mr-2" />
-                    Admin
-                  </Button>
-                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost">
@@ -325,12 +319,8 @@ const Navigation = () => {
                       <User className="h-4 w-4 mr-2" />
                       Dashboard
                     </DropdownMenuItem>
-                    {isAdmin && (
-                      <DropdownMenuItem onClick={() => navigate('/admin')}>
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin Panel
-                      </DropdownMenuItem>
-                    )}
+                    <DropdownMenuSeparator />
+
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={signOut}>
                       Sign Out
