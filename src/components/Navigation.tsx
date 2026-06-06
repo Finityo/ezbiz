@@ -1,11 +1,11 @@
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Menu, X, User, Shield } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 import Logo from "@/components/ui/logo"
 import { useAuth } from "@/hooks/useAuth"
 import { Link, useNavigate } from "react-router-dom"
-import { supabase } from "@/integrations/supabase/client"
+
 import { useToast } from "@/hooks/use-toast"
 import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide"
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook"
