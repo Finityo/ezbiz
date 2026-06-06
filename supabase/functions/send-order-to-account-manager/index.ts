@@ -84,6 +84,13 @@ serve(async (req) => {
       isManual && typeof body?.recipient_override === 'string' && body.recipient_override.trim()
         ? body.recipient_override.trim()
         : null;
+    // Admin-only test hook: force the handoff to fail synthetically so the
+    // failure-handling branch (orders.account_manager_email_status='failed' +
+    // order_events 'account_manager_handoff_failed') can be integration tested.
+    const forceFailure =
+      isManual && typeof body?.force_failure === 'string' && body.force_failure.trim()
+        ? body.force_failure.trim().slice(0, 200)
+        : null;
 
     if (orderIds.length === 0) {
       return new Response(JSON.stringify({ error: 'order_id or order_ids is required' }), {
@@ -103,7 +110,7 @@ serve(async (req) => {
 
     const results: HandoffResult[] = [];
 
-    for (const orderId of orderIds) {
+      for (const orderId of orderIds) {
       const result = await processOne({
         admin,
         orderId,
@@ -111,6 +118,7 @@ serve(async (req) => {
         actor,
         isManual,
         triggeredBy,
+        forceFailure,
       });
       results.push(result);
     }
@@ -136,8 +144,9 @@ async function processOne(opts: {
   actor: string;
   isManual: boolean;
   triggeredBy: 'admin' | 'webhook';
+  forceFailure?: string | null;
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipient, actor, isManual, triggeredBy } = opts;
+  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure } = opts;
 
   try {
     const { data: order, error: orderErr } = await admin
@@ -161,6 +170,13 @@ async function processOne(opts: {
         recipient: (order as any).account_manager_sent_to ?? undefined,
       };
     }
+
+    // Admin-only test hook: synthesize a failure here so the catch block runs
+    // through the real failure-handling path (status + audit event).
+    if (forceFailure) {
+      throw new Error(`forced_failure: ${forceFailure}`);
+    }
+
 
     const [bizRes, contactRes] = await Promise.all([
       admin
