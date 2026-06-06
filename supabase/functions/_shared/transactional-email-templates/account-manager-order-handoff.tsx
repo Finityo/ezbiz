@@ -20,6 +20,7 @@ interface AccountManagerHandoffProps {
   totalAmount?: number
   csvDownloadUrl?: string
   adminDetailUrl?: string
+  deliveryMode?: 'attachment' | 'link'
 }
 
 const AccountManagerHandoffEmail = ({
