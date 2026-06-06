@@ -103,6 +103,7 @@ export async function buildOrderCsv(
     for (const p of participantRows) {
       rows.push([
         // Order
+        order.order_number != null ? String(order.order_number) : '',
         order.id ?? '',
         exportDate,
         order.status ?? '',
