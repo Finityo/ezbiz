@@ -95,6 +95,16 @@ serve(async (req) => {
         ? body.force_failure.trim().slice(0, 200)
         : null;
 
+    // Delivery mode: 'attachment' (CSV file attached) or 'link' (signed
+    // download link only). Defaults to env ACCOUNT_MANAGER_DELIVERY_MODE,
+    // then 'attachment'.
+    const envDefaultMode =
+      (Deno.env.get('ACCOUNT_MANAGER_DELIVERY_MODE') || 'attachment').toLowerCase();
+    const rawMode =
+      typeof body?.delivery_mode === 'string' ? body.delivery_mode.toLowerCase() : envDefaultMode;
+    const deliveryMode: 'attachment' | 'link' =
+      rawMode === 'link' ? 'link' : 'attachment';
+
     if (orderIds.length === 0) {
       return new Response(JSON.stringify({ error: 'order_id or order_ids is required' }), {
         status: 400,
@@ -122,13 +132,14 @@ serve(async (req) => {
         isManual,
         triggeredBy,
         forceFailure,
+        deliveryMode,
       });
       results.push(result);
     }
 
     const allOk = results.every((r) => r.ok || r.skipped);
     return new Response(
-      JSON.stringify({ ok: allOk, recipient, results }),
+      JSON.stringify({ ok: allOk, recipient, delivery_mode: deliveryMode, results }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (err) {
@@ -148,8 +159,9 @@ async function processOne(opts: {
   isManual: boolean;
   triggeredBy: 'admin' | 'webhook';
   forceFailure?: string | null;
+  deliveryMode: 'attachment' | 'link';
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure } = opts;
+  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
 
   try {
     const { data: order, error: orderErr } = await admin
@@ -233,6 +245,7 @@ async function processOne(opts: {
         (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
       csvDownloadUrl: signed.signedUrl,
       adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
+      deliveryMode,
     };
 
     // Render the email HTML + subject from the React Email template
@@ -270,26 +283,29 @@ async function processOne(opts: {
     }
 
     const fromAddress = 'EZ BIZ FILE SERVICE <noreply@notify.ezbiz-fs.com>';
+    const resendPayload: Record<string, any> = {
+      from: fromAddress,
+      to: [recipient],
+      reply_to: 'christian@ezbiz-fs.com',
+      subject,
+      html,
+    };
+    if (deliveryMode === 'attachment') {
+      resendPayload.attachments = [
+        {
+          filename: csvFilename,
+          content: csvBase64,
+          content_type: 'text/csv',
+        },
+      ];
+    }
     const resendResp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify({
-        from: fromAddress,
-        to: [recipient],
-        reply_to: 'christian@ezbiz-fs.com',
-        subject,
-        html,
-        attachments: [
-          {
-            filename: csvFilename,
-            content: csvBase64,
-            content_type: 'text/csv',
-          },
-        ],
-      }),
+      body: JSON.stringify(resendPayload),
     });
 
     const resendBody = await resendResp.text();
@@ -343,6 +359,7 @@ async function processOne(opts: {
         csv_path: objectPath,
         csv_filename: `order-${orderId}.csv`,
         triggered_by: triggeredBy,
+        delivery_mode: deliveryMode,
         email_message_id: messageId,
         previous_status: previousStatus,
         new_status: newStatus,

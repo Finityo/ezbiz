@@ -20,6 +20,7 @@ interface AccountManagerHandoffProps {
   totalAmount?: number
   csvDownloadUrl?: string
   adminDetailUrl?: string
+  deliveryMode?: 'attachment' | 'link'
 }
 
 const AccountManagerHandoffEmail = ({
@@ -35,8 +36,10 @@ const AccountManagerHandoffEmail = ({
   totalAmount,
   csvDownloadUrl,
   adminDetailUrl,
+  deliveryMode,
 }: AccountManagerHandoffProps) => {
   const fmtAmount = totalAmount != null ? `$${Number(totalAmount).toFixed(2)}` : '—'
+  const mode: 'attachment' | 'link' = deliveryMode === 'link' ? 'link' : 'attachment'
 
   return (
     <Html lang="en" dir="ltr">
@@ -52,7 +55,7 @@ const AccountManagerHandoffEmail = ({
           <Heading style={h1}>New paid order ready for processing</Heading>
           <Text style={text}>
             A customer has just completed payment. Full order details are summarized
-            below, with the complete CorpNet-format CSV available for download.
+            below, with the complete CorpNet-format CSV {mode === 'attachment' ? 'attached to this email' : 'available via secure download link'}.
           </Text>
 
           <Section style={card}>
@@ -69,16 +72,29 @@ const AccountManagerHandoffEmail = ({
           </Section>
 
           <Section style={{ textAlign: 'center', margin: '28px 0' }}>
-            <Text style={hint}>
-              📎 The complete order CSV is attached to this email.
-            </Text>
-            {csvDownloadUrl && (
+            {mode === 'attachment' ? (
               <>
-                <Button href={csvDownloadUrl} style={btnPrimary}>
-                  Download Order CSV (backup link)
-                </Button>
-                <Text style={hint}>Backup signed link · expires in 7 days</Text>
+                <Text style={hint}>
+                  📎 The complete order CSV is attached to this email.
+                </Text>
+                {csvDownloadUrl && (
+                  <>
+                    <Button href={csvDownloadUrl} style={btnPrimary}>
+                      Download Order CSV (backup link)
+                    </Button>
+                    <Text style={hint}>Backup signed link · expires in 7 days</Text>
+                  </>
+                )}
               </>
+            ) : (
+              csvDownloadUrl && (
+                <>
+                  <Button href={csvDownloadUrl} style={btnPrimary}>
+                    Download Order CSV
+                  </Button>
+                  <Text style={hint}>Secure signed link · expires in 7 days</Text>
+                </>
+              )
             )}
           </Section>
 
