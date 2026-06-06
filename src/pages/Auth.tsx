@@ -23,13 +23,26 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const resolveDestination = async (userId?: string) => {
+    const fallback = location.state?.from?.pathname || '/dashboard';
+    if (!userId) return fallback;
+    const { data } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+    if (location.state?.from?.pathname) return fallback;
+    return data ? '/admin' : '/dashboard';
+  };
+
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
+      resolveDestination(user.id).then((to) => navigate(to, { replace: true }));
     }
-  }, [user, navigate, location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,12 +51,14 @@ const Auth = () => {
     const { error } = await signIn(email, password);
     
     if (!error) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
+      const { data: { user: signedIn } } = await supabase.auth.getUser();
+      const to = await resolveDestination(signedIn?.id);
+      navigate(to, { replace: true });
     }
     
     setLoading(false);
   };
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
