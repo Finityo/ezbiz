@@ -1,0 +1,1 @@
+UPDATE public.orders SET status='payment_complete', stripe_payment_intent='pi_3TfCc3IUysiSR1zw0oekhGlj', total_amount=3, updated_at=now() WHERE id='9eb4988b-825b-4bed-8d89-ab7414b47617';
