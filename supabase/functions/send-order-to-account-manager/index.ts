@@ -281,22 +281,39 @@ async function processOne(opts: {
       // Route through Lovable's verified queue (notify.ezbiz-fs.com).
       // No attachments — recipient downloads CSV via signed link in the email.
       const idemKey = `am-handoff-link-${orderId}-${Date.now()}`;
-      const { data: invokeData, error: invokeErr } = await admin.functions.invoke(
-        'send-transactional-email',
+      const supabaseUrlEnv = Deno.env.get('SUPABASE_URL')!;
+      const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const queueResp = await fetch(
+        `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
         {
-          body: {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${serviceRoleKey}`,
+            apikey: serviceRoleKey,
+          },
+          body: JSON.stringify({
             templateName: 'account-manager-order-handoff',
             recipientEmail: recipient,
             idempotencyKey: idemKey,
             templateData,
-          },
+          }),
         },
       );
-      if (invokeErr) {
-        throw new Error(`Lovable email queue failed: ${invokeErr.message || invokeErr}`);
+      const queueBodyText = await queueResp.text();
+      if (!queueResp.ok) {
+        console.error(
+          `send-transactional-email ${queueResp.status} for ${orderId}: ${queueBodyText}`,
+        );
+        throw new Error(
+          `Lovable queue ${queueResp.status}: ${queueBodyText.slice(0, 500)}`,
+        );
       }
-      messageId = (invokeData as any)?.messageId || (invokeData as any)?.id || idemKey;
+      let queueJson: any = null;
+      try { queueJson = JSON.parse(queueBodyText); } catch { /* ignore */ }
+      messageId = queueJson?.messageId || queueJson?.id || idemKey;
     } else {
+
       // Attachment mode — Resend direct send (requires a Resend-verified sender domain
       // distinct from notify.ezbiz-fs.com, which is delegated to Lovable Emails).
       const resendApiKey = Deno.env.get('RESEND_API_KEY');
