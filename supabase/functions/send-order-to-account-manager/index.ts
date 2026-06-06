@@ -273,10 +273,11 @@ async function processOne(opts: {
       }
       csvBase64 = btoa(binary);
     }
-    const safeName = (bizRes.data?.company_name || `order-${orderId.slice(0, 8)}`)
+    const orderNumber = (order as any).order_number;
+    const safeName = (bizRes.data?.company_name || `order-${orderNumber ?? orderId.slice(0, 8)}`)
       .replace(/[^a-zA-Z0-9-_]/g, '_')
       .slice(0, 60);
-    const csvFilename = `${safeName}-${orderId.slice(0, 8)}.csv`;
+    const csvFilename = `${safeName}-${orderNumber ?? orderId.slice(0, 8)}.csv`;
 
     let messageId: string | null = null;
 
