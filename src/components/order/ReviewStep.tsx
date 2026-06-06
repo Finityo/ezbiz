@@ -90,16 +90,20 @@ const ReviewStep = ({
       isWhiteGlove,
     );
 
-    // Persist the business_application BEFORE starting Stripe so the webhook
-    // can match `metadata.application_id` back to a real DB row.
-    const appId = (await onCheckoutStarted()) || undefined;
+    // Persist orders + normalized rows BEFORE Stripe so the webhook can
+    // resolve via metadata.orderId → application_id → stripe_session_id.
+    const ids = await onCheckoutStarted();
+    const orderIdResolved = ids?.orderId ?? undefined;
+    const applicationIdResolved = ids?.applicationId ?? undefined;
+
     trackCheckoutStart(pkg?.name || selectedPackage, total);
 
     await checkout(lineItems, {
       stateFee: { amount: stateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
-      applicationId: appId,
+      orderId: orderIdResolved,
+      applicationId: applicationIdResolved,
       orderEnrichment: {
         entityType,
         packageId: selectedPackage,
@@ -109,6 +113,9 @@ const ReviewStep = ({
         businessCity: businessDetails.city,
         businessZip: businessDetails.zipCode,
         managementStructure: businessDetails.managementStructure,
+        contactFirstName: businessDetails.contactFirstName,
+        contactLastName: businessDetails.contactLastName,
+        contactPhone: businessDetails.contactPhone,
         totalAmount: total,
       },
     });
