@@ -21,6 +21,7 @@ const corsHeaders = {
 const EXPECTED_PRICE_CENTS: Record<string, number> = {
   // Packages
   "price_1TRVJJIUysiSR1zwmUpJg0gy": 12900, // Basic $129
+  "price_1TfBdYIUysiSR1zw7bjyb7Nn": 100,   // LIVE TEST — $1 Basic
   "price_1TRVJjIUysiSR1zwaDaz3ics": 27900, // Deluxe $279
   "price_1TRVK3IUysiSR1zw7hfeeub7": 34900, // Complete $349
   // Add-ons
