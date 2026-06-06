@@ -205,35 +205,56 @@ async function processOne(opts: {
       ? `handoff-${orderId}-${Date.now()}`
       : `handoff-${orderId}`;
 
-    const { data: emailRes, error: emailErr } = await admin.functions.invoke(
-      'send-transactional-email',
-      {
-        body: {
-          templateName: 'account-manager-order-handoff',
-          recipientEmail: recipient,
-          idempotencyKey,
-          templateData: {
-            orderId,
-            customerName,
-            customerEmail: contactRes.data?.email || (order as any).email || undefined,
-            businessName: bizRes.data?.company_name || undefined,
-            entityType: (order as any).entity_type || undefined,
-            state: (order as any).state || undefined,
-            packageName: (order as any).package || undefined,
-            filingSpeed: (order as any).filing_speed || 'standard',
-            einService: !!(order as any).ein_service,
-            totalAmount:
-              (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
-            csvDownloadUrl: signed.signedUrl,
-            adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
-          },
-        },
-      }
-    );
+    const payload = {
+      templateName: 'account-manager-order-handoff',
+      recipientEmail: recipient,
+      idempotencyKey,
+      templateData: {
+        orderId,
+        customerName,
+        customerEmail: contactRes.data?.email || (order as any).email || undefined,
+        businessName: bizRes.data?.company_name || undefined,
+        entityType: (order as any).entity_type || undefined,
+        state: (order as any).state || undefined,
+        packageName: (order as any).package || undefined,
+        filingSpeed: (order as any).filing_speed || 'standard',
+        einService: !!(order as any).ein_service,
+        totalAmount:
+          (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
+        csvDownloadUrl: signed.signedUrl,
+        adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
+      },
+    };
 
-    if (emailErr) {
-      throw new Error(emailErr.message || 'Failed to send email');
+    // Use direct fetch (not supabase-js functions.invoke) so we can read the
+    // actual error response body if the email function returns non-2xx.
+    // The gateway (verify_jwt=true) requires a legacy-format JWT. The env
+    // SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY are now non-JWT secrets
+    // (sb_publishable_* / sb_secret_*), so we use the legacy public anon JWT
+    // which is safe to embed (already exposed to the browser).
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const LEGACY_ANON_JWT =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtenl4emhxbHJ5a3lnamJldXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTU3NjIsImV4cCI6MjA4NzU3MTc2Mn0.jfEDSfqhoPKns7fJWy4KzlvK1hde3xpfcaXg4mi4ihQ';
+    const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${LEGACY_ANON_JWT}`,
+        apikey: LEGACY_ANON_JWT,
+      },
+      body: JSON.stringify(payload),
+    });
+    const emailBodyText = await emailResp.text();
+    if (!emailResp.ok) {
+      console.error(
+        `send-transactional-email ${emailResp.status} for order ${orderId}: ${emailBodyText}`,
+      );
+      throw new Error(
+        `send-transactional-email ${emailResp.status}: ${emailBodyText.slice(0, 500)}`,
+      );
     }
+    let emailRes: any = null;
+    try { emailRes = JSON.parse(emailBodyText); } catch { /* ignore */ }
 
     const messageId =
       (emailRes && typeof emailRes === 'object' && (emailRes as any).message_id) || null;
