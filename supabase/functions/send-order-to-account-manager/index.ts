@@ -316,11 +316,17 @@ async function processOne(opts: {
       messageId = queueJson?.messageId || queueJson?.id || idemKey;
     } else {
 
-      // Attachment mode — Resend direct send. Attachments require Resend, and the
-      // sender must use a domain verified inside the connected Resend account.
+      // Attachment mode — Resend send via the Lovable connector gateway.
+      // RESEND_API_KEY is the connector gateway connection key (not a raw
+      // Resend API key), so requests must go through connector-gateway.lovable.dev
+      // with both LOVABLE_API_KEY and X-Connection-Api-Key headers.
       const resendApiKey = Deno.env.get('RESEND_API_KEY');
+      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
       if (!resendApiKey) {
         throw new Error('RESEND_API_KEY is not configured');
+      }
+      if (!lovableApiKey) {
+        throw new Error('LOVABLE_API_KEY is not configured');
       }
 
       const fromAddress =
@@ -340,11 +346,12 @@ async function processOne(opts: {
           },
         ],
       };
-      const resendResp = await fetch('https://api.resend.com/emails', {
+      const resendResp = await fetch('https://connector-gateway.lovable.dev/resend/emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${resendApiKey}`,
+          Authorization: `Bearer ${lovableApiKey}`,
+          'X-Connection-Api-Key': resendApiKey,
         },
         body: JSON.stringify(resendPayload),
       });
