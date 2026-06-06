@@ -110,7 +110,7 @@ serve(async (req) => {
 
     const results: HandoffResult[] = [];
 
-    for (const orderId of orderIds) {
+      for (const orderId of orderIds) {
       const result = await processOne({
         admin,
         orderId,
@@ -118,6 +118,7 @@ serve(async (req) => {
         actor,
         isManual,
         triggeredBy,
+        forceFailure,
       });
       results.push(result);
     }
