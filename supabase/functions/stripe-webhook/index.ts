@@ -5,16 +5,32 @@ import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 serve(async (req) => {
   const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
     apiVersion: "2025-08-27.basil",
+    httpClient: Stripe.createFetchHttpClient(),
   });
+  // Required in Deno (Web Crypto) — sync subtle crypto is unavailable.
+  const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
   const body = await req.text();
-  const sig = req.headers.get("stripe-signature")!;
-  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
+  const sig = req.headers.get("stripe-signature") ?? "";
+  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    event = await stripe.webhooks.constructEventAsync(
+      body,
+      sig,
+      webhookSecret,
+      undefined,
+      cryptoProvider,
+    );
+    console.log("[stripe-webhook] event received", { type: event.type, id: event.id });
   } catch (err) {
+    console.error("[stripe-webhook] signature verification failed", {
+      message: (err as Error).message,
+      has_sig: Boolean(sig),
+      has_secret: Boolean(webhookSecret),
+      body_bytes: body.length,
+    });
     return new Response("Invalid signature", { status: 400 });
   }
 
