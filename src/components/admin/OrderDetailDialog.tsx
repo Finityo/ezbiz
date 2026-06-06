@@ -238,7 +238,7 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Building2 className="h-5 w-5 text-primary" />
             {companyName || 'Order Details'}
-            <span className="text-xs font-mono text-muted-foreground ml-2">{orderId.substring(0, 8)}</span>
+            <span className="text-xs font-mono text-muted-foreground ml-2">{(detail?.order as any)?.order_number ? `#${(detail?.order as any).order_number}` : orderId.substring(0, 8)}</span>
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="px-6 pb-6 max-h-[70vh]">
@@ -305,7 +305,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                 }>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
-                    <ReadField label="Order ID" value={detail.order?.id} />
+                    <ReadField label="Order #" value={detail.order?.order_number ? `#${detail.order.order_number}` : '—'} />
+                    <ReadField label="Internal ID" value={detail.order?.id} />
                     <EditField label="Status" value={str(orderEdit.draft.status)} onChange={(v) => orderEdit.updateField('status', v)} />
                     <EditField label="Entity Type" value={str(orderEdit.draft.entity_type)} onChange={(v) => orderEdit.updateField('entity_type', v)} />
                     <EditField label="State" value={str(orderEdit.draft.state)} onChange={(v) => orderEdit.updateField('state', v)} />
@@ -317,7 +318,8 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                   </>
                 ) : (
                   <>
-                    <ReadField label="Order ID" value={detail.order?.id} />
+                    <ReadField label="Order #" value={detail.order?.order_number ? `#${detail.order.order_number}` : '—'} />
+                    <ReadField label="Internal ID" value={detail.order?.id} />
                     <ReadField label="Status" value={detail.order?.status} />
                     <ReadField label="Entity Type" value={detail.order?.entity_type} />
                     <ReadField label="State" value={detail.order?.state} />

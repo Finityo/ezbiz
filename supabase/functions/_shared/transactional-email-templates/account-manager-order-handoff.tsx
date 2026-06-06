@@ -9,6 +9,7 @@ const SITE_NAME = "EZ BIZ FILE SERVICE, LLC"
 
 interface AccountManagerHandoffProps {
   orderId?: string
+  orderNumber?: number | string
   customerName?: string
   customerEmail?: string
   businessName?: string
@@ -25,6 +26,7 @@ interface AccountManagerHandoffProps {
 
 const AccountManagerHandoffEmail = ({
   orderId,
+  orderNumber,
   customerName,
   customerEmail,
   businessName,
@@ -59,7 +61,7 @@ const AccountManagerHandoffEmail = ({
           </Text>
 
           <Section style={card}>
-            <Row label="Order ID" value={orderId ? orderId.substring(0, 8) + '…' : '—'} />
+            <Row label="Order #" value={orderNumber != null ? `#${orderNumber}` : (orderId ? orderId.substring(0, 8) + '…' : '—')} />
             <Row label="Customer" value={customerName || '—'} />
             <Row label="Email" value={customerEmail || '—'} />
             <Row label="Business" value={businessName || '—'} />
@@ -132,6 +134,7 @@ export const template = {
   displayName: 'Account manager order handoff',
   previewData: {
     orderId: '8f2b9c1a-1234-5678-90ab-cdef12345678',
+    orderNumber: 1000042,
     customerName: 'Maria Talavera',
     customerEmail: 'maria@example.com',
     businessName: 'Talavera Holdings LLC',

@@ -17,7 +17,7 @@ function escapeCSV(value: string | number | boolean | null | undefined): string 
 
 export const CSV_HEADERS = [
   // Order
-  'order_id', 'export_date', 'status', 'entity_type', 'package', 'package_stripe_price_id',
+  'order_number', 'order_id', 'export_date', 'status', 'entity_type', 'package', 'package_stripe_price_id',
   'state', 'filing_speed', 'ein_service', 'delayed_filing',
   'state_fee', 'total_amount',
   'stripe_session_id', 'stripe_payment_intent', 'application_id',
@@ -103,6 +103,7 @@ export async function buildOrderCsv(
     for (const p of participantRows) {
       rows.push([
         // Order
+        order.order_number != null ? String(order.order_number) : '',
         order.id ?? '',
         exportDate,
         order.status ?? '',
