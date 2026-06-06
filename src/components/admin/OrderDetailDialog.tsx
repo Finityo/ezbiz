@@ -238,7 +238,7 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Building2 className="h-5 w-5 text-primary" />
             {companyName || 'Order Details'}
-            <span className="text-xs font-mono text-muted-foreground ml-2">{orderId.substring(0, 8)}</span>
+            <span className="text-xs font-mono text-muted-foreground ml-2">{(detail?.order as any)?.order_number ? `#${(detail?.order as any).order_number}` : orderId.substring(0, 8)}</span>
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="px-6 pb-6 max-h-[70vh]">
