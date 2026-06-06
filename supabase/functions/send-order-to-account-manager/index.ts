@@ -132,13 +132,14 @@ serve(async (req) => {
         isManual,
         triggeredBy,
         forceFailure,
+        deliveryMode,
       });
       results.push(result);
     }
 
     const allOk = results.every((r) => r.ok || r.skipped);
     return new Response(
-      JSON.stringify({ ok: allOk, recipient, results }),
+      JSON.stringify({ ok: allOk, recipient, delivery_mode: deliveryMode, results }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (err) {
