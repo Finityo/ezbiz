@@ -47,6 +47,7 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
   // Processing & shipping
   "price_1TAwtjIUysiSR1zwrXt9vICY": 15000,
   "price_1TAwu6IUysiSR1zw8TGxG4RI": 2900,
+  "price_1TfC5aIUysiSR1zwtNA3RyEa": 100, // LIVE TEST — $1 Shipping
 };
 
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked

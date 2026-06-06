@@ -261,8 +261,8 @@ export const PROCESSING_PRICES: Record<
   },
 };
 
-export const SHIPPING_PRICE = 29;
-export const SHIPPING_STRIPE_PRICE_ID = "price_1TAwu6IUysiSR1zw8TGxG4RI";
+export const SHIPPING_PRICE = 1;
+export const SHIPPING_STRIPE_PRICE_ID = "price_1TfC5aIUysiSR1zwtNA3RyEa";
 
 export const WHITE_GLOVE_BASE = ADDON_PRICES.whiteGloveBase.price;
 
