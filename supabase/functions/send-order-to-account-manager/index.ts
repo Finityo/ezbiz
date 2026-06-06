@@ -245,6 +245,7 @@ async function processOne(opts: {
         (order as any).total_amount != null ? Number((order as any).total_amount) : undefined,
       csvDownloadUrl: signed.signedUrl,
       adminDetailUrl: `${SITE_URL}/admin?order=${orderId}`,
+      deliveryMode,
     };
 
     // Render the email HTML + subject from the React Email template
