@@ -229,13 +229,15 @@ async function processOne(opts: {
     // Use direct fetch (not supabase-js functions.invoke) so we can read the
     // actual error response body if the email function returns non-2xx.
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    // Gateway verify_jwt requires a JWT-format token. SUPABASE_SERVICE_ROLE_KEY
+    // is now a non-JWT secret (sb_secret_*), so use the anon JWT for the gateway.
+    const anonJwt = Deno.env.get('SUPABASE_ANON_KEY')!;
     const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
+        Authorization: `Bearer ${anonJwt}`,
+        apikey: anonJwt,
       },
       body: JSON.stringify(payload),
     });
