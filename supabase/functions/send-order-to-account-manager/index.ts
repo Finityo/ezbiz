@@ -84,6 +84,13 @@ serve(async (req) => {
       isManual && typeof body?.recipient_override === 'string' && body.recipient_override.trim()
         ? body.recipient_override.trim()
         : null;
+    // Admin-only test hook: force the handoff to fail synthetically so the
+    // failure-handling branch (orders.account_manager_email_status='failed' +
+    // order_events 'account_manager_handoff_failed') can be integration tested.
+    const forceFailure =
+      isManual && typeof body?.force_failure === 'string' && body.force_failure.trim()
+        ? body.force_failure.trim().slice(0, 200)
+        : null;
 
     if (orderIds.length === 0) {
       return new Response(JSON.stringify({ error: 'order_id or order_ids is required' }), {
