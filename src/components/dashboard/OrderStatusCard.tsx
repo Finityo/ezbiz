@@ -88,7 +88,7 @@ const OrderStatusCard = ({ order, onViewDetails }: OrderStatusCardProps) => {
             <p><span className="font-medium">Type:</span> {order.entityType}</p>
             <p><span className="font-medium">State:</span> {order.state}</p>
             <p><span className="font-medium">Package:</span> {order.package}</p>
-            <p><span className="font-medium">Order ID:</span> {order.id}</p>
+            <p><span className="font-medium">Order #:</span> {order.orderNumber ? `#${order.orderNumber}` : order.id}</p>
           </div>
         </div>
       </div>
