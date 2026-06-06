@@ -133,9 +133,14 @@ const EnhancedOrderFlow = () => {
         const baseOk = !!(
           businessDetails.businessName &&
           businessDetails.designator &&
+          businessDetails.businessPurpose &&
+          businessDetails.organizerType &&
           businessDetails.address &&
           businessDetails.city &&
           businessDetails.zipCode &&
+          businessDetails.contactFirstName &&
+          businessDetails.contactLastName &&
+          businessDetails.contactPhone &&
           (selectedEntity !== "llc" || businessDetails.managementStructure)
         );
         if (mode === "whiteglove") {
