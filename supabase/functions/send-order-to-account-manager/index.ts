@@ -359,6 +359,7 @@ async function processOne(opts: {
         csv_path: objectPath,
         csv_filename: `order-${orderId}.csv`,
         triggered_by: triggeredBy,
+        delivery_mode: deliveryMode,
         email_message_id: messageId,
         previous_status: previousStatus,
         new_status: newStatus,
