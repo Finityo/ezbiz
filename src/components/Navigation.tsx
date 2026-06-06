@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Menu, X, User, Shield } from "lucide-react"
 import Logo from "@/components/ui/logo"
