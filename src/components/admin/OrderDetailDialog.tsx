@@ -143,19 +143,21 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
   const [detail, setDetail] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [handoffSending, setHandoffSending] = useState(false);
+  const [handoffSending, setHandoffSending] = useState<false | 'attachment' | 'link'>(false);
 
-  const sendToAccountManager = async () => {
-    setHandoffSending(true);
+  const sendToAccountManager = async (deliveryMode: 'attachment' | 'link') => {
+    setHandoffSending(deliveryMode);
     try {
       const { data, error } = await supabase.functions.invoke(
         'send-order-to-account-manager',
-        { body: { order_id: orderId } },
+        { body: { order_id: orderId, delivery_mode: deliveryMode } },
       );
       if (error) throw error;
       toast({
         title: 'Sent to account manager',
-        description: `Order CSV emailed to ${(data as any)?.recipient || 'account manager'}.`,
+        description: `Order emailed to ${(data as any)?.recipient || 'account manager'} ${
+          deliveryMode === 'attachment' ? 'with CSV attached' : 'with download link'
+        }.`,
       });
       await fetchDetails(true);
       onUpdated?.();
