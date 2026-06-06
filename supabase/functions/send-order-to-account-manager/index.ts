@@ -235,6 +235,7 @@ async function processOne(opts: {
 
     const templateData = {
       orderId,
+      orderNumber: (order as any).order_number ?? undefined,
       customerName,
       customerEmail: contactRes.data?.email || (order as any).email || undefined,
       businessName: bizRes.data?.company_name || undefined,
