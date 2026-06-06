@@ -283,26 +283,29 @@ async function processOne(opts: {
     }
 
     const fromAddress = 'EZ BIZ FILE SERVICE <noreply@notify.ezbiz-fs.com>';
+    const resendPayload: Record<string, any> = {
+      from: fromAddress,
+      to: [recipient],
+      reply_to: 'christian@ezbiz-fs.com',
+      subject,
+      html,
+    };
+    if (deliveryMode === 'attachment') {
+      resendPayload.attachments = [
+        {
+          filename: csvFilename,
+          content: csvBase64,
+          content_type: 'text/csv',
+        },
+      ];
+    }
     const resendResp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify({
-        from: fromAddress,
-        to: [recipient],
-        reply_to: 'christian@ezbiz-fs.com',
-        subject,
-        html,
-        attachments: [
-          {
-            filename: csvFilename,
-            content: csvBase64,
-            content_type: 'text/csv',
-          },
-        ],
-      }),
+      body: JSON.stringify(resendPayload),
     });
 
     const resendBody = await resendResp.text();
