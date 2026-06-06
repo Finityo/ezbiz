@@ -171,6 +171,13 @@ async function processOne(opts: {
       };
     }
 
+    // Admin-only test hook: synthesize a failure here so the catch block runs
+    // through the real failure-handling path (status + audit event).
+    if (forceFailure) {
+      throw new Error(`forced_failure: ${forceFailure}`);
+    }
+
+
     const [bizRes, contactRes] = await Promise.all([
       admin
         .from('business_information')
