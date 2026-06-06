@@ -280,22 +280,8 @@ const Navigation = () => {
                               </button>
                             </NavigationMenuLink>
                           ))}
-                          
-                          {/* Admin Link */}
-                          <div className="mt-4 pt-4 border-t border-border">
-                            <NavigationMenuLink asChild>
-                              <Link
-                                to={adminLink.href}
-                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                              >
-                                <div className="text-sm font-medium leading-none flex items-center">
-                                  <Shield className="h-3 w-3 mr-1.5" />
-                                  {adminLink.title}
-                                </div>
-                              </Link>
-                            </NavigationMenuLink>
-                          </div>
                         </div>
+
                       </div>
                     </div>
                   </NavigationMenuContent>
