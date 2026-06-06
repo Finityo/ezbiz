@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
-import { Menu, X, User, Shield } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 import Logo from "@/components/ui/logo"
 import { useAuth } from "@/hooks/useAuth"
 import { Link, useNavigate } from "react-router-dom"
-import { supabase } from "@/integrations/supabase/client"
+
 import { useToast } from "@/hooks/use-toast"
 import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide"
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook"
@@ -29,7 +30,6 @@ import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -46,29 +46,6 @@ const Navigation = () => {
     }
   };
 
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (user) {
-        try {
-          const { data } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', user.id)
-            .eq('role', 'admin')
-            .maybeSingle();
-          
-          setIsAdmin(!!data);
-        } catch (error) {
-          console.error('Error checking admin status:', error);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    };
-
-    checkAdminStatus();
-  }, [user]);
 
   // Business Structures - organized by category
   const businessStructuresLLC = [
@@ -118,7 +95,7 @@ const Navigation = () => {
     { title: "Tax Election Guide", description: "Understanding tax elections", generator: generateTaxGuide, filename: "Tax-Election-Guide.pdf" },
   ];
 
-  const adminLink = { title: "Admin Login", href: "/admin/login", description: "Administrative access portal", isAdminLogin: true };
+  
 
   return (
     <nav className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-50">
@@ -280,22 +257,8 @@ const Navigation = () => {
                               </button>
                             </NavigationMenuLink>
                           ))}
-                          
-                          {/* Admin Link */}
-                          <div className="mt-4 pt-4 border-t border-border">
-                            <NavigationMenuLink asChild>
-                              <Link
-                                to={adminLink.href}
-                                className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                              >
-                                <div className="text-sm font-medium leading-none flex items-center">
-                                  <Shield className="h-3 w-3 mr-1.5" />
-                                  {adminLink.title}
-                                </div>
-                              </Link>
-                            </NavigationMenuLink>
-                          </div>
                         </div>
+
                       </div>
                     </div>
                   </NavigationMenuContent>
@@ -322,12 +285,6 @@ const Navigation = () => {
                   <User className="h-4 w-4 mr-2" />
                   Dashboard
                 </Button>
-                {isAdmin && (
-                  <Button variant="outline" onClick={() => navigate('/admin')}>
-                    <Shield className="h-4 w-4 mr-2" />
-                    Admin
-                  </Button>
-                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost">
@@ -339,12 +296,8 @@ const Navigation = () => {
                       <User className="h-4 w-4 mr-2" />
                       Dashboard
                     </DropdownMenuItem>
-                    {isAdmin && (
-                      <DropdownMenuItem onClick={() => navigate('/admin')}>
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin Panel
-                      </DropdownMenuItem>
-                    )}
+                    <DropdownMenuSeparator />
+
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={signOut}>
                       Sign Out
@@ -431,13 +384,8 @@ const Navigation = () => {
                       <User className="h-4 w-4 mr-2" />
                       Dashboard
                     </Button>
-                    {isAdmin && (
-                      <Button variant="outline" className="justify-start" onClick={() => navigate('/admin')}>
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin Panel
-                      </Button>
-                    )}
                     <Button variant="outline" onClick={signOut}>
+
                       Sign Out
                     </Button>
                   </>
