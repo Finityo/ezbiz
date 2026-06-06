@@ -61,7 +61,7 @@ const AccountManagerHandoffEmail = ({
           </Text>
 
           <Section style={card}>
-            <Row label="Order ID" value={orderId ? orderId.substring(0, 8) + '…' : '—'} />
+            <Row label="Order #" value={orderNumber != null ? `#${orderNumber}` : (orderId ? orderId.substring(0, 8) + '…' : '—')} />
             <Row label="Customer" value={customerName || '—'} />
             <Row label="Email" value={customerEmail || '—'} />
             <Row label="Business" value={businessName || '—'} />
