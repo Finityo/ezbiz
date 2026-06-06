@@ -207,11 +207,21 @@ async function handleWebhook(req: Request): Promise<Response> {
   // The email action type is in payload.data.action_type (e.g., "signup", "recovery")
   // payload.type is the hook event type ("auth")
   const emailType = payload.data.action_type
-  console.log('Received auth event', { emailType, email: payload.data.email, run_id })
+  const recipient = payload.data.email
+  const startedAt = Date.now()
+  console.log('[auth-email-hook] Received auth event', {
+    emailType,
+    recipient,
+    run_id,
+    redirect_to: payload.data.redirect_to,
+    site_url: payload.data.site_url,
+    has_token: !!payload.data.token,
+    has_url: !!payload.data.url,
+  })
 
   const EmailTemplate = EMAIL_TEMPLATES[emailType]
   if (!EmailTemplate) {
-    console.error('Unknown email type', { emailType, run_id })
+    console.error('[auth-email-hook] Unknown email type', { emailType, recipient, run_id })
     return new Response(
       JSON.stringify({ error: `Unknown email type: ${emailType}` }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -222,18 +232,43 @@ async function handleWebhook(req: Request): Promise<Response> {
   const templateProps = {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
-    recipient: payload.data.email,
+    recipient,
     confirmationUrl: payload.data.url,
     token: payload.data.token,
-    email: payload.data.email,
+    email: recipient,
     oldEmail: payload.data.old_email,
     newEmail: payload.data.new_email,
   }
 
   // Render React Email to HTML and plain text
-  const html = await renderAsync(React.createElement(EmailTemplate, templateProps))
-  const text = await renderAsync(React.createElement(EmailTemplate, templateProps), {
-    plainText: true,
+  let html: string
+  let text: string
+  try {
+    html = await renderAsync(React.createElement(EmailTemplate, templateProps))
+    text = await renderAsync(React.createElement(EmailTemplate, templateProps), {
+      plainText: true,
+    })
+  } catch (renderErr) {
+    const message = renderErr instanceof Error ? renderErr.message : String(renderErr)
+    console.error('[auth-email-hook] Template render failed', {
+      emailType,
+      recipient,
+      run_id,
+      error: message,
+    })
+    return new Response(JSON.stringify({ error: 'Failed to render email' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  console.log('[auth-email-hook] Template rendered', {
+    emailType,
+    recipient,
+    run_id,
+    html_bytes: html.length,
+    text_bytes: text.length,
+    render_ms: Date.now() - startedAt,
   })
 
   // Enqueue email for async processing by the dispatcher (process-email-queue).
@@ -243,22 +278,32 @@ async function handleWebhook(req: Request): Promise<Response> {
   )
 
   const messageId = crypto.randomUUID()
+  const fromAddress = `${SITE_NAME} <noreply@${FROM_DOMAIN}>`
 
   // Log pending BEFORE enqueue so we have a record even if enqueue crashes
-  await supabase.from('email_send_log').insert({
+  const { error: logErr } = await supabase.from('email_send_log').insert({
     message_id: messageId,
     template_name: emailType,
-    recipient_email: payload.data.email,
+    recipient_email: recipient,
     status: 'pending',
   })
+  if (logErr) {
+    console.warn('[auth-email-hook] Failed to write pending log row', {
+      message_id: messageId,
+      recipient,
+      run_id,
+      error: logErr.message,
+    })
+  }
 
-  const { error: enqueueError } = await supabase.rpc('enqueue_email', {
+  const enqueueStart = Date.now()
+  const { data: enqueueData, error: enqueueError } = await supabase.rpc('enqueue_email', {
     queue_name: 'auth_emails',
     payload: {
       run_id,
       message_id: messageId,
-      to: payload.data.email,
-      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+      to: recipient,
+      from: fromAddress,
       sender_domain: SENDER_DOMAIN,
       subject: EMAIL_SUBJECTS[emailType] || 'Notification',
       html,
@@ -270,13 +315,25 @@ async function handleWebhook(req: Request): Promise<Response> {
   })
 
   if (enqueueError) {
-    console.error('Failed to enqueue auth email', { error: enqueueError, run_id, emailType })
+    console.error('[auth-email-hook] Failed to enqueue auth email', {
+      message_id: messageId,
+      recipient,
+      emailType,
+      run_id,
+      from: fromAddress,
+      sender_domain: SENDER_DOMAIN,
+      error_code: (enqueueError as any).code,
+      error_details: (enqueueError as any).details,
+      error_hint: (enqueueError as any).hint,
+      error_message: enqueueError.message,
+      enqueue_ms: Date.now() - enqueueStart,
+    })
     await supabase.from('email_send_log').insert({
       message_id: messageId,
       template_name: emailType,
-      recipient_email: payload.data.email,
+      recipient_email: recipient,
       status: 'failed',
-      error_message: 'Failed to enqueue email',
+      error_message: `Enqueue failed: ${enqueueError.message}`,
     })
     return new Response(JSON.stringify({ error: 'Failed to enqueue email' }), {
       status: 500,
@@ -284,10 +341,22 @@ async function handleWebhook(req: Request): Promise<Response> {
     })
   }
 
-  console.log('Auth email enqueued', { emailType, email: payload.data.email, run_id })
+  console.log('[auth-email-hook] Auth email enqueued', {
+    message_id: messageId,
+    pgmq_msg_id: enqueueData,
+    queue: 'auth_emails',
+    emailType,
+    recipient,
+    run_id,
+    from: fromAddress,
+    sender_domain: SENDER_DOMAIN,
+    subject: EMAIL_SUBJECTS[emailType] || 'Notification',
+    enqueue_ms: Date.now() - enqueueStart,
+    total_ms: Date.now() - startedAt,
+  })
 
   return new Response(
-    JSON.stringify({ success: true, queued: true }),
+    JSON.stringify({ success: true, queued: true, message_id: messageId }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   )
 }
