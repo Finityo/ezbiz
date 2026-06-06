@@ -184,11 +184,52 @@ serve(async (req) => {
       }
     }
 
+    // Notify admin (christian@ezbiz-fs.com) of paid order — manual review then "Send to Account Manager".
+    if (orderId) {
+      try {
+        const { data: orderRow } = await supabase
+          .from("orders")
+          .select("order_number, entity_type, state, package, total_amount")
+          .eq("id", orderId)
+          .maybeSingle();
+        const { data: bizInfo } = await supabase
+          .from("business_information")
+          .select("company_name")
+          .eq("order_id", orderId)
+          .maybeSingle();
+
+        await supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "admin-paid-order-notification",
+            recipientEmail: "christian@ezbiz-fs.com",
+            idempotencyKey: `admin-paid-order-${orderId}`,
+            templateData: {
+              orderId,
+              orderNumber: orderRow?.order_number,
+              customerName: session.customer_details?.name || undefined,
+              customerEmail:
+                session.customer_email || session.customer_details?.email || undefined,
+              businessName: bizInfo?.company_name || undefined,
+              entityType: orderRow?.entity_type || undefined,
+              state: orderRow?.state || undefined,
+              packageName: orderRow?.package || undefined,
+              totalAmount:
+                orderRow?.total_amount != null
+                  ? Number(orderRow.total_amount)
+                  : (session.amount_total || 0) / 100,
+            },
+          },
+        });
+      } catch (err) {
+        console.error("admin paid-order notification failed", err);
+      }
+    }
+
     // Auto-handoff to account manager (CSV + email + status advance).
-    // Gated by ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF (defaults to enabled when unset).
-    // Skips if this order was already handed off (account_manager_sent_at set).
+    // Gated by ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF — DEFAULTS TO DISABLED so admin
+    // manually reviews and clicks "Send to Account Manager" from the dashboard.
     const autoHandoffEnabled =
-      (Deno.env.get("ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF") ?? "true").toLowerCase() !== "false";
+      (Deno.env.get("ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF") ?? "false").toLowerCase() === "true";
     if (orderId && autoHandoffEnabled) {
       try {
         const { data: handoffCheck } = await supabase
