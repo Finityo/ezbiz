@@ -312,7 +312,7 @@ const OrdersTab = () => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `order-${orderId.substring(0, 8)}.csv`;
+      a.download = `order-${(filteredOrders.find(o => o.id === orderId) as any)?.order_number ?? orderId.substring(0, 8)}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
       toast({ title: 'Downloaded', description: 'CSV exported successfully.' });
