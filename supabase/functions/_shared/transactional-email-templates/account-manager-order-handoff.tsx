@@ -9,6 +9,7 @@ const SITE_NAME = "EZ BIZ FILE SERVICE, LLC"
 
 interface AccountManagerHandoffProps {
   orderId?: string
+  orderNumber?: number | string
   customerName?: string
   customerEmail?: string
   businessName?: string
@@ -25,6 +26,7 @@ interface AccountManagerHandoffProps {
 
 const AccountManagerHandoffEmail = ({
   orderId,
+  orderNumber,
   customerName,
   customerEmail,
   businessName,
