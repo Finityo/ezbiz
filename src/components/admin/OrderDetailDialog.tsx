@@ -278,17 +278,30 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
               <EditableSection icon={FileText} title="Order Summary" editing={orderEdit.editing} dirty={!!orderEdit.dirty} saving={orderEdit.saving}
                 onToggleEdit={() => orderEdit.startEdit()} onSave={() => saveSection('orders', 'id', orderId, orderEdit.draft!, orderEdit, 'Order Summary')} onCancel={orderEdit.cancel}
                 headerExtra={
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 px-2 text-xs gap-1"
-                    onClick={sendToAccountManager}
-                    disabled={handoffSending}
-                    title="Email this order (with CSV) to the account manager"
-                  >
-                    {handoffSending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-                    {handoffSending ? 'Sending…' : 'Send to Account Mgr'}
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 px-2 text-xs gap-1"
+                      onClick={() => sendToAccountManager('attachment')}
+                      disabled={!!handoffSending}
+                      title="Email this order to the account manager with the CSV attached"
+                    >
+                      {handoffSending === 'attachment' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                      {handoffSending === 'attachment' ? 'Sending…' : 'Send w/ CSV'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 px-2 text-xs gap-1"
+                      onClick={() => sendToAccountManager('link')}
+                      disabled={!!handoffSending}
+                      title="Email this order to the account manager with a secure download link"
+                    >
+                      {handoffSending === 'link' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                      {handoffSending === 'link' ? 'Sending…' : 'Send w/ Link'}
+                    </Button>
+                  </div>
                 }>
                 {orderEdit.editing && orderEdit.draft ? (
                   <>
