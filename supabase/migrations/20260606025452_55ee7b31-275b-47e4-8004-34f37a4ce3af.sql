@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "email_list_authenticated_insert" ON public.email_list;
