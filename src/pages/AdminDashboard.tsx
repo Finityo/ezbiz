@@ -381,6 +381,12 @@ const AdminDashboard = () => {
             >
               Email Delivery Log →
             </a>
+            <a
+              href="/admin/wipe-orders"
+              className="text-sm font-medium text-destructive hover:underline"
+            >
+              Wipe Orders →
+            </a>
           </div>
         </div>
 
