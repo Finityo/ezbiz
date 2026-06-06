@@ -134,6 +134,7 @@ export const template = {
   displayName: 'Account manager order handoff',
   previewData: {
     orderId: '8f2b9c1a-1234-5678-90ab-cdef12345678',
+    orderNumber: 1000042,
     customerName: 'Maria Talavera',
     customerEmail: 'maria@example.com',
     businessName: 'Talavera Holdings LLC',
