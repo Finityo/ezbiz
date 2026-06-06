@@ -32,7 +32,7 @@ interface ReviewStepProps {
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
   onEdit: (step: number) => void;
-  onCheckoutStarted: () => Promise<string | null> | string | null | void;
+  onCheckoutStarted: () => Promise<{ orderId: string | null; applicationId: string | null }> | { orderId: string | null; applicationId: string | null };
 }
 
 const ENTITY_LABELS: Record<string, string> = {
@@ -90,16 +90,20 @@ const ReviewStep = ({
       isWhiteGlove,
     );
 
-    // Persist the business_application BEFORE starting Stripe so the webhook
-    // can match `metadata.application_id` back to a real DB row.
-    const appId = (await onCheckoutStarted()) || undefined;
+    // Persist orders + normalized rows BEFORE Stripe so the webhook can
+    // resolve via metadata.orderId → application_id → stripe_session_id.
+    const ids = await onCheckoutStarted();
+    const orderIdResolved = ids?.orderId ?? undefined;
+    const applicationIdResolved = ids?.applicationId ?? undefined;
+
     trackCheckoutStart(pkg?.name || selectedPackage, total);
 
     await checkout(lineItems, {
       stateFee: { amount: stateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
-      applicationId: appId,
+      orderId: orderIdResolved,
+      applicationId: applicationIdResolved,
       orderEnrichment: {
         entityType,
         packageId: selectedPackage,
@@ -109,6 +113,9 @@ const ReviewStep = ({
         businessCity: businessDetails.city,
         businessZip: businessDetails.zipCode,
         managementStructure: businessDetails.managementStructure,
+        contactFirstName: businessDetails.contactFirstName,
+        contactLastName: businessDetails.contactLastName,
+        contactPhone: businessDetails.contactPhone,
         totalAmount: total,
       },
     });
@@ -176,9 +183,34 @@ const ReviewStep = ({
         <p className="text-sm text-muted-foreground">
           {businessDetails.address}, {businessDetails.city}, {state} {businessDetails.zipCode}
         </p>
+        {businessDetails.alternateName && (
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium">Alternate:</span> {businessDetails.alternateName}
+          </p>
+        )}
+        {businessDetails.businessPurpose && (
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium">Purpose:</span> {businessDetails.businessPurpose}
+          </p>
+        )}
+        {businessDetails.organizerType && (
+          <p className="text-sm text-muted-foreground capitalize">
+            <span className="font-medium">Organizer:</span> {businessDetails.organizerType.replace("_", " ")}
+          </p>
+        )}
+        {businessDetails.delayedFiling && (
+          <p className="text-sm text-muted-foreground">Delayed effective filing date requested</p>
+        )}
         {businessDetails.managementStructure && (
           <p className="text-sm text-muted-foreground capitalize">
-            {businessDetails.managementStructure.replace("-", "-")}
+            {businessDetails.managementStructure.replace("-", " ")}
+          </p>
+        )}
+        {(businessDetails.contactFirstName || businessDetails.contactLastName) && (
+          <p className="text-sm text-muted-foreground pt-2 border-t mt-2">
+            <span className="font-medium">Contact:</span>{" "}
+            {businessDetails.contactFirstName} {businessDetails.contactLastName}
+            {businessDetails.contactPhone ? ` · ${businessDetails.contactPhone}` : ""}
           </p>
         )}
       </Section>
