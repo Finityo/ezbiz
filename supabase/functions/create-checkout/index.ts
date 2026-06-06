@@ -338,7 +338,7 @@ serve(async (req) => {
       payment_intent_data: {
         receipt_email: userEmail || undefined,
       },
-      success_url: `${origin}${successPath}`,
+      success_url: `${origin}${successPath}${successPath.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}`,
     });
 
