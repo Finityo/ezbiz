@@ -144,7 +144,10 @@ serve(async (req) => {
       );
     }
 
-    const recipient = recipientOverride || defaultRecipient;
+    const recipients = recipientOverride
+      ? parseRecipients(recipientOverride)
+      : defaultRecipients;
+    const recipient = recipients.join(', ');
     const triggeredBy = isManual ? 'admin' : 'webhook';
 
     const results: HandoffResult[] = [];
@@ -153,6 +156,7 @@ serve(async (req) => {
       const result = await processOne({
         admin,
         orderId,
+        recipients,
         recipient,
         actor,
         isManual,
@@ -180,6 +184,7 @@ serve(async (req) => {
 async function processOne(opts: {
   admin: ReturnType<typeof createClient>;
   orderId: string;
+  recipients: string[];
   recipient: string;
   actor: string;
   isManual: boolean;
@@ -187,7 +192,7 @@ async function processOne(opts: {
   forceFailure?: string | null;
   deliveryMode: 'attachment' | 'link';
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+  const { admin, orderId, recipients, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
 
   try {
     const { data: order, error: orderErr } = await admin
