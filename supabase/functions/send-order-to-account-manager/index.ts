@@ -312,39 +312,45 @@ async function processOne(opts: {
 
     if (deliveryMode === 'link') {
       // Route through Lovable's verified queue (notify.ezbiz-fs.com).
-      // No attachments — recipient downloads CSV via signed link in the email.
-      const idemKey = `am-handoff-link-${orderId}-${Date.now()}`;
+      // Queue accepts a single recipient per send, so loop the recipient list.
+      const idemKeyBase = `am-handoff-link-${orderId}-${Date.now()}`;
       const supabaseUrlEnv = Deno.env.get('SUPABASE_URL')!;
       const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-      const queueResp = await fetch(
-        `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${serviceRoleKey}`,
-            apikey: serviceRoleKey,
+      let lastMessageId: string | null = null;
+      for (let i = 0; i < recipients.length; i++) {
+        const to = recipients[i];
+        const idemKey = `${idemKeyBase}-${i}`;
+        const queueResp = await fetch(
+          `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+            },
+            body: JSON.stringify({
+              templateName: 'account-manager-order-handoff',
+              recipientEmail: to,
+              idempotencyKey: idemKey,
+              templateData,
+            }),
           },
-          body: JSON.stringify({
-            templateName: 'account-manager-order-handoff',
-            recipientEmail: recipient,
-            idempotencyKey: idemKey,
-            templateData,
-          }),
-        },
-      );
-      const queueBodyText = await queueResp.text();
-      if (!queueResp.ok) {
-        console.error(
-          `send-transactional-email ${queueResp.status} for ${orderId}: ${queueBodyText}`,
         );
-        throw new Error(
-          `Lovable queue ${queueResp.status}: ${queueBodyText.slice(0, 500)}`,
-        );
+        const queueBodyText = await queueResp.text();
+        if (!queueResp.ok) {
+          console.error(
+            `send-transactional-email ${queueResp.status} for ${orderId} → ${to}: ${queueBodyText}`,
+          );
+          throw new Error(
+            `Lovable queue ${queueResp.status} (${to}): ${queueBodyText.slice(0, 500)}`,
+          );
+        }
+        let queueJson: any = null;
+        try { queueJson = JSON.parse(queueBodyText); } catch { /* ignore */ }
+        lastMessageId = queueJson?.messageId || queueJson?.id || idemKey;
       }
-      let queueJson: any = null;
-      try { queueJson = JSON.parse(queueBodyText); } catch { /* ignore */ }
-      messageId = queueJson?.messageId || queueJson?.id || idemKey;
+      messageId = lastMessageId;
     } else {
 
       // Attachment mode — Resend send via the Lovable connector gateway.
