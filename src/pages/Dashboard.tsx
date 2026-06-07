@@ -848,33 +848,19 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* Client Profile */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Primary Contact</CardTitle>
-                  <CardDescription>The person attached to this order.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <InfoRow
-                    label="Name"
-                    value={
-                      [data.contact?.first_name, data.contact?.last_name].filter(Boolean).join(" ") ||
-                      "—"
-                    }
-                    icon={UserCircle2}
-                  />
-                  <InfoRow
-                    label="Email"
-                    value={data.contact?.email || user?.email || "—"}
-                    icon={FileText}
-                  />
-                  <InfoRow
-                    label="Phone"
-                    value={data.contact?.phone || "—"}
-                    icon={Receipt}
-                  />
-                </CardContent>
-              </Card>
+              {/* Editable Primary Contact */}
+              <ProfileEditor
+                profile={{
+                  first_name: data.contact?.first_name || "",
+                  last_name: data.contact?.last_name || "",
+                  phone: data.contact?.phone || "",
+                }}
+                email={data.contact?.email || user?.email || ""}
+                userId={user!.id}
+                orderId={data.order?.id || null}
+                onUpdate={loadDashboard}
+              />
+
 
               {/* Billing & Order Details */}
               <Card>
