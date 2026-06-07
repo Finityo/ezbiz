@@ -344,6 +344,47 @@ const UsersTab = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Remove User Confirm */}
+      <Dialog open={!!removeTarget} onOpenChange={(o) => !o && setRemoveTarget(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Remove user?</DialogTitle>
+            <DialogDescription>
+              This permanently deletes the account for{" "}
+              <span className="font-medium">{removeTarget?.email || removeTarget?.user_id}</span>.
+              Their orders are preserved but unlinked. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveTarget(null)} disabled={removing}>Cancel</Button>
+            <Button
+              variant="destructive"
+              disabled={removing}
+              onClick={async () => {
+                if (!removeTarget) return;
+                setRemoving(true);
+                try {
+                  const { data, error } = await supabase.functions.invoke('admin-remove-user', {
+                    body: { userId: removeTarget.user_id },
+                  });
+                  if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message);
+                  toast({ title: 'User removed', description: removeTarget.email || removeTarget.user_id });
+                  setRemoveTarget(null);
+                  fetchRoles();
+                } catch (e: any) {
+                  toast({ title: 'Remove failed', description: e?.message || 'Unknown error', variant: 'destructive' });
+                } finally {
+                  setRemoving(false);
+                }
+              }}
+            >
+              {removing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+              Remove user
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
