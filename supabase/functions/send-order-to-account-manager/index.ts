@@ -38,15 +38,39 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const defaultRecipient = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
+    const defaultRecipientRaw = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
 
-    if (!defaultRecipient) {
+    if (!defaultRecipientRaw) {
       console.error('ACCOUNT_MANAGER_EMAIL is not configured');
       return new Response(JSON.stringify({ error: 'Service not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    // Support comma-separated list so a single handoff can fan out to multiple
+    // recipients (e.g. internal account manager + CorpNet rep).
+    const parseRecipients = (raw: string): string[] => {
+      const seen = new Set<string>();
+      const out: string[] = [];
+      for (const part of raw.split(/[,;\s]+/)) {
+        const trimmed = part.trim();
+        if (!trimmed) continue;
+        const key = trimmed.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(trimmed);
+      }
+      return out;
+    };
+    const defaultRecipients = parseRecipients(defaultRecipientRaw);
+    if (defaultRecipients.length === 0) {
+      console.error('ACCOUNT_MANAGER_EMAIL contains no valid addresses');
+      return new Response(JSON.stringify({ error: 'Service not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const defaultRecipient = defaultRecipients.join(', ');
 
     const admin = createClient(supabaseUrl, serviceKey);
 
