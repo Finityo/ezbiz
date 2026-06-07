@@ -32,10 +32,8 @@ export const PACKAGE_PRICES: Record<
     name: "Basic",
     label: "Starter",
     subtitle: "Essential filing support",
-    // ⚠️ LIVE TEST MODE — temporarily $1 for end-to-end Stripe verification.
-    // Restore to: price 129, stripePriceId "price_1TRVJJIUysiSR1zwmUpJg0gy" after testing.
-    price: 1,
-    stripePriceId: "price_1TfBdYIUysiSR1zw7bjyb7Nn",
+    price: 129,
+    stripePriceId: "price_1TRVJJIUysiSR1zwmUpJg0gy",
     description: "Business formation with required filing documents",
     features: [
       "Prepare & File Articles of Organization",

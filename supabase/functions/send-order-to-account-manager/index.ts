@@ -38,15 +38,39 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const defaultRecipient = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
+    const defaultRecipientRaw = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
 
-    if (!defaultRecipient) {
+    if (!defaultRecipientRaw) {
       console.error('ACCOUNT_MANAGER_EMAIL is not configured');
       return new Response(JSON.stringify({ error: 'Service not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    // Support comma-separated list so a single handoff can fan out to multiple
+    // recipients (e.g. internal account manager + CorpNet rep).
+    const parseRecipients = (raw: string): string[] => {
+      const seen = new Set<string>();
+      const out: string[] = [];
+      for (const part of raw.split(/[,;\s]+/)) {
+        const trimmed = part.trim();
+        if (!trimmed) continue;
+        const key = trimmed.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(trimmed);
+      }
+      return out;
+    };
+    const defaultRecipients = parseRecipients(defaultRecipientRaw);
+    if (defaultRecipients.length === 0) {
+      console.error('ACCOUNT_MANAGER_EMAIL contains no valid addresses');
+      return new Response(JSON.stringify({ error: 'Service not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const defaultRecipient = defaultRecipients.join(', ');
 
     const admin = createClient(supabaseUrl, serviceKey);
 
@@ -120,7 +144,10 @@ serve(async (req) => {
       );
     }
 
-    const recipient = recipientOverride || defaultRecipient;
+    const recipients = recipientOverride
+      ? parseRecipients(recipientOverride)
+      : defaultRecipients;
+    const recipient = recipients.join(', ');
     const triggeredBy = isManual ? 'admin' : 'webhook';
 
     const results: HandoffResult[] = [];
@@ -129,6 +156,7 @@ serve(async (req) => {
       const result = await processOne({
         admin,
         orderId,
+        recipients,
         recipient,
         actor,
         isManual,
@@ -156,6 +184,7 @@ serve(async (req) => {
 async function processOne(opts: {
   admin: ReturnType<typeof createClient>;
   orderId: string;
+  recipients: string[];
   recipient: string;
   actor: string;
   isManual: boolean;
@@ -163,7 +192,7 @@ async function processOne(opts: {
   forceFailure?: string | null;
   deliveryMode: 'attachment' | 'link';
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+  const { admin, orderId, recipients, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
 
   try {
     const { data: order, error: orderErr } = await admin
@@ -283,39 +312,45 @@ async function processOne(opts: {
 
     if (deliveryMode === 'link') {
       // Route through Lovable's verified queue (notify.ezbiz-fs.com).
-      // No attachments — recipient downloads CSV via signed link in the email.
-      const idemKey = `am-handoff-link-${orderId}-${Date.now()}`;
+      // Queue accepts a single recipient per send, so loop the recipient list.
+      const idemKeyBase = `am-handoff-link-${orderId}-${Date.now()}`;
       const supabaseUrlEnv = Deno.env.get('SUPABASE_URL')!;
       const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-      const queueResp = await fetch(
-        `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${serviceRoleKey}`,
-            apikey: serviceRoleKey,
+      let lastMessageId: string | null = null;
+      for (let i = 0; i < recipients.length; i++) {
+        const to = recipients[i];
+        const idemKey = `${idemKeyBase}-${i}`;
+        const queueResp = await fetch(
+          `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${serviceRoleKey}`,
+              apikey: serviceRoleKey,
+            },
+            body: JSON.stringify({
+              templateName: 'account-manager-order-handoff',
+              recipientEmail: to,
+              idempotencyKey: idemKey,
+              templateData,
+            }),
           },
-          body: JSON.stringify({
-            templateName: 'account-manager-order-handoff',
-            recipientEmail: recipient,
-            idempotencyKey: idemKey,
-            templateData,
-          }),
-        },
-      );
-      const queueBodyText = await queueResp.text();
-      if (!queueResp.ok) {
-        console.error(
-          `send-transactional-email ${queueResp.status} for ${orderId}: ${queueBodyText}`,
         );
-        throw new Error(
-          `Lovable queue ${queueResp.status}: ${queueBodyText.slice(0, 500)}`,
-        );
+        const queueBodyText = await queueResp.text();
+        if (!queueResp.ok) {
+          console.error(
+            `send-transactional-email ${queueResp.status} for ${orderId} → ${to}: ${queueBodyText}`,
+          );
+          throw new Error(
+            `Lovable queue ${queueResp.status} (${to}): ${queueBodyText.slice(0, 500)}`,
+          );
+        }
+        let queueJson: any = null;
+        try { queueJson = JSON.parse(queueBodyText); } catch { /* ignore */ }
+        lastMessageId = queueJson?.messageId || queueJson?.id || idemKey;
       }
-      let queueJson: any = null;
-      try { queueJson = JSON.parse(queueBodyText); } catch { /* ignore */ }
-      messageId = queueJson?.messageId || queueJson?.id || idemKey;
+      messageId = lastMessageId;
     } else {
 
       // Attachment mode — Resend send via the Lovable connector gateway.
@@ -336,7 +371,7 @@ async function processOne(opts: {
         DEFAULT_ACCOUNT_MANAGER_RESEND_FROM;
       const resendPayload: Record<string, any> = {
         from: fromAddress,
-        to: [recipient],
+        to: recipients,
         reply_to: 'christian@ezbiz-fs.com',
         subject,
         html,

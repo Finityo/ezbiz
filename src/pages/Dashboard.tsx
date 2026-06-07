@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
+import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 
 /* ─── Types ─── */
@@ -482,9 +483,25 @@ export default function Dashboard() {
                 <div className="lg:col-span-2 p-6 lg:p-8 space-y-6">
                   {/* Status badges */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge className={statusToneMap[orderStatus] || statusToneMap.draft}>
-                      {statusLabelMap[orderStatus] || "Draft"}
-                    </Badge>
+                    {(() => {
+                      const isActive =
+                        orderStatus === "completed" ||
+                        orderStatus === "filed_with_sos" ||
+                        String(data.order?.status || "").toLowerCase().includes("active");
+                      if (isActive) {
+                        return (
+                          <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-300/40 gap-1.5">
+                            <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                            Active with SOS
+                          </Badge>
+                        );
+                      }
+                      return (
+                        <Badge className={statusToneMap[orderStatus] || statusToneMap.draft}>
+                          {statusLabelMap[orderStatus] || "Draft"}
+                        </Badge>
+                      );
+                    })()}
                     <Badge variant="outline">
                       {data.order?.state || "State Pending"}{" "}
                       {String(data.order?.entity_type || "LLC").toUpperCase()}
@@ -493,6 +510,7 @@ export default function Dashboard() {
                       <Badge variant="secondary">{data.order.package}</Badge>
                     )}
                   </div>
+
 
                   {/* Welcome */}
                   <div className="space-y-2">
@@ -830,33 +848,19 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* Client Profile */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Primary Contact</CardTitle>
-                  <CardDescription>The person attached to this order.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <InfoRow
-                    label="Name"
-                    value={
-                      [data.contact?.first_name, data.contact?.last_name].filter(Boolean).join(" ") ||
-                      "—"
-                    }
-                    icon={UserCircle2}
-                  />
-                  <InfoRow
-                    label="Email"
-                    value={data.contact?.email || user?.email || "—"}
-                    icon={FileText}
-                  />
-                  <InfoRow
-                    label="Phone"
-                    value={data.contact?.phone || "—"}
-                    icon={Receipt}
-                  />
-                </CardContent>
-              </Card>
+              {/* Editable Primary Contact */}
+              <ProfileEditor
+                profile={{
+                  first_name: data.contact?.first_name || "",
+                  last_name: data.contact?.last_name || "",
+                  phone: data.contact?.phone || "",
+                }}
+                email={data.contact?.email || user?.email || ""}
+                userId={user!.id}
+                orderId={data.order?.id || null}
+                onUpdate={loadDashboard}
+              />
+
 
               {/* Billing & Order Details */}
               <Card>
