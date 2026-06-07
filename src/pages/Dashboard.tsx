@@ -482,9 +482,25 @@ export default function Dashboard() {
                 <div className="lg:col-span-2 p-6 lg:p-8 space-y-6">
                   {/* Status badges */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge className={statusToneMap[orderStatus] || statusToneMap.draft}>
-                      {statusLabelMap[orderStatus] || "Draft"}
-                    </Badge>
+                    {(() => {
+                      const isActive =
+                        orderStatus === "completed" ||
+                        orderStatus === "filed_with_sos" ||
+                        String(data.order?.status || "").toLowerCase().includes("active");
+                      if (isActive) {
+                        return (
+                          <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-300/40 gap-1.5">
+                            <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                            Active with SOS
+                          </Badge>
+                        );
+                      }
+                      return (
+                        <Badge className={statusToneMap[orderStatus] || statusToneMap.draft}>
+                          {statusLabelMap[orderStatus] || "Draft"}
+                        </Badge>
+                      );
+                    })()}
                     <Badge variant="outline">
                       {data.order?.state || "State Pending"}{" "}
                       {String(data.order?.entity_type || "LLC").toUpperCase()}
@@ -493,6 +509,7 @@ export default function Dashboard() {
                       <Badge variant="secondary">{data.order.package}</Badge>
                     )}
                   </div>
+
 
                   {/* Welcome */}
                   <div className="space-y-2">
