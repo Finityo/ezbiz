@@ -14,10 +14,12 @@ interface ProfileEditorProps {
   };
   email?: string;
   userId: string;
+  /** If provided, the same edits also sync to the contact_information row for this order. */
+  orderId?: string | null;
   onUpdate: () => void;
 }
 
-const ProfileEditor = ({ profile, email, userId, onUpdate }: ProfileEditorProps) => {
+const ProfileEditor = ({ profile, email, userId, orderId, onUpdate }: ProfileEditorProps) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,27 +32,47 @@ const ProfileEditor = ({ profile, email, userId, onUpdate }: ProfileEditorProps)
   const handleSave = async () => {
     setLoading(true);
     try {
+      // 1) Update the user's global profile (upsert so first-time saves work too)
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          phone: formData.phone,
-        })
-        .eq("user_id", userId);
+        .upsert(
+          {
+            user_id: userId,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone: formData.phone,
+          },
+          { onConflict: "user_id" },
+        );
 
       if (profileError) throw profileError;
 
-      // Email change goes through Supabase Auth and requires re-verification.
+      // 2) Mirror changes onto the active order's contact_information row, if any
+      if (orderId) {
+        const { error: contactError } = await supabase
+          .from("contact_information")
+          .update({
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone: formData.phone,
+            email: formData.email || null,
+          })
+          .eq("order_id", orderId);
+        if (contactError) {
+          console.warn("contact_information sync failed:", contactError);
+        }
+      }
+
+      // 3) Email change goes through Supabase Auth and requires re-verification.
       const trimmedEmail = formData.email.trim();
       if (trimmedEmail && trimmedEmail.toLowerCase() !== (email || "").toLowerCase()) {
         const { error: emailError } = await supabase.auth.updateUser({ email: trimmedEmail });
         if (emailError) throw emailError;
         toast.success(
-          "Profile updated. Check your new email inbox to confirm the address change.",
+          "Saved. Check your new email inbox to confirm the address change before signing in again.",
         );
       } else {
-        toast.success("Profile updated successfully!");
+        toast.success("Contact information updated.");
       }
 
       setEditing(false);
@@ -66,7 +88,12 @@ const ProfileEditor = ({ profile, email, userId, onUpdate }: ProfileEditorProps)
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold">Profile Information</h3>
+        <div>
+          <h3 className="text-xl font-semibold">Primary Contact</h3>
+          <p className="text-sm text-muted-foreground">
+            Keep your name, email, and phone current so we can reach you about your filing.
+          </p>
+        </div>
         {!editing && (
           <Button onClick={() => setEditing(true)} variant="outline" size="sm">
             Edit
