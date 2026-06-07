@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Shield, ShieldCheck, UserPlus, Trash2, Loader2 } from 'lucide-react';
@@ -30,6 +30,8 @@ const UsersTab = () => {
   const [newEmail, setNewEmail] = useState('');
   const [newRole, setNewRole] = useState<'admin' | 'user'>('user');
   const [adding, setAdding] = useState(false);
+  const [removeTarget, setRemoveTarget] = useState<UserRole | null>(null);
+  const [removing, setRemoving] = useState(false);
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -274,14 +276,25 @@ const UsersTab = () => {
                           {new Date(r.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleUpdateRole(r.user_id, r.role)}
-                            className="text-xs"
-                          >
-                            {r.role === 'admin' ? 'Demote' : 'Promote'}
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleUpdateRole(r.user_id, r.role)}
+                              className="text-xs"
+                            >
+                              {r.role === 'admin' ? 'Demote' : 'Promote'}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => setRemoveTarget(r)}
+                              className="text-xs"
+                              title="Remove user"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
