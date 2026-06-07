@@ -18,6 +18,8 @@ import FeedbackTab from '@/components/admin/FeedbackTab';
 import OrdersTab from '@/components/admin/OrdersTab';
 import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
 import UsersTab from '@/components/admin/UsersTab';
+import ApplicationQuickEditDialog from '@/components/admin/ApplicationQuickEditDialog';
+import { Pencil } from 'lucide-react';
 
 
 interface ConsultationRequest {
@@ -67,6 +69,7 @@ const AdminDashboard = () => {
   const [applicationStatusFilter, setApplicationStatusFilter] = useState('all');
   const [applicationBusinessTypeFilter, setApplicationBusinessTypeFilter] = useState('all');
   const [applicationStateFilter, setApplicationStateFilter] = useState('all');
+  const [editAppId, setEditAppId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -844,19 +847,27 @@ const AdminDashboard = () => {
                             {new Date(application.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => {
-                                navigator.clipboard.writeText(JSON.stringify(application.application_data, null, 2));
-                                toast({
-                                  title: "Copied",
-                                  description: "Application data copied to clipboard",
-                                });
-                              }}
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditAppId(application.id)}
+                                title="Quick edit"
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(JSON.stringify(application.application_data, null, 2));
+                                  toast({ title: "Copied", description: "Application data copied to clipboard" });
+                                }}
+                                title="Copy JSON"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -897,6 +908,12 @@ const AdminDashboard = () => {
             <UsersTab />
           </TabsContent>
         </Tabs>
+        <ApplicationQuickEditDialog
+          open={!!editAppId}
+          onOpenChange={(o) => !o && setEditAppId(null)}
+          applicationId={editAppId}
+          onSaved={fetchApplications}
+        />
       </div>
     </div>
   );
