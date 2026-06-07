@@ -371,7 +371,7 @@ async function processOne(opts: {
         DEFAULT_ACCOUNT_MANAGER_RESEND_FROM;
       const resendPayload: Record<string, any> = {
         from: fromAddress,
-        to: [recipient],
+        to: recipients,
         reply_to: 'christian@ezbiz-fs.com',
         subject,
         html,
