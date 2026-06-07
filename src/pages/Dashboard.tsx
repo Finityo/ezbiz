@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
+import DocumentUploader from "@/components/dashboard/DocumentUploader";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 
 /* ─── Types ─── */
@@ -729,7 +730,12 @@ export default function Dashboard() {
                     <RefreshCw className="h-3 w-3 mr-1" /> Refresh
                   </Button>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  <DocumentUploader
+                    userId={user!.id}
+                    orderId={data.order.id}
+                    onUploaded={loadDashboard}
+                  />
                   {data.documents.length === 0 ? (
                     <div className="text-center py-10 space-y-3">
                       <FolderOpen className="h-12 w-12 mx-auto text-muted-foreground" />
@@ -753,10 +759,25 @@ export default function Dashboard() {
                           </div>
                           <div>
                             {doc.file_url ? (
-                              <Button size="sm" variant="outline" asChild>
-                                <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                                  <Download className="h-3 w-3 mr-1" /> Open
-                                </a>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={async () => {
+                                  const path = doc.file_url || "";
+                                  // External URL fallback
+                                  if (/^https?:\/\//i.test(path)) {
+                                    window.open(path, "_blank", "noopener");
+                                    return;
+                                  }
+                                  const { data: signed, error } = await supabase
+                                    .storage
+                                    .from("order-documents")
+                                    .createSignedUrl(path, 60);
+                                  if (signed?.signedUrl) window.open(signed.signedUrl, "_blank", "noopener");
+                                  else console.error("Signed URL failed:", error);
+                                }}
+                              >
+                                <Download className="h-3 w-3 mr-1" /> Open
                               </Button>
                             ) : (
                               <Badge variant="secondary" className="text-xs">
