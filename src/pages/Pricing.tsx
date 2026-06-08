@@ -469,19 +469,6 @@ const Pricing = () => {
         {/* ── MOBILE CARDS ── */}
         <section className="md:hidden py-4">
           <div className="container mx-auto px-4">
-            <div className="flex justify-start mb-4">
-              <button
-                onClick={() => setShowDescriptions(!showDescriptions)}
-                className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
-              >
-                {showDescriptions ? (
-                  <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
-                ) : (
-                  <><Eye className="h-4 w-4" /> Show Descriptions</>
-                )}
-              </button>
-            </div>
-
             <div className="space-y-6">
               {PACKAGES.map((pkg) => (
                 <div
