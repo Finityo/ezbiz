@@ -80,6 +80,7 @@ const ReviewStep = ({
     stateFee,
     processingSpeed,
     isWhiteGlove,
+    addonQuantities,
   );
 
   const handleCheckout = async () => {
@@ -88,6 +89,7 @@ const ReviewStep = ({
       selectedAddOns,
       processingSpeed,
       isWhiteGlove,
+      addonQuantities,
     );
 
     // Persist orders + normalized rows BEFORE Stripe so the webhook can
