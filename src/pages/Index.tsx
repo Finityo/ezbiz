@@ -711,7 +711,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="group bg-primary hover:bg-primary-light shadow-lg hover:shadow-elegant"
-                onClick={() => { trackClick('See Our Packages', 'comparison_cta', '/order-flow'); navigate('/order-flow'); }}
+                onClick={() => { trackClick('See Our Packages', 'comparison_cta', '/pricing'); navigate('/pricing'); }}
               >
                  {EZBIZ_COPY.comparison.cta}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -790,7 +790,7 @@ const Index = () => {
             <Button 
               size="lg" 
                className="bg-secondary hover:bg-secondary-light text-secondary-foreground shadow-lg hover:shadow-xl text-base md:text-lg px-6 md:px-8 h-12 md:h-14"
-              onClick={() => { trackClick('Get Started Today', 'final_cta', '/order-flow'); navigate('/order-flow'); }}
+              onClick={() => { trackClick('Get Started Today', 'final_cta', '/pricing'); navigate('/pricing'); }}
             >
                {EZBIZ_COPY.finalCta.cta}
               <ArrowRight className="ml-2 h-5 w-5" />

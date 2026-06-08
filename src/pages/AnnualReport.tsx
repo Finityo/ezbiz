@@ -22,7 +22,7 @@ const AnnualReport = () => {
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">{c.hero.headline}</h1>
             <p className="text-xl mb-8 opacity-90">{c.hero.subheadline}</p>
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-bold text-lg px-8 py-6" asChild>
-              <Link to="/order-flow">{c.hero.ctaPrimary}</Link>
+              <Link to="/pricing">{c.hero.ctaPrimary}</Link>
             </Button>
           </div>
         </div>
@@ -79,7 +79,7 @@ const AnnualReport = () => {
             </div>
             <div className="mt-8 text-center">
               <Button size="lg" asChild>
-                <Link to="/order-flow">{c.service.ctaPrimary}</Link>
+                <Link to="/pricing">{c.service.ctaPrimary}</Link>
               </Button>
             </div>
           </Card>

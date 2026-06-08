@@ -193,7 +193,7 @@ const Consultation = () => {
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="default">
-                  <Link to="/order-flow">Start Filing Now</Link>
+                  <Link to="/pricing">Start Filing Now</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
                   <a href={`mailto:${CONTACT_EMAIL}`}>
@@ -468,7 +468,7 @@ const Consultation = () => {
                   <a href={`mailto:${CONTACT_EMAIL}`}>Email Us</a>
                 </Button>
                 <Button asChild size="lg" variant="default" className="text-lg px-8 py-4">
-                  <Link to="/order-flow">Start Filing Now</Link>
+                  <Link to="/pricing">Start Filing Now</Link>
                 </Button>
               </div>
             </div>

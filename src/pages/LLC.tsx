@@ -59,7 +59,7 @@ const LLC = () => {
               <p className="text-sm sm:text-lg mb-6 sm:mb-8 text-primary-foreground/80 max-w-2xl mx-auto">{llcPage.hero.description}</p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
-                  <Link to="/order-flow">{llcPage.hero.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
+                  <Link to="/pricing">{llcPage.hero.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation" onClick={() => trackClick(llcPage.hero.ctaSecondary, 'llc_hero_cta', '/consultation')}>{llcPage.hero.ctaSecondary}</Link>
@@ -298,7 +298,7 @@ const LLC = () => {
               
               <div className="mt-8 sm:mt-12 text-center">
                 <Button size="lg" className="px-6 sm:px-8" asChild>
-                  <Link to="/order-flow">{llcPage.hero.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
+                  <Link to="/pricing">{llcPage.hero.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
                 </Button>
               </div>
             </div>
@@ -430,7 +430,7 @@ const LLC = () => {
               <p className="text-base sm:text-xl text-primary-foreground/90 mb-6 sm:mb-8">{llcPage.cta.subheading}</p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6" asChild>
-                  <Link to="/order-flow">{llcPage.cta.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
+                  <Link to="/pricing">{llcPage.cta.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation" onClick={() => trackClick(llcPage.cta.ctaSecondary, 'llc_bottom_cta', '/consultation')}>{llcPage.cta.ctaSecondary}</Link>

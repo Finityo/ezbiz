@@ -78,7 +78,7 @@ const Footer = () => {
     { name: "Business Structure Quiz", href: "/business-guide" },
     { name: "Compliance Calendar", href: "/business-guide" },
     { name: "Document Checklist", href: "/business-guide" },
-    { name: "Start Your Filing", href: "/order-flow" },
+    { name: "Start Your Filing", href: "/pricing" },
   ];
 
   const company = [

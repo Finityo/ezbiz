@@ -61,13 +61,13 @@ export default function VeteranLLCTexas() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => navigate("/order-flow")}
+            onClick={() => navigate("/pricing")}
             className="px-6 py-3 bg-success text-success-foreground rounded-lg font-semibold"
           >
             Check My Eligibility
           </button>
           <button
-            onClick={() => navigate("/order-flow")}
+            onClick={() => navigate("/pricing")}
             className="px-6 py-3 border rounded-lg font-semibold"
           >
             Start My Texas LLC
@@ -187,7 +187,7 @@ export default function VeteranLLCTexas() {
           Ready to Start Your Texas LLC?
         </h2>
         <button
-          onClick={() => navigate("/order-flow")}
+          onClick={() => navigate("/pricing")}
           className="px-8 py-3 bg-success text-success-foreground rounded-lg font-semibold"
         >
           Get Started Today

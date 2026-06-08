@@ -44,7 +44,7 @@ const SCorporation = () => {
               <p className="text-lg mb-8 text-primary-foreground/80 max-w-2xl mx-auto">{c.hero.description}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                  <Link to="/pricing">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation" onClick={() => trackClick(c.hero.ctaSecondary, 'scorp_hero_cta', '/consultation')}>{c.hero.ctaSecondary}</Link>
@@ -312,7 +312,7 @@ const SCorporation = () => {
               <p className="text-xl text-primary-foreground/90 mb-8">{c.cta.subheading}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order-flow">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                  <Link to="/pricing">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'scorp_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>

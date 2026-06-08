@@ -171,7 +171,7 @@ const Entrepreneurs = () => {
                   asChild
                   className="font-semibold"
                 >
-                  <Link to="/start-order">
+                  <Link to="/pricing">
                     Start your business <ArrowRight className="h-4 w-4 ml-2" />
                   </Link>
                 </Button>
@@ -335,7 +335,7 @@ const Entrepreneurs = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" variant="secondary" asChild className="font-semibold">
-                <Link to="/start-order">
+                <Link to="/pricing">
                   Start now <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
