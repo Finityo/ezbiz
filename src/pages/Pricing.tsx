@@ -548,6 +548,11 @@ const Pricing = () => {
                   >
                     Continue
                   </Button>
+                  {addonsTotal(pkg.key) > 0 && (
+                    <p className="text-xs text-center text-muted-foreground mt-2">
+                      {selectedAddOns[pkg.key].size} add-on{selectedAddOns[pkg.key].size === 1 ? "" : "s"} selected · +${formatPrice(addonsTotal(pkg.key))}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
