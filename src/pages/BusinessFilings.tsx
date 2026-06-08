@@ -148,7 +148,7 @@ const BusinessFilings = () => {
               filing services. From annual reports to business changes, we handle the paperwork so you can focus on growth.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="lg" className="group" onClick={() => navigate('/consultation')}>
+              <Button variant="hero" size="lg" className="group" onClick={() => { trackClick('Free Consultation', 'business_filings_hero_cta', '/consultation'); navigate('/consultation'); }}>
                 Free Consultation
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -276,7 +276,7 @@ const BusinessFilings = () => {
             so you can focus on what matters most - growing your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl" onClick={() => navigate('/consultation')}>
+            <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl" onClick={() => { trackClick('Get Free Consultation', 'business_filings_bottom_cta', '/consultation'); navigate('/consultation'); }}>
               Get Free Consultation
             </Button>
             <Button variant="professional" size="lg" className="bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground hover:text-primary" onClick={() => navigate('/pricing')}>
