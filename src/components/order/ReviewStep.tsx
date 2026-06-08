@@ -222,17 +222,35 @@ const ReviewStep = ({
             <ul className="space-y-2">
               {selectedAddOns.map((id) => {
                 const addon = ADDON_PRICES[id as AddonId];
+                const qty = addonQuantities[id] || 1;
                 return addon ? (
                   <li key={id} className="flex justify-between items-start text-sm">
                     <div className="flex-1 pr-2">
                       <span className="font-medium">{addon.name}</span>
+                      {qty > 1 && (
+                        <span className="text-xs text-muted-foreground ml-1">(×{qty})</span>
+                      )}
                       <p className="text-xs text-muted-foreground leading-relaxed">{addon.description}</p>
                     </div>
-                    <span className="font-medium text-primary whitespace-nowrap">${formatPrice(addon.price)}</span>
+                    <span className="font-medium text-primary whitespace-nowrap">
+                      ${formatPrice(addon.price * qty)}
+                    </span>
                   </li>
                 ) : null;
               })}
             </ul>
+            <div className="flex justify-between items-center pt-2 border-t mt-2">
+              <span className="text-sm font-medium text-muted-foreground">Add-ons Subtotal</span>
+              <span className="text-sm font-bold text-primary whitespace-nowrap">
+                ${formatPrice(
+                  selectedAddOns.reduce((sum, id) => {
+                    const addon = ADDON_PRICES[id as AddonId];
+                    const qty = addonQuantities[id] || 1;
+                    return addon ? sum + addon.price * qty : sum;
+                  }, 0)
+                )}
+              </span>
+            </div>
           </Section>
         </>
       )}
@@ -247,16 +265,34 @@ const ReviewStep = ({
         </div>
         {selectedAddOns.map((id) => {
           const addon = ADDON_PRICES[id as AddonId];
+          const qty = addonQuantities[id] || 1;
           return addon ? (
             <div key={id} className="flex justify-between items-start text-sm">
               <div className="flex-1 pr-2">
                 <span>{addon.name}</span>
+                {qty > 1 && (
+                  <span className="text-xs text-muted-foreground ml-1">(×{qty})</span>
+                )}
                 <p className="text-xs text-muted-foreground">{addon.description}</p>
               </div>
-              <span className="whitespace-nowrap">${formatPrice(addon.price)}</span>
+              <span className="whitespace-nowrap">${formatPrice(addon.price * qty)}</span>
             </div>
           ) : null;
         })}
+        {selectedAddOns.length > 0 && (
+          <div className="flex justify-between text-sm font-medium text-muted-foreground">
+            <span>Add-ons Subtotal</span>
+            <span className="whitespace-nowrap">
+              ${formatPrice(
+                selectedAddOns.reduce((sum, id) => {
+                  const addon = ADDON_PRICES[id as AddonId];
+                  const qty = addonQuantities[id] || 1;
+                  return addon ? sum + addon.price * qty : sum;
+                }, 0)
+              )}
+            </span>
+          </div>
+        )}
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
           <span>${formatPrice(stateFee)}</span>
