@@ -62,7 +62,7 @@ const LLC = () => {
                   <Link to="/order-flow">{llcPage.hero.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{llcPage.hero.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(llcPage.hero.ctaSecondary, 'llc_hero_cta', '/consultation')}>{llcPage.hero.ctaSecondary}</Link>
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-primary-foreground/80">
@@ -433,7 +433,7 @@ const LLC = () => {
                   <Link to="/order-flow">{llcPage.cta.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{llcPage.cta.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(llcPage.cta.ctaSecondary, 'llc_bottom_cta', '/consultation')}>{llcPage.cta.ctaSecondary}</Link>
                 </Button>
               </div>
               <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-primary-foreground/70">{llcPage.cta.footnote}</p>

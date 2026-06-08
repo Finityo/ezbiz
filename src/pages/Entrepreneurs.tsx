@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import {
   Lightbulb,
   Clock,
