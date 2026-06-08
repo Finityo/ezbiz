@@ -49,6 +49,8 @@ export default function Checkout() {
     order.selectedAddOns,
     stateFee,
     order.processingSpeed || "standard",
+    false,
+    order.addonQuantities,
   );
 
   const handleCheckout = async () => {
@@ -56,6 +58,8 @@ export default function Checkout() {
       order.packageId as PackageType,
       order.selectedAddOns,
       order.processingSpeed || "standard",
+      false,
+      order.addonQuantities,
     );
 
     trackCheckoutStart(pkg?.name || order.packageId, total);
