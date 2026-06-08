@@ -214,7 +214,19 @@ const TABLE_ROWS: TableRow[] = [
 /*  CELL RENDERER                                                     */
 /* ------------------------------------------------------------------ */
 
-function CellContent({ value }: { value: CellValue }) {
+function CellContent({
+  value,
+  addonId,
+  pkg,
+  selected,
+  onToggle,
+}: {
+  value: CellValue;
+  addonId?: AddonId;
+  pkg: PackageType;
+  selected: boolean;
+  onToggle: (pkg: PackageType, addonId: AddonId) => void;
+}) {
   if (value === "included") {
     return <Check className="h-5 w-5 text-primary mx-auto" />;
   }
@@ -223,6 +235,24 @@ function CellContent({ value }: { value: CellValue }) {
   }
   if (typeof value === "string") {
     return <span className="text-sm font-semibold text-primary">{value}</span>;
+  }
+  // dollar-priced cell
+  if (addonId) {
+    return (
+      <label
+        className="inline-flex items-center gap-2 cursor-pointer select-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Checkbox
+          checked={selected}
+          onCheckedChange={() => onToggle(pkg, addonId)}
+          aria-label={`Add ${ADDON_PRICES[addonId].name} to ${pkg} package`}
+        />
+        <span className={`text-sm font-semibold ${selected ? "text-primary" : "text-foreground"}`}>
+          +${formatPrice(value.price)}
+        </span>
+      </label>
+    );
   }
   return <span className="text-sm font-semibold text-foreground">${formatPrice(value.price)}</span>;
 }
@@ -234,12 +264,34 @@ function CellContent({ value }: { value: CellValue }) {
 const Pricing = () => {
   const navigate = useNavigate();
   const [showDescriptions, setShowDescriptions] = useState(false);
+  const [selectedAddOns, setSelectedAddOns] = useState<Record<PackageType, Set<AddonId>>>({
+    basic: new Set(),
+    deluxe: new Set(),
+    complete: new Set(),
+  });
 
-  const handleStart = (packageKey: string) => {
+  const toggleAddon = (pkg: PackageType, addonId: AddonId) => {
+    setSelectedAddOns((prev) => {
+      const next = new Set(prev[pkg]);
+      if (next.has(addonId)) next.delete(addonId); else next.add(addonId);
+      return { ...prev, [pkg]: next };
+    });
+  };
+
+  const addonsTotal = (pkg: PackageType) =>
+    Array.from(selectedAddOns[pkg]).reduce(
+      (sum, id) => sum + (ADDON_PRICES[id]?.price || 0),
+      0,
+    );
+
+  const handleStart = (packageKey: PackageType) => {
     const params = new URLSearchParams();
     params.set("package", packageKey);
-    trackClick(`Start ${packageKey}`, "package_cta", `/order-flow?${params.toString()}`);
-    navigate(`/order-flow?${params.toString()}`);
+    const addons = Array.from(selectedAddOns[packageKey]);
+    if (addons.length) params.set("addons", addons.join(","));
+    const href = `/order-flow?${params.toString()}`;
+    trackClick(`Start ${packageKey}`, "package_cta", href);
+    navigate(href);
   };
 
   return (
