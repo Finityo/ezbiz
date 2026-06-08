@@ -292,13 +292,15 @@ export function calculateOrderTotal(
   stateFee: number,
   processing: ProcessingType = "standard",
   whiteGloveSelected: boolean = false,
+  addonQuantities: Record<string, number> = {},
 ): number {
   const packagePrice = PACKAGE_PRICES[pkg]?.price || 0;
 
   const addonTotal = addons.reduce((sum, addon) => {
     const config = ADDON_PRICES[addon as AddonId];
     if (!config || !config.availableInCheckout) return sum;
-    return sum + config.price;
+    const qty = addonQuantities[addon] || 1;
+    return sum + config.price * qty;
   }, 0);
 
   const processingFee = PROCESSING_PRICES[processing].price;
@@ -312,6 +314,7 @@ export function getStripeLineItems(
   addons: string[],
   processing: ProcessingType = "standard",
   whiteGloveSelected: boolean = false,
+  addonQuantities: Record<string, number> = {},
 ) {
   const items: { priceId: string; quantity: number }[] = [];
 
@@ -325,7 +328,8 @@ export function getStripeLineItems(
   addons.forEach((addonId) => {
     const config = ADDON_PRICES[addonId as AddonId];
     if (config && config.availableInCheckout && config.stripePriceId) {
-      items.push({ priceId: config.stripePriceId, quantity: 1 });
+      const qty = Math.max(1, addonQuantities[addonId] || 1);
+      items.push({ priceId: config.stripePriceId, quantity: qty });
     }
   });
 
