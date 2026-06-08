@@ -16,7 +16,9 @@ import {
   PROCESSING_PRICES,
   SHIPPING_PRICE,
   type PackageType,
+  type AddonId,
 } from "@/lib/pricing";
+import { Checkbox } from "@/components/ui/checkbox";
 
 /* ------------------------------------------------------------------ */
 /*  PACKAGES — derived from pricing config                            */
@@ -40,6 +42,8 @@ interface TableRow {
   label: string;
   description?: string;
   section?: string;
+  /** When set, dollar-price cells in this row render as selectable add-on checkboxes that flow through to /order-flow. */
+  addonId?: AddonId;
   basic: CellValue;
   deluxe: CellValue;
   complete: CellValue;
@@ -110,6 +114,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Compliance Alerts",
     description: ADDON_PRICES.complianceAlerts.description,
+    addonId: "complianceAlerts",
     basic: { price: ADDON_PRICES.complianceAlerts.price },
     deluxe: { price: ADDON_PRICES.complianceAlerts.price },
     complete: "included",
@@ -120,6 +125,7 @@ const TABLE_ROWS: TableRow[] = [
     section: "Tax Setup",
     label: "EIN Filing Service",
     description: ADDON_PRICES.ein.description,
+    addonId: "ein",
     basic: { price: ADDON_PRICES.ein.price },
     deluxe: "included",
     complete: "included",
@@ -127,6 +133,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "S-Corp Election Filing",
     description: ADDON_PRICES.sCorp.description,
+    addonId: "sCorp",
     basic: { price: ADDON_PRICES.sCorp.price },
     deluxe: { price: ADDON_PRICES.sCorp.price },
     complete: "included",
@@ -137,6 +144,7 @@ const TABLE_ROWS: TableRow[] = [
     section: "Business Tools",
     label: "Business License Research",
     description: ADDON_PRICES.licenseResearch.description,
+    addonId: "licenseResearch",
     basic: { price: ADDON_PRICES.licenseResearch.price },
     deluxe: { price: ADDON_PRICES.licenseResearch.price },
     complete: "included",
@@ -144,6 +152,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Corporate Kit",
     description: ADDON_PRICES.corporateKit.description,
+    addonId: "corporateKit",
     basic: { price: ADDON_PRICES.corporateKit.price },
     deluxe: { price: ADDON_PRICES.corporateKit.price },
     complete: "included",
@@ -151,6 +160,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Registered Agent Service",
     description: ADDON_PRICES.registeredAgent.description,
+    addonId: "registeredAgent",
     basic: { price: ADDON_PRICES.registeredAgent.price },
     deluxe: { price: ADDON_PRICES.registeredAgent.price },
     complete: { price: ADDON_PRICES.registeredAgent.price },
@@ -158,6 +168,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "DBA Filing",
     description: ADDON_PRICES.dba.description,
+    addonId: "dba",
     basic: { price: ADDON_PRICES.dba.price },
     deluxe: { price: ADDON_PRICES.dba.price },
     complete: { price: ADDON_PRICES.dba.price },
@@ -165,6 +176,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Annual Report Filing",
     description: ADDON_PRICES.annualReport.description,
+    addonId: "annualReport",
     basic: { price: ADDON_PRICES.annualReport.price },
     deluxe: { price: ADDON_PRICES.annualReport.price },
     complete: { price: ADDON_PRICES.annualReport.price },
