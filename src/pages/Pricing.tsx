@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
-import { Check, Eye, EyeOff } from "lucide-react";
+import { Check } from "lucide-react";
 import {
   PACKAGE_PRICES,
   ADDON_PRICES,
