@@ -422,7 +422,13 @@ const Pricing = () => {
                               : "group-hover:bg-muted/50"
                           }`}
                         >
-                          <CellContent value={row[pkg.key]} />
+                          <CellContent
+                            value={row[pkg.key]}
+                            addonId={row.addonId}
+                            pkg={pkg.key}
+                            selected={!!row.addonId && selectedAddOns[pkg.key].has(row.addonId)}
+                            onToggle={toggleAddon}
+                          />
                         </td>
                       ))}
                     </tr>
@@ -516,7 +522,13 @@ const Pricing = () => {
                             )}
                           </div>
                           <div className="flex-shrink-0 pt-0.5">
-                            <CellContent value={val} />
+                            <CellContent
+                              value={val}
+                              addonId={row.addonId}
+                              pkg={pkg.key}
+                              selected={!!row.addonId && selectedAddOns[pkg.key].has(row.addonId)}
+                              onToggle={toggleAddon}
+                            />
                           </div>
                         </div>
                       );
