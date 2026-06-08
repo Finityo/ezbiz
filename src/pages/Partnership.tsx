@@ -46,7 +46,7 @@ const Partnership = () => {
                   <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{c.hero.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(c.hero.ctaSecondary, 'partnership_hero_cta', '/consultation')}>{c.hero.ctaSecondary}</Link>
                 </Button>
               </div>
             </div>
@@ -308,7 +308,7 @@ const Partnership = () => {
                   <Link to="/order-flow">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{c.cta.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'partnership_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>
                 </Button>
               </div>
             </div>
