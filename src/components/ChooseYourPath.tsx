@@ -141,14 +141,14 @@ const ChooseYourPath = () => {
                 onClick={() => {
                   trackEvent("choose_path_click", {
                     option: "guided_filing",
-                    destination: "/order-flow?mode=guided",
+                    destination: "/pricing",
                   });
                   trackClick(
                     "Start Guided Order Flow",
                     "choose_path_guided",
-                    "/order-flow?mode=guided"
+                    "/pricing"
                   );
-                  navigate("/order-flow?mode=guided");
+                  navigate("/pricing");
                 }}
               >
                 Start Guided Order Flow
