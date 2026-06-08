@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, FileText, Users, Building, Tag, AlertTriangle, Shield, ArrowRight, HelpCircle, Briefcase, Store } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { DBA_COPY } from "@/content/ezbizCopy";
 
 const c = DBA_COPY;

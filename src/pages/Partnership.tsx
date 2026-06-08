@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, Users, FileText, TrendingUp, Shield, AlertTriangle, ArrowRight, HelpCircle, Handshake, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { PARTNERSHIP_COPY } from "@/content/ezbizCopy";
 
 const c = PARTNERSHIP_COPY;

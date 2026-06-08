@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, Shield, TrendingUp, Users, DollarSign, AlertTriangle, ArrowRight, HelpCircle, Globe, Building, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { CCORP_COPY } from "@/content/ezbizCopy";
 
 const c = CCORP_COPY;

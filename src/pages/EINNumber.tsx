@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Shield, Clock, Building, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { EIN_COPY } from "@/content/ezbizCopy";
 
 const c = EIN_COPY;
