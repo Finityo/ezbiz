@@ -46,7 +46,7 @@ export const STATE_FILING_FEES: Record<string, number> = {
   "South Carolina": 110,
   "South Dakota": 150,
   "Tennessee": 325,
-  "Texas": 1,
+  "Texas": 300,
   "Utah": 72,
   "Vermont": 125,
   "Virginia": 104,
