@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { REGISTERED_AGENT_COPY } from "@/content/ezbizCopy";
 
 const c = REGISTERED_AGENT_COPY;
@@ -49,7 +50,7 @@ const RegisteredAgent = () => {
               <Button size="lg" className="group bg-primary hover:bg-primary-light text-primary-foreground" asChild>
                 <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></Link>
               </Button>
-              <Button variant="outline" size="lg" className="border-2 hover:bg-muted">{c.hero.ctaSecondary}</Button>
+              <Button variant="outline" size="lg" className="border-2 hover:bg-muted" asChild><Link to="/consultation" onClick={() => trackClick(c.hero.ctaSecondary, 'registered_agent_hero_cta', '/consultation')}>{c.hero.ctaSecondary}</Link></Button>
             </div>
             <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
               {c.hero.badges.map((badge, i) => (
@@ -191,7 +192,7 @@ const RegisteredAgent = () => {
               <Link to="/order-flow">{c.cta.ctaPrimary}</Link>
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 h-14 border-2 border-white/30 text-white hover:bg-white/10" asChild>
-              <Link to="/consultation">{c.cta.ctaSecondary}</Link>
+              <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'registered_agent_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>
             </Button>
           </div>
         </div>
