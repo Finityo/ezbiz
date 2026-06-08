@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Download, Star } from "lucide-react";
 import vvlAsset from "@/assets/vvl.pdf.asset.json";
 import { trackClick } from "@/hooks/useAnalytics";
+import { trackEvent } from "@/lib/analytics";
+
+const FILE_NAME = "Veteran-Verification-Letter-VVL.pdf";
 
 interface Props {
   source: string;
@@ -13,12 +16,22 @@ export default function VVLDownloadButton({ source, label = "Download VVL Form (
   const [showThanks, setShowThanks] = useState(false);
 
   const handleDownload = () => {
+    const pageLocation =
+      typeof window !== "undefined" ? window.location.href : "";
     try {
+      // Legacy click tracker (Supabase + GA4 cta_click)
       trackClick?.("VVL Download", `vvl_download_${source}`, vvlAsset.url);
+      // Dedicated GA4 pdf_download event with full page_location + destination URL
+      trackEvent("pdf_download", {
+        file_name: FILE_NAME,
+        destination_url: vvlAsset.url,
+        page_location: pageLocation,
+        source,
+      });
     } catch {}
     const a = document.createElement("a");
     a.href = vvlAsset.url;
-    a.download = "Veteran-Verification-Letter-VVL.pdf";
+    a.download = FILE_NAME;
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
