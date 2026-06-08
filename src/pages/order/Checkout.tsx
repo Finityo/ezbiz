@@ -186,9 +186,12 @@ export default function Checkout() {
               {order.selectedAddOns.map((id) => {
                 const addon = ADDON_PRICES[id as AddonId];
                 return addon ? (
-                  <div key={id} className="flex justify-between text-sm">
-                    <span>{addon.name}</span>
-                    <span>${formatPrice(addon.price)}</span>
+                  <div key={id} className="flex justify-between items-start text-sm">
+                    <div className="flex-1 pr-2">
+                      <span>{addon.name}</span>
+                      <p className="text-xs text-muted-foreground">{addon.description}</p>
+                    </div>
+                    <span className="whitespace-nowrap">${formatPrice(addon.price)}</span>
                   </div>
                 ) : null;
               })}
