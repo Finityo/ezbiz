@@ -16,7 +16,9 @@ import {
   PROCESSING_PRICES,
   SHIPPING_PRICE,
   type PackageType,
+  type AddonId,
 } from "@/lib/pricing";
+import { Checkbox } from "@/components/ui/checkbox";
 
 /* ------------------------------------------------------------------ */
 /*  PACKAGES — derived from pricing config                            */
@@ -40,6 +42,8 @@ interface TableRow {
   label: string;
   description?: string;
   section?: string;
+  /** When set, dollar-price cells in this row render as selectable add-on checkboxes that flow through to /order-flow. */
+  addonId?: AddonId;
   basic: CellValue;
   deluxe: CellValue;
   complete: CellValue;
@@ -110,6 +114,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Compliance Alerts",
     description: ADDON_PRICES.complianceAlerts.description,
+    addonId: "complianceAlerts",
     basic: { price: ADDON_PRICES.complianceAlerts.price },
     deluxe: { price: ADDON_PRICES.complianceAlerts.price },
     complete: "included",
@@ -120,6 +125,7 @@ const TABLE_ROWS: TableRow[] = [
     section: "Tax Setup",
     label: "EIN Filing Service",
     description: ADDON_PRICES.ein.description,
+    addonId: "ein",
     basic: { price: ADDON_PRICES.ein.price },
     deluxe: "included",
     complete: "included",
@@ -127,6 +133,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "S-Corp Election Filing",
     description: ADDON_PRICES.sCorp.description,
+    addonId: "sCorp",
     basic: { price: ADDON_PRICES.sCorp.price },
     deluxe: { price: ADDON_PRICES.sCorp.price },
     complete: "included",
@@ -137,6 +144,7 @@ const TABLE_ROWS: TableRow[] = [
     section: "Business Tools",
     label: "Business License Research",
     description: ADDON_PRICES.licenseResearch.description,
+    addonId: "licenseResearch",
     basic: { price: ADDON_PRICES.licenseResearch.price },
     deluxe: { price: ADDON_PRICES.licenseResearch.price },
     complete: "included",
@@ -144,6 +152,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Corporate Kit",
     description: ADDON_PRICES.corporateKit.description,
+    addonId: "corporateKit",
     basic: { price: ADDON_PRICES.corporateKit.price },
     deluxe: { price: ADDON_PRICES.corporateKit.price },
     complete: "included",
@@ -151,6 +160,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Registered Agent Service",
     description: ADDON_PRICES.registeredAgent.description,
+    addonId: "registeredAgent",
     basic: { price: ADDON_PRICES.registeredAgent.price },
     deluxe: { price: ADDON_PRICES.registeredAgent.price },
     complete: { price: ADDON_PRICES.registeredAgent.price },
@@ -158,6 +168,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "DBA Filing",
     description: ADDON_PRICES.dba.description,
+    addonId: "dba",
     basic: { price: ADDON_PRICES.dba.price },
     deluxe: { price: ADDON_PRICES.dba.price },
     complete: { price: ADDON_PRICES.dba.price },
@@ -165,6 +176,7 @@ const TABLE_ROWS: TableRow[] = [
   {
     label: "Annual Report Filing",
     description: ADDON_PRICES.annualReport.description,
+    addonId: "annualReport",
     basic: { price: ADDON_PRICES.annualReport.price },
     deluxe: { price: ADDON_PRICES.annualReport.price },
     complete: { price: ADDON_PRICES.annualReport.price },
@@ -202,7 +214,19 @@ const TABLE_ROWS: TableRow[] = [
 /*  CELL RENDERER                                                     */
 /* ------------------------------------------------------------------ */
 
-function CellContent({ value }: { value: CellValue }) {
+function CellContent({
+  value,
+  addonId,
+  pkg,
+  selected,
+  onToggle,
+}: {
+  value: CellValue;
+  addonId?: AddonId;
+  pkg: PackageType;
+  selected: boolean;
+  onToggle: (pkg: PackageType, addonId: AddonId) => void;
+}) {
   if (value === "included") {
     return <Check className="h-5 w-5 text-primary mx-auto" />;
   }
@@ -211,6 +235,24 @@ function CellContent({ value }: { value: CellValue }) {
   }
   if (typeof value === "string") {
     return <span className="text-sm font-semibold text-primary">{value}</span>;
+  }
+  // dollar-priced cell
+  if (addonId) {
+    return (
+      <label
+        className="inline-flex items-center gap-2 cursor-pointer select-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Checkbox
+          checked={selected}
+          onCheckedChange={() => onToggle(pkg, addonId)}
+          aria-label={`Add ${ADDON_PRICES[addonId].name} to ${pkg} package`}
+        />
+        <span className={`text-sm font-semibold ${selected ? "text-primary" : "text-foreground"}`}>
+          +${formatPrice(value.price)}
+        </span>
+      </label>
+    );
   }
   return <span className="text-sm font-semibold text-foreground">${formatPrice(value.price)}</span>;
 }
@@ -222,12 +264,34 @@ function CellContent({ value }: { value: CellValue }) {
 const Pricing = () => {
   const navigate = useNavigate();
   const [showDescriptions, setShowDescriptions] = useState(false);
+  const [selectedAddOns, setSelectedAddOns] = useState<Record<PackageType, Set<AddonId>>>({
+    basic: new Set(),
+    deluxe: new Set(),
+    complete: new Set(),
+  });
 
-  const handleStart = (packageKey: string) => {
+  const toggleAddon = (pkg: PackageType, addonId: AddonId) => {
+    setSelectedAddOns((prev) => {
+      const next = new Set(prev[pkg]);
+      if (next.has(addonId)) next.delete(addonId); else next.add(addonId);
+      return { ...prev, [pkg]: next };
+    });
+  };
+
+  const addonsTotal = (pkg: PackageType) =>
+    Array.from(selectedAddOns[pkg]).reduce(
+      (sum, id) => sum + (ADDON_PRICES[id]?.price || 0),
+      0,
+    );
+
+  const handleStart = (packageKey: PackageType) => {
     const params = new URLSearchParams();
     params.set("package", packageKey);
-    trackClick(`Start ${packageKey}`, "package_cta", `/order-flow?${params.toString()}`);
-    navigate(`/order-flow?${params.toString()}`);
+    const addons = Array.from(selectedAddOns[packageKey]);
+    if (addons.length) params.set("addons", addons.join(","));
+    const href = `/order-flow?${params.toString()}`;
+    trackClick(`Start ${packageKey}`, "package_cta", href);
+    navigate(href);
   };
 
   return (
@@ -358,7 +422,13 @@ const Pricing = () => {
                               : "group-hover:bg-muted/50"
                           }`}
                         >
-                          <CellContent value={row[pkg.key]} />
+                          <CellContent
+                            value={row[pkg.key]}
+                            addonId={row.addonId}
+                            pkg={pkg.key}
+                            selected={!!row.addonId && selectedAddOns[pkg.key].has(row.addonId)}
+                            onToggle={toggleAddon}
+                          />
                         </td>
                       ))}
                     </tr>
@@ -385,6 +455,11 @@ const Pricing = () => {
                       >
                         Start {pkg.name}
                       </Button>
+                      {addonsTotal(pkg.key) > 0 && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {selectedAddOns[pkg.key].size} add-on{selectedAddOns[pkg.key].size === 1 ? "" : "s"} · +${formatPrice(addonsTotal(pkg.key))}
+                        </p>
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -452,7 +527,13 @@ const Pricing = () => {
                             )}
                           </div>
                           <div className="flex-shrink-0 pt-0.5">
-                            <CellContent value={val} />
+                            <CellContent
+                              value={val}
+                              addonId={row.addonId}
+                              pkg={pkg.key}
+                              selected={!!row.addonId && selectedAddOns[pkg.key].has(row.addonId)}
+                              onToggle={toggleAddon}
+                            />
                           </div>
                         </div>
                       );
@@ -467,6 +548,11 @@ const Pricing = () => {
                   >
                     Continue
                   </Button>
+                  {addonsTotal(pkg.key) > 0 && (
+                    <p className="text-xs text-center text-muted-foreground mt-2">
+                      {selectedAddOns[pkg.key].size} add-on{selectedAddOns[pkg.key].size === 1 ? "" : "s"} selected · +${formatPrice(addonsTotal(pkg.key))}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

@@ -81,7 +81,14 @@ const EnhancedOrderFlow = () => {
   const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
   const [isVeteran, setIsVeteran] = useState(false);
   const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
-  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>(() => {
+    const raw = searchParams.get("addons");
+    if (!raw) return [];
+    return raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter((id) => id && Object.prototype.hasOwnProperty.call(ADDON_PRICES, id));
+  });
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantities>({});
   const [processingSpeed, setProcessingSpeed] = useState<ProcessingType>("standard");
   const [businessDetails, setBusinessDetails] = useState<BusinessDetails>({
