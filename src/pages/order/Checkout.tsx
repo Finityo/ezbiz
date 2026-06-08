@@ -245,8 +245,10 @@ export default function Checkout() {
 
             <div className="pt-3 border-t space-y-1.5 text-xs text-muted-foreground">
               <p>
-                Prices do not include state filing fees, shipping, or third-party government
-                fees unless specifically stated.
+                Your estimated total includes EZ Biz service fees, selected add-ons, processing
+                speed, shipping when applicable, and state filing fees shown at checkout.
+                Additional government, agency, or third-party fees may apply only if required
+                after review or for services not included in this order.
               </p>
               <p>
                 EZ BIZ File Service is a filing assistance service and does not provide legal,
