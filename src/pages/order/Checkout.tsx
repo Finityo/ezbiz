@@ -185,16 +185,34 @@ export default function Checkout() {
 
               {order.selectedAddOns.map((id) => {
                 const addon = ADDON_PRICES[id as AddonId];
+                const qty = order.addonQuantities[id] || 1;
                 return addon ? (
                   <div key={id} className="flex justify-between items-start text-sm">
                     <div className="flex-1 pr-2">
                       <span>{addon.name}</span>
+                      {qty > 1 && (
+                        <span className="text-xs text-muted-foreground ml-1">(×{qty})</span>
+                      )}
                       <p className="text-xs text-muted-foreground">{addon.description}</p>
                     </div>
-                    <span className="whitespace-nowrap">${formatPrice(addon.price)}</span>
+                    <span className="whitespace-nowrap">${formatPrice(addon.price * qty)}</span>
                   </div>
                 ) : null;
               })}
+              {order.selectedAddOns.length > 0 && (
+                <div className="flex justify-between text-sm font-medium text-muted-foreground">
+                  <span>Add-ons Subtotal</span>
+                  <span className="whitespace-nowrap">
+                    ${formatPrice(
+                      order.selectedAddOns.reduce((sum, id) => {
+                        const addon = ADDON_PRICES[id as AddonId];
+                        const qty = order.addonQuantities[id] || 1;
+                        return addon ? sum + addon.price * qty : sum;
+                      }, 0)
+                    )}
+                  </span>
+                </div>
+              )}
 
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
