@@ -285,6 +285,7 @@ const Pricing = () => {
 
   const handleStart = (packageKey: PackageType) => {
     const params = new URLSearchParams();
+    params.set("mode", "guided");
     params.set("package", packageKey);
     const addons = Array.from(selectedAddOns[packageKey]);
     if (addons.length) params.set("addons", addons.join(","));

@@ -39,7 +39,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
-const EnhancedOrderFlow = lazy(() => import("./pages/EnhancedOrderFlow"));
+import OrderFlowRoute from "./components/OrderFlowRoute";
 const CompanyInfo = lazy(() => import("./pages/order/CompanyInfo"));
 const ProcessingSpeedPage = lazy(() => import("./pages/order/ProcessingSpeed"));
 const IrsContact = lazy(() => import("./pages/order/IrsContact"));
@@ -126,7 +126,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/order-flow" element={<EnhancedOrderFlow />} />
+              <Route path="/order-flow" element={<OrderFlowRoute />} />
               <Route path="/order/company-info" element={<CompanyInfo />} />
               <Route path="/order/processing-speed" element={<ProcessingSpeedPage />} />
               <Route path="/order/irs-contact" element={<IrsContact />} />

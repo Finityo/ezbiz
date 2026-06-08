@@ -27,7 +27,7 @@ const EINNumber = () => {
               <h1 className="text-5xl font-bold mb-6">{c.hero.headline}</h1>
               <p className="text-xl mb-8 text-primary-foreground/90">{c.hero.subheadline}</p>
               <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                <Link to="/pricing">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
             </div>
           </div>
@@ -156,7 +156,7 @@ const EINNumber = () => {
                         ))}
                       </ul>
                       <Button className="w-full mt-6" asChild>
-                        <Link to="/order-flow">{index === 0 ? "Get Started" : "Choose Express"}</Link>
+                        <Link to="/pricing">{index === 0 ? "Get Started" : "Choose Express"}</Link>
                       </Button>
                     </CardContent>
                   </Card>
@@ -195,7 +195,7 @@ const EINNumber = () => {
               <p className="text-xl text-primary-foreground/90 mb-8">{c.cta.subheading}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
-                  <Link to="/order-flow">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                  <Link to="/pricing">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
                   <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'ein_number_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>

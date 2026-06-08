@@ -233,7 +233,7 @@ const About = () => {
                 <Button 
                   size="lg" 
                   className="bg-secondary hover:bg-secondary-light text-secondary-foreground text-lg px-8 h-14"
-                  onClick={() => { trackClick(about.cta.ctaPrimary, 'about_cta', '/order-flow'); navigate('/order-flow'); }}
+                  onClick={() => { trackClick(about.cta.ctaPrimary, 'about_cta', '/pricing'); navigate('/pricing'); }}
                 >
                   {about.cta.ctaPrimary}
                 </Button>

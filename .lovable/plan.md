@@ -1,84 +1,74 @@
-## Scope
+# Surgical Routing & Performance Fix
 
-Ten distinct items, grouped by risk. I'll execute top-down and verify each.
+## Root cause
+`/order-flow?mode=guided` (no `package=`) shows a blank page because the lazy `EnhancedOrderFlow` chunk is large (Supabase, auth, 5 step components, Stripe) and the redirect-on-missing-package only fires **after** the chunk parses. Meanwhile most public CTAs link bare `/order-flow`, dropping users straight into that broken state. `/pricing` itself is already lightweight.
 
----
+## What I'll change (surgical only)
 
-### A. Quick reverts (low risk, no UI changes)
+### 1. Pre-route guard for `/order-flow` (App.tsx)
+Wrap the lazy route in a tiny inline component that reads `useSearchParams` **before** the chunk loads:
+- If `mode !== "whiteglove"` AND `package` param is missing/invalid → `<Navigate to="/pricing" replace />` immediately.
+- Otherwise render the lazy `<EnhancedOrderFlow />`.
 
-1. **Pricing**: `src/lib/pricing.ts` — `basic.price` back to `129` and `basic.stripePriceId` back to `"price_1TRVJJIUysiSR1zwmUpJg0gy"`. Remove the "$1 LIVE TEST MODE" comment block. The `EXPECTED_PRICE_CENTS` map auto-derives, so create-checkout will stop rejecting.
+This eliminates the blank-screen wait entirely for the broken URL.
 
-2. **Account manager email — send to BOTH**:
-   - Update `ACCOUNT_MANAGER_EMAIL` secret value to `Chrislumbi@outlook.com,ABeren@corpnet.com` (comma-separated).
-   - Patch `supabase/functions/send-order-to-account-manager/index.ts` to split the env var on commas, trim, dedupe, and pass the array to Resend `to`. Audit columns (`account_manager_sent_to`) get the joined string. Re-deploy the function.
+### 2. Branded Suspense fallback for `/order-flow`
+Replace the generic spinner Suspense (only for this route) with:
+```
+Preparing your EZ Biz filing options...
+```
+plus a small spinner. Keeps the global Suspense untouched.
 
-3. **Delete demo user `Talavera.c.t@outlook.com`** via SQL migration (deletes from `auth.users` cascades to `profiles`, `user_roles`, `orders.user_id` set null via existing schema — I'll inspect first and use cascade where safe).
+### 3. Error recovery boundary around `/order-flow`
+Add a minimal `OrderFlowErrorBoundary` class component wrapping the lazy route. On error it shows:
+```
+We had trouble loading your order flow.
+Please return to pricing and choose your package.
+[ Back to Pricing ]   (Link to /pricing)
+```
+No global error-boundary changes.
 
----
+### 4. Fix public CTAs → `/pricing`
+Update the routes flagged "✅ change" in the audit table to point to `/pricing`. Includes:
+- `Hero.tsx`, `FloatingCTA.tsx`, `Navigation.tsx` (2), `Footer.tsx`, `ChooseYourPath.tsx` (guided card only — whiteglove unchanged), `StateHeroSection.tsx`, `Index.tsx` (2), `About.tsx`, `Consultation.tsx` (2), `VeteranLLCTexas.tsx` (3), `Entrepreneurs.tsx` (2 `/start-order` links).
+- Entity/service pages: `LLC`, `CCorporation`, `SCorporation`, `NonprofitCorporation`, `ProfessionalCorporation`, `Partnership`, `SoleProprietorship`, `RegisteredAgent`, `DBAFiling`, `EINNumber`, `AnnualReport`.
+- `content/blogPosts.ts` 4 markdown links.
+- Analytics `trackClick` destination strings updated to match new route.
+- Keep `components/order/ReviewStep.tsx` Stripe `cancelPath` and `pages/order/CompanyInfo.tsx` back-button as `/order-flow?mode=...` (these are in-flow, not public CTAs).
 
-### B. Second checkout-path audit + patch (Dashboard → Resume)
+### 5. Pricing.tsx package buttons
+Update `handleStart` so the deep link includes `mode=guided` and any pre-selected state:
+```
+/order-flow?mode=guided&package=<pkg>[&state=<state>][&addons=...]
+```
+State currently isn't captured on `/pricing`, so this is a forward-compatible addition — today it just always emits `mode=guided&package=...`.
 
-I'll diff the data captured by:
-- **Main path**: `/order-flow` → `/order/checkout` (writes to `business_information`, `contact_information`, `addresses`, `registered_agent`, `participants`, `irs_responsible_party`, `agreements`, `company_management`, `orders`).
-- **Quick path**: Resume-application route (likely `EnhancedOrderFlow` reading `business_applications.application_data` JSON).
+### 6. Leave legacy `/start-order` route in place
+Route stays registered in `App.tsx`. After the CTA updates above, the only references to `/start-order` are:
+- The route definition itself
+- `pages/StartOrder.tsx` internal `redirect=/start-order` auth round-trip
+No public CTAs will point at it anymore. Reported, not removed (per instructions).
 
-Report missing fields in chat, then patch the quick path to write the same normalized rows before create-checkout so downstream CSV/admin tooling sees parity.
+## Files to change
+- `src/App.tsx` — add guard wrapper, scoped Suspense fallback, error boundary around `/order-flow` route only.
+- `src/pages/Pricing.tsx` — `handleStart` URL adds `mode=guided` and optional `state`.
+- CTA route updates in:
+  - `src/components/Hero.tsx`, `FloatingCTA.tsx`, `Navigation.tsx`, `Footer.tsx`, `ChooseYourPath.tsx`
+  - `src/components/state/StateHeroSection.tsx`
+  - `src/pages/Index.tsx`, `About.tsx`, `Consultation.tsx`, `VeteranLLCTexas.tsx`, `Entrepreneurs.tsx`
+  - `src/pages/LLC.tsx`, `CCorporation.tsx`, `SCorporation.tsx`, `NonprofitCorporation.tsx`, `ProfessionalCorporation.tsx`, `Partnership.tsx`, `SoleProprietorship.tsx`, `RegisteredAgent.tsx`, `DBAFiling.tsx`, `EINNumber.tsx`, `AnnualReport.tsx`
+  - `src/content/blogPosts.ts`
 
----
+## Explicitly NOT changed
+- Wizard structure, step components, business logic, Stripe logic, pricing values.
+- `EnhancedOrderFlow.tsx` internals (only the route wrapper around it).
+- Legacy `/start-order` route registration.
+- `/pricing` page UI/data.
+- In-flow back/cancel routes inside the wizard.
 
-### C. Customer dashboard
-
-4. **Editable contact card** — extend the existing `ProfileEditor` already on Dashboard so users can edit `email` and `phone` (email change goes through `supabase.auth.updateUser`, profile row updates `phone` + `first_name` + `last_name`). The component already exists at `src/components/dashboard/ProfileEditor.tsx` — wire it into the visible card if not already, and add email.
-
-5. **Welcome card status fix** — currently shows `"State Pending"` next to the entity type even when order is complete. Change to a status pill: if `orders.status === 'Completed'` or `'Filed with SOS'` show **green dot + "Active with SOS"**; otherwise the existing label.
-
-6. **Customer document upload** — new "Documents" section on Dashboard:
-   - Uses the existing **private** `order-documents` bucket (already in storage).
-   - Storage path: `${user_id}/${order_id}/${uuid}-${filename}`.
-   - Client validates MIME (`application/pdf`, `image/jpeg`, `image/png`) and size (≤ 10 MB).
-   - On successful upload, insert a row into `documents` table (already exists with RLS — users can insert+view their own).
-   - Downloads via `createSignedUrl` (60 s TTL), matching existing admin pattern.
-   - Storage RLS migration: add object-level policies on `storage.objects` for the `order-documents` bucket so customers can insert under their own `user_id/order_id/*` prefix and read their own files (admins already have full access via existing policies).
-
----
-
-### D. Admin dashboard
-
-7. **Quick-view editor in Applications tab** — next to the "Copy to Clipboard" button on each row/detail card, add an "Edit" button opening a dialog that lets admins inline-edit **contact + business basics only**: `business_information.company_name`, `contact_information.first_name/last_name/email/phone`, `addresses.address1/city/state/zip` (business address). Saves via existing admin RLS (admins can update those tables already). Logs an `order_events` row of type `admin_edit_application`.
-
-8. **Remove user button** — on UsersTab, each row gets a "Remove" button (destructive, with confirm dialog). Calls a new edge function `admin-remove-user` that:
-   - Verifies caller is admin.
-   - Deletes from `auth.users` via service role (cascades to `profiles`, `user_roles`).
-   - Does NOT delete orders (preserves audit).
-   - Logs to `order_events` / console.
-
----
-
-### E. Memory + verification
-
-- Update memory: account manager now dual-recipient; basic package restored to $129.
-- Verify build, then ask user to test: (1) sign-in & profile edit, (2) document upload + admin view, (3) admin user removal, (4) admin application edit, (5) Welcome card status, (6) checkout still works at $129 (Stripe price ID restored — no new Stripe object needed since it's the original ID).
-
----
-
-### Files I will touch
-
-- `src/lib/pricing.ts`
-- `supabase/functions/send-order-to-account-manager/index.ts`
-- `src/pages/Dashboard.tsx` (+ small new components: `DocumentUpload.tsx`, status-pill update)
-- `src/components/dashboard/ProfileEditor.tsx` (add email)
-- `src/pages/AdminDashboard.tsx` and `src/components/admin/UsersTab.tsx` (remove button)
-- `src/components/admin/OrderDetailDialog.tsx` or new `ApplicationQuickEditDialog.tsx`
-- New edge function `supabase/functions/admin-remove-user/index.ts`
-- New migration: storage RLS policy for customer uploads + delete demo user
-- The quick-checkout path file(s) once I confirm which one (likely `EnhancedOrderFlow.tsx`)
-
----
-
-### What I am NOT doing (flag for later if you want)
-
-- App-layer AES encryption of uploaded files (you chose private-bucket + signed-URL pattern, which is the standard secure approach).
-- Adding ABeren back as a CC on every legacy admin manual re-send override (those already accept `recipient_override`).
-- Touching the main checkout flow data model.
-
-OK to proceed?
+## Verification after build
+- Visit `/order-flow?mode=guided` → instant redirect to `/pricing`, no blank screen.
+- Visit `/order-flow?mode=guided&package=deluxe` → wizard loads with branded "Preparing…" fallback during chunk download.
+- Click each public CTA listed above → lands on `/pricing`.
+- `/pricing` package "Continue/Start" buttons → land on `/order-flow?mode=guided&package=<pkg>`, wizard renders normally.
+- Force a thrown error in the lazy chunk (dev check) → error fallback shows with "Back to Pricing" button.

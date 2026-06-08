@@ -71,6 +71,7 @@ const PackagePricingCTA = ({
 }: PackagePricingCTAProps) => {
   const buildHref = (pkg: PackageType) => {
     const params = new URLSearchParams();
+    params.set("mode", "guided");
     params.set("package", pkg);
     if (stateCode) params.set("state", stateCode);
     if (entityType) params.set("entity", entityType);

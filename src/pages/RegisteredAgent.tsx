@@ -48,7 +48,7 @@ const RegisteredAgent = () => {
             <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">{c.hero.subheadline}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="group bg-primary hover:bg-primary-light text-primary-foreground" asChild>
-                <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></Link>
+                <Link to="/pricing">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></Link>
               </Button>
               <Button variant="outline" size="lg" className="border-2 hover:bg-muted" asChild><Link to="/consultation" onClick={() => trackClick(c.hero.ctaSecondary, 'registered_agent_hero_cta', '/consultation')}>{c.hero.ctaSecondary}</Link></Button>
             </div>
@@ -77,7 +77,7 @@ const RegisteredAgent = () => {
                 ))}
               </div>
               <Button size="lg" className="bg-primary hover:bg-primary-light text-primary-foreground" asChild>
-                <Link to="/order-flow">Choose Professional Service</Link>
+                <Link to="/pricing">Choose Professional Service</Link>
               </Button>
             </div>
             <div className="bg-gradient-subtle rounded-lg p-8">
@@ -158,7 +158,7 @@ const RegisteredAgent = () => {
                     ))}
                   </ul>
                   <Button className={`w-full mt-6 ${pkg.popular ? 'bg-primary hover:bg-primary-light text-primary-foreground' : ''}`} asChild>
-                    <Link to="/order-flow">Select Service</Link>
+                    <Link to="/pricing">Select Service</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -189,7 +189,7 @@ const RegisteredAgent = () => {
           <p className="text-xl opacity-90 max-w-2xl mx-auto">{c.cta.subheading}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="secondary" size="lg" className="shadow-lg hover:shadow-xl text-lg px-8 h-14" asChild>
-              <Link to="/order-flow">{c.cta.ctaPrimary}</Link>
+              <Link to="/pricing">{c.cta.ctaPrimary}</Link>
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 h-14 border-2 border-white/30 text-white hover:bg-white/10" asChild>
               <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'registered_agent_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>

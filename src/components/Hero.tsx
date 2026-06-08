@@ -110,8 +110,8 @@ export default function Hero() {
               onClick={() => {
                 trackHeroPath("talk_expert");
                 trackStartOrderClickHero();
-                trackClick("Start My Order", "hero_start_order", "/order-flow");
-                navigate("/order-flow");
+                trackClick("Start My Order", "hero_start_order", "/pricing");
+                navigate("/pricing");
               }}
               className="inline-flex items-center justify-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer w-full sm:w-auto"
             >

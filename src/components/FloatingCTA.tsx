@@ -61,8 +61,8 @@ const FloatingCTA = ({ threshold = 600 }: FloatingCTAProps) => {
             <button
               onClick={() => {
                 trackStartOrderClickHero();
-                trackClick("Start My Order", "sticky_bar_order", "/order-flow");
-                navigate("/order-flow");
+                trackClick("Start My Order", "sticky_bar_order", "/pricing");
+                navigate("/pricing");
               }}
               className={cn(
                 "flex-1 sm:flex-none inline-flex items-center justify-center gap-2",

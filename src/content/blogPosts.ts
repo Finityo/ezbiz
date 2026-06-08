@@ -56,7 +56,7 @@ Whether you're a veteran starting a [tax-exempt LLC in Texas](https://www.sba.go
 
 ## Start Today
 
-Don't let paperwork stand between you and your dream. [Start your business formation →](/order-flow)
+Don't let paperwork stand between you and your dream. [Start your business formation →](/pricing)
 
 ---
 
@@ -156,7 +156,7 @@ Our partner network adheres to standards set by the [Better Business Bureau (BBB
 
 You'll always know exactly where your filing stands. Our dashboard provides real-time status updates from submission through approval, and our support team is available to answer questions at every step.
 
-[Start Your Filing Today →](/order-flow)
+[Start Your Filing Today →](/pricing)
 
 ---
 
@@ -218,7 +218,7 @@ Many organizations require proof of business registration:
 If you've been operating without registration, it's not too late:
 
 1. **Choose your business structure** — [Compare LLC vs. Corporation →](/business-guide)
-2. **File your formation documents** — [Start filing today →](/order-flow)
+2. **File your formation documents** — [Start filing today →](/pricing)
 3. **Apply for an EIN** — [Get your federal tax ID →](/ein-number)
 4. **Set up compliance tracking** — Never miss a deadline again
 
@@ -375,7 +375,7 @@ If you've been operating without proper registration or reporting:
 
 The cost of registering your business and filing taxes properly is a fraction of the penalties for non-compliance. An LLC costs as little as $50 to form. An IRS fraud penalty can cost you **75% of everything you owe**.
 
-[Protect yourself — start your business formation today →](/order-flow)
+[Protect yourself — start your business formation today →](/pricing)
 
 ---
 
