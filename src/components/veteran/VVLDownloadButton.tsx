@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Download, Star } from "lucide-react";
 import vvlAsset from "@/assets/vvl.pdf.asset.json";
-import { trackClick } from "@/lib/analytics";
+import { trackClick } from "@/hooks/useAnalytics";
 
 interface Props {
   source: string;
