@@ -25,6 +25,7 @@ import LeadCaptureForm from "@/components/LeadCaptureForm";
 import TrustStrip from "@/components/TrustStrip";
 import HowItWorks from "@/components/HowItWorks";
 import BetaLaunchCountdown from "@/components/BetaLaunchCountdown";
+import VVLDownloadButton from "@/components/veteran/VVLDownloadButton";
 import christianPortrait from "@/assets/christian-talavera.jpg";
 
 // Homepage component
@@ -168,7 +169,7 @@ const Index = () => {
                 </div>
               ))}
             </div>
-            <div className="text-center">
+            <div className="text-center flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 font-bold px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all border-0"
                 onClick={() => { trackEvent('veteran_cta_click', { location: 'homepage' }); trackClick('Check Veteran Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
@@ -176,10 +177,11 @@ const Index = () => {
                  {EZBIZ_COPY.veteranStrip.cta}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <p className="text-xs text-white/50 mt-3">
-                Honoring those who served. Texas veteran-owned business benefits available.
-              </p>
+              <VVLDownloadButton source="homepage_veteran_strip" />
             </div>
+            <p className="text-xs text-white/50 mt-3 text-center">
+              Honoring those who served. Texas veteran-owned business benefits available.
+            </p>
           </div>
         </div>
       </section>
