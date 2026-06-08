@@ -363,9 +363,7 @@ const Pricing = () => {
                           Best balance of protection &amp; value
                         </p>
                       )}
-                      {showDescriptions && (
-                        <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
-                      )}
+                      <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
                       <Button
                         className="mt-3 touch-manipulation"
                         variant={pkg.popular ? "default" : "outline"}
@@ -396,7 +394,7 @@ const Pricing = () => {
                     <tr className="group border-b border-border hover:bg-muted/40 transition-colors">
                       <td className="border border-border px-4 py-3">
                         <div className="text-sm font-semibold text-foreground">{row.label}</div>
-                        {showDescriptions && row.description && (
+                        {row.description && (
                           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                             {row.description}
                           </p>
@@ -487,9 +485,7 @@ const Pricing = () => {
                     ${formatPrice(pkg.price)}
                   </p>
                   <p className="text-xs text-muted-foreground text-center mb-1">+ State Fees</p>
-                  {showDescriptions && (
-                    <p className="text-xs text-muted-foreground text-center mb-3 italic">{pkg.description}</p>
-                  )}
+                  <p className="text-xs text-muted-foreground text-center mb-3 italic">{pkg.description}</p>
 
                   <div className="divide-y divide-border mt-4 mb-5">
                     {TABLE_ROWS.map((row, idx) => {
@@ -499,7 +495,7 @@ const Pricing = () => {
                         <div key={idx} className="py-3 flex items-start justify-between gap-3">
                           <div className="flex-1">
                             <span className="text-sm font-medium text-foreground">{row.label}</span>
-                            {showDescriptions && row.description && (
+                            {row.description && (
                               <p className="text-xs text-muted-foreground mt-0.5">{row.description}</p>
                             )}
                           </div>
