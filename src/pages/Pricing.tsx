@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
-import { Check, Eye, EyeOff } from "lucide-react";
+import { Check } from "lucide-react";
 import {
   PACKAGE_PRICES,
   ADDON_PRICES,
@@ -263,7 +263,6 @@ function CellContent({
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [showDescriptions, setShowDescriptions] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<Record<PackageType, Set<AddonId>>>({
     basic: new Set(),
     deluxe: new Set(),
@@ -338,16 +337,7 @@ const Pricing = () => {
               <thead className="sticky top-0 z-30 bg-background border-b border-border">
                 <tr>
                   <th className="text-left p-4 border border-border bg-background w-[40%] align-bottom">
-                    <button
-                      onClick={() => setShowDescriptions(!showDescriptions)}
-                      className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
-                    >
-                      {showDescriptions ? (
-                        <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
-                      ) : (
-                        <><Eye className="h-4 w-4" /> Show All Product Descriptions</>
-                      )}
-                    </button>
+                    <span className="text-sm font-semibold text-muted-foreground">Features</span>
                   </th>
 
                   {PACKAGES.map((pkg) => (
@@ -373,9 +363,7 @@ const Pricing = () => {
                           Best balance of protection &amp; value
                         </p>
                       )}
-                      {showDescriptions && (
-                        <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
-                      )}
+                      <p className="text-xs text-muted-foreground mt-2 italic">{pkg.description}</p>
                       <Button
                         className="mt-3 touch-manipulation"
                         variant={pkg.popular ? "default" : "outline"}
@@ -406,7 +394,7 @@ const Pricing = () => {
                     <tr className="group border-b border-border hover:bg-muted/40 transition-colors">
                       <td className="border border-border px-4 py-3">
                         <div className="text-sm font-semibold text-foreground">{row.label}</div>
-                        {showDescriptions && row.description && (
+                        {row.description && (
                           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                             {row.description}
                           </p>
@@ -478,19 +466,6 @@ const Pricing = () => {
         {/* ── MOBILE CARDS ── */}
         <section className="md:hidden py-4">
           <div className="container mx-auto px-4">
-            <div className="flex justify-start mb-4">
-              <button
-                onClick={() => setShowDescriptions(!showDescriptions)}
-                className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
-              >
-                {showDescriptions ? (
-                  <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
-                ) : (
-                  <><Eye className="h-4 w-4" /> Show Descriptions</>
-                )}
-              </button>
-            </div>
-
             <div className="space-y-6">
               {PACKAGES.map((pkg) => (
                 <div
@@ -510,9 +485,7 @@ const Pricing = () => {
                     ${formatPrice(pkg.price)}
                   </p>
                   <p className="text-xs text-muted-foreground text-center mb-1">+ State Fees</p>
-                  {showDescriptions && (
-                    <p className="text-xs text-muted-foreground text-center mb-3 italic">{pkg.description}</p>
-                  )}
+                  <p className="text-xs text-muted-foreground text-center mb-3 italic">{pkg.description}</p>
 
                   <div className="divide-y divide-border mt-4 mb-5">
                     {TABLE_ROWS.map((row, idx) => {
@@ -522,7 +495,7 @@ const Pricing = () => {
                         <div key={idx} className="py-3 flex items-start justify-between gap-3">
                           <div className="flex-1">
                             <span className="text-sm font-medium text-foreground">{row.label}</span>
-                            {showDescriptions && row.description && (
+                            {row.description && (
                               <p className="text-xs text-muted-foreground mt-0.5">{row.description}</p>
                             )}
                           </div>
