@@ -7,6 +7,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import BackToTop from "@/components/BackToTop";
 import ServiceJsonLd from "@/components/ServiceJsonLd";
 import FaqJsonLd from "@/components/FaqJsonLd";
+import VVLDownloadButton from "@/components/veteran/VVLDownloadButton";
 
 const VETERAN_FAQS = [
   {
@@ -132,6 +133,9 @@ export default function VeteranLLCTexas() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <VVLDownloadButton source="veteran_llc_process_card" label="Download Veteran Verification Letter (VVL) Form" />
         </div>
       </section>
 
