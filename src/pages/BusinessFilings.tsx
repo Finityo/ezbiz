@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const BusinessFilings = () => {
   const navigate = useNavigate();

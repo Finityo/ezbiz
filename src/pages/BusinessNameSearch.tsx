@@ -9,6 +9,7 @@ import { Check, Search, AlertCircle, Shield, X, Loader } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 
 
 const BusinessNameSearch = () => {

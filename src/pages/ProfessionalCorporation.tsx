@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, Shield, Users, FileText, Scale, AlertTriangle, ArrowRight, HelpCircle, Briefcase, Award, Building } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const ProfessionalCorporation = () => {
   const professions = [

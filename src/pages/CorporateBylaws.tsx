@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Users, Shield, Building } from "lucide-react";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const CorporateBylaws = () => {
   const keyProvisions = [

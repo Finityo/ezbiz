@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Shield, Users, AlertTriangle } from "lucide-react";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const OperatingAgreement = () => {
   const keyProvisions = [

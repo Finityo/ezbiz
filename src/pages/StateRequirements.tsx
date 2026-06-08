@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Check, Download, MapPin, DollarSign, Clock, FileText } from "lucide-react";
 import { useState } from "react";
 import { STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const StateRequirements = () => {
   const [selectedState, setSelectedState] = useState("");

@@ -11,6 +11,7 @@ import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-ha
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
 import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
 import { useToast } from "@/hooks/use-toast";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const BusinessGuide = () => {
   const [generatingId, setGeneratingId] = useState<string | null>(null);
