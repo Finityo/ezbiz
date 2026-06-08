@@ -338,16 +338,7 @@ const Pricing = () => {
               <thead className="sticky top-0 z-30 bg-background border-b border-border">
                 <tr>
                   <th className="text-left p-4 border border-border bg-background w-[40%] align-bottom">
-                    <button
-                      onClick={() => setShowDescriptions(!showDescriptions)}
-                      className="flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted/50 text-foreground transition-colors"
-                    >
-                      {showDescriptions ? (
-                        <><EyeOff className="h-4 w-4" /> Hide Descriptions</>
-                      ) : (
-                        <><Eye className="h-4 w-4" /> Show All Product Descriptions</>
-                      )}
-                    </button>
+                    <span className="text-sm font-semibold text-muted-foreground">Features</span>
                   </th>
 
                   {PACKAGES.map((pkg) => (
