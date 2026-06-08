@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import {
   Lightbulb,
   Clock,
@@ -180,7 +181,7 @@ const Entrepreneurs = () => {
                   asChild
                   className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
                 >
-                  <Link to="/consultation">Book a free 15-min call</Link>
+                  <Link to="/consultation" onClick={() => trackClick('Book a free 15-min call', 'entrepreneurs_hero_cta', '/consultation')}>Book a free 15-min call</Link>
                 </Button>
               </div>
             </div>
@@ -344,7 +345,7 @@ const Entrepreneurs = () => {
                 asChild
                 className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
               >
-                <Link to="/consultation">Talk to a specialist</Link>
+                <Link to="/consultation" onClick={() => trackClick('Talk to a specialist', 'entrepreneurs_bottom_cta', '/consultation')}>Talk to a specialist</Link>
               </Button>
             </div>
           </div>

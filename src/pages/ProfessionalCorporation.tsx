@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, X, Shield, Users, FileText, Scale, AlertTriangle, ArrowRight, HelpCircle, Briefcase, Award, Building } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const ProfessionalCorporation = () => {
   const professions = [
@@ -225,7 +226,7 @@ const ProfessionalCorporation = () => {
                     Form Your PC <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild onClick={() => trackClick('Free Consultation', 'professional_corp_hero_cta', '/consultation')}>
                   <Link to="/consultation">Free Consultation</Link>
                 </Button>
               </div>
@@ -512,7 +513,7 @@ const ProfessionalCorporation = () => {
                     Form Your Professional Corporation <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild onClick={() => trackClick('Schedule Free Consultation', 'professional_corp_bottom_cta', '/consultation')}>
                   <Link to="/consultation">Schedule Free Consultation</Link>
                 </Button>
               </div>

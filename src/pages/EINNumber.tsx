@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Shield, Clock, Building, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { EIN_COPY } from "@/content/ezbizCopy";
 
 const c = EIN_COPY;
@@ -197,7 +198,7 @@ const EINNumber = () => {
                   <Link to="/order-flow">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{c.cta.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'ein_number_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>
                 </Button>
               </div>
             </div>

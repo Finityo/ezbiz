@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Shield, Heart, TrendingUp, FileText, Users, AlertTriangle, ArrowRight, HelpCircle, Building, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 import { NONPROFIT_COPY } from "@/content/ezbizCopy";
 
 const c = NONPROFIT_COPY;
@@ -39,7 +40,7 @@ const NonprofitCorporation = () => {
                   <Link to="/order-flow">{c.hero.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{c.hero.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(c.hero.ctaSecondary, 'nonprofit_hero_cta', '/consultation')}>{c.hero.ctaSecondary}</Link>
                 </Button>
               </div>
             </div>
@@ -267,7 +268,7 @@ const NonprofitCorporation = () => {
                   <Link to="/order-flow">{c.cta.ctaPrimary} <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-white/10" asChild>
-                  <Link to="/consultation">{c.cta.ctaSecondary}</Link>
+                  <Link to="/consultation" onClick={() => trackClick(c.cta.ctaSecondary, 'nonprofit_bottom_cta', '/consultation')}>{c.cta.ctaSecondary}</Link>
                 </Button>
               </div>
             </div>

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Check, Download, MapPin, DollarSign, Clock, FileText } from "lucide-react";
 import { useState } from "react";
 import { STATE_FILING_FEES, STATE_CORP_FILING_FEES } from "@/lib/state-fees";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const StateRequirements = () => {
   const [selectedState, setSelectedState] = useState("");
@@ -313,7 +314,7 @@ const StateRequirements = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Get Expert Advice</Button>
-                <Button asChild size="lg" className="text-lg px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold shadow-lg hover:shadow-xl border-0"><Link to="/consultation">Free Consultation</Link></Button>
+                <Button asChild size="lg" className="text-lg px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold shadow-lg hover:shadow-xl border-0"><Link to="/consultation" onClick={() => trackClick('Free Consultation', 'state_requirements_cta', '/consultation')}>Free Consultation</Link></Button>
               </div>
             </div>
           </div>

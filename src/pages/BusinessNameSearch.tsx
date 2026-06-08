@@ -9,6 +9,7 @@ import { Check, Search, AlertCircle, Shield, X, Loader } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { trackClick } from "@/hooks/useAnalytics";
 
 
 const BusinessNameSearch = () => {
@@ -493,7 +494,7 @@ const BusinessNameSearch = () => {
                 <Button
                   size="lg"
                   className="text-lg px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold shadow-lg hover:shadow-xl border-0"
-                  onClick={() => navigate("/consultation")}
+                  onClick={() => { trackClick('Free Consultation', 'business_name_search_cta', '/consultation'); navigate("/consultation"); }}
                 >
                   Free Consultation
                 </Button>

@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, FileText, Shield, Users, AlertTriangle } from "lucide-react";
+import { trackClick } from "@/hooks/useAnalytics";
 
 const OperatingAgreement = () => {
   const keyProvisions = [
@@ -349,7 +350,7 @@ const OperatingAgreement = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-4">Get Started Now</Button>
-                <Button asChild size="lg" className="text-lg px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold shadow-lg hover:shadow-xl border-0"><Link to="/consultation">Free Consultation</Link></Button>
+                <Button asChild size="lg" className="text-lg px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold shadow-lg hover:shadow-xl border-0"><Link to="/consultation" onClick={() => trackClick('Free Consultation', 'operating_agreement_cta', '/consultation')}>Free Consultation</Link></Button>
               </div>
             </div>
           </div>
