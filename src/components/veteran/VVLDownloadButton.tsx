@@ -14,7 +14,7 @@ export default function VVLDownloadButton({ source, label = "Download VVL Form (
 
   const handleDownload = () => {
     try {
-      trackClick?.("VVL Download", { button_type: "vvl_download", source } as any);
+      trackClick?.("VVL Download", `vvl_download_${source}`, vvlAsset.url);
     } catch {}
     const a = document.createElement("a");
     a.href = vvlAsset.url;
