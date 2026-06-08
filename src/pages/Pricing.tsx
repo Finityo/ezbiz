@@ -263,7 +263,6 @@ function CellContent({
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [showDescriptions, setShowDescriptions] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<Record<PackageType, Set<AddonId>>>({
     basic: new Set(),
     deluxe: new Set(),
