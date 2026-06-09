@@ -3,6 +3,17 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 serve(async (req) => {
+  // Lightweight health check — does NOT process Stripe events, does NOT touch DB,
+  // does NOT require signature verification (Stripe signs only real POST payloads).
+  // Real Stripe webhook deliveries are POST with a stripe-signature header, which
+  // continues to be verified below.
+  if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
+    return new Response(
+      JSON.stringify({ ok: true, service: "stripe-webhook", status: "reachable" }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
     apiVersion: "2025-08-27.basil",
     httpClient: Stripe.createFetchHttpClient(),
