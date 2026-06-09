@@ -12,7 +12,7 @@ serve(async (req) => {
 
   const body = await req.text();
   const sig = req.headers.get("stripe-signature") ?? "";
-  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
+  const webhookSecret = (Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "").trim();
 
   let event;
   try {
