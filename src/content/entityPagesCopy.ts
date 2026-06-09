@@ -208,7 +208,7 @@ export const CCORP_COPY = {
   cta: {
     heading: "Ready to Incorporate?",
     subheading: "Start your C Corporation today and unlock unlimited growth potential. Our experts will handle all the paperwork and filings.",
-    ctaPrimary: "Start Incorporation - $199",
+    ctaPrimary: "Start Incorporation — Starting at $129",
     ctaSecondary: "Speak with Expert",
   },
 } as const;
