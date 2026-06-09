@@ -666,8 +666,8 @@ const Index = () => {
                   <TableBody>
                     {[
                       { feature: "LLC Formation", ezbiz: "From $129", legalzoom: "From $0 + upsells", zenbusiness: "From $0 + upsells" },
-                      { feature: "Registered Agent (1yr)", ezbiz: true, legalzoom: "$249/yr", zenbusiness: "$199/yr" },
-                      { feature: "Operating Agreement", ezbiz: true, legalzoom: "$99 extra", zenbusiness: "Paid plans only" },
+                      { feature: "Registered Agent (1yr)", ezbiz: "Add-on: $149/yr", legalzoom: "$249/yr", zenbusiness: "$199/yr" },
+                      { feature: "Operating Agreement", ezbiz: "Included with Deluxe & Complete", legalzoom: "$99 extra", zenbusiness: "Paid plans only" },
                       { feature: "EIN Filing", ezbiz: "$89", legalzoom: "$79", zenbusiness: "$99" },
                       { feature: "Transparent Pricing", ezbiz: true, legalzoom: false, zenbusiness: false },
                       { feature: "Free Consultation", ezbiz: true, legalzoom: false, zenbusiness: false },
