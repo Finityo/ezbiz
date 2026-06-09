@@ -107,7 +107,7 @@ export const CCORP_COPY = {
     headline: "C Corporation Formation",
     subheadline: "The ultimate structure for growth, investment, and going public",
     description: "C Corporations offer unlimited growth potential with multiple stock classes, no ownership restrictions, and the ability to attract venture capital.",
-    ctaPrimary: "Incorporate Now - $199",
+    ctaPrimary: "Incorporate Now — Starting at $129",
     ctaSecondary: "Free Incorporation Guide",
     badges: ["Delaware Incorporation Available", "Investor Ready", "IPO Ready"],
   },
