@@ -69,3 +69,32 @@ This confirms the idempotency mechanism is working as designed.
 - Stripe events are now correctly routed to the Supabase Edge Function.
 - Signature verification is stable (trimmed secret + raw body passthrough).
 - Duplicate events are safely de-duplicated by the `Pending Payment` → `payment_complete` atomic update guard.
+
+---
+
+## 9. Health Check Endpoint Added
+A lightweight health check was added to the `stripe-webhook` edge function.
+
+### Endpoint
+```
+https://umzyxzhqlrykygjbeusu.supabase.co/functions/v1/stripe-webhook
+```
+
+### Behavior
+| Method | Response |
+|--------|----------|
+| `GET` | `{"ok":true,"service":"stripe-webhook","status":"reachable"}` — HTTP 200 |
+| `HEAD` | HTTP 200 (no body) |
+| `OPTIONS` | HTTP 200 (no body) |
+| `POST` | Requires valid `stripe-signature` header. Returns HTTP 400 on invalid signature. |
+
+### Security
+- No secrets are logged or exposed in health responses.
+- `POST` webhook deliveries remain protected by Stripe signature verification (`constructEventAsync`).
+- Invalid signatures return HTTP 400 without leaking secret details.
+
+### Runbook
+Full operational runbook: [`docs/STRIPE_WEBHOOK_RUNBOOK.md`](docs/STRIPE_WEBHOOK_RUNBOOK.md)
+
+### Note
+No further webhook changes needed unless Stripe delivery logs show a new failure.
