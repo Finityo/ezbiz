@@ -42,7 +42,7 @@ const StateHeroSection = ({
             
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <p className="text-sm opacity-80 mb-1">Our Service Fee</p>
-              <p className="text-3xl font-bold">From $99</p>
+              <p className="text-3xl font-bold">From $129 + state fees</p>
             </div>
           </div>
           

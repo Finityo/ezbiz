@@ -298,7 +298,7 @@ const Pricing = () => {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Pricing"
-        description="Transparent, affordable business formation packages starting at $149 + state fees. Compare Basic, Deluxe, and Complete plans."
+        description="Transparent, affordable business formation packages starting at $129 + state fees. Compare Basic, Deluxe, and Complete plans."
         path="/pricing"
       />
       <Navigation />

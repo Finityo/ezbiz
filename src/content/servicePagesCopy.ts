@@ -171,9 +171,9 @@ export const EIN_COPY = {
   pricing: {
     heading: "EIN Services",
     standard: {
-      name: "Standard EIN Service",
+      name: "EIN Online Filing — $89",
       description: "Get your EIN quickly and efficiently",
-      price: "$99",
+      price: "$89",
       features: ["IRS Form SS-4 preparation", "Direct IRS submission", "Same-day processing", "Email confirmation"],
     },
     express: {
