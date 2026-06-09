@@ -137,7 +137,7 @@ const StateTemplate = ({
               
               <div className="flex justify-between items-center pb-4 border-b">
                 <span className="font-medium">EZ BIZ File Service Fee</span>
-                <span className="text-xl font-bold text-primary">From $99</span>
+                <span className="text-xl font-bold text-primary">From $129 + state fees</span>
               </div>
               
               <div className="bg-muted/50 p-4 rounded-lg">
