@@ -311,7 +311,7 @@ export const EZBIZ_COPY = {
       headline: "Form Your LLC Today",
       subheadline: "Limited Liability Company — the perfect blend of protection and simplicity",
       description: "LLCs are the most popular business structure in America, offering liability protection, tax flexibility, and simple management requirements.",
-      ctaPrimary: "Start Your LLC - $149",
+      ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Free LLC Guide",
       badges: ["Fast 24-48 Hour Filing", "All 50 States", "100% Satisfaction Guaranteed"],
     },
@@ -416,7 +416,7 @@ export const EZBIZ_COPY = {
     cta: {
       heading: "Ready to Form Your LLC?",
       subheading: "Join thousands of entrepreneurs who have started their LLC with EZ BIZ. Get liability protection and tax benefits today.",
-      ctaPrimary: "Start Your LLC - $149",
+      ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Schedule Free Consultation",
       footnote: "Includes registered agent service for the first year",
     },
