@@ -135,7 +135,7 @@ export const EZBIZ_COPY = {
     heading: "Why Entrepreneurs Choose EZ BIZ",
     subheading: "Structured filing expertise paired with personal support — so your business is set up correctly from day one.",
     features: [
-      { title: "Fast & Reliable", description: "Most filings completed within 24-48 hours with our express service." },
+      { title: "Fast & Reliable", description: "Fast document preparation and filing support. State processing times vary." },
       { title: "Transparent Pricing", description: "Clear package pricing before checkout. No hidden upsells, no surprise fees." },
       { title: "Guided Support", description: "Real people guide you through formation — not chatbots or outsourced ticket queues." },
     ],
@@ -310,7 +310,7 @@ export const EZBIZ_COPY = {
       description: "LLCs are the most popular business structure in America, offering liability protection, tax flexibility, and simple management requirements.",
       ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Free LLC Guide",
-      badges: ["Fast 24-48 Hour Filing", "All 50 States", "Service-Fee Satisfaction Guarantee"],
+      badges: ["24-48 Hour Document Preparation", "All 50 States", "Service-Fee Satisfaction Guarantee"],
     },
     whatIs: {
       heading: "What Is an LLC?",
@@ -468,7 +468,7 @@ export const EZBIZ_COPY = {
       "Ongoing compliance assistance and reminders",
       "Service-fee satisfaction guarantee",
       "Licensed in all 50 states",
-      "Award-winning customer service",
+      "Responsive customer support",
     ],
     awards: {
       heading: "What We Stand For",

@@ -277,7 +277,7 @@ const Footer = () => {
               </span>
               <span className="flex items-center space-x-1">
                 <span className="text-success">✓</span>
-                <span>Fast 24-48 Hour Filing</span>
+                <span>24-48 Hour Document Prep</span>
               </span>
             </div>
           </div>
