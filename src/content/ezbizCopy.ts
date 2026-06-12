@@ -415,7 +415,7 @@ export const EZBIZ_COPY = {
       subheading: "Join thousands of entrepreneurs who have started their LLC with EZ BIZ. Get liability protection and tax benefits today.",
       ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Schedule Free Consultation",
-      footnote: "Includes registered agent service for the first year",
+      footnote: "Registered Agent service available as a $149/year add-on",
     },
   },
 
