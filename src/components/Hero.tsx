@@ -136,8 +136,11 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* CorpNet disclosure */}
-        <p className="mt-4 text-[10px] text-muted-foreground/60 max-w-md mx-auto leading-snug">
+        {/* Reassurance + CorpNet disclosure */}
+        <p className="mt-5 text-xs text-muted-foreground max-w-xl mx-auto">
+          Start with pricing, then choose your filing path. No hidden package surprises.
+        </p>
+        <p className="mt-3 text-[10px] text-muted-foreground/60 max-w-md mx-auto leading-snug">
           "File Instantly" redirects to CorpNet, our trusted filing partner.
           EZ BIZ File Service, LLC may earn a referral commission at no additional cost to you.
         </p>
