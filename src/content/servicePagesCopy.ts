@@ -255,23 +255,15 @@ export const REGISTERED_AGENT_COPY = {
     ],
   },
   pricing: {
-    heading: "Choose Your Service Level",
+    heading: "Registered Agent Service",
     subheading: "Professional registered agent service with transparent annual pricing",
     packages: [
       {
-        name: "Standard Service",
+        name: "Registered Agent Service",
         price: "$149",
         period: "per year",
-        description: "Professional registered agent service",
-        features: ["Accept service of process", "Forward legal documents", "Email notifications", "Document scanning", "Business hours coverage", "Online account access"],
-        popular: false,
-      },
-      {
-        name: "Premium Service",
-        price: "$199",
-        period: "per year",
-        description: "Enhanced service with compliance support",
-        features: ["Everything in Standard Service", "Annual report filing reminders", "Compliance calendar", "Priority document processing", "Phone support", "Document storage (5 years)"],
+        description: "Professional registered agent service available in all 50 states",
+        features: ["Accept service of process", "Forward legal documents", "Email notifications", "Document scanning", "Business hours coverage", "Online account access", "Annual report reminders"],
         popular: true,
       },
     ],
