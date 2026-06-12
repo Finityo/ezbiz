@@ -177,10 +177,10 @@ export const EIN_COPY = {
       features: ["IRS Form SS-4 preparation", "Direct IRS submission", "Same-day processing", "Email confirmation"],
     },
     express: {
-      name: "Express EIN Service",
-      description: "Priority processing with additional support",
-      price: "$149",
-      features: ["Everything in Standard", "Priority processing", "Expedited delivery", "Dedicated support specialist", "Banking resolution included"],
+      name: "Included with Complete Package",
+      description: "EIN filing is included with our Complete formation package — view current pricing",
+      price: "View Pricing",
+      features: ["Everything in EIN Online Filing", "Bundled with Complete Package", "S-Corp Election included", "Business License Research included", "Compliance Alerts included"],
     },
   },
   faq: {
