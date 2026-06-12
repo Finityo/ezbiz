@@ -103,7 +103,7 @@ export const DBA_COPY = {
     subheading: "Establish your brand identity and start operating under your chosen business name. We handle the paperwork so you can focus on your business.",
     ctaPrimary: "File Your DBA Today",
     ctaSecondary: "Schedule Free Consultation",
-    footnote: "Starting at $99 + state filing fees",
+    footnote: "DBA Filing — $89 + state/county filing fees",
   },
 } as const;
 
