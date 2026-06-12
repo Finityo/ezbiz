@@ -127,8 +127,8 @@ export const EZBIZ_COPY = {
   },
 
   testimonials: {
-    heading: "What Our Clients Say",
-    subheading: "Thousands of entrepreneurs trust EZ BIZ to launch their businesses.",
+    heading: "Common Situations We Help With",
+    subheading: "Examples of what customers often need help with when starting a business.",
   },
 
   whyChooseUs: {
@@ -143,7 +143,7 @@ export const EZBIZ_COPY = {
 
   comparison: {
     heading: "How We Compare",
-    subheading: "See why thousands of entrepreneurs choose EZ BIZ over the competition.",
+    subheading: "See how EZ BIZ compares to other formation services.",
     cta: "See Our Packages",
   },
 
@@ -412,7 +412,7 @@ export const EZBIZ_COPY = {
     },
     cta: {
       heading: "Ready to Form Your LLC?",
-      subheading: "Join thousands of entrepreneurs who have started their LLC with EZ BIZ. Get liability protection and tax benefits today.",
+      subheading: "Form your LLC with veteran-owned, accuracy-focused filing support. Get liability protection and tax benefits when you launch.",
       ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Schedule Free Consultation",
       footnote: "Registered Agent service available as a $149/year add-on",
@@ -426,17 +426,17 @@ export const EZBIZ_COPY = {
       subheadline: "Where timeless professionalism meets modern convenience. We handle your business filings with the care and precision of a master clerk.",
     },
     stats: [
-      { number: "50,000+", label: "Businesses Formed" },
-      { number: "15+", label: "Years Experience" },
-      { number: "50", label: "States Covered" },
-      { number: "4.9/5", label: "Customer Rating" },
+      { number: "🇺🇸", label: "Veteran-Owned" },
+      { number: "50", label: "States Available via Partner Network" },
+      { number: "✓", label: "Accuracy-Focused Review" },
+      { number: "$0", label: "Markup on State Fees" },
     ],
     story: {
       heading: "Our Story",
       paragraphs: [
         "EZ BIZ FILE SERVICE was born from a simple belief: that filing your business documents should be as straightforward and dignified as walking into a clerk's office in 1929—pen in hand, paperwork in order, and a professional ready to help you make it official.",
         "Our founder, Christian Talavera, a military veteran and legal professional, understood that behind every LLC formation and annual report is someone's dream taking shape. After experiencing the confusing maze of modern business formation services—hidden fees, impersonal processes, and unclear guidance—he set out to create something different.",
-        "What started in New Braunfels, Texas—one of the nation's fastest-growing cities—has grown into a nationwide service that has helped over 50,000 entrepreneurs file their business documents correctly the first time. We've embraced technology to make the process faster, but we've never forgotten the old-fashioned values that built trust: meticulous attention to detail, honest pricing, and treating every client like a neighbor.",
+        "What started in New Braunfels, Texas—one of the nation's fastest-growing cities—has grown into a nationwide service powered by our trusted filing partner network. We've embraced technology to make the process faster, but we've never forgotten the old-fashioned values that built trust: meticulous attention to detail, honest pricing, and treating every client like a neighbor.",
         "Today, EZ BIZ FILE SERVICE combines the precision of a master filing clerk with the convenience of modern technology. Whether you're forming your first LLC or filing your tenth annual report, we handle your paperwork with the same care and professionalism that defined a more dignified era of business.",
       ],
     },
@@ -471,11 +471,11 @@ export const EZBIZ_COPY = {
       "Award-winning customer service",
     ],
     awards: {
-      heading: "Awards & Recognition",
+      heading: "What We Stand For",
       items: [
-        { title: "Best Business Service 2023", source: "Entrepreneur Magazine" },
-        { title: "5-Star Customer Rating", source: "Trustpilot & Google Reviews" },
-        { title: "A+ BBB Rating", source: "Better Business Bureau" },
+        { title: "Veteran-Owned Business", source: "Founded by a U.S. Marine veteran" },
+        { title: "Transparent Pricing", source: "Package pricing shown before checkout" },
+        { title: "Partner-Powered Filing", source: "Backed by our trusted filing partner network" },
       ],
     },
     mission: {
@@ -493,7 +493,7 @@ export const EZBIZ_COPY = {
     },
     cta: {
       heading: "Ready to Start Your Business Journey?",
-      subheading: "Join thousands of successful entrepreneurs who trusted EZ BIZ FILE SERVICE to handle their business formation with care and precision.",
+      subheading: "Start your business with veteran-owned, accuracy-focused filing support and transparent pricing before checkout.",
       ctaPrimary: "Get Started Today",
       ctaSecondary: "Free Consultation",
     },
