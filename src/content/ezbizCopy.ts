@@ -133,11 +133,11 @@ export const EZBIZ_COPY = {
 
   whyChooseUs: {
     heading: "Why Entrepreneurs Choose EZ BIZ",
-    subheading: "We combine legal expertise with personalized service to ensure your business formation is handled correctly from day one.",
+    subheading: "Structured filing expertise paired with personal support — so your business is set up correctly from day one.",
     features: [
       { title: "Fast & Reliable", description: "Most filings completed within 24-48 hours with our express service." },
-      { title: "100% Satisfaction Guaranteed", description: "We stand behind our work with a complete satisfaction guarantee." },
-      { title: "Expert Support", description: "Live business formation experts ready to guide you through the process." },
+      { title: "Transparent Pricing", description: "Clear package pricing before checkout. No hidden upsells, no surprise fees." },
+      { title: "Guided Support", description: "Real people guide you through formation — not chatbots or outsourced ticket queues." },
     ],
   },
 
