@@ -219,24 +219,23 @@ const Index = () => {
       {/* Trust Indicators Bar */}
       <section className="py-6 md:py-8 border-y border-border bg-card">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
-              <CountUpDisplay end={50000} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={2200} />
-              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Businesses Formed</div>
-            </div>
-            <div className="text-center">
-              <CountUpDisplay end={15} suffix="+" className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1800} />
-              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Years of Experience</div>
+              <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display">🇺🇸</div>
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Veteran-Owned Filing Support</div>
             </div>
             <div className="text-center">
               <CountUpDisplay end={50} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1600} />
-              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">States Served</div>
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">States Available via Partner Network</div>
             </div>
             <div className="text-center">
-              <CountUpDisplay end={4.9} suffix="★" decimals={1} className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display min-h-[1.2em]" duration={1400} />
-              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Customer Rating</div>
+              <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary font-display">✓</div>
+              <div className="text-xs md:text-sm text-muted-foreground font-body mt-1">Accuracy-Focused Document Review</div>
             </div>
           </div>
+          <p className="text-[10px] text-muted-foreground/70 text-center mt-3">
+            Filing infrastructure provided by our partner network. Not a law firm. We do not provide legal advice.
+          </p>
         </div>
       </section>
 
@@ -486,79 +485,41 @@ const Index = () => {
         </div>
       </AnimatedSection>
 
-      {/* Testimonials Section */}
+      {/* Common Situations We Help With */}
       <AnimatedSection className="py-12 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
             <div className="accent-line-center mb-4 md:mb-6"></div>
-             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">{EZBIZ_COPY.testimonials.heading}</h2>
-             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-               {EZBIZ_COPY.testimonials.subheading}
-             </p>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display">Common Situations We Help With</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
+              Examples of what customers often ask about when starting a business.
+            </p>
           </div>
 
           <StaggeredGrid className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={120}>
             {[
-              {
-                name: "Sarah M.",
-                role: "LLC Owner, Texas",
-                stars: 5,
-                quote: "EZ BIZ made forming my LLC incredibly simple. The whole process took less than a week and their team was responsive every step of the way."
-              },
-              {
-                name: "James T.",
-                role: "S-Corp Founder, Florida",
-                stars: 5,
-                quote: "I compared several services before choosing EZ BIZ. Their pricing transparency and expert guidance set them apart. Highly recommend!"
-              },
-              {
-                name: "Maria L.",
-                role: "Nonprofit Director, California",
-                stars: 5,
-                quote: "As a first-time founder, I had so many questions. The free consultation was invaluable and they handled all the paperwork flawlessly."
-              },
-              {
-                name: "David K.",
-                role: "C-Corp CEO, Delaware",
-                stars: 5,
-                quote: "Professional, fast, and accurate. My corporation was formed in 48 hours. The registered agent service gives me peace of mind."
-              },
-              {
-                name: "Priya N.",
-                role: "Partnership, New York",
-                stars: 4,
-                quote: "Great experience overall. The team helped us understand the differences between entity types and choose the right structure for our business."
-              },
-              {
-                name: "Robert W.",
-                role: "LLC Owner, Wyoming",
-                stars: 5,
-                quote: "Second time using EZ BIZ for a new venture. Consistent quality and they remembered my preferences. That's real customer service."
-              }
-            ].map((testimonial, index) => (
+              { scenario: "First-time Founder", quote: "I need help forming my LLC correctly the first time." },
+              { scenario: "Texas Veteran", quote: "I want to understand my Texas veteran fee-waiver options." },
+              { scenario: "Post-Filing Clarity", quote: "I need clear next steps after my business is filed." },
+              { scenario: "Choosing a Structure", quote: "I'm not sure whether an LLC, S-Corp, or C-Corp is right for me." },
+              { scenario: "Compliance Reminders", quote: "I want help staying on top of annual reports and renewals." },
+              { scenario: "Document Preparation", quote: "I want my Operating Agreement and EIN handled accurately." },
+            ].map((item, index) => (
               <TiltCard key={index} className="border-border shadow-smooth" tiltMax={5} scale={1.01}>
                 <CardHeader className="pb-2">
-                  <div className="flex gap-0.5 mb-2">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < testimonial.stars ? 'text-secondary fill-secondary' : 'text-muted'}`}
-                      />
-                    ))}
-                  </div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-secondary">{item.scenario}</div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground font-body leading-relaxed italic">
-                    "{testimonial.quote}"
+                    "{item.quote}"
                   </p>
-                  <div>
-                    <div className="font-semibold font-display">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground font-body">{testimonial.role}</div>
-                  </div>
                 </CardContent>
               </TiltCard>
             ))}
           </StaggeredGrid>
+          <p className="text-xs text-muted-foreground/70 text-center mt-6 max-w-xl mx-auto">
+            Illustrative examples of common customer needs — not verified customer reviews.
+          </p>
         </div>
       </AnimatedSection>
 
@@ -623,15 +584,15 @@ const Index = () => {
               </Card>
               <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
                 <div className="text-4xl font-bold text-primary font-display mb-2">24hr</div>
-                <div className="text-sm text-muted-foreground font-body">Average Response Time</div>
+                <div className="text-sm text-muted-foreground font-body">Typical Response Window</div>
               </Card>
               <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
-                <div className="text-4xl font-bold text-primary font-display mb-2">A+</div>
-                <div className="text-sm text-muted-foreground font-body">BBB Rating</div>
+                <div className="text-4xl font-bold text-primary font-display mb-2">🇺🇸</div>
+                <div className="text-sm text-muted-foreground font-body">Veteran-Owned</div>
               </Card>
               <Card className="p-6 text-center shadow-smooth border-0 bg-gradient-subtle">
-                <div className="text-4xl font-bold text-primary font-display mb-2">100%</div>
-                <div className="text-sm text-muted-foreground font-body">Accuracy Rate</div>
+                <div className="text-4xl font-bold text-primary font-display mb-2">✓</div>
+                <div className="text-sm text-muted-foreground font-body">Accuracy-Focused Review</div>
               </Card>
             </div>
           </div>

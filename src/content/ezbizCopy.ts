@@ -127,8 +127,8 @@ export const EZBIZ_COPY = {
   },
 
   testimonials: {
-    heading: "What Our Clients Say",
-    subheading: "Thousands of entrepreneurs trust EZ BIZ to launch their businesses.",
+    heading: "Common Situations We Help With",
+    subheading: "Examples of what customers often need help with when starting a business.",
   },
 
   whyChooseUs: {
@@ -143,7 +143,7 @@ export const EZBIZ_COPY = {
 
   comparison: {
     heading: "How We Compare",
-    subheading: "See why thousands of entrepreneurs choose EZ BIZ over the competition.",
+    subheading: "See how EZ BIZ compares to other formation services.",
     cta: "See Our Packages",
   },
 
