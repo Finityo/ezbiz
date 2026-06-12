@@ -121,7 +121,7 @@ const BusinessFilings = () => {
 
   const benefits = [
     "Fast, reliable service in all 50 states",
-    "100% satisfaction guarantee",
+    "Service-fee satisfaction guarantee",
     "Expert preparation and filing",
     "Competitive pricing with no hidden fees",
     "Dedicated customer support",

@@ -269,7 +269,7 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-muted-foreground">
               <span className="flex items-center space-x-1">
                 <span className="text-success">✓</span>
-                <span>100% Satisfaction Guaranteed</span>
+                <span>Service-Fee Satisfaction Guarantee</span>
               </span>
               <span className="flex items-center space-x-1">
                 <span className="text-success">✓</span>

@@ -209,7 +209,7 @@ export const REGISTERED_AGENT_COPY = {
     subheadline: "Protect your privacy and ensure compliance with our reliable registered agent service. We accept legal documents and maintain your business in good standing.",
     ctaPrimary: "Get Started - $149/year",
     ctaSecondary: "Learn More",
-    badges: ["All 50 States Available", "Privacy Protection", "Compliance Guaranteed"],
+    badges: ["All 50 States Available", "Privacy Protection", "Compliance-Focused Support"],
   },
   whatIs: {
     heading: "What is a Registered Agent?",
@@ -234,7 +234,7 @@ export const REGISTERED_AGENT_COPY = {
     items: [
       { title: "Privacy Protection", description: "Keep your personal address private from public business records" },
       { title: "Reliable Service", description: "Professional acceptance of important legal documents during business hours" },
-      { title: "Compliance Assured", description: "Meet state requirements and maintain good standing" },
+      { title: "Compliance Support", description: "Helps you stay organized with official notices and state requirements" },
       { title: "Document Management", description: "Secure storage and quick access to all registered agent documents" },
     ],
     services: [
@@ -290,7 +290,7 @@ export const ANNUAL_REPORT_COPY = {
   features: [
     { title: "Track Deadlines", description: "We monitor your state's filing deadlines and remind you before they're due." },
     { title: "Complete Filing", description: "We prepare and file your annual report with all required information." },
-    { title: "Guaranteed Compliance", description: "Stay in good standing with your state and avoid penalties or dissolution." },
+    { title: "Compliance-Focused Support", description: "Designed to help you stay organized and on track with state requirements." },
   ],
   stateRequirements: {
     heading: "State-Specific Requirements",

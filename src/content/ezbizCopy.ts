@@ -170,12 +170,12 @@ export const EZBIZ_COPY = {
     hero: {
       headline: "Transparent Pricing",
       subheadline: "No hidden fees. No surprises. Choose the package that's right for your business.",
-      badges: ["No Hidden Fees", "Money-Back Guarantee", "Expert Support"],
+      badges: ["No Hidden Fees", "Service-Fee Refund Guarantee", "Expert Support"],
     },
     trust: {
       heading: "Why Choose EZ BIZ?",
       items: [
-        { title: "100% Satisfaction Guaranteed", description: "We stand behind our work with a complete money-back guarantee." },
+        { title: "Service-Fee Satisfaction Guarantee", description: "If you're not satisfied with our service, our Refund Policy explains your service-fee refund options." },
         { title: "Expert Support", description: "Our experienced team guides you through every step of formation." },
         { title: "All Documents Included", description: "Get all necessary formation documents and ongoing compliance support." },
       ],
@@ -285,13 +285,13 @@ export const EZBIZ_COPY = {
       highlightedStates: ["Delaware", "Wyoming", "Nevada", "Florida", "Texas", "California"],
     },
     guarantee: {
-      heading: "100% Satisfaction Guarantee",
-      title: "Money-Back Guarantee",
-      description: "We're so confident in our services that we offer a 100% money-back guarantee. If you're not completely satisfied with our service, we'll refund your money within 60 days.",
+      heading: "Service-Fee Satisfaction Guarantee",
+      title: "Service-Fee Refund Guarantee",
+      description: "If you're not satisfied with our service, our Refund Policy explains your service-fee refund options. State filing fees and third-party fees are not refundable once submitted.",
       pillars: [
         { title: "Fast Processing", description: "Quick turnaround times" },
         { title: "Expert Support", description: "Professional guidance" },
-        { title: "Accuracy Guaranteed", description: "Error-free filing" },
+        { title: "Accuracy-Focused Review", description: "Documents reviewed before filing" },
       ],
     },
     cta: {
@@ -310,7 +310,7 @@ export const EZBIZ_COPY = {
       description: "LLCs are the most popular business structure in America, offering liability protection, tax flexibility, and simple management requirements.",
       ctaPrimary: "Start Your LLC - $129",
       ctaSecondary: "Free LLC Guide",
-      badges: ["Fast 24-48 Hour Filing", "All 50 States", "100% Satisfaction Guaranteed"],
+      badges: ["Fast 24-48 Hour Filing", "All 50 States", "Service-Fee Satisfaction Guarantee"],
     },
     whatIs: {
       heading: "What Is an LLC?",
@@ -466,7 +466,7 @@ export const EZBIZ_COPY = {
       "Fast, accurate document preparation and filing",
       "Comprehensive support throughout the process",
       "Ongoing compliance assistance and reminders",
-      "100% satisfaction guarantee",
+      "Service-fee satisfaction guarantee",
       "Licensed in all 50 states",
       "Award-winning customer service",
     ],

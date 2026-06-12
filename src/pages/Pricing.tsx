@@ -325,7 +325,7 @@ const Pricing = () => {
               Choose Your Package &amp; Launch Today
             </h1>
             <p className="text-base text-white/90">
-              Each package is backed by our 100% Satisfaction Guarantee.
+              Each package is backed by our Service-Fee Satisfaction Guarantee.
             </p>
           </div>
         </section>
@@ -540,9 +540,9 @@ const Pricing = () => {
         {/* Satisfaction guarantee */}
         <section className="py-10 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4 max-w-2xl text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">100% Satisfaction Guaranteed</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">Service-Fee Satisfaction Guarantee</h2>
             <p className="text-muted-foreground">
-              Or we will refund 100% of our service fees, no questions asked!
+              Not satisfied with our service? We refund our service fees. State and third-party fees are not refundable once submitted. See our Refund Policy for details.
             </p>
           </div>
         </section>
