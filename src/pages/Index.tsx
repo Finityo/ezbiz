@@ -194,11 +194,11 @@ const Index = () => {
               For Founders & Idea Holders
             </p>
             <h2 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-3">
-              Have an idea? We'll handle the legal.
+              Have an idea? We'll handle the filing.
             </h2>
             <p className="text-muted-foreground font-body mb-6 max-w-2xl mx-auto">
-              See how EZ Biz takes you from "I should start a business" to a filed entity, EIN, and
-              bank-ready docs — usually in under 15 minutes.
+              See how EZ BIZ takes you from "I should start a business" to a filed entity, EIN, and
+              bank-ready documents — with guided filing support from start to finish.
             </p>
             <a
               href="/entrepreneurs"
