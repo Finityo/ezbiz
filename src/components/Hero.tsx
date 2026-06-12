@@ -42,8 +42,8 @@ export default function Hero() {
 
         {/* Subtext */}
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Veteran-owned business formation guidance. File instantly through our
-          partner or get expert help launching your company.
+          Veteran-owned business formation support. Transparent pricing before checkout —
+          guided filing help from start to finish.
         </p>
 
         {/* Veteran Eligibility */}
