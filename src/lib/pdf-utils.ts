@@ -304,7 +304,7 @@ export const addAboutPage = (doc: jsPDF) => {
   y += 25;
   
   // Description
-  const aboutText = `EZ BIZ FILE SERVICE combines old-fashioned integrity with modern efficiency to help entrepreneurs and business owners navigate the complexities of business formation. Our team of experienced professionals has helped thousands of businesses get started on the right foot.
+  const aboutText = `EZ BIZ FILE SERVICE combines old-fashioned integrity with modern efficiency to help entrepreneurs and business owners navigate the complexities of business formation. We provide guided filing support to help entrepreneurs start with confidence.
 
 We believe that starting a business should be simple, transparent, and affordable. That's why we offer straightforward pricing with no hidden fees, expert guidance at every step, and a commitment to getting your filings done right the first time.
 
