@@ -163,16 +163,20 @@ const CorporateBylaws = () => {
         {/* Service Options Section */}
         <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">Corporate Bylaws Services</h2>
-              <div className="grid md:grid-cols-3 gap-8">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-4">Corporate Bylaws & Minutes</h2>
+              <p className="text-center text-muted-foreground mb-12">
+                Stand-alone Bylaws / Initial Minutes for your corporation, or bundled inside our formation packages.
+              </p>
+              <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Standard Bylaws</CardTitle>
-                    <CardDescription>Complete bylaws for most corporations</CardDescription>
+                    <CardTitle>Bylaws / Minutes Add-On</CardTitle>
+                    <CardDescription>Corporate bylaws and initial meeting minutes</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">$299</div>
+                    <div className="text-3xl font-bold mb-1">$129</div>
+                    <div className="text-sm text-muted-foreground mb-4">One-time fee</div>
                     <ul className="space-y-2">
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
@@ -184,90 +188,58 @@ const CorporateBylaws = () => {
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Officer roles and duties</span>
+                        <span className="text-sm">Officer roles and meeting procedures</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Meeting procedures</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">State law compliance</span>
+                        <span className="text-sm">Initial organizational minutes</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Get Started</Button>
+                    <Link to="/pricing">
+                      <Button className="w-full mt-6">View Current Pricing</Button>
+                    </Link>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="border-primary">
                   <CardHeader>
-                    <CardTitle>Custom Bylaws</CardTitle>
-                    <CardDescription>Tailored bylaws for complex structures</CardDescription>
+                    <CardTitle>Included with Corporate Packages</CardTitle>
+                    <CardDescription>Available through our current formation packages</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">$599</div>
+                    <div className="text-3xl font-bold mb-1">View Pricing</div>
+                    <div className="text-sm text-muted-foreground mb-4">Bundled with corporation formation</div>
                     <ul className="space-y-2">
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Everything in Standard</span>
+                        <span className="text-sm">Articles of Incorporation prepared & filed</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Custom provisions</span>
+                        <span className="text-sm">Bylaws / Minutes available as add-on</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Multiple stock classes</span>
+                        <span className="text-sm">EIN, S-Corp Election available</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Special voting arrangements</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Attorney consultation</span>
+                        <span className="text-sm">Lifetime customer support</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Choose Custom</Button>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Bylaws Amendment</CardTitle>
-                    <CardDescription>Update existing bylaws</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-4">$199</div>
-                    <ul className="space-y-2">
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Review existing bylaws</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Draft amendments</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Board resolution preparation</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Filing assistance</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Compliance review</span>
-                      </li>
-                    </ul>
-                    <Button className="w-full mt-6">Amend Bylaws</Button>
+                    <Link to="/pricing">
+                      <Button className="w-full mt-6">See Package Options</Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </div>
+              <p className="text-center text-xs text-muted-foreground mt-6">
+                Need amendments to existing bylaws or custom provisions for complex structures? <Link to="/consultation" className="underline">Contact us for custom support</Link>.
+              </p>
             </div>
           </div>
         </section>
+
 
         {/* Process Section */}
         <section className="py-16">

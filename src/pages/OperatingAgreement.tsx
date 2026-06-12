@@ -168,107 +168,83 @@ const OperatingAgreement = () => {
         {/* Service Options Section */}
         <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">Operating Agreement Services</h2>
-              <div className="grid md:grid-cols-3 gap-8">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-4">Operating Agreement</h2>
+              <p className="text-center text-muted-foreground mb-12">
+                Included with our Deluxe and Complete formation packages, or available as a stand-alone add-on.
+              </p>
+              <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Basic Operating Agreement</CardTitle>
-                    <CardDescription>Essential provisions for single-member LLCs</CardDescription>
+                    <CardTitle>Operating Agreement Add-On</CardTitle>
+                    <CardDescription>Stand-alone Operating Agreement for your LLC</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">$199</div>
+                    <div className="text-3xl font-bold mb-1">$129</div>
+                    <div className="text-sm text-muted-foreground mb-4">One-time fee</div>
                     <ul className="space-y-2">
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Single-member LLC template</span>
+                        <span className="text-sm">Single- or multi-member ready</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Management structure</span>
+                        <span className="text-sm">Management structure & voting</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Basic tax elections</span>
+                        <span className="text-sm">Capital contributions & distributions</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
                         <span className="text-sm">Dissolution procedures</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Get Started</Button>
+                    <Link to="/pricing">
+                      <Button className="w-full mt-6">View Current Pricing</Button>
+                    </Link>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="border-primary">
                   <CardHeader>
-                    <CardTitle>Multi-Member Agreement</CardTitle>
-                    <CardDescription>Comprehensive agreement for multiple owners</CardDescription>
+                    <CardTitle>Included with Deluxe & Complete</CardTitle>
+                    <CardDescription>Operating Agreement bundled into our formation packages</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">$399</div>
+                    <div className="text-3xl font-bold mb-1">Included</div>
+                    <div className="text-sm text-muted-foreground mb-4">Deluxe from $279 · Complete from $349</div>
                     <ul className="space-y-2">
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Everything in Basic</span>
+                        <span className="text-sm">Operating Agreement included</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Multi-member provisions</span>
+                        <span className="text-sm">Banking Resolution included</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Buy-sell agreements</span>
+                        <span className="text-sm">Initial Compliance Instructions</span>
                       </li>
                       <li className="flex items-center space-x-2">
                         <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Capital contribution rules</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Voting procedures</span>
+                        <span className="text-sm">Priority Support</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Choose Multi-Member</Button>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Custom Agreement</CardTitle>
-                    <CardDescription>Fully customized agreement for complex businesses</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-4">$699</div>
-                    <ul className="space-y-2">
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Everything in Multi-Member</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Fully customized provisions</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Attorney consultation</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Complex ownership structures</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <Check className="h-4 w-4 text-success" />
-                        <span className="text-sm">Ongoing support</span>
-                      </li>
-                    </ul>
-                    <Button className="w-full mt-6">Get Custom Agreement</Button>
+                    <Link to="/pricing">
+                      <Button className="w-full mt-6">See Package Options</Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </div>
+              <p className="text-center text-xs text-muted-foreground mt-6">
+                Need a fully customized agreement for a complex ownership structure? <Link to="/consultation" className="underline">Contact us for custom support</Link>.
+              </p>
             </div>
           </div>
         </section>
+
 
         {/* Process Section */}
         <section className="py-16">

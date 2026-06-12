@@ -103,7 +103,7 @@ export const DBA_COPY = {
     subheading: "Establish your brand identity and start operating under your chosen business name. We handle the paperwork so you can focus on your business.",
     ctaPrimary: "File Your DBA Today",
     ctaSecondary: "Schedule Free Consultation",
-    footnote: "Starting at $99 + state filing fees",
+    footnote: "DBA Filing — $89 + state/county filing fees",
   },
 } as const;
 
@@ -177,10 +177,10 @@ export const EIN_COPY = {
       features: ["IRS Form SS-4 preparation", "Direct IRS submission", "Same-day processing", "Email confirmation"],
     },
     express: {
-      name: "Express EIN Service",
-      description: "Priority processing with additional support",
-      price: "$149",
-      features: ["Everything in Standard", "Priority processing", "Expedited delivery", "Dedicated support specialist", "Banking resolution included"],
+      name: "Included with Complete Package",
+      description: "EIN filing is included with our Complete formation package — view current pricing",
+      price: "View Pricing",
+      features: ["Everything in EIN Online Filing", "Bundled with Complete Package", "S-Corp Election included", "Business License Research included", "Compliance Alerts included"],
     },
   },
   faq: {
@@ -255,23 +255,15 @@ export const REGISTERED_AGENT_COPY = {
     ],
   },
   pricing: {
-    heading: "Choose Your Service Level",
+    heading: "Registered Agent Service",
     subheading: "Professional registered agent service with transparent annual pricing",
     packages: [
       {
-        name: "Standard Service",
+        name: "Registered Agent Service",
         price: "$149",
         period: "per year",
-        description: "Professional registered agent service",
-        features: ["Accept service of process", "Forward legal documents", "Email notifications", "Document scanning", "Business hours coverage", "Online account access"],
-        popular: false,
-      },
-      {
-        name: "Premium Service",
-        price: "$199",
-        period: "per year",
-        description: "Enhanced service with compliance support",
-        features: ["Everything in Standard Service", "Annual report filing reminders", "Compliance calendar", "Priority document processing", "Phone support", "Document storage (5 years)"],
+        description: "Professional registered agent service available in all 50 states",
+        features: ["Accept service of process", "Forward legal documents", "Email notifications", "Document scanning", "Business hours coverage", "Online account access", "Annual report reminders"],
         popular: true,
       },
     ],
