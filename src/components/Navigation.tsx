@@ -368,7 +368,13 @@ const Navigation = () => {
               {/* Mobile White Glove Support (approved direct order-flow exception) */}
               <Link
                 to="/order-flow?mode=whiteglove"
-                className="block font-semibold text-sm text-foreground hover:text-primary py-1 transition-colors"
+                aria-current={isWhiteGloveActive ? "page" : undefined}
+                className={cn(
+                  "block font-semibold text-sm py-1 transition-colors",
+                  isWhiteGloveActive
+                    ? "text-primary border-l-2 border-primary pl-2"
+                    : "text-foreground hover:text-primary"
+                )}
                 onClick={() => {
                   trackClick("White Glove Support", "mobile_nav_whiteglove", "/order-flow?mode=whiteglove");
                   setIsMobileMenuOpen(false);
