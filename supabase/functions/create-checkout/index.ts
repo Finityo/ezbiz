@@ -103,6 +103,7 @@ serve(async (req) => {
     // Never trusts the client flag alone — re-verifies admin role via the
     // service-role client.
     let isSmokeTest = false;
+    let resolvedSmokePriceId: string | null = null;
     if (smokeTest === true) {
       const adminCheck = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
