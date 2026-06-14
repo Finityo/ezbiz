@@ -82,6 +82,19 @@ const AdminDashboard = () => {
 
   const checkAdminStatus = async () => {
     try {
+      // Defense-in-depth: require @ezbiz-fs.com email AND admin role.
+      // Real enforcement lives in DB triggers + edge functions.
+      const email = (user?.email ?? '').toLowerCase();
+      if (!email.endsWith('@ezbiz-fs.com')) {
+        toast({
+          title: "Access Denied",
+          description: "Admin access is restricted to EZ Biz staff accounts.",
+          variant: "destructive",
+        });
+        navigate('/dashboard');
+        return;
+      }
+
       const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
@@ -106,6 +119,7 @@ const AdminDashboard = () => {
       navigate('/dashboard');
     }
   };
+
 
   const fetchApplications = async () => {
     try {

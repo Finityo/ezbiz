@@ -44,13 +44,16 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    const { data: roleRow } = await admin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!roleRow) return json(403, { error: "Forbidden" });
+    // Defense-in-depth: require admin role AND @ezbiz-fs.com email domain.
+    // is_ezbiz_admin() runs as SECURITY DEFINER and joins user_roles to auth.users.
+    const { data: gateOk, error: gateErr } = await admin.rpc("is_ezbiz_admin", {
+      _user_id: user.id,
+    });
+    if (gateErr || !gateOk) {
+      console.warn(`[WIPE] Rejected user ${user.id}: not an EZ Biz admin.`);
+      return json(403, { error: "Forbidden" });
+    }
+
 
     const body = await req.json().catch(() => ({}));
     if (body?.confirm !== "WIPE") {
