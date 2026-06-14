@@ -4,6 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import { ArrowLeft, AlertTriangle, Loader2, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -15,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { supabase } from "@/integrations/supabase/client";
+
 
 /**
  * ADMIN-ONLY $1 Live Payment Smoke Test
@@ -32,6 +34,7 @@ export default function LiveSmokeTest() {
   const { isAdmin, loading: adminLoading } = useAdminAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [smokePriceId, setSmokePriceId] = useState("");
 
   if (authLoading || adminLoading) {
     return (
@@ -44,11 +47,21 @@ export default function LiveSmokeTest() {
   if (!isAdmin) return <Navigate to="/" replace />;
 
   const run = async () => {
+    const trimmed = smokePriceId.trim();
+    if (!trimmed.startsWith("price_")) {
+      toast({
+        title: "Invalid Price ID",
+        description: "The Stripe Price ID must start with price_",
+        variant: "destructive",
+      });
+      return;
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
           smokeTest: true,
+          smokePriceId: trimmed,
           successPath: "/order-success",
           cancelPath: "/admin/live-smoke-test",
         },
@@ -69,6 +82,7 @@ export default function LiveSmokeTest() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
@@ -117,7 +131,25 @@ export default function LiveSmokeTest() {
               </div>
             </div>
 
-            <Button onClick={run} disabled={loading} size="lg" className="w-full">
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="smokePriceId">
+                Live Stripe Price ID
+              </label>
+              <Input
+                id="smokePriceId"
+                placeholder="price_1AbCdEfGhIjKlMn..."
+                value={smokePriceId}
+                onChange={(e) => setSmokePriceId(e.target.value)}
+                disabled={loading}
+                className="font-mono"
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste the live-mode Price ID that starts with <code>price_</code>.
+                The edge function will use this ID instead of the env secret.
+              </p>
+            </div>
+
+            <Button onClick={run} disabled={loading || !smokePriceId.trim().startsWith("price_")} size="lg" className="w-full">
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

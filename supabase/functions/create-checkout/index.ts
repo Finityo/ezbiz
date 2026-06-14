@@ -72,7 +72,9 @@ serve(async (req) => {
       applicationId,
       orderEnrichment,
       smokeTest,
+      smokePriceId: smokePriceIdOverride,
     } = await req.json();
+
 
     // Authenticate user — REQUIRED. The order flow gates checkout behind
     // sign-in at Step 4, so an authenticated user_id must always be present.
@@ -101,6 +103,7 @@ serve(async (req) => {
     // Never trusts the client flag alone — re-verifies admin role via the
     // service-role client.
     let isSmokeTest = false;
+    let resolvedSmokePriceId: string | null = null;
     if (smokeTest === true) {
       const adminCheck = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
@@ -121,20 +124,23 @@ serve(async (req) => {
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
         );
       }
-      const smokePriceId = Deno.env.get("STRIPE_SMOKE_PRICE_ID");
-      if (!smokePriceId) {
-        console.error("[SMOKE-TEST] STRIPE_SMOKE_PRICE_ID is not set.");
+      const resolvedSmokePriceId =
+        typeof smokePriceIdOverride === "string" && smokePriceIdOverride.trim().startsWith("price_")
+          ? smokePriceIdOverride.trim()
+          : Deno.env.get("STRIPE_SMOKE_PRICE_ID");
+      if (!resolvedSmokePriceId || !resolvedSmokePriceId.startsWith("price_")) {
+        console.error("[SMOKE-TEST] No valid smoke price ID available (override or env).");
         return new Response(
           JSON.stringify({
             error:
-              "Smoke test unavailable: STRIPE_SMOKE_PRICE_ID secret is not configured.",
+              "Smoke test unavailable: provide a valid live Price ID starting with price_.",
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
         );
       }
       isSmokeTest = true;
       console.log(
-        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${smokePriceId}.`
+        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${resolvedSmokePriceId}.`
       );
     }
 
@@ -150,7 +156,7 @@ serve(async (req) => {
     const expectedMap = EXPECTED_PRICE_CENTS;
     const strictUnknown = STRICT_UNKNOWN_PRICES;
     const activeLineItems = isSmokeTest
-      ? [{ priceId: Deno.env.get("STRIPE_SMOKE_PRICE_ID") as string, quantity: 1 }]
+      ? [{ priceId: resolvedSmokePriceId!, quantity: 1 }]
       : lineItems;
 
 
@@ -376,7 +382,7 @@ serve(async (req) => {
           metadata: {
             note: "Admin-only $1 live payment smoke test. Not a real customer order.",
             user_id: userId,
-            smoke_price_id: Deno.env.get("STRIPE_SMOKE_PRICE_ID"),
+            smoke_price_id: resolvedSmokePriceId,
           },
         });
       } catch (e) {
