@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, User } from "lucide-react"
 import Logo from "@/components/ui/logo"
 import { useAuth } from "@/hooks/useAuth"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
+import { trackClick } from "@/hooks/useAnalytics"
 
 import { useToast } from "@/hooks/use-toast"
 import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide"
@@ -32,6 +33,8 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPricingActive = location.pathname === "/pricing";
   const { toast } = useToast();
 
   const handlePDFDownload = async (title: string, generator: () => any, filename: string) => {
@@ -335,10 +338,31 @@ const Navigation = () => {
               {/* Mobile Pricing Link */}
               <Link
                 to="/pricing"
-                className="block font-semibold text-sm text-foreground hover:text-primary py-1 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+                aria-current={isPricingActive ? "page" : undefined}
+                className={cn(
+                  "block font-semibold text-sm py-1 transition-colors",
+                  isPricingActive
+                    ? "text-primary border-l-2 border-primary pl-2"
+                    : "text-foreground hover:text-primary"
+                )}
+                onClick={() => {
+                  trackClick("Pricing", "mobile_nav_pricing", "/pricing");
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 Pricing
+              </Link>
+
+              {/* Mobile White Glove Support (approved direct order-flow exception) */}
+              <Link
+                to="/order-flow?mode=whiteglove"
+                className="block font-semibold text-sm text-foreground hover:text-primary py-1 transition-colors"
+                onClick={() => {
+                  trackClick("White Glove Support", "mobile_nav_whiteglove", "/order-flow?mode=whiteglove");
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                White Glove Support
               </Link>
 
               {/* Mobile Business Structures */}
