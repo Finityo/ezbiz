@@ -61,9 +61,10 @@ describe("Navigation – mobile hamburger conversion paths", () => {
   it("fires mobile_nav_pricing tracking on Pricing click", () => {
     renderAt("/");
     openMobileMenu();
+    // Mobile Pricing link is the one carrying the font-semibold mobile class
     const pricing = screen
       .getAllByRole("link", { name: "Pricing" })
-      .find((l) => l.getAttribute("href") === "/pricing")!;
+      .find((l) => l.getAttribute("href") === "/pricing" && l.className.includes("font-semibold"))!;
     fireEvent.click(pricing);
     expect(trackClickMock).toHaveBeenCalledWith(
       "Pricing",
