@@ -35,6 +35,9 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isPricingActive = location.pathname === "/pricing";
+  const isWhiteGloveActive =
+    location.pathname === "/order-flow" &&
+    new URLSearchParams(location.search).get("mode") === "whiteglove";
   const { toast } = useToast();
 
   const handlePDFDownload = async (title: string, generator: () => any, filename: string) => {
