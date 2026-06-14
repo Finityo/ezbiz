@@ -72,7 +72,9 @@ serve(async (req) => {
       applicationId,
       orderEnrichment,
       smokeTest,
+      smokePriceId: smokePriceIdOverride,
     } = await req.json();
+
 
     // Authenticate user — REQUIRED. The order flow gates checkout behind
     // sign-in at Step 4, so an authenticated user_id must always be present.
