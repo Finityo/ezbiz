@@ -71,17 +71,11 @@ serve(async (req) => {
       orderId,
       applicationId,
       orderEnrichment,
+      smokeTest,
     } = await req.json();
-
-    if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
-      throw new Error("lineItems array is required");
-    }
 
     // Authenticate user — REQUIRED. The order flow gates checkout behind
     // sign-in at Step 4, so an authenticated user_id must always be present.
-    // Refusing unauthenticated checkouts guarantees every order row has a
-    // non-null user_id and is covered by the owner-scoped SELECT RLS policy
-    // (no orphaned guest rows invisible to their eventual owner).
     let userEmail: string | undefined;
     let userId: string | undefined;
     let customerId: string | undefined;
@@ -101,14 +95,64 @@ serve(async (req) => {
       );
     }
 
+    // ── SMOKE-TEST BRANCH (admin-only) ──────────────────────────────────
+    // Server-side fenced override. Replaces line items with a single $1
+    // live price for end-to-end production payment-pipeline validation.
+    // Never trusts the client flag alone — re-verifies admin role via the
+    // service-role client.
+    let isSmokeTest = false;
+    if (smokeTest === true) {
+      const adminCheck = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: roleRow, error: roleErr } = await adminCheck
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (roleErr || !roleRow) {
+        console.warn(
+          `[SMOKE-TEST] Rejected: user ${userId} is not admin.`
+        );
+        return new Response(
+          JSON.stringify({ error: "Forbidden." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+        );
+      }
+      const smokePriceId = Deno.env.get("STRIPE_SMOKE_PRICE_ID");
+      if (!smokePriceId) {
+        console.error("[SMOKE-TEST] STRIPE_SMOKE_PRICE_ID is not set.");
+        return new Response(
+          JSON.stringify({
+            error:
+              "Smoke test unavailable: STRIPE_SMOKE_PRICE_ID secret is not configured.",
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
+        );
+      }
+      isSmokeTest = true;
+      console.log(
+        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${smokePriceId}.`
+      );
+    }
+
+    if (!isSmokeTest) {
+      if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
+        throw new Error("lineItems array is required");
+      }
+    }
+
     // ── LIVE-ONLY Stripe client ────────────────────────────────────────
-    // Production posture: always use STRIPE_SECRET_KEY (sk_live_…). No
-    // test-mode bypass, no admin override, no client-supplied flags.
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const expectedMap = EXPECTED_PRICE_CENTS;
     const strictUnknown = STRICT_UNKNOWN_PRICES;
-    const activeLineItems = lineItems;
+    const activeLineItems = isSmokeTest
+      ? [{ priceId: Deno.env.get("STRIPE_SMOKE_PRICE_ID") as string, quantity: 1 }]
+      : lineItems;
+
 
     // ── Price-amount guard ──────────────────────────────────────────────
     const uniquePriceIds: string[] = Array.from(
