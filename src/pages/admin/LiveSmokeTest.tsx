@@ -131,7 +131,25 @@ export default function LiveSmokeTest() {
               </div>
             </div>
 
-            <Button onClick={run} disabled={loading} size="lg" className="w-full">
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="smokePriceId">
+                Live Stripe Price ID
+              </label>
+              <Input
+                id="smokePriceId"
+                placeholder="price_1AbCdEfGhIjKlMn..."
+                value={smokePriceId}
+                onChange={(e) => setSmokePriceId(e.target.value)}
+                disabled={loading}
+                className="font-mono"
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste the live-mode Price ID that starts with <code>price_</code>.
+                The edge function will use this ID instead of the env secret.
+              </p>
+            </div>
+
+            <Button onClick={run} disabled={loading || !smokePriceId.trim().startsWith("price_")} size="lg" className="w-full">
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
