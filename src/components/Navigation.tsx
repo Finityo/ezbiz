@@ -332,6 +332,15 @@ const Navigation = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="space-y-4">
+              {/* Mobile Pricing Link */}
+              <Link
+                to="/pricing"
+                className="block font-semibold text-sm text-foreground hover:text-primary py-1 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+
               {/* Mobile Business Structures */}
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm text-foreground">Business Structures</h3>
