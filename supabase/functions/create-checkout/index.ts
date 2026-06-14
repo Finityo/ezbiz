@@ -109,21 +109,20 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
-      const { data: roleRow, error: roleErr } = await adminCheck
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (roleErr || !roleRow) {
+      // Defense-in-depth: require admin role AND @ezbiz-fs.com email domain.
+      const { data: gateOk, error: gateErr } = await adminCheck.rpc("is_ezbiz_admin", {
+        _user_id: userId,
+      });
+      if (gateErr || !gateOk) {
         console.warn(
-          `[SMOKE-TEST] Rejected: user ${userId} is not admin.`
+          `[SMOKE-TEST] Rejected: user ${userId} is not an EZ Biz admin.`
         );
         return new Response(
           JSON.stringify({ error: "Forbidden." }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
         );
       }
+
       resolvedSmokePriceId =
         typeof smokePriceIdOverride === "string" && smokePriceIdOverride.trim().startsWith("price_")
           ? smokePriceIdOverride.trim()
