@@ -123,20 +123,23 @@ serve(async (req) => {
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
         );
       }
-      const smokePriceId = Deno.env.get("STRIPE_SMOKE_PRICE_ID");
-      if (!smokePriceId) {
-        console.error("[SMOKE-TEST] STRIPE_SMOKE_PRICE_ID is not set.");
+      const resolvedSmokePriceId =
+        typeof smokePriceIdOverride === "string" && smokePriceIdOverride.trim().startsWith("price_")
+          ? smokePriceIdOverride.trim()
+          : Deno.env.get("STRIPE_SMOKE_PRICE_ID");
+      if (!resolvedSmokePriceId || !resolvedSmokePriceId.startsWith("price_")) {
+        console.error("[SMOKE-TEST] No valid smoke price ID available (override or env).");
         return new Response(
           JSON.stringify({
             error:
-              "Smoke test unavailable: STRIPE_SMOKE_PRICE_ID secret is not configured.",
+              "Smoke test unavailable: provide a valid live Price ID starting with price_.",
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
         );
       }
       isSmokeTest = true;
       console.log(
-        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${smokePriceId}.`
+        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${resolvedSmokePriceId}.`
       );
     }
 
