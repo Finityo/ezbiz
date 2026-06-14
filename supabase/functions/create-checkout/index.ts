@@ -155,13 +155,19 @@ serve(async (req) => {
 
 
     // ── Price-amount guard ──────────────────────────────────────────────
-    const uniquePriceIds: string[] = Array.from(
-      new Set(
-        activeLineItems
-          .map((li: { priceId?: string }) => li?.priceId)
-          .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
-      )
-    );
+    // Bypassed inside the admin-only smoke-test branch (override is logged).
+    const uniquePriceIds: string[] = isSmokeTest
+      ? []
+      : Array.from(
+          new Set(
+            activeLineItems
+              .map((li: { priceId?: string }) => li?.priceId)
+              .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
+          )
+        );
+    if (isSmokeTest) {
+      console.log("[SMOKE-TEST] Skipping EXPECTED_PRICE_CENTS guard for smoke price.");
+    }
 
     const priceChecks = await Promise.all(
       uniquePriceIds.map(async (id) => {
