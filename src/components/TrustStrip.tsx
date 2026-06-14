@@ -2,39 +2,39 @@ export default function TrustStrip() {
   return (
     <section className="w-full border-y border-border bg-muted/40">
       <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        {/* Veteran Owned */}
+        {/* Disabled Veteran Owned */}
         <div className="flex flex-col items-center">
           <div className="text-3xl mb-2">🇺🇸</div>
-          <div className="font-semibold">Veteran Owned</div>
+          <div className="font-semibold">Disabled Veteran Owned</div>
           <p className="text-sm text-muted-foreground">
-            Founded by a U.S. Marine veteran helping entrepreneurs launch businesses the right way.
+            Founded by a U.S. Marine veteran helping entrepreneurs file with confidence.
           </p>
         </div>
 
-        {/* Fast Formation */}
+        {/* Transparent Pricing */}
         <div className="flex flex-col items-center">
-          <div className="text-3xl mb-2">⚡</div>
-          <div className="font-semibold">Fast Business Formation</div>
+          <div className="text-3xl mb-2">💲</div>
+          <div className="font-semibold">Transparent Pricing</div>
           <p className="text-sm text-muted-foreground">
-            Start your LLC or corporation quickly through our trusted filing partner.
+            See package pricing and add-ons before you check out — no hidden surprises.
           </p>
         </div>
 
-        {/* Texas Expertise */}
-        <div className="flex flex-col items-center">
-          <div className="text-3xl mb-2">📍</div>
-          <div className="font-semibold">Texas Filing Expertise</div>
-          <p className="text-sm text-muted-foreground">
-            Guidance tailored for Texas entrepreneurs including veteran benefits and exemptions.
-          </p>
-        </div>
-
-        {/* Guided Support */}
+        {/* Guided Filing Support */}
         <div className="flex flex-col items-center">
           <div className="text-3xl mb-2">💬</div>
-          <div className="font-semibold">Real Guidance Available</div>
+          <div className="font-semibold">Guided Filing Support</div>
           <p className="text-sm text-muted-foreground">
-            Use our guided order flow if you want help choosing the right structure.
+            Step-by-step help preparing your formation documents from start to finish.
+          </p>
+        </div>
+
+        {/* Secure Checkout */}
+        <div className="flex flex-col items-center">
+          <div className="text-3xl mb-2">🔒</div>
+          <div className="font-semibold">Secure Checkout</div>
+          <p className="text-sm text-muted-foreground">
+            Payments processed securely through Stripe with compliance-focused support.
           </p>
         </div>
       </div>

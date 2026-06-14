@@ -104,19 +104,19 @@ export default function Hero() {
             </button>
           </motion.div>
 
-          {/* TALK TO AN EXPERT */}
+          {/* VIEW PRICING & START FILING */}
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <button
               onClick={() => {
                 trackHeroPath("talk_expert");
                 trackStartOrderClickHero();
-                trackClick("Start My Order", "hero_start_order", "/pricing");
+                trackClick("View Pricing & Start Filing", "hero_view_pricing", "/pricing");
                 navigate("/pricing");
               }}
               className="inline-flex items-center justify-center gap-2 border border-primary bg-primary text-primary-foreground px-8 py-4 font-semibold rounded-lg hover:bg-primary-light transition cursor-pointer w-full sm:w-auto"
             >
               <MessageCircle className="w-5 h-5" />
-              Start My Order
+              View Pricing &amp; Start Filing
             </button>
           </motion.div>
 

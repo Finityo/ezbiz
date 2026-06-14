@@ -102,7 +102,7 @@ Our platform includes a dedicated **Veteran Eligibility Gate** that:
 
 ## Success Story: From Service to CEO
 
-> "After 12 years in the Army, I knew I wanted to start my own construction company but had no idea where to begin. EZ BIZ walked me through the entire process, applied my Texas fee waiver, and had my LLC filed in 48 hours." — *J. Martinez, Austin, TX*
+*Illustrative scenario:* A Texas veteran starting a construction company uses EZ BIZ to organize their formation documents, review Texas veteran fee-waiver eligibility, and submit their LLC paperwork through our partner network. State processing times vary.
 
 ## Get Started
 
@@ -133,7 +133,7 @@ Business formation is a legal process with zero tolerance for errors. A single t
 Rather than building a siloed filing system, EZ BIZ FILE SERVICE partners with established, proven filing providers who have decades of combined experience processing millions of business formations. This hybrid approach gives our customers:
 
 ### 1. Speed
-Our partner network maintains direct integrations with Secretary of State offices, enabling **same-day filing** in many states. While standard processing can take 5-10 business days, our expedited options can have your business officially formed in as little as 24 hours.
+Our partner network maintains direct integrations with Secretary of State offices. Expedited options provide **faster document preparation for faster state submission**, though final state processing times vary by jurisdiction and workload.
 
 ### 2. Accuracy
 Every filing goes through a **multi-point verification process** before submission:

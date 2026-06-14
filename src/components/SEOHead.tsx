@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 const BASE_URL = SITE_URL;
 const DEFAULT_TITLE = "EZ BIZ FILE SERVICE - Professional Business Formation";
 const DEFAULT_DESCRIPTION =
-  "Form your LLC, Corporation, or business entity online. Expert guidance, fast filings, and trusted nationwide service from EZ BIZ FILE SERVICE.";
+  "Form your LLC, Corporation, or business entity online. Transparent pricing, guided filing support, and trusted nationwide service from EZ BIZ FILE SERVICE.";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 interface SEOHeadProps {
