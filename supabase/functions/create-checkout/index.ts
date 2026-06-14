@@ -382,7 +382,7 @@ serve(async (req) => {
           metadata: {
             note: "Admin-only $1 live payment smoke test. Not a real customer order.",
             user_id: userId,
-            smoke_price_id: Deno.env.get("STRIPE_SMOKE_PRICE_ID"),
+            smoke_price_id: resolvedSmokePriceId,
           },
         });
       } catch (e) {
