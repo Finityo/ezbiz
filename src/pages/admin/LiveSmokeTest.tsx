@@ -34,6 +34,7 @@ export default function LiveSmokeTest() {
   const { isAdmin, loading: adminLoading } = useAdminAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [smokePriceId, setSmokePriceId] = useState("");
 
   if (authLoading || adminLoading) {
     return (
@@ -46,11 +47,21 @@ export default function LiveSmokeTest() {
   if (!isAdmin) return <Navigate to="/" replace />;
 
   const run = async () => {
+    const trimmed = smokePriceId.trim();
+    if (!trimmed.startsWith("price_")) {
+      toast({
+        title: "Invalid Price ID",
+        description: "The Stripe Price ID must start with price_",
+        variant: "destructive",
+      });
+      return;
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
           smokeTest: true,
+          smokePriceId: trimmed,
           successPath: "/order-success",
           cancelPath: "/admin/live-smoke-test",
         },
@@ -71,6 +82,7 @@ export default function LiveSmokeTest() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
