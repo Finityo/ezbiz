@@ -69,14 +69,30 @@ serve(async (req) => {
       targetIds = (data ?? []).map((r: { id: string }) => r.id);
     } else {
       // test scope: emails matching test patterns OR null email (drafts)
-      const { data } = await admin
+      const { data: emailMatches } = await admin
         .from("orders")
         .select("id,email")
         .or(
           "email.is.null,email.ilike.%test%,email.ilike.%ezbiz-fs.internal%,email.ilike.%example.com%,email.ilike.%+test%"
         );
-      targetIds = (data ?? []).map((r: { id: string }) => r.id);
+
+      // Also include any order that has a smoke-test audit event,
+      // regardless of which admin email placed it. This catches
+      // /admin/live-smoke-test runs by christian@ezbiz-fs.com etc.
+      const { data: smokeEvents } = await admin
+        .from("order_events")
+        .select("order_id")
+        .eq("event_type", "smoke_test_checkout_started");
+
+      const ids = new Set<string>();
+      for (const r of emailMatches ?? []) ids.add((r as { id: string }).id);
+      for (const r of smokeEvents ?? []) {
+        const oid = (r as { order_id: string | null }).order_id;
+        if (oid) ids.add(oid);
+      }
+      targetIds = Array.from(ids);
     }
+
 
     if (targetIds.length === 0) {
       return json(200, { ok: true, deleted: 0, orderIds: [], message: "No matching orders." });
