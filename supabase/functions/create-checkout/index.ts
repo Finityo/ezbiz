@@ -156,7 +156,7 @@ serve(async (req) => {
     const expectedMap = EXPECTED_PRICE_CENTS;
     const strictUnknown = STRICT_UNKNOWN_PRICES;
     const activeLineItems = isSmokeTest
-      ? [{ priceId: Deno.env.get("STRIPE_SMOKE_PRICE_ID") as string, quantity: 1 }]
+      ? [{ priceId: resolvedSmokePriceId!, quantity: 1 }]
       : lineItems;
 
 
