@@ -272,7 +272,16 @@ const Navigation = () => {
               </NavigationMenuList>
             </NavigationMenu>
 
-            <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-fast">
+            <Link
+              to="/pricing"
+              aria-current={isPricingActive ? "page" : undefined}
+              className={cn(
+                "transition-fast",
+                isPricingActive
+                  ? "text-foreground font-semibold border-b-2 border-primary pb-0.5"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
               Pricing
             </Link>
             <Link to="/entrepreneurs" className="text-muted-foreground hover:text-foreground transition-fast">
