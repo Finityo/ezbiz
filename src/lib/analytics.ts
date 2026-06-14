@@ -28,6 +28,19 @@ const warn = (...args: any[]) => {
 
 const gtagAvailable = (): boolean => typeof window !== 'undefined' && typeof window.gtag === 'function';
 
+// ── Internal-route guard ────────────────────────────────────────────────────
+// Suppress GA4 traffic from internal/admin/auth routes so customer analytics
+// stay clean. Override with ?ga_force=1 for QA.
+const INTERNAL_ROUTE_PREFIXES = ['/admin', '/dashboard', '/auth'];
+export function isInternalRoute(path: string = (typeof window !== 'undefined' ? window.location.pathname : '')): boolean {
+  try {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('ga_force') === '1') return false;
+    return INTERNAL_ROUTE_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
+  } catch {
+    return false;
+  }
+}
+
 // ── Core functions ───────────────────────────────────────────────────────────
 
 /** Call once at app mount to verify GA4 is loaded and set SPA-friendly config */
@@ -52,11 +65,16 @@ export function initAnalytics() {
 
 /** Send a page_view event – call on every SPA route change */
 export function trackPageView(path: string) {
+  if (isInternalRoute(path.split('?')[0])) {
+    log('(suppressed: internal route) trackPageView', path);
+    return;
+  }
   if (!gtagAvailable()) {
     log('(no-op) trackPageView', path);
     return;
   }
 
+  // Preserve UTM/query params in page_location so GA4 attributes campaigns
   window.gtag('event', 'page_view', {
     page_path: path,
     page_title: document.title,
@@ -71,6 +89,10 @@ export function trackEvent(
   name: string,
   params: Record<string, string | number | boolean | undefined> = {},
 ) {
+  if (isInternalRoute()) {
+    log(`(suppressed: internal route) event "${name}"`);
+    return;
+  }
   const payload = {
     ...params,
     page_location: window.location.pathname,

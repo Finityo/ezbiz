@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, FileText, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 
 export default function OrderSuccess() {
   const [searchParams] = useSearchParams();
@@ -18,15 +19,28 @@ export default function OrderSuccess() {
   // checkout.session.completed webhook hasn't reached us yet. Idempotent — safe
   // to call regardless of whether the webhook already processed the order.
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId) {
+      // Fire generic confirmation event even without session_id
+      trackEvent("order_confirmed", { has_session: false });
+      return;
+    }
     let cancelled = false;
     (async () => {
+      let orderId: string | undefined;
       try {
-        await supabase.functions.invoke("verify-payment", { body: { sessionId } });
+        const { data } = await supabase.functions.invoke("verify-payment", { body: { sessionId } });
+        orderId = (data as { orderId?: string } | null)?.orderId;
       } catch (err) {
         console.error("verify-payment fallback failed", err);
       } finally {
-        if (!cancelled) setVerifying(false);
+        if (!cancelled) {
+          setVerifying(false);
+          trackEvent("order_confirmed", {
+            has_session: true,
+            session_id: sessionId,
+            order_id: orderId,
+          });
+        }
       }
     })();
     return () => {
