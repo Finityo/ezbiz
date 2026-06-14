@@ -249,13 +249,13 @@ serve(async (req) => {
 
     // Build the orders payload, including any enrichment passed from the order flow.
     const ordersPayload: Record<string, unknown> = {
-      package_id: lineItems[0]?.priceId,
-      state_fee: stateFee?.amount || 0,
+      package_id: activeLineItems[0]?.priceId,
+      state_fee: isSmokeTest ? 0 : (stateFee?.amount || 0),
       status: "Pending Payment",
     };
     if (orderEnrichment?.entityType) ordersPayload.entity_type = orderEnrichment.entityType;
     if (orderEnrichment?.packageLabel) ordersPayload.package = orderEnrichment.packageLabel;
-    if (applicationId) ordersPayload.application_id = applicationId;
+    if (applicationId && !isSmokeTest) ordersPayload.application_id = applicationId;
 
     if (orderId) {
       await dbClient.from("orders").update(ordersPayload).eq("id", orderId);
@@ -352,7 +352,7 @@ serve(async (req) => {
       stripeLineItems.push({ price: item.priceId, quantity: qty });
     }
 
-    if (stateFee && stateFee.amount > 0) {
+    if (!isSmokeTest && stateFee && stateFee.amount > 0) {
       stripeLineItems.push({
         price_data: {
           currency: "usd",
@@ -366,25 +366,45 @@ serve(async (req) => {
       });
     }
 
+    // Smoke-test marker order_events row — clearly identifies in audit logs.
+    if (isSmokeTest && finalOrderId) {
+      try {
+        await dbClient.from("order_events").insert({
+          order_id: finalOrderId,
+          event_type: "smoke_test_checkout_started",
+          actor: "admin_smoke_test",
+          metadata: {
+            note: "Admin-only $1 live payment smoke test. Not a real customer order.",
+            user_id: userId,
+            smoke_price_id: Deno.env.get("STRIPE_SMOKE_PRICE_ID"),
+          },
+        });
+      } catch (e) {
+        console.error("[SMOKE-TEST] order_events insert failed", e);
+      }
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
-      ...(applicationId ? { client_reference_id: applicationId } : {}),
+      ...(applicationId && !isSmokeTest ? { client_reference_id: applicationId } : {}),
       metadata: {
         orderId: finalOrderId,
-        ...(applicationId ? { application_id: applicationId } : {}),
+        ...(applicationId && !isSmokeTest ? { application_id: applicationId } : {}),
         ...(userId ? { user_id: userId } : {}),
-        source: "ezbiz_order_flow",
+        source: isSmokeTest ? "ezbiz_admin_smoke_test" : "ezbiz_order_flow",
+        ...(isSmokeTest ? { smoke_test: "true" } : {}),
       },
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: "EZ BIZ File Service - Business Formation",
+          description: isSmokeTest
+            ? "EZ BIZ — INTERNAL Live Payment Smoke Test"
+            : "EZ BIZ File Service - Business Formation",
         },
       },
-      // Stripe-issued receipt to the customer email after successful payment
       payment_intent_data: {
         receipt_email: userEmail || undefined,
       },
