@@ -124,7 +124,7 @@ serve(async (req) => {
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
         );
       }
-      const resolvedSmokePriceId =
+      resolvedSmokePriceId =
         typeof smokePriceIdOverride === "string" && smokePriceIdOverride.trim().startsWith("price_")
           ? smokePriceIdOverride.trim()
           : Deno.env.get("STRIPE_SMOKE_PRICE_ID");
