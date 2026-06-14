@@ -71,17 +71,11 @@ serve(async (req) => {
       orderId,
       applicationId,
       orderEnrichment,
+      smokeTest,
     } = await req.json();
-
-    if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
-      throw new Error("lineItems array is required");
-    }
 
     // Authenticate user — REQUIRED. The order flow gates checkout behind
     // sign-in at Step 4, so an authenticated user_id must always be present.
-    // Refusing unauthenticated checkouts guarantees every order row has a
-    // non-null user_id and is covered by the owner-scoped SELECT RLS policy
-    // (no orphaned guest rows invisible to their eventual owner).
     let userEmail: string | undefined;
     let userId: string | undefined;
     let customerId: string | undefined;
@@ -101,23 +95,79 @@ serve(async (req) => {
       );
     }
 
+    // ── SMOKE-TEST BRANCH (admin-only) ──────────────────────────────────
+    // Server-side fenced override. Replaces line items with a single $1
+    // live price for end-to-end production payment-pipeline validation.
+    // Never trusts the client flag alone — re-verifies admin role via the
+    // service-role client.
+    let isSmokeTest = false;
+    if (smokeTest === true) {
+      const adminCheck = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: roleRow, error: roleErr } = await adminCheck
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (roleErr || !roleRow) {
+        console.warn(
+          `[SMOKE-TEST] Rejected: user ${userId} is not admin.`
+        );
+        return new Response(
+          JSON.stringify({ error: "Forbidden." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+        );
+      }
+      const smokePriceId = Deno.env.get("STRIPE_SMOKE_PRICE_ID");
+      if (!smokePriceId) {
+        console.error("[SMOKE-TEST] STRIPE_SMOKE_PRICE_ID is not set.");
+        return new Response(
+          JSON.stringify({
+            error:
+              "Smoke test unavailable: STRIPE_SMOKE_PRICE_ID secret is not configured.",
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 }
+        );
+      }
+      isSmokeTest = true;
+      console.log(
+        `[SMOKE-TEST] Admin-verified $1 live smoke test by user ${userId}. Overriding line items with ${smokePriceId}.`
+      );
+    }
+
+    if (!isSmokeTest) {
+      if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
+        throw new Error("lineItems array is required");
+      }
+    }
+
     // ── LIVE-ONLY Stripe client ────────────────────────────────────────
-    // Production posture: always use STRIPE_SECRET_KEY (sk_live_…). No
-    // test-mode bypass, no admin override, no client-supplied flags.
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const expectedMap = EXPECTED_PRICE_CENTS;
     const strictUnknown = STRICT_UNKNOWN_PRICES;
-    const activeLineItems = lineItems;
+    const activeLineItems = isSmokeTest
+      ? [{ priceId: Deno.env.get("STRIPE_SMOKE_PRICE_ID") as string, quantity: 1 }]
+      : lineItems;
+
 
     // ── Price-amount guard ──────────────────────────────────────────────
-    const uniquePriceIds: string[] = Array.from(
-      new Set(
-        activeLineItems
-          .map((li: { priceId?: string }) => li?.priceId)
-          .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
-      )
-    );
+    // Bypassed inside the admin-only smoke-test branch (override is logged).
+    const uniquePriceIds: string[] = isSmokeTest
+      ? []
+      : Array.from(
+          new Set(
+            activeLineItems
+              .map((li: { priceId?: string }) => li?.priceId)
+              .filter((id: string | undefined): id is string => typeof id === "string" && id.length > 0)
+          )
+        );
+    if (isSmokeTest) {
+      console.log("[SMOKE-TEST] Skipping EXPECTED_PRICE_CENTS guard for smoke price.");
+    }
 
     const priceChecks = await Promise.all(
       uniquePriceIds.map(async (id) => {
@@ -199,13 +249,13 @@ serve(async (req) => {
 
     // Build the orders payload, including any enrichment passed from the order flow.
     const ordersPayload: Record<string, unknown> = {
-      package_id: lineItems[0]?.priceId,
-      state_fee: stateFee?.amount || 0,
+      package_id: activeLineItems[0]?.priceId,
+      state_fee: isSmokeTest ? 0 : (stateFee?.amount || 0),
       status: "Pending Payment",
     };
     if (orderEnrichment?.entityType) ordersPayload.entity_type = orderEnrichment.entityType;
     if (orderEnrichment?.packageLabel) ordersPayload.package = orderEnrichment.packageLabel;
-    if (applicationId) ordersPayload.application_id = applicationId;
+    if (applicationId && !isSmokeTest) ordersPayload.application_id = applicationId;
 
     if (orderId) {
       await dbClient.from("orders").update(ordersPayload).eq("id", orderId);
@@ -302,7 +352,7 @@ serve(async (req) => {
       stripeLineItems.push({ price: item.priceId, quantity: qty });
     }
 
-    if (stateFee && stateFee.amount > 0) {
+    if (!isSmokeTest && stateFee && stateFee.amount > 0) {
       stripeLineItems.push({
         price_data: {
           currency: "usd",
@@ -316,25 +366,45 @@ serve(async (req) => {
       });
     }
 
+    // Smoke-test marker order_events row — clearly identifies in audit logs.
+    if (isSmokeTest && finalOrderId) {
+      try {
+        await dbClient.from("order_events").insert({
+          order_id: finalOrderId,
+          event_type: "smoke_test_checkout_started",
+          actor: "admin_smoke_test",
+          metadata: {
+            note: "Admin-only $1 live payment smoke test. Not a real customer order.",
+            user_id: userId,
+            smoke_price_id: Deno.env.get("STRIPE_SMOKE_PRICE_ID"),
+          },
+        });
+      } catch (e) {
+        console.error("[SMOKE-TEST] order_events insert failed", e);
+      }
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
-      ...(applicationId ? { client_reference_id: applicationId } : {}),
+      ...(applicationId && !isSmokeTest ? { client_reference_id: applicationId } : {}),
       metadata: {
         orderId: finalOrderId,
-        ...(applicationId ? { application_id: applicationId } : {}),
+        ...(applicationId && !isSmokeTest ? { application_id: applicationId } : {}),
         ...(userId ? { user_id: userId } : {}),
-        source: "ezbiz_order_flow",
+        source: isSmokeTest ? "ezbiz_admin_smoke_test" : "ezbiz_order_flow",
+        ...(isSmokeTest ? { smoke_test: "true" } : {}),
       },
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: "EZ BIZ File Service - Business Formation",
+          description: isSmokeTest
+            ? "EZ BIZ — INTERNAL Live Payment Smoke Test"
+            : "EZ BIZ File Service - Business Formation",
         },
       },
-      // Stripe-issued receipt to the customer email after successful payment
       payment_intent_data: {
         receipt_email: userEmail || undefined,
       },
