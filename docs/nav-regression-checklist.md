@@ -14,8 +14,19 @@ Run after any change to `Navigation.tsx`, `Footer.tsx`, or routing.
 ## Desktop nav
 - [ ] Logo → `/`
 - [ ] Pricing link → `/pricing`
+- [ ] On `/pricing`, desktop Pricing shows active styling (bottom border-primary + `aria-current="page"`)
 - [ ] Business Structures / Services / Resources dropdowns open and links work
 - [ ] "Get Started" CTA → `/pricing`
+
+## Accessibility
+- [ ] Mobile Pricing carries `aria-current="page"` only on `/pricing`
+- [ ] Mobile White Glove carries `aria-current="page"` only on `/order-flow?mode=whiteglove`
+- [ ] Hamburger toggle is keyboard-operable; menu items are focusable links
+- [ ] Clicking a menu item closes the menu (no focus trap)
+
+## Automated coverage
+- [ ] `bunx vitest run src/components/Navigation.test.tsx` passes
+  (covers menu open, Pricing & White Glove routing, both tracking events, aria-current states)
 
 ## Footer
 - [ ] Company → Pricing link routes to `/pricing`
