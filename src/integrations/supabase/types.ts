@@ -496,6 +496,45 @@ export type Database = {
         }
         Relationships: []
       }
+      gsc_monitoring_snapshots: {
+        Row: {
+          checked_at: string
+          created_at: string
+          errors: number
+          id: string
+          indexed_urls: number
+          issues_detected: number
+          raw: Json | null
+          sitemap_count: number
+          submitted_urls: number
+          warnings: number
+        }
+        Insert: {
+          checked_at?: string
+          created_at?: string
+          errors?: number
+          id?: string
+          indexed_urls?: number
+          issues_detected?: number
+          raw?: Json | null
+          sitemap_count?: number
+          submitted_urls?: number
+          warnings?: number
+        }
+        Update: {
+          checked_at?: string
+          created_at?: string
+          errors?: number
+          id?: string
+          indexed_urls?: number
+          issues_detected?: number
+          raw?: Json | null
+          sitemap_count?: number
+          submitted_urls?: number
+          warnings?: number
+        }
+        Relationships: []
+      }
       heatmap_analytics: {
         Row: {
           created_at: string | null
