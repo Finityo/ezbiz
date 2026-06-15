@@ -399,6 +399,12 @@ const AdminDashboard = () => {
               Email Delivery Log →
             </a>
             <a
+              href="/admin/test-handoff-email"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Test Handoff Email →
+            </a>
+            <a
               href="/admin/wipe-orders"
               className="text-sm font-medium text-destructive hover:underline"
             >
