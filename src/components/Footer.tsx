@@ -120,13 +120,17 @@ const Footer = () => {
     { name: "Accessibility", href: "/business-guide" },
   ];
 
-  const FooterLink = ({ item }: { item: { name: string; href: string; isDownload?: boolean } }) => {
+  const FooterLink = ({
+    item,
+  }: {
+    item: { name: string; href: string; isDownload?: boolean; isAdmin?: boolean };
+  }) => {
     if (item.isDownload) {
       return (
         <li>
-          <a 
-            href={item.href} 
-            download 
+          <a
+            href={item.href}
+            download
             className="text-muted-foreground hover:text-foreground transition-colors text-sm flex items-center gap-1"
           >
             {item.name}
@@ -135,28 +139,33 @@ const Footer = () => {
         </li>
       );
     }
-    
+
     const isInternal = item.href.startsWith("/");
+    const isActive = item.isAdmin
+      ? onAdminRoute
+      : isInternal && location.pathname === item.href;
+    const baseClass = "transition-colors text-sm";
+    const stateClass = isActive
+      ? "text-primary font-semibold"
+      : "text-muted-foreground hover:text-foreground";
+    const className = `${baseClass} ${stateClass}`;
+    const ariaCurrent = isActive ? "page" : undefined;
+
     return (
       <li>
         {isInternal ? (
-          <Link
-            to={item.href}
-            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-          >
+          <Link to={item.href} className={className} aria-current={ariaCurrent}>
             {item.name}
           </Link>
         ) : (
-          <a
-            href={item.href}
-            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-          >
+          <a href={item.href} className={className} aria-current={ariaCurrent}>
             {item.name}
           </a>
         )}
       </li>
     );
   };
+
 
 
   return (
