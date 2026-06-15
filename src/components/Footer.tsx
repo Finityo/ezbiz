@@ -6,16 +6,26 @@ import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
 import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+
 
 
 const Footer = () => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const { isAdmin } = useAdminAuth();
+  const { isAdmin, loading: adminLoading } = useAdminAuth();
+  const location = useLocation();
+  const onAdminRoute = location.pathname.startsWith("/admin");
+  // Show the admin link to:
+  //  - logged-out visitors (so staff can sign in), and
+  //  - authenticated admins (jump straight to the dashboard).
+  // Hide it from authenticated non-admin clients to avoid confusion.
+  const showAdminLink = !user || isAdmin;
   const adminHref = user && isAdmin ? "/admin" : "/admin/login";
+  const adminLabel = user && isAdmin ? "Admin Dashboard" : "Admin Access";
+
 
 
   const handlePDFDownload = (title: string, generator: () => any, filename: string) => {
@@ -96,8 +106,11 @@ const Footer = () => {
     { name: "Customer Reviews", href: "/about" },
     { name: "Contact Us", href: "/about" },
     { name: "Support Center", href: "/about" },
-    { name: isAdmin ? "Admin Dashboard" : "Admin Access", href: adminHref },
+    ...(showAdminLink && !adminLoading
+      ? [{ name: adminLabel, href: adminHref, isAdmin: true as const }]
+      : []),
   ];
+
 
   const legal = [
     { name: "Privacy Policy", href: "/privacy" },
@@ -107,13 +120,17 @@ const Footer = () => {
     { name: "Accessibility", href: "/business-guide" },
   ];
 
-  const FooterLink = ({ item }: { item: { name: string; href: string; isDownload?: boolean } }) => {
+  const FooterLink = ({
+    item,
+  }: {
+    item: { name: string; href: string; isDownload?: boolean; isAdmin?: boolean };
+  }) => {
     if (item.isDownload) {
       return (
         <li>
-          <a 
-            href={item.href} 
-            download 
+          <a
+            href={item.href}
+            download
             className="text-muted-foreground hover:text-foreground transition-colors text-sm flex items-center gap-1"
           >
             {item.name}
@@ -122,28 +139,33 @@ const Footer = () => {
         </li>
       );
     }
-    
+
     const isInternal = item.href.startsWith("/");
+    const isActive = item.isAdmin
+      ? onAdminRoute
+      : isInternal && location.pathname === item.href;
+    const baseClass = "transition-colors text-sm";
+    const stateClass = isActive
+      ? "text-primary font-semibold"
+      : "text-muted-foreground hover:text-foreground";
+    const className = `${baseClass} ${stateClass}`;
+    const ariaCurrent = isActive ? "page" : undefined;
+
     return (
       <li>
         {isInternal ? (
-          <Link
-            to={item.href}
-            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-          >
+          <Link to={item.href} className={className} aria-current={ariaCurrent}>
             {item.name}
           </Link>
         ) : (
-          <a
-            href={item.href}
-            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-          >
+          <a href={item.href} className={className} aria-current={ariaCurrent}>
             {item.name}
           </a>
         )}
       </li>
     );
   };
+
 
 
   return (
