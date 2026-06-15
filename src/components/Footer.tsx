@@ -123,17 +123,28 @@ const Footer = () => {
       );
     }
     
+    const isInternal = item.href.startsWith("/");
     return (
       <li>
-        <a 
-          href={item.href} 
-          className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-        >
-          {item.name}
-        </a>
+        {isInternal ? (
+          <Link
+            to={item.href}
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            {item.name}
+          </Link>
+        ) : (
+          <a
+            href={item.href}
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            {item.name}
+          </a>
+        )}
       </li>
     );
   };
+
 
   return (
     <footer className="border-t border-border bg-card">
