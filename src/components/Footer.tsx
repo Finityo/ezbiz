@@ -106,8 +106,11 @@ const Footer = () => {
     { name: "Customer Reviews", href: "/about" },
     { name: "Contact Us", href: "/about" },
     { name: "Support Center", href: "/about" },
-    { name: isAdmin ? "Admin Dashboard" : "Admin Access", href: adminHref },
+    ...(showAdminLink && !adminLoading
+      ? [{ name: adminLabel, href: adminHref, isAdmin: true as const }]
+      : []),
   ];
+
 
   const legal = [
     { name: "Privacy Policy", href: "/privacy" },
