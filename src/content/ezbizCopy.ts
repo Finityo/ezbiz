@@ -489,7 +489,7 @@ export const EZBIZ_COPY = {
       name: "EZ BIZ FILE SERVICE, LLC",
       address: ["1101 Thorpe Lane Ste 105-1028", "San Marcos, TX 78666 United States"],
       phone: "(830) 837-1955",
-      email: "christian@ezbiz-fs.com",
+      email: "info@ezbiz-fs.com",
     },
     cta: {
       heading: "Ready to Start Your Business Journey?",

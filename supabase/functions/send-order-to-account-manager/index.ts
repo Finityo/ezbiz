@@ -372,7 +372,7 @@ async function processOne(opts: {
       const resendPayload: Record<string, any> = {
         from: fromAddress,
         to: recipients,
-        reply_to: 'christian@ezbiz-fs.com',
+        reply_to: 'info@ezbiz-fs.com',
         subject,
         html,
         attachments: [

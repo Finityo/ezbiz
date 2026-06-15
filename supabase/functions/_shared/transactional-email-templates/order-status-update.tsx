@@ -61,7 +61,7 @@ const OrderStatusUpdateEmail = ({
 
           <Hr style={hr} />
           <Text style={footer}>
-            Questions? Reply to this email or contact christian@ezbiz-fs.com.
+            Questions? Reply to this email or contact info@ezbiz-fs.com.
           </Text>
         </Container>
       </Body>

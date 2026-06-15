@@ -124,7 +124,7 @@ export default function Terms() {
                 </p>
                 <p className="font-medium text-foreground">5. Your Rights</p>
                 <p>
-                  You have the right to access, correct, or delete your personal information. Contact us at christian@ezbiz-fs.com to exercise these rights.
+                  You have the right to access, correct, or delete your personal information. Contact us at info@ezbiz-fs.com to exercise these rights.
                 </p>
               </div>
             </ScrollArea>
