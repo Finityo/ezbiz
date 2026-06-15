@@ -96,7 +96,7 @@ const Footer = () => {
     { name: "Customer Reviews", href: "/about" },
     { name: "Contact Us", href: "/about" },
     { name: "Support Center", href: "/about" },
-    { name: "Admin Access", href: "/admin/login" },
+    { name: isAdmin ? "Admin Dashboard" : "Admin Access", href: adminHref },
   ];
 
   const legal = [
