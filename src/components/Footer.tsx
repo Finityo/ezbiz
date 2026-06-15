@@ -6,9 +6,17 @@ import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
 import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+
 
 const Footer = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { isAdmin } = useAdminAuth();
+  const adminHref = user && isAdmin ? "/admin" : "/admin/login";
+
 
   const handlePDFDownload = (title: string, generator: () => any, filename: string) => {
     toast({ title: "Generating PDF...", description: `Creating your ${title}.` });
@@ -88,7 +96,7 @@ const Footer = () => {
     { name: "Customer Reviews", href: "/about" },
     { name: "Contact Us", href: "/about" },
     { name: "Support Center", href: "/about" },
-    { name: "Admin Access", href: "/admin/login" },
+    { name: isAdmin ? "Admin Dashboard" : "Admin Access", href: adminHref },
   ];
 
   const legal = [
@@ -115,17 +123,28 @@ const Footer = () => {
       );
     }
     
+    const isInternal = item.href.startsWith("/");
     return (
       <li>
-        <a 
-          href={item.href} 
-          className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-        >
-          {item.name}
-        </a>
+        {isInternal ? (
+          <Link
+            to={item.href}
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            {item.name}
+          </Link>
+        ) : (
+          <a
+            href={item.href}
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            {item.name}
+          </a>
+        )}
       </li>
     );
   };
+
 
   return (
     <footer className="border-t border-border bg-card">
