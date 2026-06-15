@@ -168,6 +168,7 @@ function App() {
               <Route path="/admin/email-log" element={<EmailDeliveryLog />} />
               <Route path="/admin/wipe-orders" element={<WipeOrders />} />
               <Route path="/admin/live-smoke-test" element={<LiveSmokeTest />} />
+              <Route path="/admin/test-handoff-email" element={<TestHandoffEmail />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
