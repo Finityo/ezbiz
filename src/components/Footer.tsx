@@ -6,9 +6,10 @@ import { generateLLCGuide } from "@/lib/pdf-generators/llc-guide";
 import { generateCorporationHandbook } from "@/lib/pdf-generators/corporation-handbook";
 import { generateLicenseChecklist } from "@/lib/pdf-generators/license-checklist";
 import { generateTaxGuide } from "@/lib/pdf-generators/tax-guide";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+
 
 
 const Footer = () => {
