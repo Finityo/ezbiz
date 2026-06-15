@@ -15,8 +15,17 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 const Footer = () => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const { isAdmin } = useAdminAuth();
+  const { isAdmin, loading: adminLoading } = useAdminAuth();
+  const location = useLocation();
+  const onAdminRoute = location.pathname.startsWith("/admin");
+  // Show the admin link to:
+  //  - logged-out visitors (so staff can sign in), and
+  //  - authenticated admins (jump straight to the dashboard).
+  // Hide it from authenticated non-admin clients to avoid confusion.
+  const showAdminLink = !user || isAdmin;
   const adminHref = user && isAdmin ? "/admin" : "/admin/login";
+  const adminLabel = user && isAdmin ? "Admin Dashboard" : "Admin Access";
+
 
 
   const handlePDFDownload = (title: string, generator: () => any, filename: string) => {
