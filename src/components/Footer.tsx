@@ -13,6 +13,10 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 const Footer = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { isAdmin } = useAdminAuth();
+  const adminHref = user && isAdmin ? "/admin" : "/admin/login";
+
 
   const handlePDFDownload = (title: string, generator: () => any, filename: string) => {
     toast({ title: "Generating PDF...", description: `Creating your ${title}.` });
