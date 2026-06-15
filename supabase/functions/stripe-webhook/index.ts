@@ -221,7 +221,7 @@ serve(async (req) => {
       }
     }
 
-    // Notify admin (christian@ezbiz-fs.com) of paid order — manual review then "Send to Account Manager".
+    // Notify admin (info@ezbiz-fs.com) of paid order — manual review then "Send to Account Manager".
     if (orderId) {
       try {
         const { data: orderRow } = await supabase
@@ -238,7 +238,7 @@ serve(async (req) => {
         await supabase.functions.invoke("send-transactional-email", {
           body: {
             templateName: "admin-paid-order-notification",
-            recipientEmail: "christian@ezbiz-fs.com",
+            recipientEmail: "info@ezbiz-fs.com",
             idempotencyKey: `admin-paid-order-${orderId}`,
             templateData: {
               orderId,

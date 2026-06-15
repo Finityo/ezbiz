@@ -7,7 +7,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const SITE_URL = "https://www.ezbiz-fs.com/";
 const SITE_URL_ENC = encodeURIComponent(SITE_URL);
-const ALERT_EMAIL = "christian@ezbiz-fs.com";
+const ALERT_EMAIL = "info@ezbiz-fs.com";
 const FROM = "EZ Biz Filing <notifications@updates.ezbiz-fs.com>";
 
 const GATEWAY = "https://connector-gateway.lovable.dev";

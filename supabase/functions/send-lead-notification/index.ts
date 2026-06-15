@@ -8,7 +8,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const NOTIFY_TO = 'christian@ezbiz-fs.com'
+const NOTIFY_TO = 'info@ezbiz-fs.com'
 
 interface LeadPayload {
   source: string
