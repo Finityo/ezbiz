@@ -185,7 +185,7 @@ serve(async (req) => {
       await supabase.functions.invoke("send-transactional-email", {
         body: {
           templateName: "admin-paid-order-notification",
-          recipientEmail: "christian@ezbiz-fs.com",
+          recipientEmail: "info@ezbiz-fs.com",
           idempotencyKey: `admin-paid-order-${orderId}`,
           templateData: {
             orderId,
