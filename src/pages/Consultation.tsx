@@ -23,7 +23,7 @@ import { Link } from "react-router-dom"
 
 const CONTACT_PHONE_TEL = "+18308371955";
 const CONTACT_PHONE_DISPLAY = "(830) 837-1955";
-const CONTACT_EMAIL = "christian@ezbiz-fs.com";
+const CONTACT_EMAIL = "info@ezbiz-fs.com";
 
 const Consultation = () => {
   const [formData, setFormData] = useState({

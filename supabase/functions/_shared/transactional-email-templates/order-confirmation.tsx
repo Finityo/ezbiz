@@ -66,7 +66,7 @@ const OrderConfirmationEmail = ({
 
         <Hr style={hr} />
         <Text style={footer}>
-          Questions? Reply to this email or contact us at christian@ezbiz-fs.com.
+          Questions? Reply to this email or contact us at info@ezbiz-fs.com.
         </Text>
       </Container>
     </Body>

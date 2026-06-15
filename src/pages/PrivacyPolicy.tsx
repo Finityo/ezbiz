@@ -136,7 +136,7 @@ const PrivacyPolicy = () => {
                 <p>1101 Thorpe Lane Ste 105-1028</p>
                 <p>San Marcos, TX 78666 United States</p>
                 <p>Phone: (830) 837-1955</p>
-                <p>Email: christian@ezbiz-fs.com</p>
+                <p>Email: info@ezbiz-fs.com</p>
               </div>
             </section>
           </Card>
