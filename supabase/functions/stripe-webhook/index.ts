@@ -120,7 +120,7 @@ serve(async (req) => {
           total_amount: (session.amount_total || 0) / 100,
         })
         .eq("id", orderId)
-        .eq("status", "Pending Payment")
+        .in("status", ["pending_payment", "Pending Payment"])
         .select("id");
       isFirstProcessing = (flipped?.length ?? 0) > 0;
 
