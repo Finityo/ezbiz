@@ -61,6 +61,11 @@ const ReviewStep = ({
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
 
+  // Defense-in-depth: never bill for add-ons that are already bundled into the package.
+  // The selector also blocks selection, but we re-filter here so a stale localStorage
+  // payload or a programmatic ?addons= query string cannot leak a duplicate charge into Stripe.
+  const billableAddOns = filterBillableAddons(selectedPackage, selectedAddOns);
+
   const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
   const isCorpType = CORP_ENTITIES.includes(entityType);
   const stateFee = state
