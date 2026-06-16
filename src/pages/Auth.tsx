@@ -176,6 +176,15 @@ const Auth = () => {
                       className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
                       onClick={async () => {
                         if (!email) return;
+                        // Stash the active in-flight path (e.g. /order-flow/...) so
+                        // ResetPassword can return the user there instead of dumping
+                        // them at /dashboard.
+                        try {
+                          const from = location.state?.from?.pathname as string | undefined;
+                          if (from && from.startsWith('/order')) {
+                            sessionStorage.setItem('postAuthRedirect', from);
+                          }
+                        } catch { /* ignore */ }
                         await supabase.auth.resetPasswordForEmail(email, {
                           redirectTo: `${window.location.origin}/reset-password`,
                         });

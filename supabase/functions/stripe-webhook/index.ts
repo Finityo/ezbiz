@@ -262,29 +262,12 @@ serve(async (req) => {
       }
     }
 
-    // Auto-handoff to account manager (CSV + email + status advance).
-    // Gated by ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF — DEFAULTS TO DISABLED so admin
-    // manually reviews and clicks "Send to Account Manager" from the dashboard.
-    const autoHandoffEnabled =
-      (Deno.env.get("ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF") ?? "false").toLowerCase() === "true";
-    if (orderId && autoHandoffEnabled) {
-      try {
-        const { data: handoffCheck } = await supabase
-          .from("orders")
-          .select("account_manager_sent_at")
-          .eq("id", orderId)
-          .maybeSingle();
-        if (!handoffCheck?.account_manager_sent_at) {
-          await supabase.functions.invoke("send-order-to-account-manager", {
-            body: { order_ids: [orderId] },
-          });
-        } else {
-          console.log("account-manager handoff skipped — already sent", { orderId });
-        }
-      } catch (err) {
-        console.error("account-manager handoff failed", err);
-      }
-    }
+    // Account-manager handoff is MANUAL-ONLY by business rule.
+    // The Stripe webhook MUST NOT invoke send-order-to-account-manager.
+    // Admins trigger handoff explicitly from the Admin Dashboard
+    // ("Send to Account Manager" button in OrdersTab / OrderDetailDialog).
+    // The previous ENABLE_AUTO_ACCOUNT_MANAGER_HANDOFF feature flag has been
+    // removed to make accidental auto-fire impossible regardless of secret state.
   } else if (event.type === "checkout.session.expired") {
     const session = event.data.object as any;
     const applicationId =
