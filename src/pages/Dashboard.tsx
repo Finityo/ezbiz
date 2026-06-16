@@ -35,6 +35,8 @@ import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import DocumentUploader from "@/components/dashboard/DocumentUploader";
 import WaiverDocumentUpload from "@/components/dashboard/WaiverDocumentUpload";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
+import { openOrderDocument } from "@/lib/openOrderDocument";
+import { useToast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
 
