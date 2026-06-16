@@ -40,6 +40,7 @@ export const PACKAGE_PRICES: Record<
       "Name Availability Search",
       "Digital Filing Documents",
       "Order Tracking Dashboard",
+      "Registered Agent included for 60 days; auto-renews at $149/year unless canceled",
       "Lifetime Customer Support",
     ],
   },
