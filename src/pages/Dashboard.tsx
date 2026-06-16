@@ -290,6 +290,7 @@ function DashboardSkeleton() {
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashboardData>({
