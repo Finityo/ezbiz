@@ -116,7 +116,9 @@ const ReviewStep = ({
     trackCheckoutStart(pkg?.name || selectedPackage, total);
 
     await checkout(lineItems, {
-      stateFee: { amount: stateFee, stateName: state },
+      // Send the raw state fee — backend re-derives effectiveStateFee from
+      // the application status so a tampered client can't under-charge.
+      stateFee: { amount: rawStateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
       orderId: orderIdResolved,
