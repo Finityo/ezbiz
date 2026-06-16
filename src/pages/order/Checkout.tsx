@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { useWaiverPricing, getEffectiveStateFee } from "@/hooks/useWaiverPricing";
 import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, type PackageType, type AddonId, getStripeLineItems, calculateOrderTotal } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -13,7 +14,7 @@ import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
+  Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard, ShieldCheck,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
