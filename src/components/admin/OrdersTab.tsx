@@ -360,6 +360,13 @@ const OrdersTab = () => {
       case 'filed': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
       case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      // Texas Veteran Waiver pipeline
+      case 'waiver_documents_pending': return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+      case 'waiver_documents_submitted': return 'bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-300';
+      case 'waiver_under_review': return 'bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-300';
+      case 'waiver_needs_correction': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
+      case 'waiver_approved_payment_required': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
+      case 'waiver_not_approved_standard_checkout_required': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
       default: return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
     }
   };
