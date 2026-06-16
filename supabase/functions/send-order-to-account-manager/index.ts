@@ -539,9 +539,13 @@ async function processOne(opts: {
       actor,
       metadata: {
         recipient,
+        recipients,
+        cc_recipient: ccRecipient || null,
+        cc_recipients: ccRecipients,
         triggered_by: triggeredBy,
         failed_at: new Date().toISOString(),
         error_message: errorMessage,
+
       },
     });
 
