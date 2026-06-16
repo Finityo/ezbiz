@@ -786,18 +786,14 @@ export default function Dashboard() {
                                 size="sm"
                                 variant="outline"
                                 onClick={async () => {
-                                  const path = doc.file_url || "";
-                                  // External URL fallback
-                                  if (/^https?:\/\//i.test(path)) {
-                                    window.open(path, "_blank", "noopener");
-                                    return;
+                                  const res = await openOrderDocument(doc.file_url);
+                                  if (!res.ok) {
+                                    toast({
+                                      title: "Couldn't open document",
+                                      description: res.error || "Please try again.",
+                                      variant: "destructive",
+                                    });
                                   }
-                                  const { data: signed, error } = await supabase
-                                    .storage
-                                    .from("order-documents")
-                                    .createSignedUrl(path, 60);
-                                  if (signed?.signedUrl) window.open(signed.signedUrl, "_blank", "noopener");
-                                  else console.error("Signed URL failed:", error);
                                 }}
                               >
                                 <Download className="h-3 w-3 mr-1" /> Open
