@@ -315,7 +315,7 @@ serve(async (req) => {
       const { data: ord } = await supabase
         .from("orders").select("id").eq("application_id", applicationId).maybeSingle();
       if (ord?.id) {
-        await supabase.from("orders").update({ status: "Pending Payment" }).eq("id", ord.id);
+        await supabase.from("orders").update({ status: "pending_payment" }).eq("id", ord.id);
       }
     }
   }
