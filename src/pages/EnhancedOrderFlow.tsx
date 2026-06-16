@@ -610,11 +610,23 @@ const EnhancedOrderFlow = () => {
 
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Service Package</h3>
-                    <PackageSelector selected={selectedPackage} onSelect={setSelectedPackage} stateFees={stateFee} />
+                    <PackageSelector
+                      selected={selectedPackage}
+                      onSelect={(pkgId) => {
+                        setSelectedPackage(pkgId);
+                        // Auto-prune any add-ons that become bundled into the new package
+                        // so customers never get double-charged for an included service.
+                        setSelectedAddOns((prev) =>
+                          prev.filter((id) => !isAddonIncludedInPackage(pkgId, id)),
+                        );
+                      }}
+                      stateFees={stateFee}
+                    />
                   </div>
 
                   <div className="border-t pt-6">
                     <AddOnServices
+                      selectedPackage={selectedPackage}
                       selected={selectedAddOns}
                       onToggle={handleToggleAddon}
                       quantities={addonQuantities}
