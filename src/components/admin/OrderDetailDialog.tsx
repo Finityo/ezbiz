@@ -476,9 +476,20 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                   {detail.documents.map((d, i) => (
                     <div key={d.id} className={i > 0 ? 'pt-2 border-t border-border mt-2' : ''}>
                       <ReadField label="Type" value={d.document_type} />
-                      <div className="flex justify-between gap-4">
+                      <div className="flex justify-between items-center gap-4">
                         <span className="text-muted-foreground">File</span>
-                        <a href={d.file_url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-right text-xs">View / Download</a>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={async () => {
+                            const res = await openOrderDocument(d.file_url);
+                            if (!res.ok) {
+                              toast({ title: "Couldn't open document", description: res.error || 'Please try again.', variant: 'destructive' });
+                            }
+                          }}
+                        >
+                          <Download className="h-3 w-3 mr-1" /> Open
+                        </Button>
                       </div>
                       <ReadField label="Uploaded" value={d.uploaded_at ? new Date(d.uploaded_at).toLocaleString() : null} />
                     </div>
