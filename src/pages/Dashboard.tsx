@@ -718,6 +718,18 @@ export default function Dashboard() {
               {/* Order Timeline */}
               <OrderTimeline orderId={data.order.id} />
 
+              {/* Waiver flow panel — only when order is on a waiver track */}
+              {String(data.order.status || "").startsWith("waiver_") && (
+                <WaiverDocumentUpload
+                  userId={user!.id}
+                  orderId={data.order.id}
+                  applicationId={(data.order as any).application_id || null}
+                  status={data.order.status as string}
+                  onRefresh={loadDashboard}
+                />
+              )}
+
+
               {/* Document Vault */}
               <Card id="documents">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
