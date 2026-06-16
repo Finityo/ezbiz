@@ -652,20 +652,26 @@ export type Database = {
       }
       orders: {
         Row: {
+          abandoned_notified_at: string | null
           account_manager_email_message_id: string | null
           account_manager_email_status: string | null
           account_manager_sent_at: string | null
           account_manager_sent_to: string | null
+          add_ons: Json | null
           application_id: string | null
           created_at: string | null
+          current_step: number | null
           ein_service: boolean | null
           email: string | null
           entity_type: string | null
+          filing_path: string | null
           filing_speed: string | null
           id: string
+          last_activity_at: string | null
           order_number: number
           package: string | null
           package_id: string | null
+          source_path: string | null
           state: string | null
           state_fee: number | null
           status: string | null
@@ -676,20 +682,26 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          abandoned_notified_at?: string | null
           account_manager_email_message_id?: string | null
           account_manager_email_status?: string | null
           account_manager_sent_at?: string | null
           account_manager_sent_to?: string | null
+          add_ons?: Json | null
           application_id?: string | null
           created_at?: string | null
+          current_step?: number | null
           ein_service?: boolean | null
           email?: string | null
           entity_type?: string | null
+          filing_path?: string | null
           filing_speed?: string | null
           id?: string
+          last_activity_at?: string | null
           order_number?: number
           package?: string | null
           package_id?: string | null
+          source_path?: string | null
           state?: string | null
           state_fee?: number | null
           status?: string | null
@@ -700,20 +712,26 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          abandoned_notified_at?: string | null
           account_manager_email_message_id?: string | null
           account_manager_email_status?: string | null
           account_manager_sent_at?: string | null
           account_manager_sent_to?: string | null
+          add_ons?: Json | null
           application_id?: string | null
           created_at?: string | null
+          current_step?: number | null
           ein_service?: boolean | null
           email?: string | null
           entity_type?: string | null
+          filing_path?: string | null
           filing_speed?: string | null
           id?: string
+          last_activity_at?: string | null
           order_number?: number
           package?: string | null
           package_id?: string | null
+          source_path?: string | null
           state?: string | null
           state_fee?: number | null
           status?: string | null
