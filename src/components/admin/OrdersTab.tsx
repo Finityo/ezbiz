@@ -580,6 +580,16 @@ const OrdersTab = () => {
                           >
                             <Download className="h-3 w-3" />
                           </Button>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-7 w-7 shrink-0"
+                            disabled={exporting === order.id}
+                            onClick={() => exportSingleXLSX(order.id)}
+                            title="Download formatted XLSX"
+                          >
+                            <FileText className="h-3 w-3" />
+                          </Button>
                           <DocumentUploadDialog orderId={order.id} onUploaded={fetchOrders} />
                           {order.status === 'payment_complete' && (
                             <Button
