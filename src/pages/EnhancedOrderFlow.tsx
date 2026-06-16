@@ -1,6 +1,8 @@
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect } from "react";
-import { useSearchParams, Navigate } from "react-router-dom";
+import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import FilingPathStep from "@/components/order/FilingPathStep";
+
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
