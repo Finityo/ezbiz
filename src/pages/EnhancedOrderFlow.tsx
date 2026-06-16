@@ -550,6 +550,7 @@ const EnhancedOrderFlow = () => {
             <OrderStepIndicator currentStep={currentStep} steps={steps} />
 
 
+
             {/* Running Total Bar (steps 2+) */}
             {currentStep >= 2 && selectedPackage && (
               <div className="mt-4 p-3 rounded-lg bg-card border flex items-center justify-between text-sm">
