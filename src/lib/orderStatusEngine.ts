@@ -3,12 +3,15 @@ import { sendOrderStatusEmail } from '@/lib/sendStatusEmail';
 
 export const ORDER_STATUSES = [
   "draft",
+  "pending_payment",
   "processing",
   "payment_complete",
+  "in_processing",
   "submitted",
   "state_processing",
   "filed",
   "completed",
+  "cancelled",
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
