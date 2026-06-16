@@ -33,6 +33,8 @@ interface ReviewStepProps {
   processingSpeed?: ProcessingType;
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
+  /** Existing orders.id when resuming a draft (e.g. Texas Veteran Waiver after approval). */
+  orderId?: string | null;
   onEdit: (step: number) => void;
   onCheckoutStarted: () => Promise<{ orderId: string | null; applicationId: string | null }> | { orderId: string | null; applicationId: string | null };
 }
@@ -57,10 +59,14 @@ const ReviewStep = ({
   processingSpeed = "standard",
   mode = "guided",
   serviceDetails,
+  orderId,
   onEdit,
   onCheckoutStarted,
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
+  // Waiver-aware display. Backend remains the source of truth and re-derives
+  // effectiveStateFee in create-checkout — this only governs the on-screen estimate.
+  const waiver = useWaiverPricing(orderId);
 
   // Defense-in-depth: never bill for add-ons that are already bundled into the package.
   // The selector also blocks selection, but we re-filter here so a stale localStorage
