@@ -56,6 +56,7 @@ export const PACKAGE_PRICES: Record<
       "Operating Agreement",
       "Banking Resolution",
       "Initial Compliance Instructions",
+      "Registered Agent included for first year; auto-renews the following year at $149/year unless canceled",
       "Priority Support",
     ],
   },
