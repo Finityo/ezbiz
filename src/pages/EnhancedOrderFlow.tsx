@@ -369,28 +369,43 @@ const EnhancedOrderFlow = () => {
       const total = runningTotal();
       const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
 
-      // 1) Orders row — source of truth for the admin dashboard
-      const { data: orderRow, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          email: user.email,
-          entity_type: selectedEntity,
-          package: selectedPackage,
-          package_id: selectedPackage,
-          state: selectedState,
-          state_fee: stateFee,
-          total_amount: total,
-          filing_speed: processingSpeed,
-          ein_service: selectedAddOns.includes("ein"),
-          status: "pending_payment",
-        })
-        .select("id")
-        .single();
+      // 1) Orders row — source of truth for the admin dashboard.
+      //    If Phase Five autosave already created an `intake_started`
+      //    draft for this user, update-in-place instead of inserting
+      //    a duplicate.
+      const ordersPayload = {
+        user_id: user.id,
+        email: user.email,
+        entity_type: selectedEntity,
+        package: selectedPackage,
+        package_id: selectedPackage,
+        state: selectedState,
+        state_fee: stateFee,
+        total_amount: total,
+        filing_speed: processingSpeed,
+        ein_service: selectedAddOns.includes("ein"),
+        status: "pending_payment",
+        last_activity_at: new Date().toISOString(),
+      };
 
-      if (orderErr) throw orderErr;
-      const newOrderId = orderRow?.id as string;
-      setOrderId(newOrderId);
+      let newOrderId: string;
+      if (orderId) {
+        const { error: updErr } = await supabase
+          .from("orders")
+          .update(ordersPayload)
+          .eq("id", orderId);
+        if (updErr) throw updErr;
+        newOrderId = orderId;
+      } else {
+        const { data: orderRow, error: orderErr } = await supabase
+          .from("orders")
+          .insert(ordersPayload)
+          .select("id")
+          .single();
+        if (orderErr) throw orderErr;
+        newOrderId = orderRow!.id as string;
+        setOrderId(newOrderId);
+      }
 
       // 2) Normalized child rows — these populate the admin "Order Detail" dialog
       //    and the CorpNet CSV / account-manager handoff email.
