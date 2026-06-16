@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -69,14 +69,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Check your email",
-        description: `We sent a verification link to ${email}. Click it to activate your account.`,
-      });
+      return { error };
     }
 
-    return { error };
+    // Supabase anti-enumeration: repeated signup for an existing (confirmed)
+    // user returns 200 with a user object whose `identities` array is empty,
+    // and NO verification email is sent. Detect and surface clearly.
+    const alreadyExists = !!data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0;
+
+    if (alreadyExists) {
+      toast({
+        title: "Account already exists",
+        description: "An account with this email already exists. Please sign in or reset your password.",
+      });
+      return { error: null, alreadyExists: true };
+    }
+
+    toast({
+      title: "Check your email",
+      description: `We sent a verification link to ${email}. Click it to activate your account.`,
+    });
+
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {
