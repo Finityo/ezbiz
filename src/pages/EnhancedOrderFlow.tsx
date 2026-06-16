@@ -711,7 +711,7 @@ const EnhancedOrderFlow = () => {
                     <h2 className="text-xl sm:text-2xl font-semibold mb-2">Create Your Account</h2>
                     <p className="text-muted-foreground">Sign up to track your order progress</p>
                   </div>
-                  <AccountStep onAuthenticated={() => setCurrentStep(5)} />
+                  <AccountStep onAuthenticated={handleAccountComplete} />
                   <div className="flex justify-start">
                     <Button onClick={goBack} variant="outline">Back</Button>
                   </div>
