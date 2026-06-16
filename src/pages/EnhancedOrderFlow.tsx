@@ -82,6 +82,16 @@ const EnhancedOrderFlow = () => {
     }
   }, [missingPackage]);
 
+  // Tag already-signed-in users as 'veteran' the moment they enter the
+  // waiver flow, so post-login routing sends them to /dashboard#documents
+  // on every future return without waiting for the next sign-in backfill.
+  useEffect(() => {
+    if (!user || !isWaiver) return;
+    const existing = (user.user_metadata as any)?.customer_segment;
+    if (existing === "veteran") return;
+    supabase.auth.updateUser({ data: { customer_segment: "veteran" } });
+  }, [user, isWaiver]);
+
 
   useEffect(() => {
     const raw = searchParams.get("mode");
