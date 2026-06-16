@@ -159,11 +159,12 @@ const TABLE_ROWS: TableRow[] = [
   },
   {
     label: "Registered Agent Service",
-    description: ADDON_PRICES.registeredAgent.description,
+    description:
+      "Basic: 60 days included. Deluxe & Complete: first year included; auto-renews at $149/year unless canceled.",
     addonId: "registeredAgent",
     basic: { price: ADDON_PRICES.registeredAgent.price },
-    deluxe: { price: ADDON_PRICES.registeredAgent.price },
-    complete: { price: ADDON_PRICES.registeredAgent.price },
+    deluxe: "included",
+    complete: "included",
   },
   {
     label: "DBA Filing",

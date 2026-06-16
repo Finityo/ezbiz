@@ -30,6 +30,7 @@ import { trackOrderFlowView, trackFormStart, trackEvent } from "@/lib/analytics"
 import { formatPrice } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
+import { isAddonIncludedInPackage } from "@/lib/package-config";
 
 export type OrderMode = "guided" | "whiteglove";
 
@@ -610,11 +611,23 @@ const EnhancedOrderFlow = () => {
 
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Service Package</h3>
-                    <PackageSelector selected={selectedPackage} onSelect={setSelectedPackage} stateFees={stateFee} />
+                    <PackageSelector
+                      selected={selectedPackage}
+                      onSelect={(pkgId) => {
+                        setSelectedPackage(pkgId);
+                        // Auto-prune any add-ons that become bundled into the new package
+                        // so customers never get double-charged for an included service.
+                        setSelectedAddOns((prev) =>
+                          prev.filter((id) => !isAddonIncludedInPackage(pkgId, id)),
+                        );
+                      }}
+                      stateFees={stateFee}
+                    />
                   </div>
 
                   <div className="border-t pt-6">
                     <AddOnServices
+                      selectedPackage={selectedPackage}
                       selected={selectedAddOns}
                       onToggle={handleToggleAddon}
                       quantities={addonQuantities}

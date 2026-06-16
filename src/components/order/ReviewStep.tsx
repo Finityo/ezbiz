@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
+import { filterBillableAddons } from "@/lib/package-config";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -60,6 +61,11 @@ const ReviewStep = ({
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
 
+  // Defense-in-depth: never bill for add-ons that are already bundled into the package.
+  // The selector also blocks selection, but we re-filter here so a stale localStorage
+  // payload or a programmatic ?addons= query string cannot leak a duplicate charge into Stripe.
+  const billableAddOns = filterBillableAddons(selectedPackage, selectedAddOns);
+
   const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
   const isCorpType = CORP_ENTITIES.includes(entityType);
   const stateFee = state
@@ -76,7 +82,7 @@ const ReviewStep = ({
 
   const total = calculateOrderTotal(
     selectedPackage as PackageType,
-    selectedAddOns,
+    billableAddOns,
     stateFee,
     processingSpeed,
     isWhiteGlove,
@@ -86,7 +92,7 @@ const ReviewStep = ({
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       selectedPackage as PackageType,
-      selectedAddOns,
+      billableAddOns,
       processingSpeed,
       isWhiteGlove,
       addonQuantities,
@@ -217,12 +223,12 @@ const ReviewStep = ({
         )}
       </Section>
 
-      {selectedAddOns.length > 0 && (
+      {billableAddOns.length > 0 && (
         <>
           <Separator />
           <Section title="Add-on Services" step={2}>
             <ul className="space-y-2">
-              {selectedAddOns.map((id) => {
+              {billableAddOns.map((id) => {
                 const addon = ADDON_PRICES[id as AddonId];
                 const qty = addonQuantities[id] || 1;
                 return addon ? (
@@ -245,7 +251,7 @@ const ReviewStep = ({
               <span className="text-sm font-medium text-muted-foreground">Add-ons Subtotal</span>
               <span className="text-sm font-bold text-primary whitespace-nowrap">
                 ${formatPrice(
-                  selectedAddOns.reduce((sum, id) => {
+                  billableAddOns.reduce((sum, id) => {
                     const addon = ADDON_PRICES[id as AddonId];
                     const qty = addonQuantities[id] || 1;
                     return addon ? sum + addon.price * qty : sum;
@@ -265,7 +271,7 @@ const ReviewStep = ({
           <span>{pkg?.name} Package</span>
           <span>${formatPrice(pkg?.price || 0)}</span>
         </div>
-        {selectedAddOns.map((id) => {
+        {billableAddOns.map((id) => {
           const addon = ADDON_PRICES[id as AddonId];
           const qty = addonQuantities[id] || 1;
           return addon ? (
@@ -281,12 +287,12 @@ const ReviewStep = ({
             </div>
           ) : null;
         })}
-        {selectedAddOns.length > 0 && (
+        {billableAddOns.length > 0 && (
           <div className="flex justify-between text-sm font-medium text-muted-foreground">
             <span>Add-ons Subtotal</span>
             <span className="whitespace-nowrap">
               ${formatPrice(
-                selectedAddOns.reduce((sum, id) => {
+                billableAddOns.reduce((sum, id) => {
                   const addon = ADDON_PRICES[id as AddonId];
                   const qty = addonQuantities[id] || 1;
                   return addon ? sum + addon.price * qty : sum;
