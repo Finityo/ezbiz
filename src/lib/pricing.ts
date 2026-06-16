@@ -72,6 +72,7 @@ export const PACKAGE_PRICES: Record<
       "EIN Filing Service",
       "S-Corp Election Filing",
       "Business License Research",
+      "Registered Agent included for first year; auto-renews the following year at $149/year unless canceled",
       "Compliance Alerts",
     ],
   },
