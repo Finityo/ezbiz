@@ -1,134 +1,171 @@
-# Priority 2 — Normalize Order Status to snake_case
 
-Plan only. No code changes yet.
+# Phase Five — Lead / Abandoned Checkout / Intake Capture
 
-## Target normalization
+## 1. Audit findings (current state)
 
-| Legacy value      | Canonical value    |
-| ----------------- | ------------------ |
-| `Pending Payment` | `pending_payment`  |
-| `In Processing`   | `in_processing`    |
-| `payment_complete`| `payment_complete` (already canonical, keep) |
-| `paid` (rare/tooltip only) | map to `payment_complete` |
-| `cancelled`       | `cancelled` (already canonical) |
+### Where data is captured today
+| Trigger | Writes | Status set |
+|---|---|---|
+| `/start-order` button | `orders` (bare row, no enrichment) | `draft` |
+| EnhancedOrderFlow `saveOrderToDb()` — runs **only on click-to-checkout** at Step 4/5 | `orders` + `business_information` + `contact_information` + `addresses` + `company_management` + `business_applications` | `pending_payment` |
+| EnhancedOrderFlow waiver branch — runs when user submits waiver intake | same set | `waiver_documents_pending` |
+| `create-checkout` edge fn (after Stripe session is created) | `order_events` insert | event `checkout_started` |
+| `stripe-webhook` | `orders.status` | `payment_complete` |
 
-`business_applications.status` (`waiver_*`, `draft`, etc.) is already snake_case — **out of scope**, no changes.
+### Where data is lost
+1. **Steps 1–3 (State, Package, Add-ons, Business Details) write nothing to DB.** A user who picks Texas + LLC + Complete + EIN + RA and bounces at Step 3 leaves zero trace. All state lives in React `useState` only.
+2. **Account creation (Step 4) writes nothing of its own.** A user who signs up but closes the tab leaves a `profiles` row with no business context.
+3. **No `intake_started`, `lead_started`, `account_created`, or `checkout_abandoned` statuses exist.** Order status table currently holds only: `pending_payment`, `submitted_to_corpnet`.
+4. **`pending_payment` is overloaded**: it means both "row just created, customer is on the Stripe page" and "row created hours/days ago, customer ghosted." No way to distinguish.
+5. **No sweeper.** Nothing transitions stale `pending_payment` → `checkout_abandoned`.
+6. **No admin Leads view.** `OrdersTab` only surfaces lifecycle statuses; abandoned/lead rows would appear but aren't filterable as such.
+7. **No high-intent admin notification** for partial orders. `send-order-to-account-manager` only fires post-payment.
+8. **One stray `business_applications.status = 'in-review'`** (legacy) — minor cleanup.
 
-`order_events.event_type` history values (`payment_complete`, etc.) are already snake_case — leave historical rows untouched.
+### What already works (do not break)
+- Phase One waiver flow (`waiver_documents_pending` → `waiver_under_review` → `waiver_approved_payment_required`).
+- Stripe `payment_complete` write path + webhook guards `.in(["pending_payment","Pending Payment"])`.
+- Account-manager handoff (gated on `payment_complete`).
+- Package entitlement filtering (`isAddonIncludedInPackage`).
+- CSV/XLSX export.
 
-## Files to change
+## 2. Schema changes
 
-### Backend writes (source of truth — must change first)
-1. **`supabase/functions/create-checkout/index.ts`** L288
-   - `status: "Pending Payment"` → `status: "pending_payment"`
-2. **`supabase/functions/stripe-webhook/index.ts`** L117, L123, L318
-   - update payload stays `payment_complete` (no change)
-   - guard `.eq("status", "Pending Payment")` → `.eq("status", "pending_payment")`
-   - L318 rollback `update({ status: "Pending Payment" })` → `"pending_payment"`
-3. **`supabase/functions/verify-payment/index.ts`** L74, L80
-   - guard `.eq("status", "Pending Payment")` → `"pending_payment"`
-4. **`supabase/functions/send-order-to-account-manager/index.ts`** L445, L448, L450
-   - `update({ status: 'In Processing' })` → `'in_processing'`
-   - `.eq('status', 'payment_complete')` unchanged
-5. **`src/pages/EnhancedOrderFlow.tsx`** L327
-   - draft insert `status: "Pending Payment"` → `"pending_payment"` (L387 already snake)
-
-### Schema default
-6. **New migration** — `ALTER TABLE public.orders ALTER COLUMN status SET DEFAULT 'pending_payment';`
-
-### Admin UI
-7. **`src/components/admin/OrdersTab.tsx`** L146-147, L380, L409, L549, L552, L558
-   - status arrays: replace `'Pending Payment'` / `'In Processing'` with snake_case
-   - filter count uses snake_case
-   - `<SelectItem value="Pending Payment">` → `value="pending_payment"` (keep human label "Pending Payment" as display text)
-   - fallback `order.status || 'Pending Payment'` → `|| 'pending_payment'`
-   - `getStatusColor` add `in_processing` / `pending_payment` keys
-
-### Customer UI / display consumers
-8. **`src/components/dashboard/OrderStatusCard.tsx`** L109-119
-   - Remove the mixed-case alias block (`"Pending Payment"`, `"In Processing"`) added in Priority 1 — no longer needed once data is migrated. **Keep as commented safety aliases for one release cycle** (see Aliases section).
-9. **`src/components/dashboard/OrderTimeline.tsx`** L19
-   - `"Pending Payment": "Awaiting Payment"` — keep alias for safety, optionally remove later.
-10. **`src/pages/Dashboard.tsx`** L116, L130, L154, L161, L380
-    - Remove `"Pending Payment"` alias keys from `STATUS_LABELS` / `STATUS_BADGE_CLASSES`
-    - Remove the runtime `status === "Pending Payment" ? "pending_payment" : status` normalizations (no longer needed)
-
-### Engine
-11. **`src/lib/orderStatusEngine.ts`** — add `pending_payment` and `in_processing` to canonical `ORDER_STATUSES` ordering (currently missing per Phase Four audit).
-
-### Email templates
-12. **`supabase/functions/_shared/transactional-email-templates/order-status-update.tsx`** L25
-    - Add `in_processing` key; `payment_complete` already present.
-13. **`supabase/functions/_shared/transactional-email-templates/account-manager-order-handoff.tsx`** L113
-    - Visible text "moved to **In Processing**" — leave as human copy (display only, no equality check).
-
-### No change required
-- `supabase/functions/send-order-email/index.ts` — keyed by `payment_complete` already.
-- `src/lib/sendStatusEmail.ts` — already snake.
-- `order_events` historical metadata — leave intact.
-- RLS policies / DB functions — none compare status strings (verified by grep — no policy or `has_role`/SQL function references status values).
-
-## One-shot data migration
+Single migration. Adds columns + extends status vocabulary; no destructive ops.
 
 ```sql
--- Update existing orders
-UPDATE public.orders
-SET status = 'pending_payment', updated_at = now()
-WHERE status = 'Pending Payment';
+-- orders: extend status vocabulary + lead tracking columns
+ALTER TABLE public.orders
+  ADD COLUMN IF NOT EXISTS add_ons             jsonb,
+  ADD COLUMN IF NOT EXISTS filing_path         text,        -- 'standard' | 'texas_veteran_waiver'
+  ADD COLUMN IF NOT EXISTS current_step        smallint,    -- 1..5 wizard step reached
+  ADD COLUMN IF NOT EXISTS source_path         text,        -- entry route
+  ADD COLUMN IF NOT EXISTS last_activity_at    timestamptz DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS abandoned_notified_at timestamptz;
 
-UPDATE public.orders
-SET status = 'in_processing', updated_at = now()
-WHERE status = 'In Processing';
+CREATE INDEX IF NOT EXISTS idx_orders_status_activity
+  ON public.orders (status, last_activity_at DESC);
 
--- Normalize legacy 'paid' if any exist
-UPDATE public.orders
-SET status = 'payment_complete', updated_at = now()
-WHERE status = 'paid';
-
--- New default for the column
-ALTER TABLE public.orders ALTER COLUMN status SET DEFAULT 'pending_payment';
+-- Normalize stray legacy row
+UPDATE public.business_applications SET status = 'pending_payment' WHERE status = 'in-review';
 ```
 
-Pre-flight read (run via `supabase--read_query` before migration) to confirm row counts:
-```sql
-SELECT status, count(*) FROM public.orders GROUP BY status ORDER BY 2 DESC;
+No new tables. No FK changes. No RLS edits (existing user/admin policies cover the new columns).
+
+### Status vocabulary (added to `orderStatusEngine.ORDER_STATUSES`)
+```
+draft → intake_started → pending_payment → payment_complete → in_processing → ...
+                       ↘ checkout_abandoned
+waiver_documents_pending → waiver_documents_submitted → waiver_under_review
+  → waiver_needs_correction | waiver_approved_payment_required → payment_complete
 ```
 
-`business_applications.status` and `order_events` — **no UPDATE**, audit-preserving.
+`lead_started` and `account_created` are tracked as **`order_events.event_type`**, not as `orders.status` (no orders row exists yet for pre-account leads). The existing `email_list` table already handles pure pre-account leads.
 
-## Aliases — keep or drop?
+## 3. Capture strategy — debounced autosave
 
-**Recommend: keep display-only aliases for one release; drop write paths immediately.**
+Add a single client helper `useOrderDraft(user)` invoked from `EnhancedOrderFlow`:
 
-- All **write paths** flip in one shot (no aliases — single source of truth).
-- **Read/display aliases** (`OrderStatusCard`, `OrderTimeline`, `Dashboard` STATUS_LABELS) stay for one release to absorb:
-  - Any in-flight Stripe webhook retries holding a stale `Pending Payment` row reference.
-  - Cached browser sessions that loaded data mid-migration.
-- Remove aliases in a follow-up cleanup PR after one week of production confirmation.
+- On Step 1 completion (`selectedState` set): if `user`, upsert an `orders` row with `status='intake_started'`, `current_step=1`, `source_path=document.referrer`. Cache `orderId` in state and `localStorage('active_order_id')`.
+- On every step transition or 3s debounce after a field change: PATCH that row with current `filing_path`, `entity_type`, `package`, `state`, `state_fee`, `total_amount`, `add_ons` (jsonb of `{selectedAddOns, addonQuantities, includedAddOns}`), `current_step`, `last_activity_at = now()`.
+- Anonymous users (Steps 1–3 with no account yet): write to `localStorage` only; on AccountStep success, flush the buffered draft to DB as a single `intake_started` insert. **No anon DB writes** (RLS requires `user_id`).
+- `saveOrderToDb()` at checkout becomes **update-in-place** of the existing row (flip status `intake_started` → `pending_payment`) instead of insert. This eliminates the duplication risk the user called out.
 
-## Regression tests (manual smoke)
+For waiver path: same row, status flips to `waiver_documents_pending` on submission. No second insert.
 
-1. Start new order → confirm DB row inserts as `pending_payment`.
-2. Complete Stripe checkout → webhook flips to `payment_complete` (guard matches snake_case).
-3. verify-payment fallback (simulate webhook miss) → flips to `payment_complete`.
-4. Trigger account-manager handoff → status advances to `in_processing`.
-5. OrdersTab filter dropdown — each option returns expected rows.
-6. Customer Dashboard + OrderStatusCard — no "Draft" fallback for any live order.
-7. Run `SELECT status, count(*) FROM orders GROUP BY status` post-migration — zero legacy Title Case rows.
-8. `tsc --noEmit` clean.
+## 4. Abandoned sweeper (edge function + cron)
 
-## Rollback risk
+New edge function `mark-abandoned-checkouts`:
 
-- **Low for code**: changes are string literals; revert via git.
-- **Medium for data migration**: UPDATE is one-way but trivially reversible with the inverse UPDATE (`pending_payment` → `Pending Payment`, `in_processing` → `In Processing`) — include rollback SQL in PR description.
-- **Webhook race window**: small risk during deploy that an in-flight webhook with old code writes Title Case after the data migration ran. Mitigation: deploy edge functions and frontend together; run data migration *after* edge functions deploy succeeds; aliases on read side absorb the rest.
+```ts
+// Mark stale pending_payment as checkout_abandoned (NEVER touches paid rows)
+UPDATE orders SET status='checkout_abandoned', updated_at=now()
+WHERE status IN ('pending_payment','intake_started')
+  AND last_activity_at < now() - interval '2 hours'
+  AND stripe_payment_intent IS NULL;  -- defense in depth
+```
 
-## Deploy order
+Schedule via pg_cron every 30 min (uses the documented `net.http_post` pattern). Webhook already excludes abandoned from its `.in([...])` guard — verified safe.
 
-1. Deploy edge functions (write paths) with snake_case values.
-2. Deploy frontend (admin filters + dashboard) with snake_case + read aliases.
-3. Run data migration UPDATE + default change.
-4. Verify smoke tests.
-5. Schedule alias-cleanup PR for next release.
+## 5. Admin visibility — `OrdersTab` extensions
 
-Awaiting approval to implement.
+Add filter chips:
+- All leads (status in `intake_started`, `pending_payment`, `checkout_abandoned`)
+- Intake started
+- Pending payment
+- Checkout abandoned
+- Waiver document pending
+- Waiver under review
+- Paid orders (`payment_complete`)
+- In processing
+- Completed
+
+Columns added to the row: **Last Activity**, **Est. Value** (already have `total_amount`), **Next Action** (computed: "Send follow-up", "Request waiver docs", "Approve waiver", "Send to AM").
+
+No schema change required — all derivable from existing columns.
+
+## 6. High-intent admin notification
+
+New edge function `notify-high-intent-lead` invoked from client at these milestones (deduped by `orders.abandoned_notified_at`):
+- `intake_started` row reaches Step 3 (Business Details complete)
+- `pending_payment` reached but no webhook hit after 30 min (fired by sweeper, not client)
+- Waiver documents uploaded
+- Waiver `waiver_needs_correction` set
+
+Sends a single internal email per order with name, email, business name, package, state, status, link to admin order detail. Idempotent via `abandoned_notified_at IS NULL` check.
+
+## 7. Customer follow-up email **templates only** (no auto-send yet)
+
+Add six React Email templates under `supabase/functions/_shared/transactional-email-templates/`:
+- `lead-intake-incomplete.tsx`
+- `lead-checkout-abandoned.tsx`
+- `lead-waiver-docs-pending.tsx`
+- `lead-waiver-approved-payment-pending.tsx`
+- `lead-waiver-needs-correction.tsx`
+- `lead-standard-checkout-abandoned.tsx`
+
+Register in `registry.ts`. Add preview support via existing `preview-transactional-email` fn. **No cron, no auto-trigger** until you explicitly approve Phase Five.b.
+
+## 8. Files to change
+
+| File | Change |
+|---|---|
+| `supabase/migrations/<new>.sql` | columns + index + legacy normalize |
+| `src/hooks/useOrderDraft.ts` | NEW — debounced upsert helper |
+| `src/pages/EnhancedOrderFlow.tsx` | wire `useOrderDraft`; convert `saveOrderToDb` to update-in-place |
+| `src/lib/orderStatusEngine.ts` | add `intake_started`, `checkout_abandoned` to `ORDER_STATUSES` |
+| `src/components/admin/OrdersTab.tsx` | new filter chips, Last Activity / Next Action columns |
+| `src/components/dashboard/OrderStatusCard.tsx` | display labels for new statuses |
+| `src/pages/Dashboard.tsx` | STATUS_LABELS / STATUS_BADGE_CLASSES entries |
+| `supabase/functions/mark-abandoned-checkouts/index.ts` | NEW sweeper |
+| `supabase/functions/notify-high-intent-lead/index.ts` | NEW |
+| `supabase/functions/_shared/transactional-email-templates/lead-*.tsx` | NEW (×6) + registry |
+| `supabase/insert` SQL | pg_cron schedule for sweeper |
+
+## 9. Patch priority
+
+1. **P1 — schema + autosave + status engine** (capture first; no risk to paid flow).
+2. **P1 — admin OrdersTab filters & Last Activity column** (visibility for newly captured rows).
+3. **P2 — sweeper edge function + cron** (turn stale rows into actionable "abandoned").
+4. **P2 — high-intent admin notification** (sales recovery).
+5. **P3 — follow-up email templates** (copy ready, sending deferred).
+6. **P3 — wire automated customer follow-ups** (future phase, opt-in only).
+
+## 10. Data safety guarantees
+
+- Single `orders` + single `business_applications` row per session, mutated in place — **no duplicates**.
+- Sweeper filters `status IN ('pending_payment','intake_started')` and `stripe_payment_intent IS NULL` — **cannot touch paid rows**.
+- Webhook `.in(["pending_payment","Pending Payment"])` guard unchanged — webhook still wins any race.
+- Anonymous draft persistence is localStorage-only — **no RLS exposure**.
+- Waiver lineage (`application_data.filingPath`, `waivedStateFee`, etc.) preserved verbatim.
+- Email templates are inert until explicit Phase Five.b approval.
+
+## 11. Rollback risk: Low
+
+- Migration is additive only (new nullable columns, one UPDATE on a single legacy row).
+- New edge functions are independent; deleting them is the rollback.
+- Frontend autosave gated behind `if (user)` — failure modes degrade to current behavior.
+
+---
+
+**Awaiting approval to implement P1 (schema + autosave + status engine + admin OrdersTab filters).** P2 and P3 will follow as separate approved batches.

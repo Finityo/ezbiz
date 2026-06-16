@@ -112,9 +112,11 @@ const STATUS_STEPS = [
 
 const statusLabelMap: Record<string, string> = {
   draft: "Draft",
+  intake_started: "Intake Started",
   in_progress: "In Progress",
   pending_payment: "Pending Payment",
   "Pending Payment": "Pending Payment",
+  checkout_abandoned: "Checkout Abandoned",
   payment_complete: "Payment Complete",
   in_processing: "In Processing",
   "In Processing": "In Processing",
@@ -128,9 +130,11 @@ const statusLabelMap: Record<string, string> = {
 
 const statusToneMap: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
+  intake_started: "bg-slate-100 text-slate-800 dark:bg-slate-800/40 dark:text-slate-300",
   in_progress: "bg-primary/10 text-primary",
   pending_payment: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
   "Pending Payment": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+  checkout_abandoned: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300",
   payment_complete: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
   in_processing: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   "In Processing": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",

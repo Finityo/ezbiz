@@ -3,7 +3,9 @@ import { sendOrderStatusEmail } from '@/lib/sendStatusEmail';
 
 export const ORDER_STATUSES = [
   "draft",
+  "intake_started",
   "pending_payment",
+  "checkout_abandoned",
   "processing",
   "payment_complete",
   "in_processing",

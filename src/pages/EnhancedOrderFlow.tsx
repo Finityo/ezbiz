@@ -31,6 +31,7 @@ import { formatPrice } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 import { isAddonIncludedInPackage } from "@/lib/package-config";
+import { useOrderDraft } from "@/hooks/useOrderDraft";
 
 export type OrderMode = "guided" | "whiteglove";
 
@@ -215,6 +216,64 @@ const EnhancedOrderFlow = () => {
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // ── Phase Five: lead/intake autosave ────────────────────────────────
+  // Persists wizard progress as `orders.status='intake_started'` so we
+  // capture abandoned funnels. Disabled while resuming an existing
+  // application (avoids racing with the resume hydration). The same
+  // orderId is reused by saveOrderToDb at checkout (update-in-place).
+  const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
+  const { draftId, ensureDraft, patchDraft, clearDraft } = useOrderDraft(user, {
+    disabled: draftDisabled,
+  });
+  useEffect(() => {
+    if (draftId && !orderId) setOrderId(draftId);
+  }, [draftId, orderId]);
+  useEffect(() => {
+    if (draftDisabled || !user) return;
+    if (!selectedState) return; // wait for first meaningful signal
+    const includedAddOns = selectedAddOns.filter((id) =>
+      isAddonIncludedInPackage(selectedPackage, id),
+    );
+    const billableAddOns = selectedAddOns.filter(
+      (id) => !isAddonIncludedInPackage(selectedPackage, id),
+    );
+    patchDraft({
+      filing_path: filingPath ?? "standard",
+      entity_type: selectedEntity || null,
+      package: selectedPackage || null,
+      package_id: selectedPackage || null,
+      state: selectedState || null,
+      state_fee: stateFee || null,
+      total_amount: runningTotal(),
+      current_step: currentStep,
+      source_path: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
+      add_ons: {
+        selectedAddOns,
+        addonQuantities,
+        includedAddOns,
+        billableAddOns,
+        businessName: businessDetails.businessName
+          ? `${businessDetails.businessName} ${businessDetails.designator}`.trim()
+          : null,
+        contactFirstName: businessDetails.contactFirstName || null,
+        contactLastName: businessDetails.contactLastName || null,
+        contactPhone: businessDetails.contactPhone || null,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    user,
+    draftDisabled,
+    filingPath,
+    selectedEntity,
+    selectedPackage,
+    selectedState,
+    selectedAddOns,
+    addonQuantities,
+    currentStep,
+    businessDetails,
+  ]);
+
   // ── RESUME REHYDRATION ────────────────────────────────────────────────
   // When a customer clicks "Continue to Payment" from the dashboard after
   // a waiver review, the URL carries ?applicationId=… (and optionally
@@ -310,28 +369,43 @@ const EnhancedOrderFlow = () => {
       const total = runningTotal();
       const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
 
-      // 1) Orders row — source of truth for the admin dashboard
-      const { data: orderRow, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          email: user.email,
-          entity_type: selectedEntity,
-          package: selectedPackage,
-          package_id: selectedPackage,
-          state: selectedState,
-          state_fee: stateFee,
-          total_amount: total,
-          filing_speed: processingSpeed,
-          ein_service: selectedAddOns.includes("ein"),
-          status: "pending_payment",
-        })
-        .select("id")
-        .single();
+      // 1) Orders row — source of truth for the admin dashboard.
+      //    If Phase Five autosave already created an `intake_started`
+      //    draft for this user, update-in-place instead of inserting
+      //    a duplicate.
+      const ordersPayload = {
+        user_id: user.id,
+        email: user.email,
+        entity_type: selectedEntity,
+        package: selectedPackage,
+        package_id: selectedPackage,
+        state: selectedState,
+        state_fee: stateFee,
+        total_amount: total,
+        filing_speed: processingSpeed,
+        ein_service: selectedAddOns.includes("ein"),
+        status: "pending_payment",
+        last_activity_at: new Date().toISOString(),
+      };
 
-      if (orderErr) throw orderErr;
-      const newOrderId = orderRow?.id as string;
-      setOrderId(newOrderId);
+      let newOrderId: string;
+      if (orderId) {
+        const { error: updErr } = await supabase
+          .from("orders")
+          .update(ordersPayload)
+          .eq("id", orderId);
+        if (updErr) throw updErr;
+        newOrderId = orderId;
+      } else {
+        const { data: orderRow, error: orderErr } = await supabase
+          .from("orders")
+          .insert(ordersPayload)
+          .select("id")
+          .single();
+        if (orderErr) throw orderErr;
+        newOrderId = orderRow!.id as string;
+        setOrderId(newOrderId);
+      }
 
       // 2) Normalized child rows — these populate the admin "Order Detail" dialog
       //    and the CorpNet CSV / account-manager handoff email.
@@ -442,31 +516,50 @@ const EnhancedOrderFlow = () => {
       setCurrentStep(4);
       return;
     }
+    if (applicationId) {
+      // Already saved this session — just redirect to dashboard
+      navigate("/dashboard");
+      return;
+    }
     try {
       const total = runningTotal();
       const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
       const originalStateFee = stateFee || 300;
 
-      const { data: orderRow, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          email: user.email,
-          entity_type: selectedEntity,
-          package: selectedPackage,
-          package_id: selectedPackage,
-          state: "TX",
-          state_fee: originalStateFee,
-          total_amount: total,
-          filing_speed: processingSpeed,
-          ein_service: selectedAddOns.includes("ein"),
-          status: "waiver_documents_pending",
-        })
-        .select("id")
-        .single();
-      if (orderErr) throw orderErr;
-      const newOrderId = orderRow!.id as string;
-      setOrderId(newOrderId);
+      const waiverOrderPayload = {
+        user_id: user.id,
+        email: user.email,
+        entity_type: selectedEntity,
+        package: selectedPackage,
+        package_id: selectedPackage,
+        state: "TX",
+        state_fee: originalStateFee,
+        total_amount: total,
+        filing_speed: processingSpeed,
+        ein_service: selectedAddOns.includes("ein"),
+        status: "waiver_documents_pending",
+        filing_path: "texas_veteran_waiver",
+        last_activity_at: new Date().toISOString(),
+      };
+
+      let newOrderId: string;
+      if (orderId) {
+        const { error: updErr } = await supabase
+          .from("orders")
+          .update(waiverOrderPayload)
+          .eq("id", orderId);
+        if (updErr) throw updErr;
+        newOrderId = orderId;
+      } else {
+        const { data: orderRow, error: orderErr } = await supabase
+          .from("orders")
+          .insert(waiverOrderPayload)
+          .select("id")
+          .single();
+        if (orderErr) throw orderErr;
+        newOrderId = orderRow!.id as string;
+        setOrderId(newOrderId);
+      }
 
       // Best-effort normalized writes (mirrors saveOrderToDb)
       await Promise.all([

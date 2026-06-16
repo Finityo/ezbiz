@@ -25,6 +25,9 @@ interface Order {
   state_fee: number | null;
   created_at: string | null;
   updated_at: string | null;
+  last_activity_at?: string | null;
+  filing_path?: string | null;
+  current_step?: number | null;
   account_manager_sent_at?: string | null;
   account_manager_sent_to?: string | null;
   account_manager_email_status?: string | null;
@@ -278,7 +281,12 @@ const OrdersTab = () => {
       });
     }
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(o => o.status === statusFilter);
+      if (statusFilter === 'all_leads') {
+        const LEADS = new Set(['intake_started', 'pending_payment', 'checkout_abandoned']);
+        filtered = filtered.filter(o => LEADS.has(o.status || ''));
+      } else {
+        filtered = filtered.filter(o => o.status === statusFilter);
+      }
     }
     setFilteredOrders(filtered);
   }, [orders, searchTerm, statusFilter, contactMap, bizMap]);
@@ -344,8 +352,10 @@ const OrdersTab = () => {
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'intake_started': return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300';
       case 'in_progress': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
       case 'pending_payment': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'checkout_abandoned': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
       case 'payment_complete': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
       case 'in_processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'ready_for_submission': return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300';
@@ -362,6 +372,23 @@ const OrdersTab = () => {
       case 'waiver_approved_payment_required': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'waiver_not_approved_standard_checkout_required': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
       default: return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+    }
+  };
+
+  const getNextAction = (status: string | null): string => {
+    switch (status) {
+      case 'intake_started': return 'Follow up — intake incomplete';
+      case 'pending_payment': return 'Awaiting payment';
+      case 'checkout_abandoned': return 'Send recovery email';
+      case 'payment_complete': return 'Send to account manager';
+      case 'in_processing': return 'Filing in progress';
+      case 'waiver_documents_pending': return 'Customer must upload docs';
+      case 'waiver_documents_submitted':
+      case 'waiver_under_review': return 'Admin review required';
+      case 'waiver_needs_correction': return 'Customer must correct docs';
+      case 'waiver_approved_payment_required': return 'Awaiting customer payment';
+      case 'submitted_to_corpnet': return 'Awaiting CorpNet';
+      default: return '—';
     }
   };
 
@@ -406,9 +433,15 @@ const OrdersTab = () => {
               <SelectTrigger><SelectValue placeholder="Filter by status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="all_leads">All Leads (intake + pending + abandoned)</SelectItem>
+                <SelectItem value="intake_started">Intake Started</SelectItem>
                 <SelectItem value="pending_payment">Pending Payment</SelectItem>
+                <SelectItem value="checkout_abandoned">Checkout Abandoned</SelectItem>
+                <SelectItem value="waiver_documents_pending">Waiver Documents Pending</SelectItem>
+                <SelectItem value="waiver_documents_submitted">Waiver Documents Submitted</SelectItem>
+                <SelectItem value="waiver_under_review">Waiver Under Review</SelectItem>
+                <SelectItem value="waiver_needs_correction">Waiver Needs Correction</SelectItem>
+                <SelectItem value="waiver_approved_payment_required">Waiver Approved — Payment</SelectItem>
                 <SelectItem value="payment_complete">Payment Complete</SelectItem>
                 <SelectItem value="in_processing">In Processing</SelectItem>
                 <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
@@ -505,6 +538,8 @@ const OrdersTab = () => {
                   <TableHead>Package</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Last Activity</TableHead>
+                  <TableHead>Next Action</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -557,8 +592,10 @@ const OrdersTab = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="intake_started">Intake Started</SelectItem>
                             <SelectItem value="in_progress">In Progress</SelectItem>
                             <SelectItem value="pending_payment">Pending Payment</SelectItem>
+                            <SelectItem value="checkout_abandoned">Checkout Abandoned</SelectItem>
                             <SelectItem value="payment_complete">Payment Complete</SelectItem>
                             <SelectItem value="in_processing">In Processing</SelectItem>
                             <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
@@ -570,6 +607,12 @@ const OrdersTab = () => {
                           </SelectContent>
                         </Select>
                       </TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
+                        {order.last_activity_at
+                          ? new Date(order.last_activity_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+                          : '—'}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{getNextAction(order.status)}</TableCell>
                       <TableCell className="text-sm">{order.created_at ? new Date(order.created_at).toLocaleDateString() : '—'}</TableCell>
                       <TableCell className="min-w-[120px]">
                         <div className="flex gap-1 flex-nowrap">
