@@ -3,8 +3,10 @@
 // Exports ALL data points captured during the checkout flow across the
 // normalized order schema (orders, business_information, contact_information,
 // addresses [business + shipping], registered_agent, company_management,
-// participants, irs_responsible_party, agreements).
+// participants, irs_responsible_party, agreements) plus Phase Three
+// waiver + entitlement context joined from business_applications.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { splitAddons, registeredAgentTermsFor } from "./package-entitlements.ts";
 
 function escapeCSV(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined) return '';
@@ -21,6 +23,10 @@ export const CSV_HEADERS = [
   'state', 'filing_speed', 'ein_service', 'delayed_filing',
   'state_fee', 'total_amount',
   'stripe_session_id', 'stripe_payment_intent', 'application_id',
+  // Phase Three: waiver + entitlement context
+  'filing_path', 'waiver_status', 'original_state_fee', 'effective_state_fee', 'waived_state_fee',
+  'selected_package', 'billable_addons', 'included_addons', 'selected_addons_raw',
+  'registered_agent_terms', 'waiver_admin_reviewed_at', 'waiver_admin_notes',
   // Business
   'company_name', 'alternate_name', 'business_description', 'organizer_type', 'business_purpose',
   // Contact
@@ -46,6 +52,7 @@ export const CSV_HEADERS = [
   // Timestamps
   'created_at', 'updated_at',
 ];
+
 
 export async function buildOrderCsv(
   supabase: ReturnType<typeof createClient>,
