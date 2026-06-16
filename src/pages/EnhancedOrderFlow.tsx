@@ -798,6 +798,7 @@ const EnhancedOrderFlow = () => {
                     processingSpeed={processingSpeed}
                     mode={mode}
                     serviceDetails={mode === "whiteglove" ? serviceDetails : undefined}
+                    orderId={orderId}
                     onEdit={(step) => setCurrentStep(step)}
                     onCheckoutStarted={handleCheckoutStarted}
                   />
