@@ -551,7 +551,25 @@ const EnhancedOrderFlow = () => {
 
 
 
+  // While resuming an existing order from the dashboard, suppress any
+  // bounce/redirect and show a lightweight loader until hydration completes.
+  if (resuming) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SEOHead title="Loading your order" description="Loading your saved order." path="/order-flow" noIndex />
+        <Navigation />
+        <div className="flex-grow flex items-center justify-center p-8">
+          <p className="text-muted-foreground">
+            {resumeError ?? "Loading your saved order…"}
+          </p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
+  // Skipped while resuming (handled above).
   if (missingPackage) {
     return <Navigate to="/pricing" replace />;
   }
@@ -560,7 +578,7 @@ const EnhancedOrderFlow = () => {
   // didn't deep-link with ?package=… (legacy entry points still go straight
   // through the Standard flow for back-compat).
   const showFilingPathPicker =
-    filingPath === null && !isValidPackage && mode !== "whiteglove";
+    filingPath === null && !isValidPackage && mode !== "whiteglove" && !resumeApplicationId;
   if (showFilingPathPicker) {
     return (
       <div className="min-h-screen flex flex-col">
