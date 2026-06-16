@@ -289,9 +289,32 @@ export default function Checkout() {
             <Button variant="outline" onClick={() => navigate("/order/terms")} disabled={loading}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            <Button onClick={handleCheckout} disabled={loading} size="lg" className="min-w-[200px]">
+          {/* Waiver pending → block payment to match the backend guard. */}
+          {waiver.isLocked && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-900 dark:text-amber-200 flex items-start gap-2">
+              <ShieldCheck className="h-4 w-4 mt-0.5" />
+              <p>
+                Your Texas Veteran Waiver is still under review. Checkout will unlock once a
+                reviewer approves or rejects your submitted documents.
+              </p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex justify-between items-center pt-2">
+            <Button variant="outline" onClick={() => navigate("/order/terms")} disabled={loading}>
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back
+            </Button>
+            <Button
+              onClick={handleCheckout}
+              disabled={loading || waiver.loading || waiver.isLocked}
+              size="lg"
+              className="min-w-[200px]"
+            >
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
+              ) : waiver.isLocked ? (
+                <><Lock className="h-4 w-4 mr-2" /> Awaiting Waiver Review</>
               ) : (
                 <><Lock className="h-4 w-4 mr-2" /> Pay ${formatPrice(total)}</>
               )}
