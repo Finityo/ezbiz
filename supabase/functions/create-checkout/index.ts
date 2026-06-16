@@ -285,7 +285,7 @@ serve(async (req) => {
     const ordersPayload: Record<string, unknown> = {
       package_id: activeLineItems[0]?.priceId,
       state_fee: isSmokeTest ? 0 : (effectiveStateFee?.amount || 0),
-      status: "Pending Payment",
+      status: "pending_payment",
     };
     if (orderEnrichment?.entityType) ordersPayload.entity_type = orderEnrichment.entityType;
     if (orderEnrichment?.packageLabel) ordersPayload.package = orderEnrichment.packageLabel;
