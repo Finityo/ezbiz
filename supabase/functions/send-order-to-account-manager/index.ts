@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import * as React from "npm:react@18.3.1";
 import { renderAsync } from "npm:@react-email/components@0.0.22";
 import { buildOrderCsv } from "../_shared/build-order-csv.ts";
+import { buildOrderXlsx } from "../_shared/build-order-xlsx.ts";
 import { template as handoffTemplate } from "../_shared/transactional-email-templates/account-manager-order-handoff.tsx";
 
 const corsHeaders = {
@@ -307,6 +308,22 @@ async function processOne(opts: {
       .replace(/[^a-zA-Z0-9-_]/g, '_')
       .slice(0, 60);
     const csvFilename = `${safeName}-${orderNumber ?? orderId.slice(0, 8)}.csv`;
+    const xlsxFilename = `${safeName}-${orderNumber ?? orderId.slice(0, 8)}.xlsx`;
+
+    // Build XLSX attachment (formatted, human-friendly handoff).
+    const xlsxBytes = await buildOrderXlsx(admin as any, [orderId]);
+    let xlsxBase64 = '';
+    {
+      let binary = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < xlsxBytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(
+          null,
+          Array.from(xlsxBytes.subarray(i, i + chunk)) as any,
+        );
+      }
+      xlsxBase64 = btoa(binary);
+    }
 
     let messageId: string | null = null;
 
@@ -376,6 +393,12 @@ async function processOne(opts: {
         subject,
         html,
         attachments: [
+          {
+            filename: xlsxFilename,
+            content: xlsxBase64,
+            content_type:
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          },
           {
             filename: csvFilename,
             content: csvBase64,
