@@ -535,6 +535,18 @@ const EnhancedOrderFlow = () => {
                   <><MessageCircle className="h-3 w-3 mr-1" /> Guided</>
                 )}
               </Badge>
+              {isWaiver && (
+                <Badge className="bg-secondary/20 text-secondary border-secondary/40">
+                  🇺🇸 Texas Veteran Waiver
+                </Badge>
+              )}
+            </div>
+            <p className="text-center text-muted-foreground mb-6">
+              {isWaiver
+                ? "Pick your package and details — we'll review your waiver documents before any payment."
+                : `Complete your order in ${steps.length} simple steps${mode === "whiteglove" ? " (White Glove)" : " (Guided)"}`}
+            </p>
+
             </div>
             <p className="text-center text-muted-foreground mb-6">
               Complete your order in {steps.length} simple steps
