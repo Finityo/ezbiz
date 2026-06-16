@@ -120,6 +120,33 @@ export async function buildOrderCsv(
     const agreement = agreementMap.get(order.id) || {} as any;
     const participantRows = orderParticipants.length > 0 ? orderParticipants : [{} as any];
 
+    // Phase Three: derive waiver + entitlement context for this order.
+    const app: any = order.application_id ? appMap.get(order.application_id) : null;
+    const appData: any = (app?.application_data ?? {}) as Record<string, unknown>;
+    const filingPath: string =
+      typeof appData.filingPath === 'string' ? appData.filingPath : 'standard';
+    const isWaiver = filingPath === 'texas_veteran_waiver';
+    const waiverStatus = isWaiver ? (app?.status ?? '') : '';
+    const selectedPackage =
+      (typeof appData.package === 'string' ? appData.package : null) ?? order.package ?? '';
+    const selectedAddonsRaw: string[] = Array.isArray(appData.addOns)
+      ? appData.addOns.filter((x: unknown) => typeof x === 'string')
+      : [];
+    const { billable, included } = splitAddons(selectedPackage, selectedAddonsRaw);
+    const orderStateFee = order.state_fee != null ? Number(order.state_fee) : 0;
+    const originalStateFee: number = isWaiver
+      ? Number(appData.originalStateFee ?? 300)
+      : orderStateFee;
+    const effectiveStateFee: number = isWaiver
+      ? Number(appData.effectiveStateFee ?? orderStateFee)
+      : orderStateFee;
+    const waivedStateFee = isWaiver && appData.waivedStateFee === true;
+    const raTerms = registeredAgentTermsFor(selectedPackage);
+    const waiverReviewedAt =
+      typeof appData.waiverReviewedAt === 'string' ? appData.waiverReviewedAt : '';
+    const waiverAdminNotes =
+      typeof appData.adminNote === 'string' ? appData.adminNote : '';
+
     for (const p of participantRows) {
       rows.push([
         // Order
@@ -139,6 +166,19 @@ export async function buildOrderCsv(
         order.stripe_session_id ?? '',
         order.stripe_payment_intent ?? '',
         order.application_id ?? '',
+        // Phase Three: waiver + entitlement
+        filingPath,
+        waiverStatus,
+        String(originalStateFee),
+        String(effectiveStateFee),
+        waivedStateFee ? 'Yes' : 'No',
+        selectedPackage,
+        billable.join('|'),
+        included.join('|'),
+        selectedAddonsRaw.join('|'),
+        raTerms,
+        waiverReviewedAt,
+        waiverAdminNotes,
         // Business
         biz.company_name ?? '',
         biz.alternate_company_name ?? '',
