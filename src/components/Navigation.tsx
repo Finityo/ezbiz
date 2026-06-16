@@ -346,6 +346,30 @@ const Navigation = () => {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4">
+            {/* Top sign-in / dashboard — prominent for returning customers (veterans) */}
+            <div className="flex gap-2 pb-4 mb-4 border-b border-border">
+              {user ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 justify-center"
+                  onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard'); }}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  My Dashboard
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 justify-center"
+                  onClick={() => { setIsMobileMenuOpen(false); navigate('/auth'); }}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Customer Sign In
+                </Button>
+              )}
+            </div>
             <div className="space-y-4">
               {/* Mobile Pricing Link */}
               <Link
