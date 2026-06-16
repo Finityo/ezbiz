@@ -1,0 +1,1 @@
+UPDATE public.orders SET package = 'deluxe', total_amount = 279 WHERE order_number = 1000035;
