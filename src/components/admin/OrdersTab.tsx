@@ -416,11 +416,26 @@ const OrdersTab = () => {
                 <SelectItem value="rejected">Rejected</SelectItem>
               </SelectContent>
             </Select>
-            <div /> {/* spacer */}
-            <Button onClick={exportAllCSV} variant="outline" disabled={exporting === 'all'}>
-              <Download className="h-4 w-4 mr-2" />
-              {exporting === 'all' ? 'Exporting...' : 'Export All CSV'}
-            </Button>
+            <div className="flex gap-2 md:col-span-1 col-span-full">
+              <Button
+                onClick={exportAllCSV}
+                variant="outline"
+                disabled={exporting === 'all-csv'}
+                className="flex-1"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {exporting === 'all-csv' ? 'Exporting…' : 'CSV'}
+              </Button>
+              <Button
+                onClick={exportAllXLSX}
+                variant="outline"
+                disabled={exporting === 'all-xlsx'}
+                className="flex-1"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {exporting === 'all-xlsx' ? 'Exporting…' : 'XLSX'}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
