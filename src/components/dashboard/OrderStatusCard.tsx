@@ -21,19 +21,25 @@ export interface Order {
 }
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
+  // Core lifecycle statuses (snake_case canonical)
   draft: {
     label: "Draft",
     color: "bg-muted text-muted-foreground",
     icon: Clock
   },
-  pending: {
-    label: "Pending",
-    color: "bg-warning text-warning-foreground",
+  pending_payment: {
+    label: "Payment Pending",
+    color: "bg-amber-500 text-white",
     icon: Clock
   },
-  processing: {
-    label: "Processing",
+  payment_complete: {
+    label: "Payment Confirmed",
     color: "bg-blue-500 text-white",
+    icon: CheckCircle
+  },
+  in_processing: {
+    label: "In Processing",
+    color: "bg-blue-600 text-white",
     icon: Clock
   },
   submitted: {
@@ -41,9 +47,9 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     color: "bg-blue-600 text-white",
     icon: Send
   },
-  "in-review": {
-    label: "In Review",
-    color: "bg-amber-500 text-white",
+  state_processing: {
+    label: "State Processing",
+    color: "bg-indigo-500 text-white",
     icon: Eye
   },
   filed: {
@@ -56,10 +62,76 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     color: "bg-success text-success-foreground",
     icon: CheckCircle
   },
+  cancelled: {
+    label: "Cancelled",
+    color: "bg-destructive text-destructive-foreground",
+    icon: XCircle
+  },
   rejected: {
     label: "Rejected",
     color: "bg-destructive text-destructive-foreground",
     icon: XCircle
+  },
+
+  // Waiver statuses
+  waiver_documents_pending: {
+    label: "Waiver Documents Needed",
+    color: "bg-amber-500 text-white",
+    icon: AlertCircle
+  },
+  waiver_documents_submitted: {
+    label: "Waiver Documents Submitted",
+    color: "bg-blue-500 text-white",
+    icon: Send
+  },
+  waiver_under_review: {
+    label: "Waiver Under Review",
+    color: "bg-indigo-500 text-white",
+    icon: Eye
+  },
+  waiver_needs_correction: {
+    label: "Action Needed",
+    color: "bg-amber-600 text-white",
+    icon: AlertCircle
+  },
+  waiver_approved_payment_required: {
+    label: "Waiver Approved — Payment Needed",
+    color: "bg-emerald-500 text-white",
+    icon: CheckCircle
+  },
+  waiver_not_approved_standard_checkout_required: {
+    label: "Waiver Not Approved — Standard Checkout Available",
+    color: "bg-orange-500 text-white",
+    icon: AlertCircle
+  },
+
+  // Legacy / live mixed-case aliases (temporary)
+  "Pending Payment": {
+    label: "Payment Pending",
+    color: "bg-amber-500 text-white",
+    icon: Clock
+  },
+  "In Processing": {
+    label: "In Processing",
+    color: "bg-blue-600 text-white",
+    icon: Clock
+  },
+
+  // Legacy aliases (deprecated but preserved to avoid breaking existing filters/AdminDashboard)
+  pending: {
+    label: "Pending",
+    color: "bg-warning text-warning-foreground",
+    icon: Clock
+  },
+  processing: {
+    label: "Processing",
+    color: "bg-blue-500 text-white",
+    icon: Clock
+  },
+  "in-review": {
+    label: "In Review",
+    color: "bg-amber-500 text-white",
+    icon: Eye
   }
 };
 
