@@ -281,7 +281,12 @@ const OrdersTab = () => {
       });
     }
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(o => o.status === statusFilter);
+      if (statusFilter === 'all_leads') {
+        const LEADS = new Set(['intake_started', 'pending_payment', 'checkout_abandoned']);
+        filtered = filtered.filter(o => LEADS.has(o.status || ''));
+      } else {
+        filtered = filtered.filter(o => o.status === statusFilter);
+      }
     }
     setFilteredOrders(filtered);
   }, [orders, searchTerm, statusFilter, contactMap, bizMap]);
