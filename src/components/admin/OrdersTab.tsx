@@ -408,8 +408,9 @@ const OrdersTab = () => {
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="draft">Draft</SelectItem>
                 <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="Pending Payment">Pending Payment</SelectItem>
+                <SelectItem value="pending_payment">Pending Payment</SelectItem>
                 <SelectItem value="payment_complete">Payment Complete</SelectItem>
+                <SelectItem value="in_processing">In Processing</SelectItem>
                 <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
                 <SelectItem value="submitted_to_corpnet">Submitted to CorpNet</SelectItem>
                 <SelectItem value="processing">Processing</SelectItem>
