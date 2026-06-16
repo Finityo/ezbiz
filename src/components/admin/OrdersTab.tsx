@@ -144,7 +144,7 @@ const OrdersTab = () => {
 
   const PAYABLE_HANDOFF_STATUSES = new Set([
     'payment_complete',
-    'In Processing',
+    'in_processing',
     'ready_for_submission',
     'submitted_to_corpnet',
     'processing',
