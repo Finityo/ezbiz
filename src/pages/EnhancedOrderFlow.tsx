@@ -215,6 +215,93 @@ const EnhancedOrderFlow = () => {
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // ── RESUME REHYDRATION ────────────────────────────────────────────────
+  // When a customer clicks "Continue to Payment" from the dashboard after
+  // a waiver review, the URL carries ?applicationId=… (and optionally
+  // ?orderId=…). Load the existing business_applications row, hydrate all
+  // wizard state from application_data, and jump straight to Review.
+  // This prevents `saveOrderToDb` from inserting a duplicate row and
+  // ensures the waiver guard in create-checkout sees the correct status.
+  const resumeApplicationId = searchParams.get("applicationId");
+  const [resuming, setResuming] = useState<boolean>(!!resumeApplicationId);
+  const [resumeError, setResumeError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!resumeApplicationId) return;
+    if (!user) return; // wait for auth to load
+    if (applicationId) return; // already hydrated this session
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: app, error } = await supabase
+          .from("business_applications")
+          .select("id, user_id, status, state, business_type, application_data")
+          .eq("id", resumeApplicationId)
+          .maybeSingle();
+
+        if (cancelled) return;
+
+        if (error || !app) {
+          setResumeError("We couldn't find that order. Returning you to the dashboard.");
+          toast.error("Order not found.");
+          setTimeout(() => navigate("/dashboard"), 1200);
+          return;
+        }
+        if (app.user_id !== user.id) {
+          setResumeError("This order doesn't belong to your account.");
+          toast.error("Not authorized for this order.");
+          setTimeout(() => navigate("/dashboard"), 1200);
+          return;
+        }
+
+        const data = (app.application_data ?? {}) as Record<string, any>;
+        const isWaiverApp = data.filingPath === "texas_veteran_waiver";
+        const status = app.status;
+
+        // Lock out customers whose waiver is still in flight.
+        if (isWaiverApp && (
+          status === "waiver_documents_pending" ||
+          status === "waiver_documents_submitted" ||
+          status === "waiver_under_review" ||
+          status === "waiver_needs_correction"
+        )) {
+          toast.error("Your waiver is still under review. Payment is locked until it's approved or rejected.");
+          navigate("/dashboard");
+          return;
+        }
+
+        // Hydrate wizard state.
+        if (isWaiverApp) setFilingPath("texas_veteran_waiver");
+        if (app.state) setSelectedState(app.state);
+        if (app.business_type) setSelectedEntity(app.business_type);
+        if (data.package) setSelectedPackage(data.package);
+        if (Array.isArray(data.addOns)) setSelectedAddOns(data.addOns);
+        if (data.addonQuantities && typeof data.addonQuantities === "object") {
+          setAddonQuantities(data.addonQuantities);
+        }
+        if (data.businessDetails && typeof data.businessDetails === "object") {
+          setBusinessDetails((prev) => ({ ...prev, ...data.businessDetails }));
+        }
+        setApplicationId(app.id);
+        const resolvedOrderId =
+          (searchParams.get("orderId") as string | null) || data.orderId || null;
+        if (resolvedOrderId) setOrderId(resolvedOrderId);
+
+        // Drop user on Review/Checkout.
+        setCurrentStep(5);
+        setResuming(false);
+      } catch (err) {
+        console.error("Resume hydration failed:", err);
+        if (!cancelled) {
+          setResumeError("Couldn't load your saved order. Please try again from the dashboard.");
+          setResuming(false);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [resumeApplicationId, user, applicationId, navigate, searchParams]);
+
   type CheckoutIds = { orderId: string | null; applicationId: string | null };
 
   const saveOrderToDb = async (): Promise<CheckoutIds> => {
@@ -464,7 +551,25 @@ const EnhancedOrderFlow = () => {
 
 
 
+  // While resuming an existing order from the dashboard, suppress any
+  // bounce/redirect and show a lightweight loader until hydration completes.
+  if (resuming) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SEOHead title="Loading your order" description="Loading your saved order." path="/order-flow" noIndex />
+        <Navigation />
+        <div className="flex-grow flex items-center justify-center p-8">
+          <p className="text-muted-foreground">
+            {resumeError ?? "Loading your saved order…"}
+          </p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
+  // Skipped while resuming (handled above).
   if (missingPackage) {
     return <Navigate to="/pricing" replace />;
   }
@@ -473,7 +578,7 @@ const EnhancedOrderFlow = () => {
   // didn't deep-link with ?package=… (legacy entry points still go straight
   // through the Standard flow for back-compat).
   const showFilingPathPicker =
-    filingPath === null && !isValidPackage && mode !== "whiteglove";
+    filingPath === null && !isValidPackage && mode !== "whiteglove" && !resumeApplicationId;
   if (showFilingPathPicker) {
     return (
       <div className="min-h-screen flex flex-col">

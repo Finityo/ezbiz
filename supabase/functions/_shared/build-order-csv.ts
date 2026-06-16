@@ -3,8 +3,10 @@
 // Exports ALL data points captured during the checkout flow across the
 // normalized order schema (orders, business_information, contact_information,
 // addresses [business + shipping], registered_agent, company_management,
-// participants, irs_responsible_party, agreements).
+// participants, irs_responsible_party, agreements) plus Phase Three
+// waiver + entitlement context joined from business_applications.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { splitAddons, registeredAgentTermsFor } from "./package-entitlements.ts";
 
 function escapeCSV(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined) return '';
@@ -21,6 +23,10 @@ export const CSV_HEADERS = [
   'state', 'filing_speed', 'ein_service', 'delayed_filing',
   'state_fee', 'total_amount',
   'stripe_session_id', 'stripe_payment_intent', 'application_id',
+  // Phase Three: waiver + entitlement context
+  'filing_path', 'waiver_status', 'original_state_fee', 'effective_state_fee', 'waived_state_fee',
+  'selected_package', 'billable_addons', 'included_addons', 'selected_addons_raw',
+  'registered_agent_terms', 'waiver_admin_reviewed_at', 'waiver_admin_notes',
   // Business
   'company_name', 'alternate_name', 'business_description', 'organizer_type', 'business_purpose',
   // Contact
@@ -47,6 +53,7 @@ export const CSV_HEADERS = [
   'created_at', 'updated_at',
 ];
 
+
 export async function buildOrderCsv(
   supabase: ReturnType<typeof createClient>,
   orderIds: string[],
@@ -66,6 +73,19 @@ export async function buildOrderCsv(
     supabase.from('irs_responsible_party').select('*').in('order_id', orderIds),
     supabase.from('agreements').select('*').in('order_id', orderIds),
   ]);
+
+  // Phase Three: join business_applications to surface waiver context and
+  // package entitlement details. application_id lives on the orders row.
+  const applicationIds = ((orders.data || []) as any[])
+    .map((o: any) => o.application_id)
+    .filter((v: unknown): v is string => typeof v === 'string' && v.length > 0);
+  const appsRes = applicationIds.length
+    ? await supabase
+        .from('business_applications')
+        .select('id, status, application_data')
+        .in('id', applicationIds)
+    : { data: [] as any[] };
+  const appMap = new Map((appsRes.data || []).map((a: any) => [a.id, a]));
 
   const contactMap = new Map((contacts.data || []).map((c: any) => [c.order_id, c]));
   const bizMap = new Map((bizInfo.data || []).map((b: any) => [b.order_id, b]));
@@ -100,6 +120,33 @@ export async function buildOrderCsv(
     const agreement = agreementMap.get(order.id) || {} as any;
     const participantRows = orderParticipants.length > 0 ? orderParticipants : [{} as any];
 
+    // Phase Three: derive waiver + entitlement context for this order.
+    const app: any = order.application_id ? appMap.get(order.application_id) : null;
+    const appData: any = (app?.application_data ?? {}) as Record<string, unknown>;
+    const filingPath: string =
+      typeof appData.filingPath === 'string' ? appData.filingPath : 'standard';
+    const isWaiver = filingPath === 'texas_veteran_waiver';
+    const waiverStatus = isWaiver ? (app?.status ?? '') : '';
+    const selectedPackage =
+      (typeof appData.package === 'string' ? appData.package : null) ?? order.package ?? '';
+    const selectedAddonsRaw: string[] = Array.isArray(appData.addOns)
+      ? appData.addOns.filter((x: unknown) => typeof x === 'string')
+      : [];
+    const { billable, included } = splitAddons(selectedPackage, selectedAddonsRaw);
+    const orderStateFee = order.state_fee != null ? Number(order.state_fee) : 0;
+    const originalStateFee: number = isWaiver
+      ? Number(appData.originalStateFee ?? 300)
+      : orderStateFee;
+    const effectiveStateFee: number = isWaiver
+      ? Number(appData.effectiveStateFee ?? orderStateFee)
+      : orderStateFee;
+    const waivedStateFee = isWaiver && appData.waivedStateFee === true;
+    const raTerms = registeredAgentTermsFor(selectedPackage);
+    const waiverReviewedAt =
+      typeof appData.waiverReviewedAt === 'string' ? appData.waiverReviewedAt : '';
+    const waiverAdminNotes =
+      typeof appData.adminNote === 'string' ? appData.adminNote : '';
+
     for (const p of participantRows) {
       rows.push([
         // Order
@@ -119,6 +166,19 @@ export async function buildOrderCsv(
         order.stripe_session_id ?? '',
         order.stripe_payment_intent ?? '',
         order.application_id ?? '',
+        // Phase Three: waiver + entitlement
+        filingPath,
+        waiverStatus,
+        String(originalStateFee),
+        String(effectiveStateFee),
+        waivedStateFee ? 'Yes' : 'No',
+        selectedPackage,
+        billable.join('|'),
+        included.join('|'),
+        selectedAddonsRaw.join('|'),
+        raTerms,
+        waiverReviewedAt,
+        waiverAdminNotes,
         // Business
         biz.company_name ?? '',
         biz.alternate_company_name ?? '',

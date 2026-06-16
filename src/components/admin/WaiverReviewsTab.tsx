@@ -81,10 +81,21 @@ const WaiverReviewsTab = () => {
   const updateStatus = async (app: WaiverApp, newStatus: string, opts: { waivedStateFee?: boolean; adminNote?: string } = {}) => {
     try {
       const orderId = app.application_data?.orderId;
+      const nowIso = new Date().toISOString();
+      const isApproval = newStatus === "waiver_approved_payment_required";
+      const isRejection = newStatus === "waiver_not_approved_standard_checkout_required";
+      const originalStateFee = app.application_data?.originalStateFee ?? 300;
+      const effectiveStateFee = isApproval ? 0 : originalStateFee;
+
       const mergedData = {
         ...(app.application_data || {}),
         ...(opts.waivedStateFee !== undefined ? { waivedStateFee: opts.waivedStateFee } : {}),
         ...(opts.adminNote ? { adminNote: opts.adminNote } : {}),
+        // Preserve audit trail for CSV/account-manager handoff.
+        originalStateFee,
+        effectiveStateFee,
+        waiverReviewedAt: nowIso,
+        waiverReviewStatus: newStatus,
       };
       const { error } = await supabase
         .from("business_applications")
@@ -93,17 +104,24 @@ const WaiverReviewsTab = () => {
       if (error) throw error;
 
       if (orderId) {
-        // Update orders.state_fee when waiver is approved/rejected
-        if (newStatus === "waiver_approved_payment_required") {
+        // Update orders.state_fee when waiver is approved/rejected so admin views
+        // and pre-payment CSV exports reflect what the customer actually owes.
+        if (isApproval) {
           await supabase.from("orders").update({ state_fee: 0 }).eq("id", orderId);
-        } else if (newStatus === "waiver_not_approved_standard_checkout_required") {
-          await supabase.from("orders").update({ state_fee: app.application_data?.originalStateFee || 300 }).eq("id", orderId);
+        } else if (isRejection) {
+          await supabase.from("orders").update({ state_fee: originalStateFee }).eq("id", orderId);
         }
         await supabase.from("order_events").insert({
           order_id: orderId,
           event_type: `waiver_${newStatus}`,
           actor: "admin",
-          metadata: { application_id: app.id, note: opts.adminNote || null } as any,
+          metadata: {
+            application_id: app.id,
+            note: opts.adminNote || null,
+            originalStateFee,
+            effectiveStateFee,
+            reviewedAt: nowIso,
+          } as any,
         });
       }
       toast({ title: "Updated", description: `Status set to ${statusLabel[newStatus] || newStatus}` });
