@@ -202,13 +202,16 @@ async function processOne(opts: {
   orderId: string;
   recipients: string[];
   recipient: string;
+  ccRecipients: string[];
+  ccRecipient: string;
   actor: string;
   isManual: boolean;
   triggeredBy: 'admin' | 'webhook';
   forceFailure?: string | null;
   deliveryMode: 'attachment' | 'link';
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipients, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+  const { admin, orderId, recipients, recipient, ccRecipients, ccRecipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+
 
   try {
     const { data: order, error: orderErr } = await admin
