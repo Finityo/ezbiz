@@ -46,26 +46,40 @@ const steps = ["State", "Package", "Details", "Account", "Review"];
 
 const CORP_ENTITIES = ["c-corp", "s-corp", "nonprofit", "professional-corp"];
 
+export type FilingPath = "standard" | "texas_veteran_waiver";
+
 const EnhancedOrderFlow = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
 
+  // Filing-path selector. Driven by URL (?path=) so the choice survives reloads
+  // and so direct links from CTAs (e.g. /order-flow?path=texas_veteran_waiver)
+  // skip the picker.
+  const urlPath = searchParams.get("path");
+  const initialFilingPath: FilingPath | null =
+    urlPath === "texas_veteran_waiver" ? "texas_veteran_waiver"
+    : urlPath === "standard" ? "standard"
+    : null;
+  const [filingPath, setFilingPath] = useState<FilingPath | null>(initialFilingPath);
+  const isWaiver = filingPath === "texas_veteran_waiver";
+
   // Guard: in guided mode the URL MUST include a valid package param.
-  // This prevents any page from dropping users into a generic pricing flow
-  // by linking to /order-flow without a plan.
+  // Waiver path picks its package inside the wizard, so don't bounce to /pricing.
   const rawPackage = searchParams.get("package");
   const isValidPackage =
     !!rawPackage && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, rawPackage);
-  const requiresPackage = mode !== "whiteglove";
-  const missingPackage = requiresPackage && !isValidPackage;
+  const requiresPackage = mode !== "whiteglove" && !isWaiver;
+  const missingPackage = requiresPackage && !isValidPackage && filingPath !== null;
 
   useEffect(() => {
     if (missingPackage) {
       toast.error("Please choose a package to start your order.");
     }
   }, [missingPackage]);
+
 
   useEffect(() => {
     const raw = searchParams.get("mode");
