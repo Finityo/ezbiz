@@ -18,6 +18,8 @@ const EVENT_LABELS: Record<string, string> = {
   pending_payment: "Awaiting Payment",
   "Pending Payment": "Awaiting Payment",
   payment_complete: "Payment Received",
+  in_processing: "In Processing",
+  "In Processing": "In Processing",
   ready_for_submission: "Ready for Submission",
   submitted_to_corpnet: "Submitted for Filing",
   submitted: "Submitted for Filing",
