@@ -229,8 +229,18 @@ export default function Checkout() {
 
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
-                <span>${formatPrice(stateFee)}</span>
+                {stateFeeWaived ? (
+                  <span className="font-medium text-success">$0.00</span>
+                ) : (
+                  <span>${formatPrice(stateFee)}</span>
+                )}
               </div>
+              {stateFeeWaived && (
+                <p className="text-xs text-success flex items-center gap-1 -mt-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Texas state filing fee waived after document approval.
+                </p>
+              )}
 
               {processingFee > 0 && (
                 <div className="flex justify-between text-sm">
