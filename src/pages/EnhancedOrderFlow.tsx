@@ -324,7 +324,7 @@ const EnhancedOrderFlow = () => {
           total_amount: total,
           filing_speed: processingSpeed,
           ein_service: selectedAddOns.includes("ein"),
-          status: "Pending Payment",
+          status: "pending_payment",
         })
         .select("id")
         .single();
