@@ -31,6 +31,7 @@ import { formatPrice } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 import { isAddonIncludedInPackage } from "@/lib/package-config";
+import { useOrderDraft } from "@/hooks/useOrderDraft";
 
 export type OrderMode = "guided" | "whiteglove";
 
