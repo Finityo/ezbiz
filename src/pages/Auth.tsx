@@ -63,13 +63,15 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    const { error } = await signUp(email, password, firstName, lastName);
-    
-    if (!error) {
+
+    const { error, alreadyExists } = await signUp(email, password, firstName, lastName);
+
+    if (!error && !alreadyExists) {
       setShowEmailVerification(true);
     }
-    
+    // If alreadyExists, the toast from useAuth surfaces the message;
+    // user remains on the Auth page and can switch to the Sign In tab.
+
     setLoading(false);
   };
 

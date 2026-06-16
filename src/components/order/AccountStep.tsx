@@ -17,6 +17,7 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
   const { user, signIn, signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [tab, setTab] = useState<"signup" | "signin">("signup");
 
   // Sign Up state
   const [signUpData, setSignUpData] = useState({
@@ -59,11 +60,17 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
       return; // Form validation handles this visually
     }
     setLoading(true);
-    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
+    const { error, alreadyExists } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
     setLoading(false);
-    // Do NOT advance — user must verify email first. The "Already logged in"
-    // branch above will render the VerifyEmailNotice once the session is set.
     if (error) return;
+    // Repeated signup on an existing confirmed account — no email is sent.
+    // Pre-fill sign-in tab and switch the user there.
+    if (alreadyExists) {
+      setSignInData({ email: signUpData.email, password: "" });
+      setTab("signin");
+      return;
+    }
+    // New unconfirmed user: VerifyEmailNotice will render once the session is set.
   };
 
   const handleSignIn = async () => {
@@ -80,7 +87,7 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
 
   return (
     <div className="max-w-md mx-auto">
-      <Tabs defaultValue="signup" className="space-y-6">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "signup" | "signin")} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signup" className="flex items-center gap-2">
             <UserPlus className="h-4 w-4" /> Create Account
