@@ -516,6 +516,11 @@ const EnhancedOrderFlow = () => {
       setCurrentStep(4);
       return;
     }
+    if (applicationId) {
+      // Already saved this session — just redirect to dashboard
+      navigate("/dashboard");
+      return;
+    }
     try {
       const total = runningTotal();
       const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
