@@ -24,6 +24,9 @@ const REQUIRED_DOCS = [
 
 const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNote, onRefresh }: Props) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const isApproved = status === "waiver_approved_payment_required";
+  const isRejected = status === "waiver_not_approved_standard_checkout_required";
   const [docs, setDocs] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
