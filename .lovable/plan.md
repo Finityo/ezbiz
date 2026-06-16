@@ -1,74 +1,105 @@
-# Surgical Routing & Performance Fix
+## Goal
 
-## Root cause
-`/order-flow?mode=guided` (no `package=`) shows a blank page because the lazy `EnhancedOrderFlow` chunk is large (Supabase, auth, 5 step components, Stripe) and the redirect-on-missing-package only fires **after** the chunk parses. Meanwhile most public CTAs link bare `/order-flow`, dropping users straight into that broken state. `/pricing` itself is already lightweight.
+Split `/order-flow` into two filing paths — **Standard LLC** and **Texas Veteran Waiver** — without breaking existing Standard checkout. Waiver customers must reach the dashboard and upload waiver documents BEFORE payment, and the Texas $300 state fee must be removed only after admin approval (verified server-side).
 
-## What I'll change (surgical only)
+---
 
-### 1. Pre-route guard for `/order-flow` (App.tsx)
-Wrap the lazy route in a tiny inline component that reads `useSearchParams` **before** the chunk loads:
-- If `mode !== "whiteglove"` AND `package` param is missing/invalid → `<Navigate to="/pricing" replace />` immediately.
-- Otherwise render the lazy `<EnhancedOrderFlow />`.
+## 1. New Step 0: Filing-Path Decision
 
-This eliminates the blank-screen wait entirely for the broken URL.
+New component `FilingPathStep` shown as the first step of `/order-flow` (before State). Two large cards:
 
-### 2. Branded Suspense fallback for `/order-flow`
-Replace the generic spinner Suspense (only for this route) with:
+- **Start Standard LLC Filing** → sets `filingPath: "standard"`, proceeds to existing State step.
+- **Use Texas Veteran Waiver** → sets `filingPath: "texas_veteran_waiver"`, locks State to Texas, proceeds to Package step.
+
+Persisted in `OrderContext` as `filingPath`. Default `"standard"` for back-compat with existing entry points (`/order-flow?package=...` keeps Standard behavior).
+
+## 2. Flow Branching
+
 ```
-Preparing your EZ Biz filing options...
+Standard:  Path → State → Package → Details → Account → Review → Stripe → Dashboard
+Waiver:    Path → (TX) → Package → Details → Account → [create draft] → Dashboard (upload)
 ```
-plus a small spinner. Keeps the global Suspense untouched.
 
-### 3. Error recovery boundary around `/order-flow`
-Add a minimal `OrderFlowErrorBoundary` class component wrapping the lazy route. On error it shows:
-```
-We had trouble loading your order flow.
-Please return to pricing and choose your package.
-[ Back to Pricing ]   (Link to /pricing)
-```
-No global error-boundary changes.
+After Account step in waiver path:
+- Insert row into `orders` (status `draft`) and into `business_applications` with `status = 'waiver_documents_pending'` and `application_data = { filingPath, package, addOns, businessDetails, originalStateFee: 300, waivedStateFee: false }`.
+- `navigate('/dashboard')` instead of Review.
+- Skip Review/Checkout entirely until admin approves or rejects.
 
-### 4. Fix public CTAs → `/pricing`
-Update the routes flagged "✅ change" in the audit table to point to `/pricing`. Includes:
-- `Hero.tsx`, `FloatingCTA.tsx`, `Navigation.tsx` (2), `Footer.tsx`, `ChooseYourPath.tsx` (guided card only — whiteglove unchanged), `StateHeroSection.tsx`, `Index.tsx` (2), `About.tsx`, `Consultation.tsx` (2), `VeteranLLCTexas.tsx` (3), `Entrepreneurs.tsx` (2 `/start-order` links).
-- Entity/service pages: `LLC`, `CCorporation`, `SCorporation`, `NonprofitCorporation`, `ProfessionalCorporation`, `Partnership`, `SoleProprietorship`, `RegisteredAgent`, `DBAFiling`, `EINNumber`, `AnnualReport`.
-- `content/blogPosts.ts` 4 markdown links.
-- Analytics `trackClick` destination strings updated to match new route.
-- Keep `components/order/ReviewStep.tsx` Stripe `cancelPath` and `pages/order/CompanyInfo.tsx` back-button as `/order-flow?mode=...` (these are in-flow, not public CTAs).
+## 3. Dashboard Changes
 
-### 5. Pricing.tsx package buttons
-Update `handleStart` so the deep link includes `mode=guided` and any pre-selected state:
-```
-/order-flow?mode=guided&package=<pkg>[&state=<state>][&addons=...]
-```
-State currently isn't captured on `/pricing`, so this is a forward-compatible addition — today it just always emits `mode=guided&package=...`.
+Extend status engine + `OrderStatusCard`/`OrderTimeline` to recognize new waiver statuses:
+- `waiver_documents_pending` – show **Upload Waiver Documents** panel.
+- `waiver_documents_submitted` – "Submitted, awaiting review."
+- `waiver_under_review` – admin reviewing.
+- `waiver_needs_correction` – show admin note + re-upload.
+- `waiver_approved_payment_required` – show **Continue to Checkout (no state fee)** CTA → `/order/checkout?orderId=...&waiver=1`.
+- `waiver_not_approved_standard_checkout_required` – show **Continue with Standard Checkout ($300 TX fee applies)** CTA.
 
-### 6. Leave legacy `/start-order` route in place
-Route stays registered in `App.tsx`. After the CTA updates above, the only references to `/start-order` are:
-- The route definition itself
-- `pages/StartOrder.tsx` internal `redirect=/start-order` auth round-trip
-No public CTAs will point at it anymore. Reported, not removed (per instructions).
+New `WaiverDocumentUpload` component (reuses `DocumentUploader` + `order-documents` bucket) accepts:
+- TVC Verification Letter (per owner)
+- Comptroller Form 05-904
+- Optional supporting docs
 
-## Files to change
-- `src/App.tsx` — add guard wrapper, scoped Suspense fallback, error boundary around `/order-flow` route only.
-- `src/pages/Pricing.tsx` — `handleStart` URL adds `mode=guided` and optional `state`.
-- CTA route updates in:
-  - `src/components/Hero.tsx`, `FloatingCTA.tsx`, `Navigation.tsx`, `Footer.tsx`, `ChooseYourPath.tsx`
-  - `src/components/state/StateHeroSection.tsx`
-  - `src/pages/Index.tsx`, `About.tsx`, `Consultation.tsx`, `VeteranLLCTexas.tsx`, `Entrepreneurs.tsx`
-  - `src/pages/LLC.tsx`, `CCorporation.tsx`, `SCorporation.tsx`, `NonprofitCorporation.tsx`, `ProfessionalCorporation.tsx`, `Partnership.tsx`, `SoleProprietorship.tsx`, `RegisteredAgent.tsx`, `DBAFiling.tsx`, `EINNumber.tsx`, `AnnualReport.tsx`
-  - `src/content/blogPosts.ts`
+On submit: set status to `waiver_documents_submitted`, log `order_events`.
 
-## Explicitly NOT changed
-- Wizard structure, step components, business logic, Stripe logic, pricing values.
-- `EnhancedOrderFlow.tsx` internals (only the route wrapper around it).
-- Legacy `/start-order` route registration.
-- `/pricing` page UI/data.
-- In-flow back/cancel routes inside the wizard.
+## 4. Admin Dashboard
 
-## Verification after build
-- Visit `/order-flow?mode=guided` → instant redirect to `/pricing`, no blank screen.
-- Visit `/order-flow?mode=guided&package=deluxe` → wizard loads with branded "Preparing…" fallback during chunk download.
-- Click each public CTA listed above → lands on `/pricing`.
-- `/pricing` package "Continue/Start" buttons → land on `/order-flow?mode=guided&package=<pkg>`, wizard renders normally.
-- Force a thrown error in the lazy chunk (dev check) → error fallback shows with "Back to Pricing" button.
+New tab/section in `AdminDashboard` → "Waiver Reviews" listing orders where `business_applications.status` starts with `waiver_`. Actions:
+- **Approve** → status `waiver_approved_payment_required`, set `application_data.waivedStateFee = true`.
+- **Request Correction** → status `waiver_needs_correction` + admin note.
+- **Reject** → status `waiver_not_approved_standard_checkout_required`.
+
+All writes guarded by `has_role(auth.uid(),'admin')` (existing RLS pattern).
+
+## 5. Checkout Server-Side Verification
+
+Edge function `create-checkout`:
+- Accept `orderId`. If present, server fetches `business_applications.application_data` for that order.
+- If `filingPath === 'texas_veteran_waiver'` AND `waivedStateFee === true` → force `stateFee = 0` regardless of client payload.
+- If waiver flagged but not approved → reject with 403 ("Waiver not approved").
+- Standard orders unchanged.
+
+Frontend `Checkout.tsx` hides state fee line + passes `waiver=1` flag when arriving from waiver-approved path; server is the source of truth.
+
+## 6. Registered Agent Copy Fix
+
+In `src/lib/pricing.ts`, replace Basic feature `"Registered agent (1 year FREE)"` with:
+- **Basic**: "Registered Agent included for 60 days; auto-renews at $149/year unless canceled."
+- **Deluxe**: "Registered Agent included for first year; auto-renews the following year at $149/year unless canceled."
+- **Complete**: same as Deluxe.
+
+## 7. Database Migration
+
+Add to `business_applications`:
+- Allow `status` values: `waiver_documents_pending`, `waiver_documents_submitted`, `waiver_under_review`, `waiver_needs_correction`, `waiver_approved_payment_required`, `waiver_not_approved_standard_checkout_required` (column is text, no enum change needed — verify).
+- No new tables required; reuse `documents` table for uploads with `document_type = 'waiver_*'`.
+
+## 8. Safety / Back-Compat
+
+- Default `filingPath = 'standard'` everywhere it's unset → existing flows untouched.
+- New Filing Path step only renders when no `filingPath` and no `?package=` deep-link present. Existing `/order-flow?package=basic` continues straight to State step as today.
+- Stripe price IDs, addon logic, account creation unchanged.
+- Standard Checkout payload unchanged.
+
+## Files (new / edited)
+
+**New**
+- `src/components/order/FilingPathStep.tsx`
+- `src/components/dashboard/WaiverDocumentUpload.tsx`
+- `src/components/admin/WaiverReviewsTab.tsx`
+- `supabase/migrations/*` (status values + indexes if needed)
+
+**Edited**
+- `src/contexts/OrderContext.tsx` (add `filingPath`)
+- `src/pages/EnhancedOrderFlow.tsx` (insert path step + branch after Account)
+- `src/components/order/AccountStep.tsx` (post-account waiver branch creates draft + navigates to dashboard)
+- `src/pages/Dashboard.tsx` + `src/components/dashboard/OrderStatusCard.tsx` + `OrderTimeline.tsx`
+- `src/lib/orderStatusEngine.ts` (waiver statuses)
+- `src/pages/AdminDashboard.tsx` (add Waiver Reviews tab)
+- `src/lib/pricing.ts` (Registered Agent feature copy)
+- `supabase/functions/create-checkout/index.ts` (server-side waiver verification)
+- `src/pages/order/Checkout.tsx` (hide state fee + send orderId when waiver-approved)
+
+## Open Question
+
+For the Texas Veteran Waiver path, should the State step be **skipped entirely** (auto-set to Texas) or **shown but locked to Texas with explanatory copy**? Plan assumes skipped — let me know if you want it shown.
