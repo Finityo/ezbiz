@@ -50,7 +50,7 @@ const ReviewStep = ({
   state,
   entityType,
   selectedPackage,
-  selectedAddOns,
+  billableAddOns,
   addonQuantities,
   businessDetails,
   processingSpeed = "standard",
@@ -82,7 +82,7 @@ const ReviewStep = ({
 
   const total = calculateOrderTotal(
     selectedPackage as PackageType,
-    selectedAddOns,
+    billableAddOns,
     stateFee,
     processingSpeed,
     isWhiteGlove,
@@ -92,7 +92,7 @@ const ReviewStep = ({
   const handleCheckout = async () => {
     const lineItems = getStripeLineItems(
       selectedPackage as PackageType,
-      selectedAddOns,
+      billableAddOns,
       processingSpeed,
       isWhiteGlove,
       addonQuantities,
@@ -223,12 +223,12 @@ const ReviewStep = ({
         )}
       </Section>
 
-      {selectedAddOns.length > 0 && (
+      {billableAddOns.length > 0 && (
         <>
           <Separator />
           <Section title="Add-on Services" step={2}>
             <ul className="space-y-2">
-              {selectedAddOns.map((id) => {
+              {billableAddOns.map((id) => {
                 const addon = ADDON_PRICES[id as AddonId];
                 const qty = addonQuantities[id] || 1;
                 return addon ? (
@@ -251,7 +251,7 @@ const ReviewStep = ({
               <span className="text-sm font-medium text-muted-foreground">Add-ons Subtotal</span>
               <span className="text-sm font-bold text-primary whitespace-nowrap">
                 ${formatPrice(
-                  selectedAddOns.reduce((sum, id) => {
+                  billableAddOns.reduce((sum, id) => {
                     const addon = ADDON_PRICES[id as AddonId];
                     const qty = addonQuantities[id] || 1;
                     return addon ? sum + addon.price * qty : sum;
@@ -271,7 +271,7 @@ const ReviewStep = ({
           <span>{pkg?.name} Package</span>
           <span>${formatPrice(pkg?.price || 0)}</span>
         </div>
-        {selectedAddOns.map((id) => {
+        {billableAddOns.map((id) => {
           const addon = ADDON_PRICES[id as AddonId];
           const qty = addonQuantities[id] || 1;
           return addon ? (
@@ -287,12 +287,12 @@ const ReviewStep = ({
             </div>
           ) : null;
         })}
-        {selectedAddOns.length > 0 && (
+        {billableAddOns.length > 0 && (
           <div className="flex justify-between text-sm font-medium text-muted-foreground">
             <span>Add-ons Subtotal</span>
             <span className="whitespace-nowrap">
               ${formatPrice(
-                selectedAddOns.reduce((sum, id) => {
+                billableAddOns.reduce((sum, id) => {
                   const addon = ADDON_PRICES[id as AddonId];
                   const qty = addonQuantities[id] || 1;
                   return addon ? sum + addon.price * qty : sum;
