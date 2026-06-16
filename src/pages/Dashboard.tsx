@@ -706,6 +706,7 @@ export default function Dashboard() {
                               {step === "in_progress" && "Intake is being completed and saved."}
                               {step === "pending_payment" && "Payment is still needed before the order can move forward."}
                               {step === "payment_complete" && "Payment is complete and the order is ready for review."}
+                              {step === "in_processing" && "Your account manager has the order and is moving it into filing."}
                               {step === "ready_for_submission" && "Order data is complete and staged for filing submission."}
                               {step === "submitted_to_corpnet" && "The order has been passed into the filing pipeline."}
                               {step === "processing" && "The filing is currently being processed."}
