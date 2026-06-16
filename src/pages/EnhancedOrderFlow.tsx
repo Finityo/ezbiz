@@ -185,6 +185,11 @@ const EnhancedOrderFlow = () => {
   const goNext = () => {
     if (currentStep === 2) trackFormStart("order_business_details");
     if (currentStep === 3 && user) {
+      // Already logged in: waiver → create draft + dashboard, standard → Review
+      if (isWaiver) {
+        void handleWaiverDraftAndRedirect();
+        return;
+      }
       setCurrentStep(5);
     } else {
       setCurrentStep((s) => Math.min(s + 1, 5));
@@ -193,9 +198,12 @@ const EnhancedOrderFlow = () => {
   };
 
   const goBack = () => {
-    setCurrentStep((s) => Math.max(s - 1, 1));
+    // Waiver path starts at step 2 — don't let users drop back into the locked-TX state step
+    const min = isWaiver ? 2 : 1;
+    setCurrentStep((s) => Math.max(s - 1, min));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   const handleToggleAddon = (addonId: string) => {
     setSelectedAddOns((prev) =>
