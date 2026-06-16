@@ -91,12 +91,16 @@ const EnhancedOrderFlow = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
+  // Waiver path skips the state step (TX locked) and starts at Package.
+  const [currentStep, setCurrentStep] = useState(isWaiver ? 2 : 1);
+  const [selectedState, setSelectedState] = useState(
+    isWaiver ? "TX" : (searchParams.get("state") || "")
+  );
   const [selectedEntity, setSelectedEntity] = useState(searchParams.get("entity") || "llc");
   const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
-  const [isVeteran, setIsVeteran] = useState(false);
-  const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
+  const [isVeteran, setIsVeteran] = useState(isWaiver);
+  const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(isWaiver);
+
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>(() => {
     const raw = searchParams.get("addons");
     if (!raw) return [];
