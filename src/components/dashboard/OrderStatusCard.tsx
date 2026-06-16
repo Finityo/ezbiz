@@ -116,11 +116,6 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     color: "bg-blue-600 text-white",
     icon: Clock
   },
-  "Pending Payment": {
-    label: "Payment Pending",
-    color: "bg-amber-500 text-white",
-    icon: Clock
-  },
 
   // Legacy aliases (deprecated but preserved to avoid breaking existing filters/AdminDashboard)
   pending: {
