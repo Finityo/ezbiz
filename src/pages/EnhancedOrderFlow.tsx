@@ -468,6 +468,48 @@ const EnhancedOrderFlow = () => {
     return <Navigate to="/pricing" replace />;
   }
 
+  // Filing-path picker (Step 0) — only when the user hasn't chosen yet AND
+  // didn't deep-link with ?package=… (legacy entry points still go straight
+  // through the Standard flow for back-compat).
+  const showFilingPathPicker =
+    filingPath === null && !isValidPackage && mode !== "whiteglove";
+  if (showFilingPathPicker) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SEOHead title="Choose Filing Path" description="Choose your business formation path." path="/order-flow" noIndex />
+        <Navigation />
+        <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="container mx-auto px-4 py-10">
+            <div className="max-w-3xl mx-auto">
+              <FilingPathStep
+                onSelect={(path) => {
+                  if (path === "standard") {
+                    // Standard flow picks package on /pricing
+                    navigate("/pricing");
+                  } else {
+                    // Waiver: lock filingPath + TX, drop user into Package step
+                    const next = new URLSearchParams(searchParams);
+                    next.set("path", "texas_veteran_waiver");
+                    next.set("state", "TX");
+                    setSearchParams(next, { replace: true });
+                    setFilingPath("texas_veteran_waiver");
+                    setSelectedState("TX");
+                    setIsVeteran(true);
+                    setIsFormedInTexas2022(true);
+                    setCurrentStep(2);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead title="Order Flow" description="Complete your business formation order with EZ BIZ FILE SERVICE." path="/order-flow" noIndex />
