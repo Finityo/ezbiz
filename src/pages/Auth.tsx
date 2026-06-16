@@ -23,6 +23,32 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // ?segment=veteran on /auth (set by veteran landing pages / deep links)
+  // pre-tags new signups so routing works on first return login.
+  const querySegment = (() => {
+    const s = new URLSearchParams(location.search).get("segment");
+    return s === "veteran" || s === "standard" ? s : undefined;
+  })();
+
+  /**
+   * Backfill `user_metadata.customer_segment` for users who signed up before
+   * tagging existed (or signed up through a non-veteran entry point but later
+   * placed a veteran-waiver order). Idempotent — only writes when missing.
+   */
+  const ensureSegmentTag = async (userId: string, current?: string | null) => {
+    if (current === "veteran" || current === "standard") return current;
+    const { data } = await supabase
+      .from("orders")
+      .select("filing_path")
+      .eq("user_id", userId)
+      .eq("filing_path", "texas_veteran_waiver")
+      .limit(1)
+      .maybeSingle();
+    const inferred: "veteran" | "standard" = data ? "veteran" : "standard";
+    await supabase.auth.updateUser({ data: { customer_segment: inferred } });
+    return inferred;
+  };
+
   const resolveDestination = async (userId?: string) => {
     // 1. Explicit ?redirect= wins (used by segment landing pages, deep links).
     const params = new URLSearchParams(location.search);
@@ -44,10 +70,14 @@ const Auth = () => {
       .maybeSingle();
     if (adminRow) return "/admin";
 
-    // 4. Veterans (tagged at signup in user_metadata.customer_segment) land
-    //    on their Order Documents area inside the dashboard.
+    // 4. Veterans land on their Order Documents area. Read the tag, and if
+    //    missing, backfill from the user's order history.
     const { data: { user: current } } = await supabase.auth.getUser();
-    const segment = (current?.user_metadata as any)?.customer_segment;
+    const existing = (current?.user_metadata as any)?.customer_segment as
+      | "veteran"
+      | "standard"
+      | undefined;
+    const segment = await ensureSegmentTag(userId, existing);
     if (segment === "veteran") return "/dashboard#documents";
 
     return "/dashboard";
@@ -81,7 +111,7 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error, alreadyExists } = await signUp(email, password, firstName, lastName);
+    const { error, alreadyExists } = await signUp(email, password, firstName, lastName, querySegment);
 
     if (!error && !alreadyExists) {
       setShowEmailVerification(true);
