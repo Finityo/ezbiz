@@ -521,26 +521,40 @@ const EnhancedOrderFlow = () => {
       const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
       const originalStateFee = stateFee || 300;
 
-      const { data: orderRow, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          email: user.email,
-          entity_type: selectedEntity,
-          package: selectedPackage,
-          package_id: selectedPackage,
-          state: "TX",
-          state_fee: originalStateFee,
-          total_amount: total,
-          filing_speed: processingSpeed,
-          ein_service: selectedAddOns.includes("ein"),
-          status: "waiver_documents_pending",
-        })
-        .select("id")
-        .single();
-      if (orderErr) throw orderErr;
-      const newOrderId = orderRow!.id as string;
-      setOrderId(newOrderId);
+      const waiverOrderPayload = {
+        user_id: user.id,
+        email: user.email,
+        entity_type: selectedEntity,
+        package: selectedPackage,
+        package_id: selectedPackage,
+        state: "TX",
+        state_fee: originalStateFee,
+        total_amount: total,
+        filing_speed: processingSpeed,
+        ein_service: selectedAddOns.includes("ein"),
+        status: "waiver_documents_pending",
+        filing_path: "texas_veteran_waiver",
+        last_activity_at: new Date().toISOString(),
+      };
+
+      let newOrderId: string;
+      if (orderId) {
+        const { error: updErr } = await supabase
+          .from("orders")
+          .update(waiverOrderPayload)
+          .eq("id", orderId);
+        if (updErr) throw updErr;
+        newOrderId = orderId;
+      } else {
+        const { data: orderRow, error: orderErr } = await supabase
+          .from("orders")
+          .insert(waiverOrderPayload)
+          .select("id")
+          .single();
+        if (orderErr) throw orderErr;
+        newOrderId = orderRow!.id as string;
+        setOrderId(newOrderId);
+      }
 
       // Best-effort normalized writes (mirrors saveOrderToDb)
       await Promise.all([
