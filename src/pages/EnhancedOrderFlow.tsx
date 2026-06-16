@@ -342,6 +342,127 @@ const EnhancedOrderFlow = () => {
     return await saveOrderToDb();
   };
 
+  /**
+   * WAIVER PATH: persist a draft order + business_applications row marked
+   * `waiver_documents_pending` and bounce the user to the dashboard to
+   * upload their TVC letter + Form 05-904. Checkout is intentionally NOT
+   * triggered here — the state fee can only be waived after admin approval,
+   * verified server-side in the create-checkout edge function.
+   */
+  const handleWaiverDraftAndRedirect = async () => {
+    if (!user) {
+      setCurrentStep(4);
+      return;
+    }
+    try {
+      const total = runningTotal();
+      const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
+      const originalStateFee = stateFee || 300;
+
+      const { data: orderRow, error: orderErr } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          entity_type: selectedEntity,
+          package: selectedPackage,
+          package_id: selectedPackage,
+          state: "TX",
+          state_fee: originalStateFee,
+          total_amount: total,
+          filing_speed: processingSpeed,
+          ein_service: selectedAddOns.includes("ein"),
+          status: "waiver_documents_pending",
+        })
+        .select("id")
+        .single();
+      if (orderErr) throw orderErr;
+      const newOrderId = orderRow!.id as string;
+      setOrderId(newOrderId);
+
+      // Best-effort normalized writes (mirrors saveOrderToDb)
+      await Promise.all([
+        supabase.from("business_information").insert({
+          order_id: newOrderId,
+          company_name: fullBusinessName,
+          alternate_company_name: businessDetails.alternateName || null,
+          business_purpose: businessDetails.businessPurpose || null,
+          business_description: businessDetails.businessDescription || null,
+          organizer_type: businessDetails.organizerType || null,
+          delayed_filing: !!businessDetails.delayedFiling,
+        }),
+        supabase.from("contact_information").insert({
+          order_id: newOrderId,
+          first_name: businessDetails.contactFirstName || null,
+          last_name: businessDetails.contactLastName || null,
+          email: user.email || null,
+          phone: businessDetails.contactPhone || null,
+        }),
+        supabase.from("addresses").insert({
+          order_id: newOrderId,
+          type: "business",
+          address1: businessDetails.address || null,
+          city: businessDetails.city || null,
+          state: "TX",
+          zip: businessDetails.zipCode || null,
+          country: "US",
+        }),
+      ]);
+
+      const { data: appRow, error: appErr } = await supabase
+        .from("business_applications")
+        .insert([{
+          user_id: user.id,
+          business_name: fullBusinessName,
+          business_type: selectedEntity,
+          state: "TX",
+          status: "waiver_documents_pending",
+          application_data: {
+            filingPath: "texas_veteran_waiver",
+            package: selectedPackage,
+            addOns: selectedAddOns,
+            addonQuantities,
+            businessDetails,
+            originalStateFee,
+            waivedStateFee: false,
+            estimatedTotal: total,
+            paymentStatus: "pending",
+            source: "order-flow",
+            orderId: newOrderId,
+          } as any,
+        }])
+        .select("id")
+        .single();
+      if (appErr) throw appErr;
+      const newAppId = appRow!.id as string;
+      setApplicationId(newAppId);
+
+      await supabase.from("orders").update({ application_id: newAppId }).eq("id", newOrderId);
+      await supabase.from("order_events").insert({
+        order_id: newOrderId,
+        event_type: "waiver_draft_created",
+        actor: "customer",
+        metadata: { application_id: newAppId, filingPath: "texas_veteran_waiver" } as any,
+      });
+
+      toast.success("Draft saved. Please upload your waiver documents in your dashboard.");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Failed to save waiver draft:", err);
+      toast.error("Couldn't save your waiver draft. Please try again.");
+    }
+  };
+
+  const handleAccountComplete = () => {
+    if (isWaiver) {
+      void handleWaiverDraftAndRedirect();
+    } else {
+      setCurrentStep(5);
+    }
+  };
+
+
+
   // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
   if (missingPackage) {
     return <Navigate to="/pricing" replace />;
