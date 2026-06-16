@@ -221,7 +221,7 @@ const EnhancedOrderFlow = () => {
   // capture abandoned funnels. Disabled while resuming an existing
   // application (avoids racing with the resume hydration). The same
   // orderId is reused by saveOrderToDb at checkout (update-in-place).
-  const draftDisabled = !!resumeApplicationId || !!applicationId;
+  const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
   const { draftId, ensureDraft, patchDraft, clearDraft } = useOrderDraft(user, {
     disabled: draftDisabled,
   });
