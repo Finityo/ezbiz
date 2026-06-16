@@ -499,6 +499,9 @@ async function processOne(opts: {
       actor,
       metadata: {
         recipient,
+        recipients,
+        cc_recipient: ccRecipient || null,
+        cc_recipients: ccRecipients,
         csv_path: objectPath,
         csv_filename: `order-${orderId}.csv`,
         triggered_by: triggeredBy,
@@ -508,6 +511,7 @@ async function processOne(opts: {
         new_status: newStatus,
         sent_at: new Date().toISOString(),
       },
+
     });
 
     return {
