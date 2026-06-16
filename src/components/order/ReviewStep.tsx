@@ -364,9 +364,24 @@ const ReviewStep = ({
         </div>
       )}
 
-      <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
+      {waiver.isLocked && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-900 dark:text-amber-200">
+          Your Texas Veteran Waiver is still under review. Checkout will unlock once a reviewer
+          approves or rejects your submitted documents.
+        </div>
+      )}
+      <Button
+        onClick={handleCheckout}
+        disabled={loading || waiver.loading || waiver.isLocked}
+        className="w-full"
+        size="lg"
+      >
         <Lock className="h-4 w-4 mr-2" />
-        {loading ? "Processing..." : "Proceed to Stripe Checkout"}
+        {loading
+          ? "Processing..."
+          : waiver.isLocked
+          ? "Awaiting Waiver Review"
+          : "Proceed to Stripe Checkout"}
       </Button>
       <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
         <Lock className="h-3 w-3" /> Secure payment powered by Stripe
