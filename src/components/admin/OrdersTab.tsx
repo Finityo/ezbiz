@@ -295,59 +295,51 @@ const OrdersTab = () => {
     }
   };
 
-  const exportSingleCSV = async (orderId: string) => {
-    setExporting(orderId);
+  const downloadExport = async (
+    format: 'csv' | 'xlsx',
+    orderId: string | null,
+  ) => {
+    const exportKey = orderId ?? `all-${format}`;
+    setExporting(exportKey);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData?.session?.access_token;
-      if (!token) throw new Error('Not authenticated');
-
       const res = await supabase.functions.invoke('export-order-csv', {
-        body: { order_id: orderId },
+        body: orderId ? { order_id: orderId, format } : { format },
       });
-
       if (res.error) throw res.error;
 
-      const blob = new Blob([res.data], { type: 'text/csv' });
+      const mime =
+        format === 'xlsx'
+          ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          : 'text/csv';
+      const blob =
+        res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart], { type: mime });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `order-${(filteredOrders.find(o => o.id === orderId) as any)?.order_number ?? orderId.substring(0, 8)}.csv`;
+      const baseName = orderId
+        ? `order-${(filteredOrders.find((o) => o.id === orderId) as any)?.order_number ?? orderId.substring(0, 8)}`
+        : `all-orders-${new Date().toISOString().split('T')[0]}`;
+      a.download = `${baseName}.${format}`;
       a.click();
       window.URL.revokeObjectURL(url);
-      toast({ title: 'Downloaded', description: 'CSV exported successfully.' });
+      toast({ title: 'Downloaded', description: `${format.toUpperCase()} exported successfully.` });
     } catch (error) {
       console.error('Export error:', error);
-      toast({ title: 'Export Failed', description: 'Could not export CSV.', variant: 'destructive' });
+      toast({
+        title: 'Export Failed',
+        description: `Could not export ${format.toUpperCase()}.`,
+        variant: 'destructive',
+      });
     } finally {
       setExporting(null);
     }
   };
 
-  const exportAllCSV = async () => {
-    setExporting('all');
-    try {
-      const res = await supabase.functions.invoke('export-order-csv', {
-        body: {},
-      });
+  const exportSingleCSV = (orderId: string) => downloadExport('csv', orderId);
+  const exportSingleXLSX = (orderId: string) => downloadExport('xlsx', orderId);
+  const exportAllCSV = () => downloadExport('csv', null);
+  const exportAllXLSX = () => downloadExport('xlsx', null);
 
-      if (res.error) throw res.error;
-
-      const blob = new Blob([res.data], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `all-orders-${new Date().toISOString().split('T')[0]}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      toast({ title: 'Downloaded', description: 'All orders exported.' });
-    } catch (error) {
-      console.error('Export error:', error);
-      toast({ title: 'Export Failed', description: 'Could not export CSV.', variant: 'destructive' });
-    } finally {
-      setExporting(null);
-    }
-  };
 
   const getStatusColor = (status: string | null) => {
     switch (status) {
