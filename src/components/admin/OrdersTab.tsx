@@ -605,7 +605,12 @@ const OrdersTab = () => {
                           </SelectContent>
                         </Select>
                       </TableCell>
-                      <TableCell className="text-sm">{order.created_at ? new Date(order.created_at).toLocaleDateString() : '—'}</TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
+                        {order.last_activity_at
+                          ? new Date(order.last_activity_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+                          : '—'}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{getNextAction(order.status)}</TableCell>
                       <TableCell className="min-w-[120px]">
                         <div className="flex gap-1 flex-nowrap">
                           <OrderDetailDialog orderId={order.id} companyName={biz?.company_name || undefined} />
