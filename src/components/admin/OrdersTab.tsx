@@ -352,8 +352,10 @@ const OrdersTab = () => {
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'intake_started': return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300';
       case 'in_progress': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
       case 'pending_payment': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'checkout_abandoned': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
       case 'payment_complete': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
       case 'in_processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'ready_for_submission': return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300';
@@ -370,6 +372,23 @@ const OrdersTab = () => {
       case 'waiver_approved_payment_required': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'waiver_not_approved_standard_checkout_required': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
       default: return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+    }
+  };
+
+  const getNextAction = (status: string | null): string => {
+    switch (status) {
+      case 'intake_started': return 'Follow up — intake incomplete';
+      case 'pending_payment': return 'Awaiting payment';
+      case 'checkout_abandoned': return 'Send recovery email';
+      case 'payment_complete': return 'Send to account manager';
+      case 'in_processing': return 'Filing in progress';
+      case 'waiver_documents_pending': return 'Customer must upload docs';
+      case 'waiver_documents_submitted':
+      case 'waiver_under_review': return 'Admin review required';
+      case 'waiver_needs_correction': return 'Customer must correct docs';
+      case 'waiver_approved_payment_required': return 'Awaiting customer payment';
+      case 'submitted_to_corpnet': return 'Awaiting CorpNet';
+      default: return '—';
     }
   };
 
