@@ -30,6 +30,7 @@ import { trackOrderFlowView, trackFormStart, trackEvent } from "@/lib/analytics"
 import { formatPrice } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
+import { isAddonIncludedInPackage } from "@/lib/package-config";
 
 export type OrderMode = "guided" | "whiteglove";
 
