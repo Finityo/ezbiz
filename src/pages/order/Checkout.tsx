@@ -35,11 +35,17 @@ export default function Checkout() {
 
   const pkg = PACKAGE_PRICES[order.packageId as PackageType];
   const isCorpType = CORP_ENTITIES.includes(order.entityType);
-  const stateFee = order.state
+  const rawStateFee = order.state
     ? isCorpType
       ? getCorpStateFee(order.state)
       : getStateFee(order.state)
     : 0;
+
+  // Waiver-aware display. Backend re-verifies in create-checkout before
+  // Stripe is ever called, so this only governs the on-screen estimate.
+  const waiver = useWaiverPricing(order.orderId);
+  const stateFee = getEffectiveStateFee(rawStateFee, waiver);
+  const stateFeeWaived = waiver.isApproved && rawStateFee > 0;
 
   const speedConfig = PROCESSING_PRICES[order.processingSpeed || "standard"];
   const processingFee = speedConfig?.price || 0;
@@ -66,7 +72,9 @@ export default function Checkout() {
     trackCheckoutStart(pkg?.name || order.packageId, total);
 
     await checkout(lineItems, {
-      stateFee: { amount: stateFee, stateName: order.state },
+      // Backend will re-derive effectiveStateFee from the application row;
+      // we send the raw fee so a tampered client cannot under-charge.
+      stateFee: { amount: rawStateFee, stateName: order.state },
       successPath: "/order-success",
       cancelPath: "/order/checkout",
       orderId: order.orderId || undefined,
