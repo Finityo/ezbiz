@@ -9,12 +9,15 @@ const ACCEPTED = ["application/pdf", "image/jpeg", "image/png"];
 const ACCEPTED_LABEL = ".pdf, .jpg, .png (max 10 MB)";
 
 interface Props {
+  /** Order owner's user_id — used as the first folder segment for RLS path matching. */
   userId: string;
   orderId: string;
+  /** Who is doing the upload. Defaults to 'customer' for backwards compatibility. */
+  actor?: "customer" | "admin";
   onUploaded?: () => void;
 }
 
-const DocumentUploader: React.FC<Props> = ({ userId, orderId, onUploaded }) => {
+const DocumentUploader: React.FC<Props> = ({ userId, orderId, actor = "customer", onUploaded }) => {
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
