@@ -40,6 +40,7 @@ serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const defaultRecipientRaw = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
+    const defaultCcRaw = Deno.env.get('ACCOUNT_MANAGER_CC_EMAIL') || '';
 
     if (!defaultRecipientRaw) {
       console.error('ACCOUNT_MANAGER_EMAIL is not configured');
@@ -64,6 +65,7 @@ serve(async (req) => {
       return out;
     };
     const defaultRecipients = parseRecipients(defaultRecipientRaw);
+    const defaultCcRecipients = parseRecipients(defaultCcRaw);
     if (defaultRecipients.length === 0) {
       console.error('ACCOUNT_MANAGER_EMAIL contains no valid addresses');
       return new Response(JSON.stringify({ error: 'Service not configured' }), {
@@ -71,7 +73,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const defaultRecipient = defaultRecipients.join(', ');
 
     const admin = createClient(supabaseUrl, serviceKey);
 
