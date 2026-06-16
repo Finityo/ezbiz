@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { KeyRound, CheckCircle } from 'lucide-react';
+// Note: post-recovery redirect honors sessionStorage('postAuthRedirect')
+// set by Auth.tsx "Forgot Password?" when the user came from /order-flow.
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -54,18 +56,39 @@ const ResetPassword = () => {
       setLoading(false);
     } else {
       setSuccess(true);
-      setTimeout(() => navigate('/admin/login'), 3000);
+      // Honor a stashed post-auth path (e.g. user started password reset from
+      // /order-flow). Falls back to /dashboard so customers aren't dumped at
+      // an admin login screen.
+      let dest = '/dashboard';
+      try {
+        const stashed = sessionStorage.getItem('postAuthRedirect');
+        if (stashed && stashed.startsWith('/') && !stashed.startsWith('//')) {
+          dest = stashed;
+        }
+        sessionStorage.removeItem('postAuthRedirect');
+      } catch {
+        /* sessionStorage unavailable — fall through to /dashboard */
+      }
+      setTimeout(() => navigate(dest), 2500);
     }
   };
 
   if (success) {
+    const stashed = (() => {
+      try { return sessionStorage.getItem('postAuthRedirect'); } catch { return null; }
+    })();
+    const resumeLabel = stashed && stashed.startsWith('/order') ? 'Continue your order' : 'Go to dashboard';
+    const resumeHref = stashed && stashed.startsWith('/') && !stashed.startsWith('//') ? stashed : '/dashboard';
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
           <CardContent className="pt-8 pb-8 space-y-4">
             <CheckCircle className="w-12 h-12 text-primary mx-auto" />
             <h2 className="text-xl font-semibold">Password Updated!</h2>
-            <p className="text-muted-foreground">Redirecting you to login...</p>
+            <p className="text-muted-foreground">Redirecting you now...</p>
+            <Button onClick={() => { try { sessionStorage.removeItem('postAuthRedirect'); } catch {} navigate(resumeHref); }} className="w-full">
+              {resumeLabel}
+            </Button>
           </CardContent>
         </Card>
       </div>
