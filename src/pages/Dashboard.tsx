@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
-import DocumentUploader from "@/components/dashboard/DocumentUploader";
+import OrderDocuments from "@/components/dashboard/OrderDocuments";
 import WaiverDocumentUpload from "@/components/dashboard/WaiverDocumentUpload";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 import { openOrderDocument } from "@/lib/openOrderDocument";
@@ -756,61 +756,14 @@ export default function Dashboard() {
                     <RefreshCw className="h-3 w-3 mr-1" /> Refresh
                   </Button>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <DocumentUploader
-                    userId={user!.id}
+                <CardContent>
+                  <OrderDocuments
+                    ownerUserId={user!.id}
                     orderId={data.order.id}
-                    onUploaded={loadDashboard}
+                    viewer="customer"
+                    initialDocuments={data.documents as any}
+                    onChanged={loadDashboard}
                   />
-                  {data.documents.length === 0 ? (
-                    <div className="text-center py-10 space-y-3">
-                      <FolderOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-                      <p className="text-sm font-medium text-muted-foreground">No documents yet</p>
-                      <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                        As your order moves forward, approved filings, confirmations, and supporting
-                        documents will appear here.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="divide-y">
-                      {data.documents.map(doc => (
-                        <div key={doc.id} className="flex items-center justify-between py-3 gap-4">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground truncate">
-                              {(doc.document_type || "Document").replace(/_/g, " ")}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Uploaded {formatDate(doc.uploaded_at)}
-                            </p>
-                          </div>
-                          <div>
-                            {doc.file_url ? (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={async () => {
-                                  const res = await openOrderDocument(doc.file_url);
-                                  if (!res.ok) {
-                                    toast({
-                                      title: "Couldn't open document",
-                                      description: res.error || "Please try again.",
-                                      variant: "destructive",
-                                    });
-                                  }
-                                }}
-                              >
-                                <Download className="h-3 w-3 mr-1" /> Open
-                              </Button>
-                            ) : (
-                              <Badge variant="secondary" className="text-xs">
-                                Pending
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 

@@ -9,12 +9,15 @@ const ACCEPTED = ["application/pdf", "image/jpeg", "image/png"];
 const ACCEPTED_LABEL = ".pdf, .jpg, .png (max 10 MB)";
 
 interface Props {
+  /** Order owner's user_id — used as the first folder segment for RLS path matching. */
   userId: string;
   orderId: string;
+  /** Who is doing the upload. Defaults to 'customer' for backwards compatibility. */
+  actor?: "customer" | "admin";
   onUploaded?: () => void;
 }
 
-const DocumentUploader: React.FC<Props> = ({ userId, orderId, onUploaded }) => {
+const DocumentUploader: React.FC<Props> = ({ userId, orderId, actor = "customer", onUploaded }) => {
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -43,16 +46,20 @@ const DocumentUploader: React.FC<Props> = ({ userId, orderId, onUploaded }) => {
 
       const { error: dbErr } = await supabase.from("documents").insert({
         order_id: orderId,
-        document_type: "customer_upload",
+        document_type: actor === "admin" ? "admin_upload" : "customer_upload",
         file_url: path,
-      });
+        uploaded_by: actor,
+        // The uploader has already "seen" their own doc; flag the other side as unseen → "NEW" badge.
+        seen_by_customer: actor === "customer",
+        seen_by_admin: actor === "admin",
+      } as any);
       if (dbErr) throw dbErr;
 
       // Audit
       await supabase.from("order_events").insert({
         order_id: orderId,
-        event_type: "customer_document_uploaded",
-        actor: "customer",
+        event_type: actor === "admin" ? "admin_document_uploaded" : "customer_document_uploaded",
+        actor,
         metadata: { file_name: file.name, size: file.size, mime: file.type } as any,
       });
 

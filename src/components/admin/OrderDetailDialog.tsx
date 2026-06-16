@@ -13,6 +13,7 @@ import {
   CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send, Download,
 } from 'lucide-react';
 import { openOrderDocument } from '@/lib/openOrderDocument';
+import OrderDocuments from '@/components/dashboard/OrderDocuments';
 
 interface OrderDetailDialogProps {
   orderId: string;
@@ -470,32 +471,19 @@ const OrderDetailDialog = ({ orderId, companyName, onUpdated }: OrderDetailDialo
                 </ReadOnlySection>
               )}
 
-              {/* ── Documents (read-only) ── */}
-              {detail.documents.length > 0 && (
-                <ReadOnlySection icon={FileText} title={`Documents (${detail.documents.length})`}>
-                  {detail.documents.map((d, i) => (
-                    <div key={d.id} className={i > 0 ? 'pt-2 border-t border-border mt-2' : ''}>
-                      <ReadField label="Type" value={d.document_type} />
-                      <div className="flex justify-between items-center gap-4">
-                        <span className="text-muted-foreground">File</span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={async () => {
-                            const res = await openOrderDocument(d.file_url);
-                            if (!res.ok) {
-                              toast({ title: "Couldn't open document", description: res.error || 'Please try again.', variant: 'destructive' });
-                            }
-                          }}
-                        >
-                          <Download className="h-3 w-3 mr-1" /> Open
-                        </Button>
-                      </div>
-                      <ReadField label="Uploaded" value={d.uploaded_at ? new Date(d.uploaded_at).toLocaleString() : null} />
-                    </div>
-                  ))}
-                </ReadOnlySection>
-              )}
+              {/* ── Documents (shared component, identical to customer dashboard) ── */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <FileText className="h-4 w-4 text-primary" /> Documents
+                </h3>
+                <OrderDocuments
+                  ownerUserId={detail.order?.user_id}
+                  orderId={orderId}
+                  viewer="admin"
+                  initialDocuments={detail.documents as any}
+                  onChanged={() => fetchDetails(true)}
+                />
+              </div>
 
               <Separator />
 
