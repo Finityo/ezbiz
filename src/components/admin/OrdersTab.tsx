@@ -433,9 +433,15 @@ const OrdersTab = () => {
               <SelectTrigger><SelectValue placeholder="Filter by status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="all_leads">All Leads (intake + pending + abandoned)</SelectItem>
+                <SelectItem value="intake_started">Intake Started</SelectItem>
                 <SelectItem value="pending_payment">Pending Payment</SelectItem>
+                <SelectItem value="checkout_abandoned">Checkout Abandoned</SelectItem>
+                <SelectItem value="waiver_documents_pending">Waiver Documents Pending</SelectItem>
+                <SelectItem value="waiver_documents_submitted">Waiver Documents Submitted</SelectItem>
+                <SelectItem value="waiver_under_review">Waiver Under Review</SelectItem>
+                <SelectItem value="waiver_needs_correction">Waiver Needs Correction</SelectItem>
+                <SelectItem value="waiver_approved_payment_required">Waiver Approved — Payment</SelectItem>
                 <SelectItem value="payment_complete">Payment Complete</SelectItem>
                 <SelectItem value="in_processing">In Processing</SelectItem>
                 <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
