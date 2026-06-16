@@ -547,13 +547,8 @@ const EnhancedOrderFlow = () => {
                 : `Complete your order in ${steps.length} simple steps${mode === "whiteglove" ? " (White Glove)" : " (Guided)"}`}
             </p>
 
-            </div>
-            <p className="text-center text-muted-foreground mb-6">
-              Complete your order in {steps.length} simple steps
-              {mode === "whiteglove" ? " (White Glove)" : " (Guided)"}
-            </p>
-
             <OrderStepIndicator currentStep={currentStep} steps={steps} />
+
 
             {/* Running Total Bar (steps 2+) */}
             {currentStep >= 2 && selectedPackage && (
