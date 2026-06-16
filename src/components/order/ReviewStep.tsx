@@ -50,7 +50,7 @@ const ReviewStep = ({
   state,
   entityType,
   selectedPackage,
-  billableAddOns,
+  selectedAddOns,
   addonQuantities,
   businessDetails,
   processingSpeed = "standard",
