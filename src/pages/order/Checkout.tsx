@@ -284,11 +284,6 @@ export default function Checkout() {
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex justify-between items-center pt-2">
-            <Button variant="outline" onClick={() => navigate("/order/terms")} disabled={loading}>
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back
-            </Button>
           {/* Waiver pending → block payment to match the backend guard. */}
           {waiver.isLocked && (
             <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-900 dark:text-amber-200 flex items-start gap-2">
