@@ -40,6 +40,7 @@ serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const defaultRecipientRaw = Deno.env.get('ACCOUNT_MANAGER_EMAIL');
+    const defaultCcRaw = Deno.env.get('ACCOUNT_MANAGER_CC_EMAIL') || '';
 
     if (!defaultRecipientRaw) {
       console.error('ACCOUNT_MANAGER_EMAIL is not configured');
@@ -64,6 +65,7 @@ serve(async (req) => {
       return out;
     };
     const defaultRecipients = parseRecipients(defaultRecipientRaw);
+    const defaultCcRecipients = parseRecipients(defaultCcRaw);
     if (defaultRecipients.length === 0) {
       console.error('ACCOUNT_MANAGER_EMAIL contains no valid addresses');
       return new Response(JSON.stringify({ error: 'Service not configured' }), {
@@ -71,7 +73,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const defaultRecipient = defaultRecipients.join(', ');
 
     const admin = createClient(supabaseUrl, serviceKey);
 
@@ -114,6 +115,10 @@ serve(async (req) => {
       isManual && typeof body?.recipient_override === 'string' && body.recipient_override.trim()
         ? body.recipient_override.trim()
         : null;
+    const ccOverride =
+      isManual && typeof body?.cc_override === 'string' && body.cc_override.trim()
+        ? body.cc_override.trim()
+        : null;
     // Admin-only test hook: force the handoff to fail synthetically so the
     // failure-handling branch (orders.account_manager_email_status='failed' +
     // order_events 'account_manager_handoff_failed') can be integration tested.
@@ -148,7 +153,14 @@ serve(async (req) => {
     const recipients = recipientOverride
       ? parseRecipients(recipientOverride)
       : defaultRecipients;
+    // CC recipients are de-duped against primary recipients (case-insensitive)
+    // so the same address can't appear in both To and Cc.
+    const ccSourceRaw = ccOverride !== null ? ccOverride : defaultCcRaw;
+    const ccRecipientsRaw = parseRecipients(ccSourceRaw);
+    const primarySet = new Set(recipients.map((r) => r.toLowerCase()));
+    const ccRecipients = ccRecipientsRaw.filter((r) => !primarySet.has(r.toLowerCase()));
     const recipient = recipients.join(', ');
+    const ccRecipient = ccRecipients.join(', ');
     const triggeredBy = isManual ? 'admin' : 'webhook';
 
     const results: HandoffResult[] = [];
@@ -159,6 +171,8 @@ serve(async (req) => {
         orderId,
         recipients,
         recipient,
+        ccRecipients,
+        ccRecipient,
         actor,
         isManual,
         triggeredBy,
@@ -167,6 +181,7 @@ serve(async (req) => {
       });
       results.push(result);
     }
+
 
     const allOk = results.every((r) => r.ok || r.skipped);
     return new Response(
@@ -187,13 +202,16 @@ async function processOne(opts: {
   orderId: string;
   recipients: string[];
   recipient: string;
+  ccRecipients: string[];
+  ccRecipient: string;
   actor: string;
   isManual: boolean;
   triggeredBy: 'admin' | 'webhook';
   forceFailure?: string | null;
   deliveryMode: 'attachment' | 'link';
 }): Promise<HandoffResult> {
-  const { admin, orderId, recipients, recipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+  const { admin, orderId, recipients, recipient, ccRecipients, ccRecipient, actor, isManual, triggeredBy, forceFailure, deliveryMode } = opts;
+
 
   try {
     const { data: order, error: orderErr } = await admin
@@ -330,13 +348,19 @@ async function processOne(opts: {
     if (deliveryMode === 'link') {
       // Route through Lovable's verified queue (notify.ezbiz-fs.com).
       // Queue accepts a single recipient per send, so loop the recipient list.
+      // CC recipients are sent individually as well so they receive the link;
+      // they are tracked separately in metadata.
       const idemKeyBase = `am-handoff-link-${orderId}-${Date.now()}`;
       const supabaseUrlEnv = Deno.env.get('SUPABASE_URL')!;
       const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
       let lastMessageId: string | null = null;
-      for (let i = 0; i < recipients.length; i++) {
-        const to = recipients[i];
-        const idemKey = `${idemKeyBase}-${i}`;
+      const allLinkTargets: Array<{ to: string; role: 'to' | 'cc' }> = [
+        ...recipients.map((to) => ({ to, role: 'to' as const })),
+        ...ccRecipients.map((to) => ({ to, role: 'cc' as const })),
+      ];
+      for (let i = 0; i < allLinkTargets.length; i++) {
+        const { to, role } = allLinkTargets[i];
+        const idemKey = `${idemKeyBase}-${role}-${i}`;
         const queueResp = await fetch(
           `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
           {
@@ -357,7 +381,7 @@ async function processOne(opts: {
         const queueBodyText = await queueResp.text();
         if (!queueResp.ok) {
           console.error(
-            `send-transactional-email ${queueResp.status} for ${orderId} → ${to}: ${queueBodyText}`,
+            `send-transactional-email ${queueResp.status} for ${orderId} → ${to} (${role}): ${queueBodyText}`,
           );
           throw new Error(
             `Lovable queue ${queueResp.status} (${to}): ${queueBodyText.slice(0, 500)}`,
@@ -368,6 +392,7 @@ async function processOne(opts: {
         lastMessageId = queueJson?.messageId || queueJson?.id || idemKey;
       }
       messageId = lastMessageId;
+
     } else {
 
       // Attachment mode — Resend send via the Lovable connector gateway.
@@ -406,6 +431,10 @@ async function processOne(opts: {
           },
         ],
       };
+      if (ccRecipients.length > 0) {
+        resendPayload.cc = ccRecipients;
+      }
+
       const resendResp = await fetch('https://connector-gateway.lovable.dev/resend/emails', {
         method: 'POST',
         headers: {
@@ -470,6 +499,9 @@ async function processOne(opts: {
       actor,
       metadata: {
         recipient,
+        recipients,
+        cc_recipient: ccRecipient || null,
+        cc_recipients: ccRecipients,
         csv_path: objectPath,
         csv_filename: `order-${orderId}.csv`,
         triggered_by: triggeredBy,
@@ -479,6 +511,7 @@ async function processOne(opts: {
         new_status: newStatus,
         sent_at: new Date().toISOString(),
       },
+
     });
 
     return {
@@ -506,9 +539,13 @@ async function processOne(opts: {
       actor,
       metadata: {
         recipient,
+        recipients,
+        cc_recipient: ccRecipient || null,
+        cc_recipients: ccRecipients,
         triggered_by: triggeredBy,
         failed_at: new Date().toISOString(),
         error_message: errorMessage,
+
       },
     });
 
