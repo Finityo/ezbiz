@@ -60,11 +60,17 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
       return; // Form validation handles this visually
     }
     setLoading(true);
-    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
+    const { error, alreadyExists } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
     setLoading(false);
-    // Do NOT advance — user must verify email first. The "Already logged in"
-    // branch above will render the VerifyEmailNotice once the session is set.
     if (error) return;
+    // Repeated signup on an existing confirmed account — no email is sent.
+    // Pre-fill sign-in tab and switch the user there.
+    if (alreadyExists) {
+      setSignInData({ email: signUpData.email, password: "" });
+      setTab("signin");
+      return;
+    }
+    // New unconfirmed user: VerifyEmailNotice will render once the session is set.
   };
 
   const handleSignIn = async () => {
