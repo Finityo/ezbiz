@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
-import DocumentUploader from "@/components/dashboard/DocumentUploader";
+import OrderDocuments from "@/components/dashboard/OrderDocuments";
 import WaiverDocumentUpload from "@/components/dashboard/WaiverDocumentUpload";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 import { openOrderDocument } from "@/lib/openOrderDocument";
