@@ -27,6 +27,16 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
     color: "bg-muted text-muted-foreground",
     icon: Clock
   },
+  intake_started: {
+    label: "Intake Started",
+    color: "bg-slate-200 text-slate-800",
+    icon: Clock
+  },
+  checkout_abandoned: {
+    label: "Checkout Abandoned",
+    color: "bg-rose-500 text-white",
+    icon: AlertCircle
+  },
   pending_payment: {
     label: "Payment Pending",
     color: "bg-amber-500 text-white",
