@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: any; alreadyExists?: boolean }>;
+  signUp: (email: string, password: string, firstName?: string, lastName?: string, segment?: 'veteran' | 'standard') => Promise<{ error: any; alreadyExists?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -48,8 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
+  const signUp = async (email: string, password: string, firstName?: string, lastName?: string, segment?: 'veteran' | 'standard') => {
+    // Veterans land directly on their document vault after email verification.
+    const redirectPath = segment === 'veteran' ? '/dashboard#documents' : '/dashboard';
+    const redirectUrl = `${window.location.origin}${redirectPath}`;
 
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -59,6 +61,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: {
           first_name: firstName,
           last_name: lastName,
+          // Persist customer segment in user_metadata so post-login routing
+          // can send returning veterans straight to their Order Documents.
+          ...(segment ? { customer_segment: segment } : {}),
         }
       }
     });

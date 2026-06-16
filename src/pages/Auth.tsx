@@ -24,16 +24,33 @@ const Auth = () => {
   const location = useLocation();
 
   const resolveDestination = async (userId?: string) => {
-    const fallback = location.state?.from?.pathname || '/dashboard';
-    if (!userId) return fallback;
-    const { data } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .eq('role', 'admin')
+    // 1. Explicit ?redirect= wins (used by segment landing pages, deep links).
+    const params = new URLSearchParams(location.search);
+    const redirectParam = params.get("redirect");
+    if (redirectParam && redirectParam.startsWith("/")) return redirectParam;
+
+    // 2. Route the user was originally trying to reach (protected route bounce).
+    const from = location.state?.from?.pathname as string | undefined;
+    if (from) return from;
+
+    if (!userId) return "/dashboard";
+
+    // 3. Admins go to /admin.
+    const { data: adminRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
       .maybeSingle();
-    if (location.state?.from?.pathname) return fallback;
-    return data ? '/admin' : '/dashboard';
+    if (adminRow) return "/admin";
+
+    // 4. Veterans (tagged at signup in user_metadata.customer_segment) land
+    //    on their Order Documents area inside the dashboard.
+    const { data: { user: current } } = await supabase.auth.getUser();
+    const segment = (current?.user_metadata as any)?.customer_segment;
+    if (segment === "veteran") return "/dashboard#documents";
+
+    return "/dashboard";
   };
 
   // Redirect if already authenticated
