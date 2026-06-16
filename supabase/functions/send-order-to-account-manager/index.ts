@@ -348,13 +348,19 @@ async function processOne(opts: {
     if (deliveryMode === 'link') {
       // Route through Lovable's verified queue (notify.ezbiz-fs.com).
       // Queue accepts a single recipient per send, so loop the recipient list.
+      // CC recipients are sent individually as well so they receive the link;
+      // they are tracked separately in metadata.
       const idemKeyBase = `am-handoff-link-${orderId}-${Date.now()}`;
       const supabaseUrlEnv = Deno.env.get('SUPABASE_URL')!;
       const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
       let lastMessageId: string | null = null;
-      for (let i = 0; i < recipients.length; i++) {
-        const to = recipients[i];
-        const idemKey = `${idemKeyBase}-${i}`;
+      const allLinkTargets: Array<{ to: string; role: 'to' | 'cc' }> = [
+        ...recipients.map((to) => ({ to, role: 'to' as const })),
+        ...ccRecipients.map((to) => ({ to, role: 'cc' as const })),
+      ];
+      for (let i = 0; i < allLinkTargets.length; i++) {
+        const { to, role } = allLinkTargets[i];
+        const idemKey = `${idemKeyBase}-${role}-${i}`;
         const queueResp = await fetch(
           `${supabaseUrlEnv}/functions/v1/send-transactional-email`,
           {
@@ -375,7 +381,7 @@ async function processOne(opts: {
         const queueBodyText = await queueResp.text();
         if (!queueResp.ok) {
           console.error(
-            `send-transactional-email ${queueResp.status} for ${orderId} → ${to}: ${queueBodyText}`,
+            `send-transactional-email ${queueResp.status} for ${orderId} → ${to} (${role}): ${queueBodyText}`,
           );
           throw new Error(
             `Lovable queue ${queueResp.status} (${to}): ${queueBodyText.slice(0, 500)}`,
@@ -386,6 +392,7 @@ async function processOne(opts: {
         lastMessageId = queueJson?.messageId || queueJson?.id || idemKey;
       }
       messageId = lastMessageId;
+
     } else {
 
       // Attachment mode — Resend send via the Lovable connector gateway.
