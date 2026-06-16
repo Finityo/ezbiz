@@ -216,6 +216,64 @@ const EnhancedOrderFlow = () => {
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // ── Phase Five: lead/intake autosave ────────────────────────────────
+  // Persists wizard progress as `orders.status='intake_started'` so we
+  // capture abandoned funnels. Disabled while resuming an existing
+  // application (avoids racing with the resume hydration). The same
+  // orderId is reused by saveOrderToDb at checkout (update-in-place).
+  const draftDisabled = !!resumeApplicationId || !!applicationId;
+  const { draftId, ensureDraft, patchDraft, clearDraft } = useOrderDraft(user, {
+    disabled: draftDisabled,
+  });
+  useEffect(() => {
+    if (draftId && !orderId) setOrderId(draftId);
+  }, [draftId, orderId]);
+  useEffect(() => {
+    if (draftDisabled || !user) return;
+    if (!selectedState) return; // wait for first meaningful signal
+    const includedAddOns = selectedAddOns.filter((id) =>
+      isAddonIncludedInPackage(selectedPackage, id),
+    );
+    const billableAddOns = selectedAddOns.filter(
+      (id) => !isAddonIncludedInPackage(selectedPackage, id),
+    );
+    patchDraft({
+      filing_path: filingPath ?? "standard",
+      entity_type: selectedEntity || null,
+      package: selectedPackage || null,
+      package_id: selectedPackage || null,
+      state: selectedState || null,
+      state_fee: stateFee || null,
+      total_amount: runningTotal(),
+      current_step: currentStep,
+      source_path: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
+      add_ons: {
+        selectedAddOns,
+        addonQuantities,
+        includedAddOns,
+        billableAddOns,
+        businessName: businessDetails.businessName
+          ? `${businessDetails.businessName} ${businessDetails.designator}`.trim()
+          : null,
+        contactFirstName: businessDetails.contactFirstName || null,
+        contactLastName: businessDetails.contactLastName || null,
+        contactPhone: businessDetails.contactPhone || null,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    user,
+    draftDisabled,
+    filingPath,
+    selectedEntity,
+    selectedPackage,
+    selectedState,
+    selectedAddOns,
+    addonQuantities,
+    currentStep,
+    businessDetails,
+  ]);
+
   // ── RESUME REHYDRATION ────────────────────────────────────────────────
   // When a customer clicks "Continue to Payment" from the dashboard after
   // a waiver review, the URL carries ?applicationId=… (and optionally
