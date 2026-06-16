@@ -25,6 +25,9 @@ interface Order {
   state_fee: number | null;
   created_at: string | null;
   updated_at: string | null;
+  last_activity_at?: string | null;
+  filing_path?: string | null;
+  current_step?: number | null;
   account_manager_sent_at?: string | null;
   account_manager_sent_to?: string | null;
   account_manager_email_status?: string | null;
