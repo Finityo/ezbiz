@@ -17,6 +17,7 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
   const { user, signIn, signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [tab, setTab] = useState<"signup" | "signin">("signup");
 
   // Sign Up state
   const [signUpData, setSignUpData] = useState({
