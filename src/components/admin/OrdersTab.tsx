@@ -379,7 +379,7 @@ const OrdersTab = () => {
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Pending Payment</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'Pending Payment').length}</div></CardContent>
+          <CardContent><div className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'pending_payment' || o.status === 'Pending Payment').length}</div></CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Payment Complete</CardTitle></CardHeader>
