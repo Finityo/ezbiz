@@ -87,7 +87,7 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
 
   return (
     <div className="max-w-md mx-auto">
-      <Tabs defaultValue="signup" className="space-y-6">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "signup" | "signin")} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signup" className="flex items-center gap-2">
             <UserPlus className="h-4 w-4" /> Create Account
