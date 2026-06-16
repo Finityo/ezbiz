@@ -314,21 +314,30 @@ export type Database = {
           file_url: string
           id: string
           order_id: string
+          seen_by_admin: boolean
+          seen_by_customer: boolean
           uploaded_at: string
+          uploaded_by: string
         }
         Insert: {
           document_type: string
           file_url: string
           id?: string
           order_id: string
+          seen_by_admin?: boolean
+          seen_by_customer?: boolean
           uploaded_at?: string
+          uploaded_by?: string
         }
         Update: {
           document_type?: string
           file_url?: string
           id?: string
           order_id?: string
+          seen_by_admin?: boolean
+          seen_by_customer?: boolean
           uploaded_at?: string
+          uploaded_by?: string
         }
         Relationships: [
           {
