@@ -56,9 +56,28 @@ serve(async (req) => {
     }
 
     if (orderIds.length === 0) {
-      return new Response(JSON.stringify({ error: 'No orders found' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 404,
+      // Return an empty file (200) instead of 404 so the admin UI handles it gracefully.
+      const dateStr = new Date().toISOString().split('T')[0];
+      if (format === 'xlsx') {
+        const bytes = await buildOrderXlsx(supabaseClient as any, []);
+        return new Response(bytes, {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="corpnet-orders-${dateStr}-empty.xlsx"`,
+            'X-Empty-Export': 'true',
+          },
+          status: 200,
+        });
+      }
+      return new Response('', {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'text/csv',
+          'Content-Disposition': `attachment; filename="corpnet-orders-${dateStr}-empty.csv"`,
+          'X-Empty-Export': 'true',
+        },
+        status: 200,
       });
     }
 
