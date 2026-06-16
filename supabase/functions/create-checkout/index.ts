@@ -252,15 +252,45 @@ serve(async (req) => {
 
     let finalOrderId = orderId;
 
+    // ── WAIVER GUARD ──────────────────────────────────────────────────
+    // If this order is on the Texas Veteran Waiver track, the state fee
+    // may only be removed AFTER admin approval. Server is source of truth.
+    let effectiveStateFee = stateFee;
+    if (orderId) {
+      const { data: appRow } = await dbClient
+        .from("business_applications")
+        .select("status, application_data")
+        .or(`id.eq.${orderId},application_data->>orderId.eq.${orderId}`)
+        .maybeSingle();
+      const appData = (appRow?.application_data ?? {}) as Record<string, unknown>;
+      const isWaiverPath = appData.filingPath === "texas_veteran_waiver";
+      if (isWaiverPath) {
+        const approved =
+          appRow?.status === "waiver_approved_payment_required" &&
+          appData.waivedStateFee === true;
+        const rejected = appRow?.status === "waiver_not_approved_standard_checkout_required";
+        if (approved) {
+          effectiveStateFee = { amount: 0, stateName: (stateFee?.stateName) || "TX" };
+        } else if (!rejected) {
+          return new Response(
+            JSON.stringify({ error: "Waiver review is still in progress. Checkout is unavailable until your waiver is approved or rejected." }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+          );
+        }
+        // rejected → fall through with standard state fee
+      }
+    }
+
     // Build the orders payload, including any enrichment passed from the order flow.
     const ordersPayload: Record<string, unknown> = {
       package_id: activeLineItems[0]?.priceId,
-      state_fee: isSmokeTest ? 0 : (stateFee?.amount || 0),
+      state_fee: isSmokeTest ? 0 : (effectiveStateFee?.amount || 0),
       status: "Pending Payment",
     };
     if (orderEnrichment?.entityType) ordersPayload.entity_type = orderEnrichment.entityType;
     if (orderEnrichment?.packageLabel) ordersPayload.package = orderEnrichment.packageLabel;
     if (applicationId && !isSmokeTest) ordersPayload.application_id = applicationId;
+
 
     if (orderId) {
       await dbClient.from("orders").update(ordersPayload).eq("id", orderId);

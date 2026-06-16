@@ -1,6 +1,8 @@
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect } from "react";
-import { useSearchParams, Navigate } from "react-router-dom";
+import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import FilingPathStep from "@/components/order/FilingPathStep";
+
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import type { AddonQuantities } from "@/components/order/AddOnServices";
@@ -44,26 +46,40 @@ const steps = ["State", "Package", "Details", "Account", "Review"];
 
 const CORP_ENTITIES = ["c-corp", "s-corp", "nonprofit", "professional-corp"];
 
+export type FilingPath = "standard" | "texas_veteran_waiver";
+
 const EnhancedOrderFlow = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const mode: OrderMode = normalizeMode(searchParams.get("mode"));
 
+  // Filing-path selector. Driven by URL (?path=) so the choice survives reloads
+  // and so direct links from CTAs (e.g. /order-flow?path=texas_veteran_waiver)
+  // skip the picker.
+  const urlPath = searchParams.get("path");
+  const initialFilingPath: FilingPath | null =
+    urlPath === "texas_veteran_waiver" ? "texas_veteran_waiver"
+    : urlPath === "standard" ? "standard"
+    : null;
+  const [filingPath, setFilingPath] = useState<FilingPath | null>(initialFilingPath);
+  const isWaiver = filingPath === "texas_veteran_waiver";
+
   // Guard: in guided mode the URL MUST include a valid package param.
-  // This prevents any page from dropping users into a generic pricing flow
-  // by linking to /order-flow without a plan.
+  // Waiver path picks its package inside the wizard, so don't bounce to /pricing.
   const rawPackage = searchParams.get("package");
   const isValidPackage =
     !!rawPackage && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, rawPackage);
-  const requiresPackage = mode !== "whiteglove";
-  const missingPackage = requiresPackage && !isValidPackage;
+  const requiresPackage = mode !== "whiteglove" && !isWaiver;
+  const missingPackage = requiresPackage && !isValidPackage && filingPath !== null;
 
   useEffect(() => {
     if (missingPackage) {
       toast.error("Please choose a package to start your order.");
     }
   }, [missingPackage]);
+
 
   useEffect(() => {
     const raw = searchParams.get("mode");
@@ -75,12 +91,16 @@ const EnhancedOrderFlow = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedState, setSelectedState] = useState(searchParams.get("state") || "");
+  // Waiver path skips the state step (TX locked) and starts at Package.
+  const [currentStep, setCurrentStep] = useState(isWaiver ? 2 : 1);
+  const [selectedState, setSelectedState] = useState(
+    isWaiver ? "TX" : (searchParams.get("state") || "")
+  );
   const [selectedEntity, setSelectedEntity] = useState(searchParams.get("entity") || "llc");
   const [selectedPackage, setSelectedPackage] = useState(searchParams.get("package") || "");
-  const [isVeteran, setIsVeteran] = useState(false);
-  const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(false);
+  const [isVeteran, setIsVeteran] = useState(isWaiver);
+  const [isFormedInTexas2022, setIsFormedInTexas2022] = useState(isWaiver);
+
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>(() => {
     const raw = searchParams.get("addons");
     if (!raw) return [];
@@ -165,6 +185,11 @@ const EnhancedOrderFlow = () => {
   const goNext = () => {
     if (currentStep === 2) trackFormStart("order_business_details");
     if (currentStep === 3 && user) {
+      // Already logged in: waiver → create draft + dashboard, standard → Review
+      if (isWaiver) {
+        void handleWaiverDraftAndRedirect();
+        return;
+      }
       setCurrentStep(5);
     } else {
       setCurrentStep((s) => Math.min(s + 1, 5));
@@ -173,9 +198,12 @@ const EnhancedOrderFlow = () => {
   };
 
   const goBack = () => {
-    setCurrentStep((s) => Math.max(s - 1, 1));
+    // Waiver path starts at step 2 — don't let users drop back into the locked-TX state step
+    const min = isWaiver ? 2 : 1;
+    setCurrentStep((s) => Math.max(s - 1, min));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   const handleToggleAddon = (addonId: string) => {
     setSelectedAddOns((prev) =>
@@ -314,10 +342,173 @@ const EnhancedOrderFlow = () => {
     return await saveOrderToDb();
   };
 
+  /**
+   * WAIVER PATH: persist a draft order + business_applications row marked
+   * `waiver_documents_pending` and bounce the user to the dashboard to
+   * upload their TVC letter + Form 05-904. Checkout is intentionally NOT
+   * triggered here — the state fee can only be waived after admin approval,
+   * verified server-side in the create-checkout edge function.
+   */
+  const handleWaiverDraftAndRedirect = async () => {
+    if (!user) {
+      setCurrentStep(4);
+      return;
+    }
+    try {
+      const total = runningTotal();
+      const fullBusinessName = `${businessDetails.businessName} ${businessDetails.designator}`.trim();
+      const originalStateFee = stateFee || 300;
+
+      const { data: orderRow, error: orderErr } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          entity_type: selectedEntity,
+          package: selectedPackage,
+          package_id: selectedPackage,
+          state: "TX",
+          state_fee: originalStateFee,
+          total_amount: total,
+          filing_speed: processingSpeed,
+          ein_service: selectedAddOns.includes("ein"),
+          status: "waiver_documents_pending",
+        })
+        .select("id")
+        .single();
+      if (orderErr) throw orderErr;
+      const newOrderId = orderRow!.id as string;
+      setOrderId(newOrderId);
+
+      // Best-effort normalized writes (mirrors saveOrderToDb)
+      await Promise.all([
+        supabase.from("business_information").insert({
+          order_id: newOrderId,
+          company_name: fullBusinessName,
+          alternate_company_name: businessDetails.alternateName || null,
+          business_purpose: businessDetails.businessPurpose || null,
+          business_description: businessDetails.businessDescription || null,
+          organizer_type: businessDetails.organizerType || null,
+          delayed_filing: !!businessDetails.delayedFiling,
+        }),
+        supabase.from("contact_information").insert({
+          order_id: newOrderId,
+          first_name: businessDetails.contactFirstName || null,
+          last_name: businessDetails.contactLastName || null,
+          email: user.email || null,
+          phone: businessDetails.contactPhone || null,
+        }),
+        supabase.from("addresses").insert({
+          order_id: newOrderId,
+          type: "business",
+          address1: businessDetails.address || null,
+          city: businessDetails.city || null,
+          state: "TX",
+          zip: businessDetails.zipCode || null,
+          country: "US",
+        }),
+      ]);
+
+      const { data: appRow, error: appErr } = await supabase
+        .from("business_applications")
+        .insert([{
+          user_id: user.id,
+          business_name: fullBusinessName,
+          business_type: selectedEntity,
+          state: "TX",
+          status: "waiver_documents_pending",
+          application_data: {
+            filingPath: "texas_veteran_waiver",
+            package: selectedPackage,
+            addOns: selectedAddOns,
+            addonQuantities,
+            businessDetails,
+            originalStateFee,
+            waivedStateFee: false,
+            estimatedTotal: total,
+            paymentStatus: "pending",
+            source: "order-flow",
+            orderId: newOrderId,
+          } as any,
+        }])
+        .select("id")
+        .single();
+      if (appErr) throw appErr;
+      const newAppId = appRow!.id as string;
+      setApplicationId(newAppId);
+
+      await supabase.from("orders").update({ application_id: newAppId }).eq("id", newOrderId);
+      await supabase.from("order_events").insert({
+        order_id: newOrderId,
+        event_type: "waiver_draft_created",
+        actor: "customer",
+        metadata: { application_id: newAppId, filingPath: "texas_veteran_waiver" } as any,
+      });
+
+      toast.success("Draft saved. Please upload your waiver documents in your dashboard.");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Failed to save waiver draft:", err);
+      toast.error("Couldn't save your waiver draft. Please try again.");
+    }
+  };
+
+  const handleAccountComplete = () => {
+    if (isWaiver) {
+      void handleWaiverDraftAndRedirect();
+    } else {
+      setCurrentStep(5);
+    }
+  };
+
+
+
   // Hard guard: bounce to /pricing when guided flow is opened without a valid package.
   if (missingPackage) {
     return <Navigate to="/pricing" replace />;
   }
+
+  // Filing-path picker (Step 0) — only when the user hasn't chosen yet AND
+  // didn't deep-link with ?package=… (legacy entry points still go straight
+  // through the Standard flow for back-compat).
+  const showFilingPathPicker =
+    filingPath === null && !isValidPackage && mode !== "whiteglove";
+  if (showFilingPathPicker) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SEOHead title="Choose Filing Path" description="Choose your business formation path." path="/order-flow" noIndex />
+        <Navigation />
+        <div className="flex-grow bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="container mx-auto px-4 py-10">
+            <div className="max-w-3xl mx-auto">
+              <FilingPathStep
+                onSelect={(path) => {
+                  if (path === "standard") {
+                    // Standard flow picks package on /pricing
+                    navigate("/pricing");
+                  } else {
+                    // Waiver: lock filingPath + TX, drop user into Package step
+                    const next = new URLSearchParams(searchParams);
+                    next.set("path", "texas_veteran_waiver");
+                    next.set("state", "TX");
+                    setSearchParams(next, { replace: true });
+                    setFilingPath("texas_veteran_waiver");
+                    setSelectedState("TX");
+                    setIsVeteran(true);
+                    setIsFormedInTexas2022(true);
+                    setCurrentStep(2);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -344,13 +535,21 @@ const EnhancedOrderFlow = () => {
                   <><MessageCircle className="h-3 w-3 mr-1" /> Guided</>
                 )}
               </Badge>
+              {isWaiver && (
+                <Badge className="bg-secondary/20 text-secondary border-secondary/40">
+                  🇺🇸 Texas Veteran Waiver
+                </Badge>
+              )}
             </div>
             <p className="text-center text-muted-foreground mb-6">
-              Complete your order in {steps.length} simple steps
-              {mode === "whiteglove" ? " (White Glove)" : " (Guided)"}
+              {isWaiver
+                ? "Pick your package and details — we'll review your waiver documents before any payment."
+                : `Complete your order in ${steps.length} simple steps${mode === "whiteglove" ? " (White Glove)" : " (Guided)"}`}
             </p>
 
             <OrderStepIndicator currentStep={currentStep} steps={steps} />
+
+
 
             {/* Running Total Bar (steps 2+) */}
             {currentStep >= 2 && selectedPackage && (
@@ -562,7 +761,7 @@ const EnhancedOrderFlow = () => {
                     <h2 className="text-xl sm:text-2xl font-semibold mb-2">Create Your Account</h2>
                     <p className="text-muted-foreground">Sign up to track your order progress</p>
                   </div>
-                  <AccountStep onAuthenticated={() => setCurrentStep(5)} />
+                  <AccountStep onAuthenticated={handleAccountComplete} />
                   <div className="flex justify-start">
                     <Button onClick={goBack} variant="outline">Back</Button>
                   </div>
