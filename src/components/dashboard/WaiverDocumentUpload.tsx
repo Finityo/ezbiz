@@ -156,7 +156,12 @@ const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNot
             <Button
               size="lg"
               className="w-full"
-              onClick={() => navigate("/order-flow?resume=1")}
+              onClick={() =>
+                navigate(
+                  `/order-flow?applicationId=${applicationId ?? ""}&orderId=${orderId}`,
+                )
+              }
+              disabled={!applicationId}
             >
               <CreditCard className="h-4 w-4 mr-2" /> Continue to Payment
             </Button>
@@ -182,7 +187,12 @@ const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNot
               size="lg"
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/order-flow?resume=1")}
+              onClick={() =>
+                navigate(
+                  `/order-flow?applicationId=${applicationId ?? ""}&orderId=${orderId}`,
+                )
+              }
+              disabled={!applicationId}
             >
               <Lock className="h-4 w-4 mr-2" /> Continue to Standard Checkout
             </Button>
