@@ -144,7 +144,7 @@ const OrdersTab = () => {
 
   const PAYABLE_HANDOFF_STATUSES = new Set([
     'payment_complete',
-    'In Processing',
+    'in_processing',
     'ready_for_submission',
     'submitted_to_corpnet',
     'processing',
@@ -345,7 +345,9 @@ const OrdersTab = () => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
       case 'in_progress': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
+      case 'pending_payment': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
       case 'payment_complete': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'in_processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'ready_for_submission': return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300';
       case 'submitted_to_corpnet': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'processing': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
@@ -377,7 +379,7 @@ const OrdersTab = () => {
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Pending Payment</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'Pending Payment').length}</div></CardContent>
+          <CardContent><div className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'pending_payment' || o.status === 'Pending Payment').length}</div></CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Payment Complete</CardTitle></CardHeader>
@@ -406,8 +408,9 @@ const OrdersTab = () => {
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="draft">Draft</SelectItem>
                 <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="Pending Payment">Pending Payment</SelectItem>
+                <SelectItem value="pending_payment">Pending Payment</SelectItem>
                 <SelectItem value="payment_complete">Payment Complete</SelectItem>
+                <SelectItem value="in_processing">In Processing</SelectItem>
                 <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
                 <SelectItem value="submitted_to_corpnet">Submitted to CorpNet</SelectItem>
                 <SelectItem value="processing">Processing</SelectItem>
@@ -546,17 +549,18 @@ const OrdersTab = () => {
                       <TableCell>{order.package || '—'}</TableCell>
                       <TableCell>{order.total_amount != null ? `$${Number(order.total_amount).toFixed(2)}` : '—'}</TableCell>
                       <TableCell>
-                        <Select value={order.status || 'Pending Payment'} onValueChange={v => updateOrderStatus(order.id, v)}>
+                        <Select value={order.status || 'pending_payment'} onValueChange={v => updateOrderStatus(order.id, v)}>
                           <SelectTrigger className="w-40">
                             <SelectValue>
-                              <Badge className={getStatusColor(order.status)}>{order.status || 'Pending Payment'}</Badge>
+                              <Badge className={getStatusColor(order.status)}>{order.status || 'pending_payment'}</Badge>
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="draft">Draft</SelectItem>
                             <SelectItem value="in_progress">In Progress</SelectItem>
-                            <SelectItem value="Pending Payment">Pending Payment</SelectItem>
+                            <SelectItem value="pending_payment">Pending Payment</SelectItem>
                             <SelectItem value="payment_complete">Payment Complete</SelectItem>
+                            <SelectItem value="in_processing">In Processing</SelectItem>
                             <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
                             <SelectItem value="submitted_to_corpnet">Submitted to CorpNet</SelectItem>
                             <SelectItem value="processing">Processing</SelectItem>

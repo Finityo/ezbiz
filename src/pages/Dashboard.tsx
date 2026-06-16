@@ -102,6 +102,7 @@ const STATUS_STEPS = [
   "in_progress",
   "pending_payment",
   "payment_complete",
+  "in_processing",
   "ready_for_submission",
   "submitted_to_corpnet",
   "processing",
@@ -115,6 +116,8 @@ const statusLabelMap: Record<string, string> = {
   pending_payment: "Pending Payment",
   "Pending Payment": "Pending Payment",
   payment_complete: "Payment Complete",
+  in_processing: "In Processing",
+  "In Processing": "In Processing",
   ready_for_submission: "Ready for Submission",
   submitted_to_corpnet: "Submitted to CorpNet",
   processing: "Processing",
@@ -129,6 +132,8 @@ const statusToneMap: Record<string, string> = {
   pending_payment: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
   "Pending Payment": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
   payment_complete: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+  in_processing: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  "In Processing": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   ready_for_submission: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
   submitted_to_corpnet: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   processing: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
@@ -701,6 +706,7 @@ export default function Dashboard() {
                               {step === "in_progress" && "Intake is being completed and saved."}
                               {step === "pending_payment" && "Payment is still needed before the order can move forward."}
                               {step === "payment_complete" && "Payment is complete and the order is ready for review."}
+                              {step === "in_processing" && "Your account manager has the order and is moving it into filing."}
                               {step === "ready_for_submission" && "Order data is complete and staged for filing submission."}
                               {step === "submitted_to_corpnet" && "The order has been passed into the filing pipeline."}
                               {step === "processing" && "The filing is currently being processed."}

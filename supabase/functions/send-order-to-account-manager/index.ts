@@ -445,7 +445,7 @@ async function processOne(opts: {
     if (previousStatus === 'payment_complete') {
       const { data: upd } = await admin
         .from('orders')
-        .update({ status: 'In Processing' })
+        .update({ status: 'in_processing' })
         .eq('id', orderId)
         .eq('status', 'payment_complete')
         .select('status')
