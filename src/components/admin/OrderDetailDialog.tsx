@@ -10,8 +10,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   Eye, Loader2, Building2, User, MapPin, Users, Shield, FileText,
-  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send,
+  CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send, Download,
 } from 'lucide-react';
+import { openOrderDocument } from '@/lib/openOrderDocument';
 
 interface OrderDetailDialogProps {
   orderId: string;
