@@ -11,9 +11,11 @@ import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 
 interface AccountStepProps {
   onAuthenticated: () => void;
+  /** Tags the new user with a customer_segment in auth metadata. */
+  segment?: "veteran" | "standard";
 }
 
-const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
+const AccountStep = ({ onAuthenticated, segment }: AccountStepProps) => {
   const { user, signIn, signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
@@ -60,7 +62,7 @@ const AccountStep = ({ onAuthenticated }: AccountStepProps) => {
       return; // Form validation handles this visually
     }
     setLoading(true);
-    const { error, alreadyExists } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName);
+    const { error, alreadyExists } = await signUp(signUpData.email, signUpData.password, signUpData.firstName, signUpData.lastName, segment);
     setLoading(false);
     if (error) return;
     // Repeated signup on an existing confirmed account — no email is sent.
