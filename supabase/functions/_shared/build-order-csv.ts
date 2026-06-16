@@ -74,6 +74,19 @@ export async function buildOrderCsv(
     supabase.from('agreements').select('*').in('order_id', orderIds),
   ]);
 
+  // Phase Three: join business_applications to surface waiver context and
+  // package entitlement details. application_id lives on the orders row.
+  const applicationIds = ((orders.data || []) as any[])
+    .map((o: any) => o.application_id)
+    .filter((v: unknown): v is string => typeof v === 'string' && v.length > 0);
+  const appsRes = applicationIds.length
+    ? await supabase
+        .from('business_applications')
+        .select('id, status, application_data')
+        .in('id', applicationIds)
+    : { data: [] as any[] };
+  const appMap = new Map((appsRes.data || []).map((a: any) => [a.id, a]));
+
   const contactMap = new Map((contacts.data || []).map((c: any) => [c.order_id, c]));
   const bizMap = new Map((bizInfo.data || []).map((b: any) => [b.order_id, b]));
   const businessAddrMap = new Map(
