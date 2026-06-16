@@ -431,11 +431,17 @@ const AdminDashboard = () => {
               <span className="hidden sm:inline">Applications</span>
               <span className="sm:hidden">Apps</span>
             </TabsTrigger>
+            <TabsTrigger value="waivers" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Waivers</span>
+              <span className="sm:hidden">Waivr</span>
+            </TabsTrigger>
             <TabsTrigger value="white-glove" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
               <HandHelping className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">White Glove</span>
               <span className="sm:hidden">WG</span>
             </TabsTrigger>
+
             <TabsTrigger value="feedback" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
               <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Feedback</span>
