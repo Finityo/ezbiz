@@ -137,6 +137,57 @@ const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNot
             Your documents are with our team. We'll notify you when the review is complete.
           </div>
         )}
+
+        {/* Waiver APPROVED → payment unlocked, Texas state fee removed. */}
+        {isApproved && (
+          <div className="rounded-md border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-700 mt-0.5" />
+              <div>
+                <p className="font-semibold text-emerald-900 dark:text-emerald-200">
+                  Waiver approved — payment unlocked
+                </p>
+                <p className="text-sm text-emerald-800 dark:text-emerald-300 mt-1">
+                  Texas state filing fee waived after document approval ($0.00). Your final total
+                  will exclude the $300 state fee.
+                </p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => navigate("/order-flow?resume=1")}
+            >
+              <CreditCard className="h-4 w-4 mr-2" /> Continue to Payment
+            </Button>
+          </div>
+        )}
+
+        {/* Waiver REJECTED → standard checkout with full state fee. */}
+        {isRejected && (
+          <div className="rounded-md border border-rose-300 bg-rose-50 dark:bg-rose-900/20 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 text-rose-700 mt-0.5" />
+              <div>
+                <p className="font-semibold text-rose-900 dark:text-rose-200">
+                  Waiver not approved
+                </p>
+                <p className="text-sm text-rose-800 dark:text-rose-300 mt-1">
+                  You can still complete your filing through standard checkout. The Texas state
+                  filing fee ($300) will apply.
+                </p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/order-flow?resume=1")}
+            >
+              <Lock className="h-4 w-4 mr-2" /> Continue to Standard Checkout
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
