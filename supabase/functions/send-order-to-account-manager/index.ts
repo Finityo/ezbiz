@@ -431,6 +431,10 @@ async function processOne(opts: {
           },
         ],
       };
+      if (ccRecipients.length > 0) {
+        resendPayload.cc = ccRecipients;
+      }
+
       const resendResp = await fetch('https://connector-gateway.lovable.dev/resend/emails', {
         method: 'POST',
         headers: {
