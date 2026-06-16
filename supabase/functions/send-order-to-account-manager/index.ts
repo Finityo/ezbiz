@@ -115,6 +115,10 @@ serve(async (req) => {
       isManual && typeof body?.recipient_override === 'string' && body.recipient_override.trim()
         ? body.recipient_override.trim()
         : null;
+    const ccOverride =
+      isManual && typeof body?.cc_override === 'string' && body.cc_override.trim()
+        ? body.cc_override.trim()
+        : null;
     // Admin-only test hook: force the handoff to fail synthetically so the
     // failure-handling branch (orders.account_manager_email_status='failed' +
     // order_events 'account_manager_handoff_failed') can be integration tested.
@@ -149,7 +153,14 @@ serve(async (req) => {
     const recipients = recipientOverride
       ? parseRecipients(recipientOverride)
       : defaultRecipients;
+    // CC recipients are de-duped against primary recipients (case-insensitive)
+    // so the same address can't appear in both To and Cc.
+    const ccSourceRaw = ccOverride !== null ? ccOverride : defaultCcRaw;
+    const ccRecipientsRaw = parseRecipients(ccSourceRaw);
+    const primarySet = new Set(recipients.map((r) => r.toLowerCase()));
+    const ccRecipients = ccRecipientsRaw.filter((r) => !primarySet.has(r.toLowerCase()));
     const recipient = recipients.join(', ');
+    const ccRecipient = ccRecipients.join(', ');
     const triggeredBy = isManual ? 'admin' : 'webhook';
 
     const results: HandoffResult[] = [];
@@ -160,6 +171,8 @@ serve(async (req) => {
         orderId,
         recipients,
         recipient,
+        ccRecipients,
+        ccRecipient,
         actor,
         isManual,
         triggeredBy,
@@ -168,6 +181,7 @@ serve(async (req) => {
       });
       results.push(result);
     }
+
 
     const allOk = results.every((r) => r.ok || r.skipped);
     return new Response(
