@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DocumentUploader from "@/components/dashboard/DocumentUploader";
 import { useToast } from "@/hooks/use-toast";
-import { ShieldCheck, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { ShieldCheck, FileText, CheckCircle2, AlertCircle, CreditCard, Lock } from "lucide-react";
 
 interface Props {
   userId: string;
@@ -23,6 +24,9 @@ const REQUIRED_DOCS = [
 
 const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNote, onRefresh }: Props) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const isApproved = status === "waiver_approved_payment_required";
+  const isRejected = status === "waiver_not_approved_standard_checkout_required";
   const [docs, setDocs] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -131,6 +135,57 @@ const WaiverDocumentUpload = ({ userId, orderId, applicationId, status, adminNot
         {readOnly && (
           <div className="rounded-md bg-muted/50 p-3 text-sm">
             Your documents are with our team. We'll notify you when the review is complete.
+          </div>
+        )}
+
+        {/* Waiver APPROVED → payment unlocked, Texas state fee removed. */}
+        {isApproved && (
+          <div className="rounded-md border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-700 mt-0.5" />
+              <div>
+                <p className="font-semibold text-emerald-900 dark:text-emerald-200">
+                  Waiver approved — payment unlocked
+                </p>
+                <p className="text-sm text-emerald-800 dark:text-emerald-300 mt-1">
+                  Texas state filing fee waived after document approval ($0.00). Your final total
+                  will exclude the $300 state fee.
+                </p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => navigate("/order-flow?resume=1")}
+            >
+              <CreditCard className="h-4 w-4 mr-2" /> Continue to Payment
+            </Button>
+          </div>
+        )}
+
+        {/* Waiver REJECTED → standard checkout with full state fee. */}
+        {isRejected && (
+          <div className="rounded-md border border-rose-300 bg-rose-50 dark:bg-rose-900/20 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 text-rose-700 mt-0.5" />
+              <div>
+                <p className="font-semibold text-rose-900 dark:text-rose-200">
+                  Waiver not approved
+                </p>
+                <p className="text-sm text-rose-800 dark:text-rose-300 mt-1">
+                  You can still complete your filing through standard checkout. The Texas state
+                  filing fee ($300) will apply.
+                </p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/order-flow?resume=1")}
+            >
+              <Lock className="h-4 w-4 mr-2" /> Continue to Standard Checkout
+            </Button>
           </div>
         )}
       </CardContent>

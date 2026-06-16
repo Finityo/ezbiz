@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { useWaiverPricing, getEffectiveStateFee } from "@/hooks/useWaiverPricing";
 import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, type PackageType, type AddonId, getStripeLineItems, calculateOrderTotal } from "@/lib/pricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -13,7 +14,7 @@ import OrderProgressBar from "@/components/order/OrderProgressBar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard,
+  Lock, ArrowLeft, Loader2, Building2, User, MapPin, FileText, CreditCard, ShieldCheck,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
@@ -34,11 +35,17 @@ export default function Checkout() {
 
   const pkg = PACKAGE_PRICES[order.packageId as PackageType];
   const isCorpType = CORP_ENTITIES.includes(order.entityType);
-  const stateFee = order.state
+  const rawStateFee = order.state
     ? isCorpType
       ? getCorpStateFee(order.state)
       : getStateFee(order.state)
     : 0;
+
+  // Waiver-aware display. Backend re-verifies in create-checkout before
+  // Stripe is ever called, so this only governs the on-screen estimate.
+  const waiver = useWaiverPricing(order.orderId);
+  const stateFee = getEffectiveStateFee(rawStateFee, waiver);
+  const stateFeeWaived = waiver.isApproved && rawStateFee > 0;
 
   const speedConfig = PROCESSING_PRICES[order.processingSpeed || "standard"];
   const processingFee = speedConfig?.price || 0;
@@ -65,7 +72,9 @@ export default function Checkout() {
     trackCheckoutStart(pkg?.name || order.packageId, total);
 
     await checkout(lineItems, {
-      stateFee: { amount: stateFee, stateName: order.state },
+      // Backend will re-derive effectiveStateFee from the application row;
+      // we send the raw fee so a tampered client cannot under-charge.
+      stateFee: { amount: rawStateFee, stateName: order.state },
       successPath: "/order-success",
       cancelPath: "/order/checkout",
       orderId: order.orderId || undefined,
@@ -220,8 +229,18 @@ export default function Checkout() {
 
               <div className="flex justify-between text-sm">
                 <span>{order.state || "State"} Filing Fee</span>
-                <span>${formatPrice(stateFee)}</span>
+                {stateFeeWaived ? (
+                  <span className="font-medium text-success">$0.00</span>
+                ) : (
+                  <span>${formatPrice(stateFee)}</span>
+                )}
               </div>
+              {stateFeeWaived && (
+                <p className="text-xs text-success flex items-center gap-1 -mt-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Texas state filing fee waived after document approval.
+                </p>
+              )}
 
               {processingFee > 0 && (
                 <div className="flex justify-between text-sm">
@@ -265,14 +284,32 @@ export default function Checkout() {
             </div>
           )}
 
+          {/* Waiver pending → block payment to match the backend guard. */}
+          {waiver.isLocked && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-900 dark:text-amber-200 flex items-start gap-2">
+              <ShieldCheck className="h-4 w-4 mt-0.5" />
+              <p>
+                Your Texas Veteran Waiver is still under review. Checkout will unlock once a
+                reviewer approves or rejects your submitted documents.
+              </p>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex justify-between items-center pt-2">
             <Button variant="outline" onClick={() => navigate("/order/terms")} disabled={loading}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            <Button onClick={handleCheckout} disabled={loading} size="lg" className="min-w-[200px]">
+            <Button
+              onClick={handleCheckout}
+              disabled={loading || waiver.loading || waiver.isLocked}
+              size="lg"
+              className="min-w-[200px]"
+            >
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
+              ) : waiver.isLocked ? (
+                <><Lock className="h-4 w-4 mr-2" /> Awaiting Waiver Review</>
               ) : (
                 <><Lock className="h-4 w-4 mr-2" /> Pay ${formatPrice(total)}</>
               )}

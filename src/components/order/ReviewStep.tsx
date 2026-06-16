@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
 import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
 import { filterBillableAddons } from "@/lib/package-config";
+import { useWaiverPricing, getEffectiveStateFee } from "@/hooks/useWaiverPricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { trackCheckoutStart } from "@/lib/analytics";
@@ -32,6 +33,8 @@ interface ReviewStepProps {
   processingSpeed?: ProcessingType;
   mode?: OrderMode;
   serviceDetails?: ServiceDetails;
+  /** Existing orders.id when resuming a draft (e.g. Texas Veteran Waiver after approval). */
+  orderId?: string | null;
   onEdit: (step: number) => void;
   onCheckoutStarted: () => Promise<{ orderId: string | null; applicationId: string | null }> | { orderId: string | null; applicationId: string | null };
 }
@@ -56,10 +59,14 @@ const ReviewStep = ({
   processingSpeed = "standard",
   mode = "guided",
   serviceDetails,
+  orderId,
   onEdit,
   onCheckoutStarted,
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
+  // Waiver-aware display. Backend remains the source of truth and re-derives
+  // effectiveStateFee in create-checkout — this only governs the on-screen estimate.
+  const waiver = useWaiverPricing(orderId);
 
   // Defense-in-depth: never bill for add-ons that are already bundled into the package.
   // The selector also blocks selection, but we re-filter here so a stale localStorage
@@ -68,11 +75,13 @@ const ReviewStep = ({
 
   const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
   const isCorpType = CORP_ENTITIES.includes(entityType);
-  const stateFee = state
+  const rawStateFee = state
     ? isCorpType
       ? getCorpStateFee(state)
       : getStateFee(state)
     : 0;
+  const stateFee = getEffectiveStateFee(rawStateFee, waiver);
+  const stateFeeWaived = waiver.isApproved && rawStateFee > 0;
 
   const speedConfig = PROCESSING_PRICES[processingSpeed];
   const speedFee = speedConfig?.price || 0;
@@ -107,7 +116,9 @@ const ReviewStep = ({
     trackCheckoutStart(pkg?.name || selectedPackage, total);
 
     await checkout(lineItems, {
-      stateFee: { amount: stateFee, stateName: state },
+      // Send the raw state fee — backend re-derives effectiveStateFee from
+      // the application status so a tampered client can't under-charge.
+      stateFee: { amount: rawStateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
       cancelPath: `/order-flow?mode=${mode}`,
       orderId: orderIdResolved,
@@ -303,8 +314,17 @@ const ReviewStep = ({
         )}
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
-          <span>${formatPrice(stateFee)}</span>
+          {stateFeeWaived ? (
+            <span className="font-medium text-success">$0.00</span>
+          ) : (
+            <span>${formatPrice(stateFee)}</span>
+          )}
         </div>
+        {stateFeeWaived && (
+          <p className="text-xs text-success -mt-1">
+            Texas state filing fee waived after document approval.
+          </p>
+        )}
 
         {speedFee > 0 && (
           <div className="flex justify-between text-sm">
@@ -344,9 +364,24 @@ const ReviewStep = ({
         </div>
       )}
 
-      <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
+      {waiver.isLocked && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-900 dark:text-amber-200">
+          Your Texas Veteran Waiver is still under review. Checkout will unlock once a reviewer
+          approves or rejects your submitted documents.
+        </div>
+      )}
+      <Button
+        onClick={handleCheckout}
+        disabled={loading || waiver.loading || waiver.isLocked}
+        className="w-full"
+        size="lg"
+      >
         <Lock className="h-4 w-4 mr-2" />
-        {loading ? "Processing..." : "Proceed to Stripe Checkout"}
+        {loading
+          ? "Processing..."
+          : waiver.isLocked
+          ? "Awaiting Waiver Review"
+          : "Proceed to Stripe Checkout"}
       </Button>
       <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
         <Lock className="h-3 w-3" /> Secure payment powered by Stripe
