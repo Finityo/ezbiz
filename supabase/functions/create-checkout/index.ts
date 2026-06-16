@@ -387,15 +387,17 @@ serve(async (req) => {
       stripeLineItems.push({ price: item.priceId, quantity: qty });
     }
 
-    if (!isSmokeTest && stateFee && stateFee.amount > 0) {
+    // State filing fee line — use effectiveStateFee so an approved Texas Veteran
+    // Waiver actually removes the line item from Stripe (server is source of truth).
+    if (!isSmokeTest && effectiveStateFee && effectiveStateFee.amount > 0) {
       stripeLineItems.push({
         price_data: {
           currency: "usd",
           product_data: {
-            name: `${stateFee.stateName || "State"} Filing Fee`,
-            description: `Government filing fee for ${stateFee.stateName || "your state"}`,
+            name: `${effectiveStateFee.stateName || "State"} Filing Fee`,
+            description: `Government filing fee for ${effectiveStateFee.stateName || "your state"}`,
           },
-          unit_amount: Math.round(stateFee.amount * 100),
+          unit_amount: Math.round(effectiveStateFee.amount * 100),
         },
         quantity: 1,
       });
