@@ -13,6 +13,7 @@ import {
   CreditCard, Clock, Gavel, Settings, Pencil, Save, X, Plus, MessageSquare, Trash2, Send, Download,
 } from 'lucide-react';
 import { openOrderDocument } from '@/lib/openOrderDocument';
+import OrderDocuments from '@/components/dashboard/OrderDocuments';
 
 interface OrderDetailDialogProps {
   orderId: string;
