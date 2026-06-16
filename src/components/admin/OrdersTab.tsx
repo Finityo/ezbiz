@@ -611,6 +611,7 @@ const OrdersTab = () => {
                           : '—'}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">{getNextAction(order.status)}</TableCell>
+                      <TableCell className="text-sm">{order.created_at ? new Date(order.created_at).toLocaleDateString() : '—'}</TableCell>
                       <TableCell className="min-w-[120px]">
                         <div className="flex gap-1 flex-nowrap">
                           <OrderDetailDialog orderId={order.id} companyName={biz?.company_name || undefined} />
