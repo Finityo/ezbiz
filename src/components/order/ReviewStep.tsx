@@ -75,11 +75,13 @@ const ReviewStep = ({
 
   const pkg = PACKAGE_PRICES[selectedPackage as PackageType];
   const isCorpType = CORP_ENTITIES.includes(entityType);
-  const stateFee = state
+  const rawStateFee = state
     ? isCorpType
       ? getCorpStateFee(state)
       : getStateFee(state)
     : 0;
+  const stateFee = getEffectiveStateFee(rawStateFee, waiver);
+  const stateFeeWaived = waiver.isApproved && rawStateFee > 0;
 
   const speedConfig = PROCESSING_PRICES[processingSpeed];
   const speedFee = speedConfig?.price || 0;
