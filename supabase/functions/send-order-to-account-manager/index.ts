@@ -394,6 +394,12 @@ async function processOne(opts: {
         html,
         attachments: [
           {
+            filename: xlsxFilename,
+            content: xlsxBase64,
+            content_type:
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          },
+          {
             filename: csvFilename,
             content: csvBase64,
             content_type: 'text/csv',
