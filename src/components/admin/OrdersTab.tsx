@@ -538,6 +538,8 @@ const OrdersTab = () => {
                   <TableHead>Package</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Last Activity</TableHead>
+                  <TableHead>Next Action</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
