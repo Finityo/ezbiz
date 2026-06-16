@@ -592,8 +592,10 @@ const OrdersTab = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="intake_started">Intake Started</SelectItem>
                             <SelectItem value="in_progress">In Progress</SelectItem>
                             <SelectItem value="pending_payment">Pending Payment</SelectItem>
+                            <SelectItem value="checkout_abandoned">Checkout Abandoned</SelectItem>
                             <SelectItem value="payment_complete">Payment Complete</SelectItem>
                             <SelectItem value="in_processing">In Processing</SelectItem>
                             <SelectItem value="ready_for_submission">Ready for Submission</SelectItem>
