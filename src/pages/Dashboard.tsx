@@ -33,6 +33,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import DocumentUploader from "@/components/dashboard/DocumentUploader";
+import WaiverDocumentUpload from "@/components/dashboard/WaiverDocumentUpload";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 
 /* ─── Types ─── */
