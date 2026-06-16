@@ -21,12 +21,15 @@ interface OrderStatusUpdateProps {
 
 const STATUS_MESSAGES: Record<string, { label: string; body: string }> = {
   draft: { label: 'Order Received', body: 'Your order has been received and is being prepared.' },
+  pending_payment: { label: 'Payment Pending', body: 'Your order is saved. Complete checkout to move it into processing.' },
   processing: { label: 'Processing', body: 'Your formation has entered processing. Our team is preparing your documents.' },
   payment_complete: { label: 'Payment Confirmed', body: 'We received your payment and are preparing your filing.' },
+  in_processing: { label: 'In Processing', body: 'Your order is with our account manager and moving into the filing pipeline.' },
   submitted: { label: 'Submitted to State', body: 'Your formation paperwork has been submitted to the state.' },
   state_processing: { label: 'State Processing', body: 'The state is now processing your filing.' },
   filed: { label: 'Officially Filed', body: 'Your business has officially been filed. Documents are being prepared.' },
   completed: { label: 'Complete', body: 'Your formation is complete. All documents are available in your dashboard.' },
+  cancelled: { label: 'Order Cancelled', body: 'This order has been cancelled. Contact us if this was unexpected.' },
 }
 
 const OrderStatusUpdateEmail = ({
