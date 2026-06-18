@@ -57,25 +57,24 @@ function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUplo
 
     setUploading(true);
     try {
-      const filePath = `orders/${orderId}/${Date.now()}_${file.name}`;
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+      // Store under admin/<orderId>/... ; persist the STORAGE PATH only.
+      // openOrderDocument() generates a short-lived (60s) signed URL on demand at click time.
+      const filePath = `admin/${orderId}/${Date.now()}_${safeName}`;
       const { error: storageError } = await supabase.storage
         .from('order-documents')
-        .upload(filePath, file);
+        .upload(filePath, file, { contentType: file.type, upsert: false });
 
       if (storageError) throw storageError;
-
-      // Use signed URL since bucket is private
-      const { data: signedData, error: signError } = await supabase.storage
-        .from('order-documents')
-        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
-
-      if (signError) throw signError;
 
       const { error: dbError } = await supabase.from('documents').insert({
         order_id: orderId,
         document_type: file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' '),
-        file_url: signedData.signedUrl,
-      });
+        file_url: filePath, // storage key only — never a signed URL
+        uploaded_by: 'admin',
+        seen_by_admin: true,
+        seen_by_customer: false,
+      } as any);
 
       if (dbError) throw dbError;
 
@@ -84,7 +83,7 @@ function DocumentUploadDialog({ orderId, onUploaded }: { orderId: string; onUplo
         order_id: orderId,
         event_type: 'document_uploaded',
         actor: 'admin',
-        metadata: { file_name: file.name },
+        metadata: { file_name: file.name, size: file.size, mime: file.type },
       });
 
       toast({ title: 'Uploaded', description: `${file.name} uploaded successfully.` });
