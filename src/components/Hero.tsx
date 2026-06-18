@@ -127,6 +127,7 @@ export default function Hero() {
                 trackHeroPath("learn_first");
                 trackLearnClick();
                 trackClick("Learn First", "hero_learn_first", "/business-guide");
+                navigate("/business-guide");
               }}
               className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 font-semibold rounded-lg hover:bg-muted transition cursor-pointer w-full sm:w-auto"
             >
