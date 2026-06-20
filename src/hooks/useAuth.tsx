@@ -35,6 +35,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // One-shot: when an email is newly confirmed, stamp the active
+        // draft order so the dashboard + flight control show ✓ and log
+        // an `email_confirmed` event. Idempotent — we only write when
+        // the active draft is still missing the timestamp.
+        const u = session?.user;
+        if (event === "SIGNED_IN" && u?.email_confirmed_at) {
+          const orderId =
+            typeof window !== "undefined"
+              ? window.localStorage.getItem("ezbiz_active_order_id")
+              : null;
+          if (orderId) {
+            (async () => {
+              const { data: row } = await supabase
+                .from("orders")
+                .select("id, email_confirmed_at")
+                .eq("id", orderId)
+                .maybeSingle();
+              if (row && !(row as any).email_confirmed_at) {
+                await supabase
+                  .from("orders")
+                  .update({ email_confirmed_at: new Date().toISOString() })
+                  .eq("id", orderId);
+                await supabase.from("order_events").insert({
+                  order_id: orderId,
+                  event_type: "email_confirmed",
+                  actor: "customer",
+                  metadata: { email: u.email } as any,
+                });
+              }
+            })();
+          }
+        }
       }
     );
 
