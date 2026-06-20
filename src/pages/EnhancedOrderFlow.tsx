@@ -291,6 +291,9 @@ const EnhancedOrderFlow = () => {
       veteranPromptedRef.current = true;
       setWaiverDialogOpen(true);
     }
+    if (veteranWaiverApplied && filingPath !== "texas_veteran_waiver") {
+      setFilingPath("texas_veteran_waiver");
+    }
     if (veteranWaiverApplied && !veteranEligibleLoggedRef.current) {
       veteranEligibleLoggedRef.current = true;
       trackEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
@@ -304,7 +307,7 @@ const EnhancedOrderFlow = () => {
     if (!veteranWaiverApplied) {
       veteranEligibleLoggedRef.current = false;
     }
-  }, [veteranWaiverApplied, logEvent, selectedState, veteranWaiverAmount]);
+  }, [veteranWaiverApplied, filingPath, logEvent, selectedState, veteranWaiverAmount]);
 
   useEffect(() => {
     if (user || !selectedState) return;
