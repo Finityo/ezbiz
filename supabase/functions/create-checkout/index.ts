@@ -427,6 +427,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: stripeLineItems,
       mode: "payment",
+      currency: "usd",
       ...(applicationId && !isSmokeTest ? { client_reference_id: applicationId } : {}),
       metadata: {
         orderId: finalOrderId,
