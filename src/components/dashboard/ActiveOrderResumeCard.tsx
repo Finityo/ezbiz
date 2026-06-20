@@ -133,7 +133,7 @@ export default function ActiveOrderResumeCard({ order }: { order: ActiveOrderSum
             <div>
               <p className="text-xs uppercase text-muted-foreground">Status</p>
               <p className="font-semibold capitalize">
-                {(order.status ?? "draft").replaceAll("_", " ")}
+                {(order.status ?? "draft").replace(/_/g, " ")}
               </p>
             </div>
             <div>

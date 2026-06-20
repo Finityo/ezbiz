@@ -261,7 +261,7 @@ export default function FlightControlTab() {
                       <TableCell>{r.current_step ?? 0}/5</TableCell>
                       <TableCell>
                         <Badge className={STATUS_TONE[r.status ?? ""] ?? "bg-muted text-foreground"}>
-                          {(r.status ?? "draft").replaceAll("_", " ")}
+                          {(r.status ?? "draft").replace(/_/g, " ")}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
