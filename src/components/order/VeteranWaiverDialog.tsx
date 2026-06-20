@@ -26,7 +26,7 @@ const VeteranWaiverDialog = ({
 }: VeteranWaiverDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg" data-testid="veteran-waiver-dialog">
         <DialogHeader>
           <div className="mx-auto mb-3 rounded-full bg-success/10 p-3 w-fit">
             <FileBadge2 className="h-7 w-7 text-success" />

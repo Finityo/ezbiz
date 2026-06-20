@@ -36,6 +36,7 @@ export const ACTIVE_ORDER_KEY = "ezbiz_active_order_id";
 export const PENDING_DRAFT_KEY = "ezbiz_pending_draft";
 
 export interface PendingDraft {
+  filing_path?: string;
   package?: string;
   selected_addons?: string[];
   selected_state?: string;

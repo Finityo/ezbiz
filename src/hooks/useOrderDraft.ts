@@ -150,6 +150,26 @@ export function useOrderDraft(
             had_pending_draft: !!pending,
           } as any,
         });
+        const pendingEvents = [] as Array<{ order_id: string; event_type: OrderEventType; actor: "customer"; metadata: Record<string, unknown> }>;
+        if (pending?.veteran_eligible) {
+          pendingEvents.push({
+            order_id: data.id,
+            event_type: "veteran_eligible",
+            actor: "customer",
+            metadata: { state: pending.selected_state ?? null, waiver_amount: pending.veteran_waiver_amount ?? null },
+          });
+        }
+        if (pending?.vvl_pdf_downloaded) {
+          pendingEvents.push({
+            order_id: data.id,
+            event_type: "vvl_pdf_downloaded",
+            actor: "customer",
+            metadata: { source: "pending_draft_flush" },
+          });
+        }
+        if (pendingEvents.length) {
+          await supabase.from("order_events").insert(pendingEvents as any);
+        }
         // Flush the pending anonymous draft now that it lives in the DB.
         if (pending) clearPendingDraft();
         flushedRef.current = true;

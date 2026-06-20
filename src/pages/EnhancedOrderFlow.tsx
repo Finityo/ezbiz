@@ -33,6 +33,7 @@ import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 import { isAddonIncludedInPackage } from "@/lib/package-config";
 import { useOrderDraft } from "@/hooks/useOrderDraft";
 import VeteranWaiverDialog from "@/components/order/VeteranWaiverDialog";
+import { writePendingDraft } from "@/lib/orderEvents";
 
 export type OrderMode = "guided" | "whiteglove";
 
@@ -156,7 +157,8 @@ const EnhancedOrderFlow = () => {
   // formed on/after Jan 1, 2022. Centralized here so totals, draft, and
   // admin all stay in sync.
   const veteranEligible = isVeteran && isFormedInTexas2022;
-  const veteranWaiverApplied = veteranEligible && selectedState === "TX";
+  const isTexasFormationState = selectedState === "TX" || selectedState === "Texas";
+  const veteranWaiverApplied = veteranEligible && isTexasFormationState;
   const veteranWaiverAmount = veteranWaiverApplied ? 300 : 0;
 
   const runningTotal = () => {
@@ -260,7 +262,7 @@ const EnhancedOrderFlow = () => {
   // application (avoids racing with the resume hydration). The same
   // orderId is reused by saveOrderToDb at checkout (update-in-place).
   const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
-  const { draftId, ensureDraft, patchDraft, logEvent, clearDraft } = useOrderDraft(user, {
+  const { draftId, ensureDraft, patchDraft, logEvent } = useOrderDraft(user, {
     disabled: draftDisabled,
   });
   useEffect(() => {
@@ -282,13 +284,68 @@ const EnhancedOrderFlow = () => {
   const [waiverDialogOpen, setWaiverDialogOpen] = useState(false);
   const [vvlDownloaded, setVvlDownloaded] = useState(false);
   const veteranPromptedRef = useRef(false);
+  const veteranEligibleLoggedRef = useRef(false);
+  const vvlDownloadedLoggedRef = useRef(false);
   useEffect(() => {
     if (veteranWaiverApplied && !veteranPromptedRef.current) {
       veteranPromptedRef.current = true;
       setWaiverDialogOpen(true);
-      void logEvent("veteran_eligible", { state: selectedState });
     }
-  }, [veteranWaiverApplied, logEvent, selectedState]);
+    if (veteranWaiverApplied && filingPath !== "texas_veteran_waiver") {
+      setFilingPath("texas_veteran_waiver");
+    }
+    if (veteranWaiverApplied && !veteranEligibleLoggedRef.current) {
+      veteranEligibleLoggedRef.current = true;
+      trackEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
+      if (user) {
+        void logEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
+      } else {
+        writePendingDraft({
+          veteran_eligible: true,
+          veteran_waiver_applied: true,
+          veteran_waiver_amount: veteranWaiverAmount,
+        });
+      }
+    }
+    if (!veteranWaiverApplied) {
+      veteranEligibleLoggedRef.current = false;
+    }
+  }, [veteranWaiverApplied, filingPath, logEvent, selectedState, user, veteranWaiverAmount]);
+
+  useEffect(() => {
+    if (user || !selectedState) return;
+    writePendingDraft({
+      filing_path: filingPath ?? "standard",
+      entity_type: selectedEntity,
+      package: selectedPackage,
+      selected_state: selectedState,
+      selected_addons: selectedAddOns,
+      veteran_eligible: veteranEligible,
+      veteran_waiver_applied: veteranWaiverApplied,
+      veteran_waiver_amount: veteranWaiverAmount,
+      vvl_pdf_downloaded: vvlDownloaded,
+      source_route: typeof window !== "undefined" ? window.location.pathname + window.location.search : "/order-flow",
+    });
+  }, [user, filingPath, selectedEntity, selectedPackage, selectedState, selectedAddOns, veteranEligible, veteranWaiverApplied, veteranWaiverAmount, vvlDownloaded]);
+
+  const handleVvlDownloaded = async () => {
+    setVvlDownloaded(true);
+    writePendingDraft({ vvl_pdf_downloaded: true });
+    if (vvlDownloadedLoggedRef.current) return;
+    vvlDownloadedLoggedRef.current = true;
+    trackEvent("vvl_pdf_downloaded", { state: selectedState, source: "veteran_eligibility" });
+    const id = draftId || (user ? await ensureDraft({}) : null);
+    if (user && id) {
+      void supabase
+        .from("orders")
+        .update({
+          vvl_pdf_downloaded: true,
+          vvl_pdf_downloaded_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+      void logEvent("vvl_pdf_downloaded");
+    }
+  };
 
   useEffect(() => {
     if (draftDisabled || !user) return;
@@ -922,6 +979,10 @@ const EnhancedOrderFlow = () => {
                         setIsVeteran={setIsVeteran}
                         isFormedInTexas2022={isFormedInTexas2022}
                         setIsFormedInTexas2022={setIsFormedInTexas2022}
+                        selectedState={selectedState}
+                        vvlDownloaded={vvlDownloaded}
+                        waiverAmount={veteranWaiverAmount || 300}
+                        onVvlDownloaded={handleVvlDownloaded}
                       />
                     }
                   />
@@ -1152,19 +1213,7 @@ const EnhancedOrderFlow = () => {
         onOpenChange={setWaiverDialogOpen}
         vvlDownloaded={vvlDownloaded}
         waiverAmount={veteranWaiverAmount || 300}
-        onVvlDownloaded={() => {
-          setVvlDownloaded(true);
-          if (user && draftId) {
-            void supabase
-              .from("orders")
-              .update({
-                vvl_pdf_downloaded: true,
-                vvl_pdf_downloaded_at: new Date().toISOString(),
-              })
-              .eq("id", draftId);
-            void logEvent("vvl_pdf_downloaded");
-          }
-        }}
+        onVvlDownloaded={handleVvlDownloaded}
       />
 
       <Footer />
