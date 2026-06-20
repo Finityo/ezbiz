@@ -262,7 +262,7 @@ const EnhancedOrderFlow = () => {
   // application (avoids racing with the resume hydration). The same
   // orderId is reused by saveOrderToDb at checkout (update-in-place).
   const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
-  const { draftId, ensureDraft, patchDraft, logEvent, clearDraft } = useOrderDraft(user, {
+  const { draftId, ensureDraft, patchDraft, logEvent } = useOrderDraft(user, {
     disabled: draftDisabled,
   });
   useEffect(() => {
