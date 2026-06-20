@@ -77,6 +77,7 @@ export default function VVLDownloadButton({
         onClick={handleDownload}
         aria-label="Download VVL Form (PDF)"
         data-testid="download-vvl-form"
+        disabled={downloading}
         className={
           className ||
           "inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold bg-yellow-400 text-blue-950 hover:bg-yellow-300 shadow-md transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2"
