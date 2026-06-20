@@ -1075,6 +1075,26 @@ const EnhancedOrderFlow = () => {
         </div>
       </div>
 
+      <VeteranWaiverDialog
+        open={waiverDialogOpen}
+        onOpenChange={setWaiverDialogOpen}
+        vvlDownloaded={vvlDownloaded}
+        waiverAmount={veteranWaiverAmount || 300}
+        onVvlDownloaded={() => {
+          setVvlDownloaded(true);
+          if (user && draftId) {
+            void supabase
+              .from("orders")
+              .update({
+                vvl_pdf_downloaded: true,
+                vvl_pdf_downloaded_at: new Date().toISOString(),
+              })
+              .eq("id", draftId);
+            void logEvent("vvl_pdf_downloaded");
+          }
+        }}
+      />
+
       <Footer />
     </div>
   );
