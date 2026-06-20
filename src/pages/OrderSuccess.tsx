@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, FileText, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackPaymentComplete } from "@/lib/analytics";
 
 export default function OrderSuccess() {
   const [searchParams] = useSearchParams();
@@ -27,9 +27,14 @@ export default function OrderSuccess() {
     let cancelled = false;
     (async () => {
       let orderId: string | undefined;
+      let amountTotal: number | undefined;
+      let currency: string | undefined;
       try {
         const { data } = await supabase.functions.invoke("verify-payment", { body: { sessionId } });
-        orderId = (data as { orderId?: string } | null)?.orderId;
+        const d = data as { orderId?: string; amountTotal?: number; currency?: string } | null;
+        orderId = d?.orderId;
+        amountTotal = typeof d?.amountTotal === "number" ? d!.amountTotal : undefined;
+        currency = d?.currency?.toUpperCase();
       } catch (err) {
         console.error("verify-payment fallback failed", err);
       } finally {
@@ -40,6 +45,8 @@ export default function OrderSuccess() {
             session_id: sessionId,
             order_id: orderId,
           });
+          // Canonical funnel KEY EVENT — fires payment_complete AND purchase (GA4 ecommerce).
+          trackPaymentComplete({ orderId, value: amountTotal, currency });
         }
       }
     })();
