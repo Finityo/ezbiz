@@ -134,12 +134,6 @@ const Index = () => {
       {/* Hero Section */}
       <Hero />
 
-      {/* Trust Strip */}
-      <TrustStrip />
-
-      {/* How It Works */}
-      <HowItWorks />
-
       {/* Veteran Benefits Strip */}
       <section ref={veteranGateRef} className={`relative overflow-hidden py-10 md:py-16 transition-all ${highlightVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
         {/* Patriotic background */}
@@ -185,6 +179,12 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Trust Strip */}
+      <TrustStrip />
+
+      {/* How It Works */}
+      <HowItWorks />
 
       {/* Founders teaser → /entrepreneurs */}
       <section className="py-12 md:py-16 bg-card border-y border-border">
