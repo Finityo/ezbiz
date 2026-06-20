@@ -19,6 +19,7 @@ import {
   type AddonId,
 } from "@/lib/pricing";
 import { Checkbox } from "@/components/ui/checkbox";
+import { writePendingDraft } from "@/lib/orderEvents";
 
 /* ------------------------------------------------------------------ */
 /*  PACKAGES — derived from pricing config                            */
@@ -292,6 +293,13 @@ const Pricing = () => {
     if (addons.length) params.set("addons", addons.join(","));
     const href = `/order-flow?${params.toString()}`;
     trackClick(`Start ${packageKey}`, "package_cta", href);
+    // Persist cart so it survives login/logout and rehydrates as part of
+    // the unified draft order on first authenticated step.
+    writePendingDraft({
+      package: packageKey,
+      selected_addons: addons,
+      source_route: "/pricing",
+    });
     navigate(href);
   };
 
