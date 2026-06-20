@@ -297,17 +297,20 @@ const EnhancedOrderFlow = () => {
     if (veteranWaiverApplied && !veteranEligibleLoggedRef.current) {
       veteranEligibleLoggedRef.current = true;
       trackEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
-      writePendingDraft({
-        veteran_eligible: true,
-        veteran_waiver_applied: true,
-        veteran_waiver_amount: veteranWaiverAmount,
-      });
-      void logEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
+      if (user) {
+        void logEvent("veteran_eligible", { state: selectedState, waiver_amount: veteranWaiverAmount });
+      } else {
+        writePendingDraft({
+          veteran_eligible: true,
+          veteran_waiver_applied: true,
+          veteran_waiver_amount: veteranWaiverAmount,
+        });
+      }
     }
     if (!veteranWaiverApplied) {
       veteranEligibleLoggedRef.current = false;
     }
-  }, [veteranWaiverApplied, filingPath, logEvent, selectedState, veteranWaiverAmount]);
+  }, [veteranWaiverApplied, filingPath, logEvent, selectedState, user, veteranWaiverAmount]);
 
   useEffect(() => {
     if (user || !selectedState) return;
@@ -330,6 +333,7 @@ const EnhancedOrderFlow = () => {
     writePendingDraft({ vvl_pdf_downloaded: true });
     if (vvlDownloadedLoggedRef.current) return;
     vvlDownloadedLoggedRef.current = true;
+    trackEvent("vvl_pdf_downloaded", { state: selectedState, source: "veteran_eligibility" });
     const id = draftId || (user ? await ensureDraft({}) : null);
     if (user && id) {
       void supabase
