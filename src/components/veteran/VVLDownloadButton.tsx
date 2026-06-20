@@ -3,6 +3,12 @@ import { Download, Star } from "lucide-react";
 import vvlAsset from "@/assets/vvl.pdf.asset.json";
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackEvent } from "@/lib/analytics";
+import { ACTIVE_ORDER_KEY, logOrderEvent } from "@/lib/orderEvents";
+
+const getActiveOrderId = (): string | null => {
+  if (typeof window === "undefined") return null;
+  try { return window.localStorage.getItem(ACTIVE_ORDER_KEY); } catch { return null; }
+};
 
 const FILE_NAME = "Veteran-Verification-Letter-VVL.pdf";
 
@@ -54,6 +60,8 @@ export default function VVLDownloadButton({
     setDownloading(true);
     const pageLocation =
       typeof window !== "undefined" ? window.location.href : "";
+    const orderId = getActiveOrderId();
+    const clickedAt = new Date().toISOString();
     try {
       trackClick?.("VVL Download", `vvl_download_${source}`, vvlAsset.url);
       trackEvent("pdf_download", {
@@ -63,7 +71,26 @@ export default function VVLDownloadButton({
         source,
       });
     } catch {}
-    await triggerBlobDownload();
+    // Always log click attempt against the active draft order (if any).
+    void logOrderEvent(orderId, "vvl_pdf_download_clicked", {
+      source,
+      file_name: FILE_NAME,
+      page_location: pageLocation,
+      clicked_at: clickedAt,
+    });
+    const ok = await triggerBlobDownload();
+    void logOrderEvent(
+      orderId,
+      ok ? "vvl_pdf_download_succeeded" : "vvl_pdf_download_failed",
+      {
+        source,
+        file_name: FILE_NAME,
+        page_location: pageLocation,
+        clicked_at: clickedAt,
+        completed_at: new Date().toISOString(),
+        fallback_used: !ok,
+      },
+    );
     setShowThanks(true);
     setTimeout(() => setShowThanks(false), 4000);
     setDownloading(false);
