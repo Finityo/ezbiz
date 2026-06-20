@@ -75,7 +75,11 @@ const EnhancedOrderFlow = () => {
   const rawPackage = searchParams.get("package");
   const isValidPackage =
     !!rawPackage && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, rawPackage);
-  const requiresPackage = mode !== "whiteglove" && !isWaiver;
+  // Resume links (post-approval veteran autoPay, dashboard "Resume order")
+  // arrive WITHOUT &package — the package is hydrated from the saved order.
+  // Don't bounce those to /pricing.
+  const isResumeLink = !!searchParams.get("orderId") || !!searchParams.get("applicationId");
+  const requiresPackage = mode !== "whiteglove" && !isWaiver && !isResumeLink;
   const missingPackage = requiresPackage && !isValidPackage && filingPath !== null;
 
   useEffect(() => {
