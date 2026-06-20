@@ -155,9 +155,13 @@ const EnhancedOrderFlow = () => {
 
   // Veteran waiver only applies when state=TX AND user is a verified TX vet
   // formed on/after Jan 1, 2022. Centralized here so totals, draft, and
-  // admin all stay in sync.
+  // admin all stay in sync. State string is normalized so the waiver triggers
+  // regardless of how the picker emits Texas ("Texas", "TX", "tx", "texas").
   const veteranEligible = isVeteran && isFormedInTexas2022;
-  const isTexasFormationState = selectedState === "TX" || selectedState === "Texas";
+  const isTexasFormationState = (() => {
+    const s = (selectedState || "").trim().toLowerCase();
+    return s === "tx" || s === "texas";
+  })();
   const veteranWaiverApplied = veteranEligible && isTexasFormationState;
   const veteranWaiverAmount = veteranWaiverApplied ? 300 : 0;
 
@@ -947,7 +951,10 @@ const EnhancedOrderFlow = () => {
                       </Badge>
                     )}
                     {veteranWaiverApplied && (
-                      <Badge className="bg-success/10 text-success border-success/30 hover:bg-success/15">
+                      <Badge
+                        data-testid="selection-summary-chip-veteran"
+                        className="bg-success/10 text-success border-success/30 hover:bg-success/15"
+                      >
                         🇺🇸 TX Veteran Waiver −${veteranWaiverAmount}
                       </Badge>
                     )}
@@ -974,18 +981,24 @@ const EnhancedOrderFlow = () => {
                     selected={selectedState}
                     onSelect={setSelectedState}
                     slotAfterPopular={
-                      <VeteranEligibilityGate
-                        isVeteran={isVeteran}
-                        setIsVeteran={setIsVeteran}
-                        isFormedInTexas2022={isFormedInTexas2022}
-                        setIsFormedInTexas2022={setIsFormedInTexas2022}
-                        selectedState={selectedState}
-                        vvlDownloaded={vvlDownloaded}
-                        waiverAmount={veteranWaiverAmount || 300}
-                        onVvlDownloaded={handleVvlDownloaded}
-                      />
+                      // Veteran eligibility check is revealed ONLY after a state
+                      // is selected. Prevents the gate from appearing on the
+                      // bare /order-flow Step 1 view.
+                      selectedState ? (
+                        <VeteranEligibilityGate
+                          isVeteran={isVeteran}
+                          setIsVeteran={setIsVeteran}
+                          isFormedInTexas2022={isFormedInTexas2022}
+                          setIsFormedInTexas2022={setIsFormedInTexas2022}
+                          selectedState={selectedState}
+                          vvlDownloaded={vvlDownloaded}
+                          waiverAmount={veteranWaiverAmount || 300}
+                          onVvlDownloaded={handleVvlDownloaded}
+                        />
+                      ) : null
                     }
                   />
+
                   <div className="flex justify-end">
                     <Button onClick={goNext} disabled={!isStepValid(1)}>Continue</Button>
                   </div>
