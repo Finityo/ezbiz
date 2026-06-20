@@ -147,7 +147,7 @@ const EnhancedOrderFlow = () => {
     notes: "",
   });
 
-  useEffect(() => { trackOrderFlowView(); }, []);
+  useEffect(() => { trackIntakeStarted(); }, []);
 
   const isCorpType = CORP_ENTITIES.includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
