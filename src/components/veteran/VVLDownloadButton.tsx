@@ -10,9 +10,18 @@ interface Props {
   source: string;
   label?: string;
   className?: string;
+  /** Fires AFTER the actual download click has been triggered. Used by
+   *  VeteranWaiverDialog to flip orders.vvl_pdf_downloaded + log the
+   *  `vvl_pdf_downloaded` order_events row. */
+  onDownloaded?: () => void;
 }
 
-export default function VVLDownloadButton({ source, label = "Download VVL Form (PDF)", className = "" }: Props) {
+export default function VVLDownloadButton({
+  source,
+  label = "Download VVL Form",
+  className = "",
+  onDownloaded,
+}: Props) {
   const [showThanks, setShowThanks] = useState(false);
 
   const handleDownload = () => {
@@ -38,19 +47,24 @@ export default function VVLDownloadButton({ source, label = "Download VVL Form (
     a.remove();
     setShowThanks(true);
     setTimeout(() => setShowThanks(false), 4000);
+    // Notify parent AFTER the download has actually been triggered.
+    try { onDownloaded?.(); } catch {}
   };
 
   return (
     <>
       <button
+        type="button"
         onClick={handleDownload}
+        aria-label="Download VVL Form (PDF)"
+        data-testid="download-vvl-form"
         className={
           className ||
-          "inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold bg-yellow-400 text-blue-950 hover:bg-yellow-300 shadow-md transition"
+          "inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold bg-yellow-400 text-blue-950 hover:bg-yellow-300 shadow-md transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2"
         }
       >
-        <Download className="w-4 h-4" />
-        {label}
+        <Download className="w-4 h-4" aria-hidden="true" />
+        <span>{label}</span>
       </button>
 
       {showThanks && (
