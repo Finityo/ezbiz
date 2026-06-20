@@ -106,16 +106,47 @@ export function trackEvent(
   log(`event "${name}" →`, payload);
 }
 
-// ── Pre-built convenience trackers ──────────────────────────────────────────
+// ── Canonical funnel events (KEY EVENTS) ────────────────────────────────────
+// These four are the GA4 KEY EVENTS for the EZ Biz conversion funnel and
+// MUST stay name-aligned with `public.order_events.event_type`:
+//   intake_started     → user enters /order-flow (guided wizard mounted)
+//   checkout_started   → ReviewStep "Pay & File" pressed, Stripe session opened
+//   payment_complete   → Stripe payment verified (webhook or fallback)
+//   purchase           → GA4 ecommerce mirror of payment_complete (carries value)
+// Every other event in this file is supporting/diagnostic only — do NOT mark
+// them as Key Events in the GA4 admin UI.
+export const KEY_EVENTS = [
+  'intake_started',
+  'checkout_started',
+  'payment_complete',
+  'purchase',
+] as const;
+
+/** Canonical: customer entered the guided order flow. */
+export const trackIntakeStarted = (extra: Record<string, string | number | boolean> = {}) =>
+  trackEvent('intake_started', extra);
+
+/** @deprecated Use trackIntakeStarted. Alias kept so older imports keep building. */
+export const trackOrderFlowView = () => trackIntakeStarted();
+
+/** Canonical: customer initiated Stripe checkout. */
+export const trackCheckoutStart = (packageName: string, value: number) =>
+  trackEvent('checkout_started', { package_name: packageName, value, currency: 'USD' });
+
+/** Canonical: payment was confirmed (call from /order-success after verify-payment). */
+export const trackPaymentComplete = (params: { orderId?: string; value?: number; currency?: string }) => {
+  const { orderId, value, currency = 'USD' } = params;
+  trackEvent('payment_complete', { order_id: orderId, value, currency });
+  if (orderId && typeof value === 'number') {
+    // GA4 ecommerce-shaped mirror so revenue reports light up.
+    trackEvent('purchase', { transaction_id: orderId, value, currency });
+  }
+};
+
+// ── Supporting / diagnostic events (NOT key events) ─────────────────────────
 
 export const trackCTAClick = (label: string, destination: string) =>
   trackEvent('cta_click', { button_label: label, destination_url: destination });
-
-export const trackOrderFlowView = () =>
-  trackEvent('order_flow_view');
-
-export const trackCheckoutStart = (packageName: string, value: number) =>
-  trackEvent('checkout_start', { package_name: packageName, value, currency: 'USD' });
 
 export const trackFormStart = (formName: string) =>
   trackEvent('form_start', { form_name: formName });
@@ -140,6 +171,7 @@ export const trackPhoneClick = (number: string) =>
 export const trackEmailClick = (email: string) =>
   trackEvent('email_click', { email_address: email });
 
+/** @deprecated Prefer trackPaymentComplete which also fires `purchase`. */
 export const trackPurchase = (transactionId: string, value: number, currency = 'USD') =>
   trackEvent('purchase', { transaction_id: transactionId, value, currency });
 
