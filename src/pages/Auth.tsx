@@ -83,9 +83,11 @@ const Auth = () => {
     return "/dashboard";
   };
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated (and always scroll to top so users
+  // don't land in the middle of a long auth/error page after sign-in).
   useEffect(() => {
     if (user) {
+      if (typeof window !== "undefined") window.scrollTo({ top: 0 });
       resolveDestination(user.id).then((to) => navigate(to, { replace: true }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

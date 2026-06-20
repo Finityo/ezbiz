@@ -303,6 +303,10 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  }, []);
+
+  useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
   }, [authLoading, user, navigate]);
 
