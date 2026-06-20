@@ -78,7 +78,23 @@ const Auth = () => {
       | "standard"
       | undefined;
     const segment = await ensureSegmentTag(userId, existing);
-    if (segment === "veteran") return "/dashboard#documents";
+    if (segment === "veteran") {
+      // If their waiver has been approved by an admin, fast-path them
+      // straight to Step 5 with autoPay=1 so Stripe checkout opens on load.
+      const { data: approvedApp } = await supabase
+        .from("business_applications")
+        .select("id, application_data")
+        .eq("user_id", userId)
+        .eq("status", "waiver_approved_payment_required")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const approvedOrderId = (approvedApp?.application_data as any)?.orderId;
+      if (approvedApp?.id && approvedOrderId) {
+        return `/order-flow?orderId=${approvedOrderId}&applicationId=${approvedApp.id}&autoPay=1`;
+      }
+      return "/dashboard#documents";
+    }
 
     return "/dashboard";
   };
