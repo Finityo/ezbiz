@@ -156,7 +156,7 @@ export function useOrderDraft(
             order_id: data.id,
             event_type: "veteran_eligible",
             actor: "customer",
-            metadata: { state: pending.selected_state ?? pending.entity_type ?? null, waiver_amount: pending.veteran_waiver_amount ?? null },
+            metadata: { state: pending.selected_state ?? null, waiver_amount: pending.veteran_waiver_amount ?? null },
           });
         }
         if (pending?.vvl_pdf_downloaded) {
