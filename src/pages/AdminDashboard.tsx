@@ -21,7 +21,8 @@ import UsersTab from '@/components/admin/UsersTab';
 import WaiverReviewsTab from '@/components/admin/WaiverReviewsTab';
 import ApplicationQuickEditDialog from '@/components/admin/ApplicationQuickEditDialog';
 import FlightControlTab from '@/components/admin/FlightControlTab';
-import { Pencil, Plane } from 'lucide-react';
+import FunnelWatchTab from '@/components/admin/FunnelWatchTab';
+import { Pencil, Plane, TrendingUp } from 'lucide-react';
 
 
 
