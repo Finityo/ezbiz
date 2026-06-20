@@ -971,6 +971,10 @@ const EnhancedOrderFlow = () => {
                         setIsVeteran={setIsVeteran}
                         isFormedInTexas2022={isFormedInTexas2022}
                         setIsFormedInTexas2022={setIsFormedInTexas2022}
+                        selectedState={selectedState}
+                        vvlDownloaded={vvlDownloaded}
+                        waiverAmount={veteranWaiverAmount || 300}
+                        onVvlDownloaded={handleVvlDownloaded}
                       />
                     }
                   />
@@ -1201,19 +1205,7 @@ const EnhancedOrderFlow = () => {
         onOpenChange={setWaiverDialogOpen}
         vvlDownloaded={vvlDownloaded}
         waiverAmount={veteranWaiverAmount || 300}
-        onVvlDownloaded={() => {
-          setVvlDownloaded(true);
-          if (user && draftId) {
-            void supabase
-              .from("orders")
-              .update({
-                vvl_pdf_downloaded: true,
-                vvl_pdf_downloaded_at: new Date().toISOString(),
-              })
-              .eq("id", draftId);
-            void logEvent("vvl_pdf_downloaded");
-          }
-        }}
+        onVvlDownloaded={handleVvlDownloaded}
       />
 
       <Footer />
