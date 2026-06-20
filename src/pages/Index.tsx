@@ -134,6 +134,52 @@ const Index = () => {
       {/* Hero Section */}
       <Hero />
 
+      {/* Veteran Benefits Strip */}
+      <section ref={veteranGateRef} className={`relative overflow-hidden py-10 md:py-16 transition-all ${highlightVeteran ? "ring-2 ring-primary/30 rounded-xl p-3" : ""}`}>
+        {/* Patriotic background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-900 to-red-900/80" />
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px)' }} />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 mb-4">
+                 <span className="text-xl">🇺🇸</span>
+                 <span className="text-sm font-semibold text-white uppercase tracking-wider">Veteran Owned &amp; Operated</span>
+                 <span className="text-xl">🇺🇸</span>
+               </div>
+               <h2 className="text-2xl md:text-3xl font-bold font-display text-white flex items-center justify-center gap-3">
+                 <Star className="h-5 w-5 text-red-400 fill-red-400" /> {EZBIZ_COPY.veteranStrip.heading} <Star className="h-5 w-5 text-red-400 fill-red-400" />
+               </h2>
+               <p className="text-sm text-white/70 font-body mt-3 max-w-2xl mx-auto">
+                 {EZBIZ_COPY.veteranStrip.subheading}
+               </p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 md:gap-6 mb-8">
+               {EZBIZ_COPY.veteranStrip.benefits.map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                  <CheckCircle className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-base font-body text-white/90">{item}</span>
+                </div>
+              ))}
+            </div>
+            <div className="text-center flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button
+                className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 font-bold px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all border-0"
+                onClick={() => { trackEvent('veteran_cta_click', { location: 'homepage' }); trackClick('Check Veteran Eligibility', 'veteran_strip_cta', '/veteran-llc-texas'); navigate('/veteran-llc-texas'); }}
+              >
+                 {EZBIZ_COPY.veteranStrip.cta}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <VVLDownloadButton source="homepage_veteran_strip" />
+            </div>
+            <p className="text-xs text-white/50 mt-3 text-center">
+              Honoring those who served. Texas veteran-owned business benefits available.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Trust Strip */}
       <TrustStrip />
 
