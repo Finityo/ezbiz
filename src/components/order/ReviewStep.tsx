@@ -315,15 +315,19 @@ const ReviewStep = ({
         <div className="flex justify-between text-sm">
           <span>{state} Filing Fee</span>
           {stateFeeWaived ? (
-            <span className="font-medium text-success">$0.00</span>
+            <span className="text-muted-foreground line-through">${formatPrice(rawStateFee)}</span>
           ) : (
             <span>${formatPrice(stateFee)}</span>
           )}
         </div>
         {stateFeeWaived && (
-          <p className="text-xs text-success -mt-1">
-            Texas state filing fee waived after document approval.
-          </p>
+          <div
+            className="flex justify-between text-sm font-medium text-success"
+            data-testid="veteran-waiver-line"
+          >
+            <span>Texas Veteran Filing Fee Waiver</span>
+            <span>−${formatPrice(rawStateFee)}</span>
+          </div>
         )}
 
         {speedFee > 0 && (

@@ -865,21 +865,43 @@ const EnhancedOrderFlow = () => {
 
 
 
-            {/* Running Total Bar (steps 2+) */}
-            {currentStep >= 2 && selectedPackage && (
-              <div className="mt-4 p-3 rounded-lg bg-card border flex items-center justify-between text-sm">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-medium">{selectedState}</span>
-                  <span className="text-muted-foreground">•</span>
-                  <span>{PACKAGE_PRICES[selectedPackage as PackageType]?.name}</span>
-                  {selectedAddOns.length > 0 && (
-                    <>
-                      <span className="text-muted-foreground">•</span>
-                      <span>{selectedAddOns.length} add-on{selectedAddOns.length > 1 ? "s" : ""}</span>
-                    </>
-                  )}
+            {/* Selection Confirmation Chip — visible from step 1 so customers
+                arriving from /pricing instantly see their package followed them in. */}
+            {selectedPackage && (
+              <div
+                className="mt-4 p-3 rounded-lg bg-card border shadow-sm"
+                data-testid="selection-summary-chip"
+                aria-label="Your current selections"
+              >
+                <div className="flex items-center justify-between gap-3 flex-wrap text-sm">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant="secondary" className="font-semibold">
+                      {PACKAGE_PRICES[selectedPackage as PackageType]?.name} Package
+                    </Badge>
+                    {selectedState && (
+                      <Badge variant="outline" className="font-medium">
+                        <MapPin className="h-3 w-3 mr-1" aria-hidden="true" />
+                        {selectedState}
+                      </Badge>
+                    )}
+                    {selectedAddOns.length > 0 && (
+                      <Badge variant="outline">
+                        {selectedAddOns.length} add-on{selectedAddOns.length > 1 ? "s" : ""}
+                      </Badge>
+                    )}
+                    {veteranWaiverApplied && (
+                      <Badge className="bg-success/10 text-success border-success/30 hover:bg-success/15">
+                        🇺🇸 TX Veteran Waiver −${veteranWaiverAmount}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Estimated total</span>
+                    <span className="font-bold text-primary text-lg" aria-live="polite">
+                      ${runningTotal()}
+                    </span>
+                  </div>
                 </div>
-                <span className="font-bold text-primary text-lg">${runningTotal()}</span>
               </div>
             )}
 

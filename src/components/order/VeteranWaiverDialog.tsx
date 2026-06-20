@@ -51,7 +51,7 @@ const VeteranWaiverDialog = ({
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <VVLDownloadButton source="waiver_dialog" />
+            <VVLDownloadButton source="waiver_dialog" onDownloaded={onVvlDownloaded} />
             {vvlDownloaded && (
               <p className="text-xs text-success flex items-center gap-1">
                 <Check className="h-3.5 w-3.5" /> VVL download recorded on your order
@@ -64,12 +64,7 @@ const VeteranWaiverDialog = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Skip for now
           </Button>
-          <Button
-            onClick={() => {
-              onVvlDownloaded();
-              onOpenChange(false);
-            }}
-          >
+          <Button onClick={() => onOpenChange(false)}>
             Got it — continue
           </Button>
         </DialogFooter>
