@@ -7,6 +7,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const ORDER_EVENT_TYPES = [
+  "intake_started",
   "package_selected",
   "addon_selected",
   "state_selected",
@@ -17,6 +18,7 @@ export const ORDER_EVENT_TYPES = [
   "email_confirmed",
   "business_info_started",
   "business_info_saved",
+  "waiver_draft_created",
   "document_uploaded",
   "checkout_started",
   "payment_complete",
