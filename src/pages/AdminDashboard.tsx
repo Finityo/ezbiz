@@ -20,7 +20,8 @@ import WhiteGloveBillingTab from '@/components/admin/WhiteGloveBillingTab';
 import UsersTab from '@/components/admin/UsersTab';
 import WaiverReviewsTab from '@/components/admin/WaiverReviewsTab';
 import ApplicationQuickEditDialog from '@/components/admin/ApplicationQuickEditDialog';
-import { Pencil } from 'lucide-react';
+import FlightControlTab from '@/components/admin/FlightControlTab';
+import { Pencil, Plane } from 'lucide-react';
 
 
 
@@ -415,8 +416,13 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="orders" className="space-y-6 sm:space-y-8">
+        <Tabs defaultValue="flight" className="space-y-6 sm:space-y-8">
           <TabsList className="flex flex-wrap h-auto gap-1 p-1">
+            <TabsTrigger value="flight" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <Plane className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Flight Control</span>
+              <span className="sm:hidden">Flight</span>
+            </TabsTrigger>
             <TabsTrigger value="orders" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
               <Package className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Orders
@@ -458,6 +464,10 @@ const AdminDashboard = () => {
               <span className="sm:hidden">Users</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="flight" className="space-y-6">
+            <FlightControlTab />
+          </TabsContent>
 
           <TabsContent value="orders" className="space-y-6">
             <OrdersTab />

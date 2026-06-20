@@ -1,5 +1,5 @@
 import SEOHead from "@/components/SEOHead";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import FilingPathStep from "@/components/order/FilingPathStep";
 
@@ -32,6 +32,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 import { isAddonIncludedInPackage } from "@/lib/package-config";
 import { useOrderDraft } from "@/hooks/useOrderDraft";
+import VeteranWaiverDialog from "@/components/order/VeteranWaiverDialog";
 
 export type OrderMode = "guided" | "whiteglove";
 
@@ -151,6 +152,13 @@ const EnhancedOrderFlow = () => {
   const isCorpType = CORP_ENTITIES.includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
+  // Veteran waiver only applies when state=TX AND user is a verified TX vet
+  // formed on/after Jan 1, 2022. Centralized here so totals, draft, and
+  // admin all stay in sync.
+  const veteranEligible = isVeteran && isFormedInTexas2022;
+  const veteranWaiverApplied = veteranEligible && selectedState === "TX";
+  const veteranWaiverAmount = veteranWaiverApplied ? 300 : 0;
+
   const runningTotal = () => {
     const pkgPrice = PACKAGE_PRICES[selectedPackage as PackageType]?.price || 0;
     const addonsTotal = selectedAddOns.reduce((sum, id) => {
@@ -159,7 +167,8 @@ const EnhancedOrderFlow = () => {
     }, 0);
     const speedFee = PROCESSING_PRICES[processingSpeed]?.price || 0;
     const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE : 0;
-    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE + whiteGloveFee;
+    const subtotal = pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE + whiteGloveFee;
+    return Math.max(0, subtotal - veteranWaiverAmount);
   };
 
   const isStepValid = (step: number): boolean => {
@@ -195,7 +204,23 @@ const EnhancedOrderFlow = () => {
   };
 
   const goNext = () => {
-    if (currentStep === 2) trackFormStart("order_business_details");
+    if (currentStep === 1) {
+      void logEvent("state_selected", { state: selectedState });
+      void logEvent("veteran_check_started");
+    }
+    if (currentStep === 2) {
+      trackFormStart("order_business_details");
+      void logEvent("package_selected", { package: selectedPackage, addons: selectedAddOns });
+    }
+    if (currentStep === 3) {
+      void logEvent("business_info_saved");
+      if (user && draftId) {
+        void supabase
+          .from("orders")
+          .update({ business_info_saved_at: new Date().toISOString() })
+          .eq("id", draftId);
+      }
+    }
     if (currentStep === 3 && user) {
       // Already logged in: waiver → create draft + dashboard, standard → Review
       if (isWaiver) {
@@ -204,6 +229,9 @@ const EnhancedOrderFlow = () => {
       }
       setCurrentStep(5);
     } else {
+      if (currentStep === 3) {
+        void logEvent("business_info_started");
+      }
       setCurrentStep((s) => Math.min(s + 1, 5));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -232,12 +260,36 @@ const EnhancedOrderFlow = () => {
   // application (avoids racing with the resume hydration). The same
   // orderId is reused by saveOrderToDb at checkout (update-in-place).
   const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
-  const { draftId, ensureDraft, patchDraft, clearDraft } = useOrderDraft(user, {
+  const { draftId, ensureDraft, patchDraft, logEvent, clearDraft } = useOrderDraft(user, {
     disabled: draftDisabled,
   });
   useEffect(() => {
     if (draftId && !orderId) setOrderId(draftId);
   }, [draftId, orderId]);
+
+  // Persist veteran + waiver state into the draft order whenever it changes.
+  useEffect(() => {
+    if (draftDisabled || !user) return;
+    patchDraft({
+      veteran_eligible: veteranEligible,
+      veteran_waiver_applied: veteranWaiverApplied,
+      veteran_waiver_amount: veteranWaiverAmount,
+    });
+  }, [user, draftDisabled, veteranEligible, veteranWaiverApplied, veteranWaiverAmount, patchDraft]);
+
+  // Show the veteran waiver dialog (with VVL download) the first time
+  // a user qualifies in this session.
+  const [waiverDialogOpen, setWaiverDialogOpen] = useState(false);
+  const [vvlDownloaded, setVvlDownloaded] = useState(false);
+  const veteranPromptedRef = useRef(false);
+  useEffect(() => {
+    if (veteranWaiverApplied && !veteranPromptedRef.current) {
+      veteranPromptedRef.current = true;
+      setWaiverDialogOpen(true);
+      void logEvent("veteran_eligible", { state: selectedState });
+    }
+  }, [veteranWaiverApplied, logEvent, selectedState]);
+
   useEffect(() => {
     if (draftDisabled || !user) return;
     if (!selectedState) return; // wait for first meaningful signal
@@ -253,9 +305,12 @@ const EnhancedOrderFlow = () => {
       package: selectedPackage || null,
       package_id: selectedPackage || null,
       state: selectedState || null,
+      selected_state: selectedState || null,
+      selected_addons: selectedAddOns,
       state_fee: stateFee || null,
       total_amount: runningTotal(),
       current_step: currentStep,
+      source_route: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
       source_path: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
       add_ons: {
         selectedAddOns,
@@ -292,8 +347,58 @@ const EnhancedOrderFlow = () => {
   // This prevents `saveOrderToDb` from inserting a duplicate row and
   // ensures the waiver guard in create-checkout sees the correct status.
   const resumeApplicationId = searchParams.get("applicationId");
-  const [resuming, setResuming] = useState<boolean>(!!resumeApplicationId);
+  const resumeOrderId = searchParams.get("orderId");
+  const [resuming, setResuming] = useState<boolean>(!!resumeApplicationId || !!resumeOrderId);
   const [resumeError, setResumeError] = useState<string | null>(null);
+
+  // ── RESUME BY orderId (unified dashboard "Continue" button) ─────────
+  // Loads the persisted draft order row, hydrates package/state/addons/
+  // veteran fields, and jumps to the saved current_step.
+  useEffect(() => {
+    if (!resumeOrderId || resumeApplicationId) return;
+    if (!user) return;
+    if (orderId === resumeOrderId) {
+      setResuming(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: ord, error } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("id", resumeOrderId)
+          .maybeSingle();
+        if (cancelled) return;
+        if (error || !ord || ord.user_id !== user.id) {
+          setResumeError("We couldn't load that order.");
+          setTimeout(() => navigate("/dashboard"), 1200);
+          return;
+        }
+        if (ord.state) setSelectedState(ord.state);
+        if (ord.entity_type) setSelectedEntity(ord.entity_type);
+        if (ord.package) setSelectedPackage(ord.package);
+        const sa = (ord as any).selected_addons;
+        if (Array.isArray(sa) && sa.length) setSelectedAddOns(sa as string[]);
+        if ((ord as any).veteran_eligible) {
+          setIsVeteran(true);
+          setIsFormedInTexas2022(!!(ord as any).veteran_waiver_applied);
+        }
+        setOrderId(ord.id);
+        try { window.localStorage.setItem("ezbiz_active_order_id", ord.id); } catch {}
+        const step = Math.max(1, Math.min(5, (ord.current_step ?? 1) as number));
+        setCurrentStep(step);
+        setResuming(false);
+      } catch (err) {
+        console.error("Resume by orderId failed:", err);
+        if (!cancelled) {
+          setResumeError("Couldn't load your order.");
+          setResuming(false);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [resumeOrderId, resumeApplicationId, user, orderId, navigate]);
 
   useEffect(() => {
     if (!resumeApplicationId) return;
@@ -1019,6 +1124,26 @@ const EnhancedOrderFlow = () => {
           </div>
         </div>
       </div>
+
+      <VeteranWaiverDialog
+        open={waiverDialogOpen}
+        onOpenChange={setWaiverDialogOpen}
+        vvlDownloaded={vvlDownloaded}
+        waiverAmount={veteranWaiverAmount || 300}
+        onVvlDownloaded={() => {
+          setVvlDownloaded(true);
+          if (user && draftId) {
+            void supabase
+              .from("orders")
+              .update({
+                vvl_pdf_downloaded: true,
+                vvl_pdf_downloaded_at: new Date().toISOString(),
+              })
+              .eq("id", draftId);
+            void logEvent("vvl_pdf_downloaded");
+          }
+        }}
+      />
 
       <Footer />
     </div>

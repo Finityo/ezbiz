@@ -668,19 +668,26 @@ export type Database = {
           account_manager_sent_to: string | null
           add_ons: Json | null
           application_id: string | null
+          attention_reason: string | null
+          business_info_saved_at: string | null
           created_at: string | null
           current_step: number | null
           ein_service: boolean | null
           email: string | null
+          email_confirmed_at: string | null
           entity_type: string | null
           filing_path: string | null
           filing_speed: string | null
           id: string
           last_activity_at: string | null
+          needs_attention: boolean
           order_number: number
           package: string | null
           package_id: string | null
+          selected_addons: Json
+          selected_state: string | null
           source_path: string | null
+          source_route: string | null
           state: string | null
           state_fee: number | null
           status: string | null
@@ -689,6 +696,11 @@ export type Database = {
           total_amount: number | null
           updated_at: string | null
           user_id: string | null
+          veteran_eligible: boolean
+          veteran_waiver_amount: number
+          veteran_waiver_applied: boolean
+          vvl_pdf_downloaded: boolean
+          vvl_pdf_downloaded_at: string | null
         }
         Insert: {
           abandoned_notified_at?: string | null
@@ -698,19 +710,26 @@ export type Database = {
           account_manager_sent_to?: string | null
           add_ons?: Json | null
           application_id?: string | null
+          attention_reason?: string | null
+          business_info_saved_at?: string | null
           created_at?: string | null
           current_step?: number | null
           ein_service?: boolean | null
           email?: string | null
+          email_confirmed_at?: string | null
           entity_type?: string | null
           filing_path?: string | null
           filing_speed?: string | null
           id?: string
           last_activity_at?: string | null
+          needs_attention?: boolean
           order_number?: number
           package?: string | null
           package_id?: string | null
+          selected_addons?: Json
+          selected_state?: string | null
           source_path?: string | null
+          source_route?: string | null
           state?: string | null
           state_fee?: number | null
           status?: string | null
@@ -719,6 +738,11 @@ export type Database = {
           total_amount?: number | null
           updated_at?: string | null
           user_id?: string | null
+          veteran_eligible?: boolean
+          veteran_waiver_amount?: number
+          veteran_waiver_applied?: boolean
+          vvl_pdf_downloaded?: boolean
+          vvl_pdf_downloaded_at?: string | null
         }
         Update: {
           abandoned_notified_at?: string | null
@@ -728,19 +752,26 @@ export type Database = {
           account_manager_sent_to?: string | null
           add_ons?: Json | null
           application_id?: string | null
+          attention_reason?: string | null
+          business_info_saved_at?: string | null
           created_at?: string | null
           current_step?: number | null
           ein_service?: boolean | null
           email?: string | null
+          email_confirmed_at?: string | null
           entity_type?: string | null
           filing_path?: string | null
           filing_speed?: string | null
           id?: string
           last_activity_at?: string | null
+          needs_attention?: boolean
           order_number?: number
           package?: string | null
           package_id?: string | null
+          selected_addons?: Json
+          selected_state?: string | null
           source_path?: string | null
+          source_route?: string | null
           state?: string | null
           state_fee?: number | null
           status?: string | null
@@ -749,6 +780,11 @@ export type Database = {
           total_amount?: number | null
           updated_at?: string | null
           user_id?: string | null
+          veteran_eligible?: boolean
+          veteran_waiver_amount?: number
+          veteran_waiver_applied?: boolean
+          vvl_pdf_downloaded?: boolean
+          vvl_pdf_downloaded_at?: string | null
         }
         Relationships: []
       }

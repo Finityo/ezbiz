@@ -33,6 +33,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import OrderTimeline from "@/components/dashboard/OrderTimeline";
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import OrderDocuments from "@/components/dashboard/OrderDocuments";
+import ActiveOrderResumeCard from "@/components/dashboard/ActiveOrderResumeCard";
 import WaiverDocumentUpload from "@/components/dashboard/WaiverDocumentUpload";
 import VerifyEmailNotice from "@/components/auth/VerifyEmailNotice";
 import { openOrderDocument } from "@/lib/openOrderDocument";
@@ -302,6 +303,10 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  }, []);
+
+  useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
   }, [authLoading, user, navigate]);
 
@@ -488,6 +493,28 @@ export default function Dashboard() {
       <Navigation />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
+          {/* Unified resume card — single source of truth for the active draft order. */}
+          {data.order && (
+            <ActiveOrderResumeCard
+              order={{
+                id: data.order.id,
+                package: data.order.package,
+                state: data.order.state,
+                selected_state: (data.order as any).selected_state ?? null,
+                selected_addons: (data.order as any).selected_addons ?? null,
+                current_step: (data.order as any).current_step ?? null,
+                status: data.order.status,
+                veteran_eligible: (data.order as any).veteran_eligible ?? null,
+                veteran_waiver_applied: (data.order as any).veteran_waiver_applied ?? null,
+                veteran_waiver_amount: (data.order as any).veteran_waiver_amount ?? null,
+                vvl_pdf_downloaded: (data.order as any).vvl_pdf_downloaded ?? null,
+                total_amount: data.order.total_amount,
+                documents_count: data.documents.length,
+                payments_count: data.payments.length,
+              }}
+            />
+          )}
+
 
           {/* ═══ HERO / COMMAND CENTER HEADER ═══ */}
           <Card className="overflow-hidden border-primary/20">
