@@ -25,5 +25,9 @@ project_id = "umzyxzhqlrykygjbeusu"
     verify_jwt = false
   [functions.admin-set-temp-password]
     verify_jwt = false
+  [functions.admin-set-qa-temp-password]
+    verify_jwt = false
+
+
 
 
