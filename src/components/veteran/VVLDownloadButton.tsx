@@ -24,13 +24,38 @@ export default function VVLDownloadButton({
 }: Props) {
   const [showThanks, setShowThanks] = useState(false);
 
-  const handleDownload = () => {
+  const [downloading, setDownloading] = useState(false);
+
+  const triggerBlobDownload = async (): Promise<boolean> => {
+    try {
+      const res = await fetch(vvlAsset.url, { credentials: "omit" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = FILE_NAME;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
+      return true;
+    } catch (err) {
+      console.warn("VVL blob download failed, falling back to direct link", err);
+      // Safari/Chrome fallback: open in a new tab so the user still gets the file
+      window.open(vvlAsset.url, "_blank", "noopener");
+      return false;
+    }
+  };
+
+  const handleDownload = async () => {
+    if (downloading) return;
+    setDownloading(true);
     const pageLocation =
       typeof window !== "undefined" ? window.location.href : "";
     try {
-      // Legacy click tracker (Supabase + GA4 cta_click)
       trackClick?.("VVL Download", `vvl_download_${source}`, vvlAsset.url);
-      // Dedicated GA4 pdf_download event with full page_location + destination URL
       trackEvent("pdf_download", {
         file_name: FILE_NAME,
         destination_url: vvlAsset.url,
@@ -38,16 +63,10 @@ export default function VVLDownloadButton({
         source,
       });
     } catch {}
-    const a = document.createElement("a");
-    a.href = vvlAsset.url;
-    a.download = FILE_NAME;
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    await triggerBlobDownload();
     setShowThanks(true);
     setTimeout(() => setShowThanks(false), 4000);
-    // Notify parent AFTER the download has actually been triggered.
+    setDownloading(false);
     try { onDownloaded?.(); } catch {}
   };
 
