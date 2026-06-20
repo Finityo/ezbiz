@@ -93,7 +93,7 @@ serve(async (req) => {
           .is("stripe_payment_intent", null);
       }
       return new Response(
-        JSON.stringify({ status: "already_processed", orderId }),
+        JSON.stringify({ status: "already_processed", orderId, amountTotal: (session.amount_total || 0) / 100, currency: session.currency || "usd" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
       );
     }
@@ -208,7 +208,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ status: "processed", orderId }),
+      JSON.stringify({ status: "processed", orderId, amountTotal: (session.amount_total || 0) / 100, currency: session.currency || "usd" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (err) {

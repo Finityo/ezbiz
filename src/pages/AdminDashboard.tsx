@@ -21,7 +21,8 @@ import UsersTab from '@/components/admin/UsersTab';
 import WaiverReviewsTab from '@/components/admin/WaiverReviewsTab';
 import ApplicationQuickEditDialog from '@/components/admin/ApplicationQuickEditDialog';
 import FlightControlTab from '@/components/admin/FlightControlTab';
-import { Pencil, Plane } from 'lucide-react';
+import FunnelWatchTab from '@/components/admin/FunnelWatchTab';
+import { Pencil, Plane, TrendingUp } from 'lucide-react';
 
 
 
@@ -457,6 +458,11 @@ const AdminDashboard = () => {
               <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Analytics</span>
               <span className="sm:hidden">Stats</span>
+            </TabsTrigger>
+            <TabsTrigger value="funnel" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Funnel</span>
+              <span className="sm:hidden">Funnel</span>
             </TabsTrigger>
             <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3 py-1.5">
               <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -945,6 +951,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="analytics" className="space-y-6">
             <AnalyticsTab />
+          </TabsContent>
+
+          <TabsContent value="funnel" className="space-y-6">
+            <FunnelWatchTab />
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">

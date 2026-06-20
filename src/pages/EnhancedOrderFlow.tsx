@@ -26,7 +26,7 @@ import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { trackOrderFlowView, trackFormStart, trackEvent } from "@/lib/analytics";
+import { trackIntakeStarted, trackFormStart, trackEvent } from "@/lib/analytics";
 import { formatPrice } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
@@ -147,7 +147,7 @@ const EnhancedOrderFlow = () => {
     notes: "",
   });
 
-  useEffect(() => { trackOrderFlowView(); }, []);
+  useEffect(() => { trackIntakeStarted(); }, []);
 
   const isCorpType = CORP_ENTITIES.includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
