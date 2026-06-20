@@ -306,6 +306,9 @@ const Footer = () => {
               <p className="text-sm text-muted-foreground">
                 &copy; 2024 EZ BIZ FILE SERVICE, LLC. All rights reserved.
               </p>
+              <p className="text-xs text-muted-foreground/80 mt-1">
+                Built by Christian Talavera, MBA MSL
+              </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-muted-foreground">
               <span className="flex items-center space-x-1">
