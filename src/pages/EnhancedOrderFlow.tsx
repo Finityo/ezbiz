@@ -204,7 +204,23 @@ const EnhancedOrderFlow = () => {
   };
 
   const goNext = () => {
-    if (currentStep === 2) trackFormStart("order_business_details");
+    if (currentStep === 1) {
+      void logEvent("state_selected", { state: selectedState });
+      void logEvent("veteran_check_started");
+    }
+    if (currentStep === 2) {
+      trackFormStart("order_business_details");
+      void logEvent("package_selected", { package: selectedPackage, addons: selectedAddOns });
+    }
+    if (currentStep === 3) {
+      void logEvent("business_info_saved");
+      if (user && draftId) {
+        void supabase
+          .from("orders")
+          .update({ business_info_saved_at: new Date().toISOString() })
+          .eq("id", draftId);
+      }
+    }
     if (currentStep === 3 && user) {
       // Already logged in: waiver → create draft + dashboard, standard → Review
       if (isWaiver) {
@@ -213,6 +229,9 @@ const EnhancedOrderFlow = () => {
       }
       setCurrentStep(5);
     } else {
+      if (currentStep === 3) {
+        void logEvent("business_info_started");
+      }
       setCurrentStep((s) => Math.min(s + 1, 5));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
