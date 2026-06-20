@@ -3,6 +3,12 @@ import { Download, Star } from "lucide-react";
 import vvlAsset from "@/assets/vvl.pdf.asset.json";
 import { trackClick } from "@/hooks/useAnalytics";
 import { trackEvent } from "@/lib/analytics";
+import { ACTIVE_ORDER_KEY, logOrderEvent } from "@/lib/orderEvents";
+
+const getActiveOrderId = (): string | null => {
+  if (typeof window === "undefined") return null;
+  try { return window.localStorage.getItem(ACTIVE_ORDER_KEY); } catch { return null; }
+};
 
 const FILE_NAME = "Veteran-Verification-Letter-VVL.pdf";
 
