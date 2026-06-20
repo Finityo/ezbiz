@@ -32,6 +32,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Car, MessageCircle, MapPin, Clock, Zap } from "lucide-react";
 import { isAddonIncludedInPackage } from "@/lib/package-config";
 import { useOrderDraft } from "@/hooks/useOrderDraft";
+import VeteranWaiverDialog from "@/components/order/VeteranWaiverDialog";
 
 export type OrderMode = "guided" | "whiteglove";
 
@@ -151,6 +152,13 @@ const EnhancedOrderFlow = () => {
   const isCorpType = CORP_ENTITIES.includes(selectedEntity);
   const stateFee = selectedState ? (isCorpType ? getCorpStateFee(selectedState) : getStateFee(selectedState)) : 0;
 
+  // Veteran waiver only applies when state=TX AND user is a verified TX vet
+  // formed on/after Jan 1, 2022. Centralized here so totals, draft, and
+  // admin all stay in sync.
+  const veteranEligible = isVeteran && isFormedInTexas2022;
+  const veteranWaiverApplied = veteranEligible && selectedState === "TX";
+  const veteranWaiverAmount = veteranWaiverApplied ? 300 : 0;
+
   const runningTotal = () => {
     const pkgPrice = PACKAGE_PRICES[selectedPackage as PackageType]?.price || 0;
     const addonsTotal = selectedAddOns.reduce((sum, id) => {
@@ -159,7 +167,8 @@ const EnhancedOrderFlow = () => {
     }, 0);
     const speedFee = PROCESSING_PRICES[processingSpeed]?.price || 0;
     const whiteGloveFee = mode === "whiteglove" ? WHITE_GLOVE_BASE : 0;
-    return pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE + whiteGloveFee;
+    const subtotal = pkgPrice + addonsTotal + stateFee + speedFee + SHIPPING_PRICE + whiteGloveFee;
+    return Math.max(0, subtotal - veteranWaiverAmount);
   };
 
   const isStepValid = (step: number): boolean => {
@@ -232,12 +241,36 @@ const EnhancedOrderFlow = () => {
   // application (avoids racing with the resume hydration). The same
   // orderId is reused by saveOrderToDb at checkout (update-in-place).
   const draftDisabled = !!searchParams.get("applicationId") || !!applicationId;
-  const { draftId, ensureDraft, patchDraft, clearDraft } = useOrderDraft(user, {
+  const { draftId, ensureDraft, patchDraft, logEvent, clearDraft } = useOrderDraft(user, {
     disabled: draftDisabled,
   });
   useEffect(() => {
     if (draftId && !orderId) setOrderId(draftId);
   }, [draftId, orderId]);
+
+  // Persist veteran + waiver state into the draft order whenever it changes.
+  useEffect(() => {
+    if (draftDisabled || !user) return;
+    patchDraft({
+      veteran_eligible: veteranEligible,
+      veteran_waiver_applied: veteranWaiverApplied,
+      veteran_waiver_amount: veteranWaiverAmount,
+    });
+  }, [user, draftDisabled, veteranEligible, veteranWaiverApplied, veteranWaiverAmount, patchDraft]);
+
+  // Show the veteran waiver dialog (with VVL download) the first time
+  // a user qualifies in this session.
+  const [waiverDialogOpen, setWaiverDialogOpen] = useState(false);
+  const [vvlDownloaded, setVvlDownloaded] = useState(false);
+  const veteranPromptedRef = useRef(false);
+  useEffect(() => {
+    if (veteranWaiverApplied && !veteranPromptedRef.current) {
+      veteranPromptedRef.current = true;
+      setWaiverDialogOpen(true);
+      void logEvent("veteran_eligible", { state: selectedState });
+    }
+  }, [veteranWaiverApplied, logEvent, selectedState]);
+
   useEffect(() => {
     if (draftDisabled || !user) return;
     if (!selectedState) return; // wait for first meaningful signal
@@ -253,9 +286,12 @@ const EnhancedOrderFlow = () => {
       package: selectedPackage || null,
       package_id: selectedPackage || null,
       state: selectedState || null,
+      selected_state: selectedState || null,
+      selected_addons: selectedAddOns,
       state_fee: stateFee || null,
       total_amount: runningTotal(),
       current_step: currentStep,
+      source_route: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
       source_path: typeof window !== "undefined" ? window.location.pathname + window.location.search : null,
       add_ons: {
         selectedAddOns,
