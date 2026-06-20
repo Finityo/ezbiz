@@ -3,6 +3,7 @@ import { trackEvent } from "@/lib/analytics";
 import VVLDownloadButton from "@/components/veteran/VVLDownloadButton";
 import { Award, CheckCircle2, FileDown, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface VeteranEligibilityGateProps {
@@ -39,7 +40,7 @@ const VeteranEligibilityGate = ({
   }: {
     active: boolean;
     onClick: () => void;
-    children: React.ReactNode;
+    children: ReactNode;
     testId?: string;
   }) => (
     <Button
