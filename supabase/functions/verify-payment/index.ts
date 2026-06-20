@@ -208,7 +208,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ status: "processed", orderId }),
+      JSON.stringify({ status: "processed", orderId, amountTotal: (session.amount_total || 0) / 100, currency: session.currency || "usd" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (err) {
