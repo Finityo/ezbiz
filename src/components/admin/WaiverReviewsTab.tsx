@@ -106,10 +106,19 @@ const WaiverReviewsTab = () => {
       if (orderId) {
         // Update orders.state_fee when waiver is approved/rejected so admin views
         // and pre-payment CSV exports reflect what the customer actually owes.
+        // On approval/rejection, also flip orders.status to pending_payment so
+        // the customer's dashboard status bar shows "Pending Payment" and the
+        // next sign-in fast-paths them to Stripe checkout.
         if (isApproval) {
-          await supabase.from("orders").update({ state_fee: 0 }).eq("id", orderId);
+          await supabase
+            .from("orders")
+            .update({ state_fee: 0, status: "pending_payment" })
+            .eq("id", orderId);
         } else if (isRejection) {
-          await supabase.from("orders").update({ state_fee: originalStateFee }).eq("id", orderId);
+          await supabase
+            .from("orders")
+            .update({ state_fee: originalStateFee, status: "pending_payment" })
+            .eq("id", orderId);
         }
         await supabase.from("order_events").insert({
           order_id: orderId,
