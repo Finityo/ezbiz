@@ -157,7 +157,8 @@ const EnhancedOrderFlow = () => {
   // formed on/after Jan 1, 2022. Centralized here so totals, draft, and
   // admin all stay in sync.
   const veteranEligible = isVeteran && isFormedInTexas2022;
-  const veteranWaiverApplied = veteranEligible && selectedState === "TX";
+  const isTexasFormationState = selectedState === "TX" || selectedState === "Texas";
+  const veteranWaiverApplied = veteranEligible && isTexasFormationState;
   const veteranWaiverAmount = veteranWaiverApplied ? 300 : 0;
 
   const runningTotal = () => {
