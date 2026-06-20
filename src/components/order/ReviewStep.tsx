@@ -141,22 +141,11 @@ const ReviewStep = ({
     });
   };
 
-  // Auto-trigger Stripe checkout when the user arrives via the
-  // post-approval link from Auth.tsx (/order-flow?...&autoPay=1). The
-  // checkout button is also visible in case the auto-launch is blocked.
+  // NOTE: autoPay=1 query param previously auto-launched Stripe Checkout on
+  // load. Disabled by request — the customer must explicitly click the
+  // checkout button on the Review page before being redirected to Stripe.
   const [searchParams] = useSearchParams();
-  const autoPay = searchParams.get("autoPay") === "1";
-  const autoFiredRef = React.useRef(false);
-  React.useEffect(() => {
-    if (!autoPay) return;
-    if (autoFiredRef.current) return;
-    if (waiver.loading) return;
-    if (waiver.isLocked) return;
-    if (loading) return;
-    autoFiredRef.current = true;
-    void handleCheckout();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPay, waiver.loading, waiver.isLocked]);
+  void searchParams;
 
   const Section = ({ title, step, children }: { title: string; step: number; children: React.ReactNode }) => (
     <div className="space-y-2">
