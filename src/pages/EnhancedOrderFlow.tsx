@@ -347,8 +347,58 @@ const EnhancedOrderFlow = () => {
   // This prevents `saveOrderToDb` from inserting a duplicate row and
   // ensures the waiver guard in create-checkout sees the correct status.
   const resumeApplicationId = searchParams.get("applicationId");
-  const [resuming, setResuming] = useState<boolean>(!!resumeApplicationId);
+  const resumeOrderId = searchParams.get("orderId");
+  const [resuming, setResuming] = useState<boolean>(!!resumeApplicationId || !!resumeOrderId);
   const [resumeError, setResumeError] = useState<string | null>(null);
+
+  // ── RESUME BY orderId (unified dashboard "Continue" button) ─────────
+  // Loads the persisted draft order row, hydrates package/state/addons/
+  // veteran fields, and jumps to the saved current_step.
+  useEffect(() => {
+    if (!resumeOrderId || resumeApplicationId) return;
+    if (!user) return;
+    if (orderId === resumeOrderId) {
+      setResuming(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: ord, error } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("id", resumeOrderId)
+          .maybeSingle();
+        if (cancelled) return;
+        if (error || !ord || ord.user_id !== user.id) {
+          setResumeError("We couldn't load that order.");
+          setTimeout(() => navigate("/dashboard"), 1200);
+          return;
+        }
+        if (ord.state) setSelectedState(ord.state);
+        if (ord.entity_type) setSelectedEntity(ord.entity_type);
+        if (ord.package) setSelectedPackage(ord.package);
+        const sa = (ord as any).selected_addons;
+        if (Array.isArray(sa) && sa.length) setSelectedAddOns(sa as string[]);
+        if ((ord as any).veteran_eligible) {
+          setIsVeteran(true);
+          setIsFormedInTexas2022(!!(ord as any).veteran_waiver_applied);
+        }
+        setOrderId(ord.id);
+        try { window.localStorage.setItem("ezbiz_active_order_id", ord.id); } catch {}
+        const step = Math.max(1, Math.min(5, (ord.current_step ?? 1) as number));
+        setCurrentStep(step);
+        setResuming(false);
+      } catch (err) {
+        console.error("Resume by orderId failed:", err);
+        if (!cancelled) {
+          setResumeError("Couldn't load your order.");
+          setResuming(false);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [resumeOrderId, resumeApplicationId, user, orderId, navigate]);
 
   useEffect(() => {
     if (!resumeApplicationId) return;
