@@ -65,8 +65,15 @@ const OrderFlowRoute = () => {
   const isWhiteGlove = mode === "whiteglove";
   const hasValidPackage =
     !!pkg && Object.prototype.hasOwnProperty.call(PACKAGE_PRICES, pkg);
+  // Resume / autoPay links carry orderId or applicationId instead of package —
+  // hydration happens inside EnhancedOrderFlow. Don't bounce them to /pricing.
+  const isResumeLink =
+    !!searchParams.get("orderId") ||
+    !!searchParams.get("applicationId") ||
+    searchParams.get("resume") === "1" ||
+    searchParams.get("autoPay") === "1";
 
-  if (!isWhiteGlove && !hasValidPackage) {
+  if (!isWhiteGlove && !hasValidPackage && !isResumeLink) {
     return <Navigate to="/pricing" replace />;
   }
 
