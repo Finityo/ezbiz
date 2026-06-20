@@ -49,7 +49,6 @@ const EXPECTED_PRICE_CENTS: Record<string, number> = {
   "price_1TAwu6IUysiSR1zw8TGxG4RI": 2900, // legacy shipping (historical orders)
   "price_1Tg08UIUysiSR1zwZZdsIDln": 2900, // current live shipping ($29)
   "price_1TfC5aIUysiSR1zwtNA3RyEa": 100,  // LIVE TEST — $1 Shipping
-  "price_1TfC5aIUysiSR1zwtNA3RyEa": 100, // LIVE TEST — $1 Shipping
 };
 
 const STRICT_UNKNOWN_PRICES = true; // production: unknown live IDs blocked
