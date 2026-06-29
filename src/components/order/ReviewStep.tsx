@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, DEMO_PACKAGE_STRIPE_PRICE_ID, DEMO_SHIPPING_STRIPE_PRICE_ID, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
 import { filterBillableAddons } from "@/lib/package-config";
 import { useWaiverPricing, getEffectiveStateFee } from "@/hooks/useWaiverPricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
