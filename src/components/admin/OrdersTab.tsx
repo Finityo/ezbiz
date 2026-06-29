@@ -400,6 +400,7 @@ const OrdersTab = () => {
       case 'waiver_needs_correction': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
       case 'waiver_approved_payment_required': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'waiver_not_approved_standard_checkout_required': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
+      case 'archived': return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
       default: return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
     }
   };
