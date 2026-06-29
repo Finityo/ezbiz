@@ -556,8 +556,7 @@ const OrdersTab = () => {
                           aria-label={`Select order ${order.id.substring(0, 8)}`}
                           checked={selectedIds.has(order.id)}
                           onCheckedChange={(c) => toggleSelect(order.id, !!c)}
-                          disabled={!eligible}
-                          title={eligible ? undefined : 'Order must be paid before sending to account manager'}
+                          title={eligible ? undefined : 'Not yet eligible for account-manager handoff — selection allowed for other bulk actions'}
                         />
                       </TableCell>
                       <TableCell className="font-mono text-xs">
