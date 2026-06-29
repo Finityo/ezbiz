@@ -296,6 +296,9 @@ export const EXPECTED_PRICE_CENTS: Record<string, number> = (() => {
     if (speed.stripePriceId) map[speed.stripePriceId] = speed.price * 100;
   }
   map[SHIPPING_STRIPE_PRICE_ID] = SHIPPING_PRICE * 100;
+  // Demo / smoke-recording $1 prices — gated behind ?demo=1 in the UI.
+  map[DEMO_PACKAGE_STRIPE_PRICE_ID] = 100;
+  map[DEMO_SHIPPING_STRIPE_PRICE_ID] = 100;
   return map;
 })();
 
