@@ -100,7 +100,7 @@ const ReviewStep = ({
     addonQuantities,
   );
 
-  const isDemoMode = searchParamsRef.current?.get("demo") === "1";
+  const isDemoMode = searchParams.get("demo") === "1";
 
   const handleCheckout = async () => {
     let lineItems = getStripeLineItems(
