@@ -285,14 +285,22 @@ const Pricing = () => {
       0,
     );
 
+  // Demo / smoke-recording mode — keep the flag visible only when ?demo=1 is
+  // in the URL, and propagate it into the order flow so ReviewStep swaps to
+  // the $1 live Stripe prices at checkout.
+  const isDemoMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("demo") === "1";
+
   const handleStart = (packageKey: PackageType) => {
     const params = new URLSearchParams();
     params.set("mode", "guided");
     params.set("package", packageKey);
     const addons = Array.from(selectedAddOns[packageKey]);
     if (addons.length) params.set("addons", addons.join(","));
+    if (isDemoMode) params.set("demo", "1");
     const href = `/order-flow?${params.toString()}`;
-    trackClick(`Start ${packageKey}`, "package_cta", href);
+    trackClick(`Start ${packageKey}${isDemoMode ? " (demo)" : ""}`, "package_cta", href);
     // Persist cart so it survives login/logout and rehydrates as part of
     // the unified draft order on first authenticated step.
     writePendingDraft({
