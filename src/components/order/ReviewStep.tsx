@@ -99,8 +99,10 @@ const ReviewStep = ({
     addonQuantities,
   );
 
+  const isDemoMode = searchParamsRef.current?.get("demo") === "1";
+
   const handleCheckout = async () => {
-    const lineItems = getStripeLineItems(
+    let lineItems = getStripeLineItems(
       selectedPackage as PackageType,
       billableAddOns,
       processingSpeed,
@@ -108,20 +110,30 @@ const ReviewStep = ({
       addonQuantities,
     );
 
+    // Demo / smoke-recording mode — swap to two $1 live prices so the full
+    // customer flow can be recorded for ~$2 (refund in Stripe Dashboard).
+    if (isDemoMode) {
+      lineItems = [
+        { priceId: DEMO_PACKAGE_STRIPE_PRICE_ID, quantity: 1 },
+        { priceId: DEMO_SHIPPING_STRIPE_PRICE_ID, quantity: 1 },
+      ];
+    }
+
     // Persist orders + normalized rows BEFORE Stripe so the webhook can
     // resolve via metadata.orderId → application_id → stripe_session_id.
     const ids = await onCheckoutStarted();
     const orderIdResolved = ids?.orderId ?? undefined;
     const applicationIdResolved = ids?.applicationId ?? undefined;
 
-    trackCheckoutStart(pkg?.name || selectedPackage, total);
+    trackCheckoutStart(pkg?.name || selectedPackage, isDemoMode ? 2 : total);
 
     await checkout(lineItems, {
       // Send the raw state fee — backend re-derives effectiveStateFee from
       // the application status so a tampered client can't under-charge.
-      stateFee: { amount: rawStateFee, stateName: state },
+      // In demo mode we zero it so the session totals $2 even on TX/CA.
+      stateFee: { amount: isDemoMode ? 0 : rawStateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
-      cancelPath: `/order-flow?mode=${mode}`,
+      cancelPath: `/order-flow?mode=${mode}${isDemoMode ? "&demo=1" : ""}`,
       orderId: orderIdResolved,
       applicationId: applicationIdResolved,
       orderEnrichment: {
@@ -136,7 +148,7 @@ const ReviewStep = ({
         contactFirstName: businessDetails.contactFirstName,
         contactLastName: businessDetails.contactLastName,
         contactPhone: businessDetails.contactPhone,
-        totalAmount: total,
+        totalAmount: isDemoMode ? 2 : total,
       },
     });
   };
