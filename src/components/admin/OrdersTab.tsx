@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText, Send } from 'lucide-react';
+import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText, Send, Archive, RotateCcw } from 'lucide-react';
 import OrderDetailDialog from './OrderDetailDialog';
 import { updateOrderStatus as engineUpdateStatus, ORDER_STATUSES, OrderStatus } from '@/lib/orderStatusEngine';
 
