@@ -323,6 +323,25 @@ const Pricing = () => {
       <BackToTop />
 
       <main>
+        {isDemoMode && (
+          <div className="bg-amber-50 border-y border-amber-300 text-amber-900">
+            <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+              <div>
+                <span className="font-bold mr-2">Demo / smoke-recording mode</span>
+                Any package you start from this page checks out at <strong>$2 total</strong>
+                ($1 package + $1 shipping) using live Stripe — refund afterward in the Dashboard.
+              </div>
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => handleStart("deluxe")}
+                className="bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                Start $1 Demo Checkout (Deluxe)
+              </Button>
+            </div>
+          </div>
+        )}
         {/* Hero */}
         <section className="gradient-primary text-white py-10 md:py-14">
           <div className="container mx-auto px-4 text-center max-w-3xl">
