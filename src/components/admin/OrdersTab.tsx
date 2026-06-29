@@ -143,6 +143,7 @@ const OrdersTab = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [recipientOverride, setRecipientOverride] = useState('');
   const [sendingHandoff, setSendingHandoff] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   const PAYABLE_HANDOFF_STATUSES = new Set([
     'payment_complete',
