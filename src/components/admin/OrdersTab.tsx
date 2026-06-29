@@ -168,7 +168,9 @@ const OrdersTab = () => {
       setSelectedIds(new Set());
       return;
     }
-    setSelectedIds(new Set(filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).map((o) => o.id)));
+    // Select every visible row; the handoff action itself re-validates
+    // eligibility before sending so admins can freely multi-select.
+    setSelectedIds(new Set(filteredOrders.map((o) => o.id)));
   };
 
   const sendSelectedToAccountManager = async () => {
@@ -521,11 +523,10 @@ const OrdersTab = () => {
                 <TableRow>
                   <TableHead className="w-10">
                     <Checkbox
-                      aria-label="Select all eligible orders"
+                      aria-label="Select all orders"
                       checked={
                         filteredOrders.length > 0 &&
-                        filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).every((o) => selectedIds.has(o.id)) &&
-                        filteredOrders.some((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || ''))
+                        filteredOrders.every((o) => selectedIds.has(o.id))
                       }
                       onCheckedChange={(c) => toggleSelectAll(!!c)}
                     />
@@ -555,8 +556,7 @@ const OrdersTab = () => {
                           aria-label={`Select order ${order.id.substring(0, 8)}`}
                           checked={selectedIds.has(order.id)}
                           onCheckedChange={(c) => toggleSelect(order.id, !!c)}
-                          disabled={!eligible}
-                          title={eligible ? undefined : 'Order must be paid before sending to account manager'}
+                          title={eligible ? undefined : 'Not yet eligible for account-manager handoff — selection allowed for other bulk actions'}
                         />
                       </TableCell>
                       <TableCell className="font-mono text-xs">
