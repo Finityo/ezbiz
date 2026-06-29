@@ -268,6 +268,9 @@ const OrdersTab = () => {
 
   useEffect(() => {
     let filtered = orders;
+    if (!showArchived) {
+      filtered = filtered.filter(o => o.status !== 'archived');
+    }
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(o => {
@@ -291,7 +294,7 @@ const OrdersTab = () => {
       }
     }
     setFilteredOrders(filtered);
-  }, [orders, searchTerm, statusFilter, contactMap, bizMap]);
+  }, [orders, searchTerm, statusFilter, contactMap, bizMap, showArchived]);
 
   const updateOrderStatus = async (id: string, newStatus: string) => {
     try {
