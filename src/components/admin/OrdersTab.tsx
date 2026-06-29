@@ -168,7 +168,9 @@ const OrdersTab = () => {
       setSelectedIds(new Set());
       return;
     }
-    setSelectedIds(new Set(filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).map((o) => o.id)));
+    // Select every visible row; the handoff action itself re-validates
+    // eligibility before sending so admins can freely multi-select.
+    setSelectedIds(new Set(filteredOrders.map((o) => o.id)));
   };
 
   const sendSelectedToAccountManager = async () => {
