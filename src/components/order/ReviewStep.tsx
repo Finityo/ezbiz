@@ -65,6 +65,7 @@ const ReviewStep = ({
   onCheckoutStarted,
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
+  const [searchParams] = useSearchParams();
   // Waiver-aware display. Backend remains the source of truth and re-derives
   // effectiveStateFee in create-checkout — this only governs the on-screen estimate.
   const waiver = useWaiverPricing(orderId);
