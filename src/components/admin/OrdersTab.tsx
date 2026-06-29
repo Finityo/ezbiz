@@ -523,11 +523,10 @@ const OrdersTab = () => {
                 <TableRow>
                   <TableHead className="w-10">
                     <Checkbox
-                      aria-label="Select all eligible orders"
+                      aria-label="Select all orders"
                       checked={
                         filteredOrders.length > 0 &&
-                        filteredOrders.filter((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || '')).every((o) => selectedIds.has(o.id)) &&
-                        filteredOrders.some((o) => PAYABLE_HANDOFF_STATUSES.has(o.status || ''))
+                        filteredOrders.every((o) => selectedIds.has(o.id))
                       }
                       onCheckedChange={(c) => toggleSelectAll(!!c)}
                     />
