@@ -157,8 +157,6 @@ const ReviewStep = ({
   // NOTE: autoPay=1 query param previously auto-launched Stripe Checkout on
   // load. Disabled by request — the customer must explicitly click the
   // checkout button on the Review page before being redirected to Stripe.
-  const [searchParams] = useSearchParams();
-  void searchParams;
 
   const Section = ({ title, step, children }: { title: string; step: number; children: React.ReactNode }) => (
     <div className="space-y-2">
