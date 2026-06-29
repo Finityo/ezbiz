@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit2, Lock } from "lucide-react";
-import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
+import { PACKAGE_PRICES, ADDON_PRICES, PROCESSING_PRICES, SHIPPING_PRICE, WHITE_GLOVE_BASE, DEMO_PACKAGE_STRIPE_PRICE_ID, DEMO_SHIPPING_STRIPE_PRICE_ID, type PackageType, type AddonId, type ProcessingType, calculateOrderTotal, getStripeLineItems } from "@/lib/pricing";
 import { filterBillableAddons } from "@/lib/package-config";
 import { useWaiverPricing, getEffectiveStateFee } from "@/hooks/useWaiverPricing";
 import { getStateFee, getCorpStateFee } from "@/lib/state-fees";
@@ -65,6 +65,7 @@ const ReviewStep = ({
   onCheckoutStarted,
 }: ReviewStepProps) => {
   const { checkout, loading, error, clearError } = useStripeCheckout();
+  const [searchParams] = useSearchParams();
   // Waiver-aware display. Backend remains the source of truth and re-derives
   // effectiveStateFee in create-checkout — this only governs the on-screen estimate.
   const waiver = useWaiverPricing(orderId);
@@ -99,8 +100,10 @@ const ReviewStep = ({
     addonQuantities,
   );
 
+  const isDemoMode = searchParams.get("demo") === "1";
+
   const handleCheckout = async () => {
-    const lineItems = getStripeLineItems(
+    let lineItems = getStripeLineItems(
       selectedPackage as PackageType,
       billableAddOns,
       processingSpeed,
@@ -108,20 +111,30 @@ const ReviewStep = ({
       addonQuantities,
     );
 
+    // Demo / smoke-recording mode — swap to two $1 live prices so the full
+    // customer flow can be recorded for ~$2 (refund in Stripe Dashboard).
+    if (isDemoMode) {
+      lineItems = [
+        { priceId: DEMO_PACKAGE_STRIPE_PRICE_ID, quantity: 1 },
+        { priceId: DEMO_SHIPPING_STRIPE_PRICE_ID, quantity: 1 },
+      ];
+    }
+
     // Persist orders + normalized rows BEFORE Stripe so the webhook can
     // resolve via metadata.orderId → application_id → stripe_session_id.
     const ids = await onCheckoutStarted();
     const orderIdResolved = ids?.orderId ?? undefined;
     const applicationIdResolved = ids?.applicationId ?? undefined;
 
-    trackCheckoutStart(pkg?.name || selectedPackage, total);
+    trackCheckoutStart(pkg?.name || selectedPackage, isDemoMode ? 2 : total);
 
     await checkout(lineItems, {
       // Send the raw state fee — backend re-derives effectiveStateFee from
       // the application status so a tampered client can't under-charge.
-      stateFee: { amount: rawStateFee, stateName: state },
+      // In demo mode we zero it so the session totals $2 even on TX/CA.
+      stateFee: { amount: isDemoMode ? 0 : rawStateFee, stateName: state },
       successPath: "/dashboard?checkout=success",
-      cancelPath: `/order-flow?mode=${mode}`,
+      cancelPath: `/order-flow?mode=${mode}${isDemoMode ? "&demo=1" : ""}`,
       orderId: orderIdResolved,
       applicationId: applicationIdResolved,
       orderEnrichment: {
@@ -136,7 +149,7 @@ const ReviewStep = ({
         contactFirstName: businessDetails.contactFirstName,
         contactLastName: businessDetails.contactLastName,
         contactPhone: businessDetails.contactPhone,
-        totalAmount: total,
+        totalAmount: isDemoMode ? 2 : total,
       },
     });
   };
@@ -144,8 +157,6 @@ const ReviewStep = ({
   // NOTE: autoPay=1 query param previously auto-launched Stripe Checkout on
   // load. Disabled by request — the customer must explicitly click the
   // checkout button on the Review page before being redirected to Stripe.
-  const [searchParams] = useSearchParams();
-  void searchParams;
 
   const Section = ({ title, step, children }: { title: string; step: number; children: React.ReactNode }) => (
     <div className="space-y-2">

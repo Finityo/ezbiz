@@ -265,6 +265,16 @@ export const PROCESSING_PRICES: Record<
 export const SHIPPING_PRICE = 29;
 export const SHIPPING_STRIPE_PRICE_ID = "price_1Tg08UIUysiSR1zwZZdsIDln";
 
+/**
+ * Demo / smoke-recording mode.
+ * When a customer-facing flow runs with `?demo=1`, the checkout swaps the
+ * real package + shipping prices for these $1 live Stripe Prices so the full
+ * Stripe → /order-success path is exercised for ~$2 (refundable in Dashboard).
+ * Not surfaced in pricing UI; gated entirely by the demo flag.
+ */
+export const DEMO_PACKAGE_STRIPE_PRICE_ID = "price_1TfBdYIUysiSR1zw7bjyb7Nn"; // LIVE TEST — $1 Basic Package
+export const DEMO_SHIPPING_STRIPE_PRICE_ID = "price_1TfC5aIUysiSR1zwtNA3RyEa"; // LIVE TEST — $1 Shipping & Handling
+
 export const WHITE_GLOVE_BASE = ADDON_PRICES.whiteGloveBase.price;
 
 /**
@@ -286,6 +296,9 @@ export const EXPECTED_PRICE_CENTS: Record<string, number> = (() => {
     if (speed.stripePriceId) map[speed.stripePriceId] = speed.price * 100;
   }
   map[SHIPPING_STRIPE_PRICE_ID] = SHIPPING_PRICE * 100;
+  // Demo / smoke-recording $1 prices — gated behind ?demo=1 in the UI.
+  map[DEMO_PACKAGE_STRIPE_PRICE_ID] = 100;
+  map[DEMO_SHIPPING_STRIPE_PRICE_ID] = 100;
   return map;
 })();
 
