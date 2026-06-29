@@ -305,6 +305,30 @@ const OrdersTab = () => {
     }
   };
 
+  const setArchiveStatus = async (id: string, archived: boolean) => {
+    const newStatus = archived ? 'archived' : 'draft';
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) throw error;
+
+      await supabase.from('order_events').insert({
+        order_id: id,
+        event_type: archived ? 'order_archived' : 'order_unarchived',
+        actor: 'admin',
+        metadata: { status: newStatus },
+      });
+
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      toast({ title: archived ? 'Order archived' : 'Order restored', description: `Order #${id.substring(0, 8)} ${archived ? 'moved to archive' : 'restored to active list'}.` });
+    } catch (error) {
+      console.error('Error archiving order:', error);
+      toast({ title: 'Error', description: 'Failed to update archive status.', variant: 'destructive' });
+    }
+  };
+
   const downloadExport = async (
     format: 'csv' | 'xlsx',
     orderId: string | null,
