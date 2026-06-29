@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText, Send } from 'lucide-react';
+import { Search, Filter, Download, CheckCircle, Package, Upload, Loader2, FileText, Send, Archive, RotateCcw } from 'lucide-react';
 import OrderDetailDialog from './OrderDetailDialog';
 import { updateOrderStatus as engineUpdateStatus, ORDER_STATUSES, OrderStatus } from '@/lib/orderStatusEngine';
 
@@ -143,6 +143,7 @@ const OrdersTab = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [recipientOverride, setRecipientOverride] = useState('');
   const [sendingHandoff, setSendingHandoff] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   const PAYABLE_HANDOFF_STATUSES = new Set([
     'payment_complete',
@@ -267,6 +268,9 @@ const OrdersTab = () => {
 
   useEffect(() => {
     let filtered = orders;
+    if (!showArchived) {
+      filtered = filtered.filter(o => o.status !== 'archived');
+    }
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(o => {
@@ -290,7 +294,7 @@ const OrdersTab = () => {
       }
     }
     setFilteredOrders(filtered);
-  }, [orders, searchTerm, statusFilter, contactMap, bizMap]);
+  }, [orders, searchTerm, statusFilter, contactMap, bizMap, showArchived]);
 
   const updateOrderStatus = async (id: string, newStatus: string) => {
     try {
@@ -301,6 +305,30 @@ const OrdersTab = () => {
     } catch (error) {
       console.error('Error updating order:', error);
       toast({ title: 'Error', description: 'Failed to update order status.', variant: 'destructive' });
+    }
+  };
+
+  const setArchiveStatus = async (id: string, archived: boolean) => {
+    const newStatus = archived ? 'archived' : 'draft';
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) throw error;
+
+      await supabase.from('order_events').insert({
+        order_id: id,
+        event_type: archived ? 'order_archived' : 'order_unarchived',
+        actor: 'admin',
+        metadata: { status: newStatus },
+      });
+
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      toast({ title: archived ? 'Order archived' : 'Order restored', description: `Order #${id.substring(0, 8)} ${archived ? 'moved to archive' : 'restored to active list'}.` });
+    } catch (error) {
+      console.error('Error archiving order:', error);
+      toast({ title: 'Error', description: 'Failed to update archive status.', variant: 'destructive' });
     }
   };
 
@@ -372,6 +400,7 @@ const OrdersTab = () => {
       case 'waiver_needs_correction': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
       case 'waiver_approved_payment_required': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300';
       case 'waiver_not_approved_standard_checkout_required': return 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-300';
+      case 'archived': return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
       default: return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
     }
   };
@@ -402,8 +431,8 @@ const OrdersTab = () => {
       {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Total Orders</CardTitle></CardHeader>
-          <CardContent><div className="text-2xl font-bold">{orders.length}</div></CardContent>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Total Active</CardTitle></CardHeader>
+          <CardContent><div className="text-2xl font-bold">{orders.filter(o => o.status !== 'archived').length}</div></CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Pending Payment</CardTitle></CardHeader>
@@ -425,7 +454,7 @@ const OrdersTab = () => {
           <CardTitle className="flex items-center gap-2"><Filter className="h-5 w-5" />Filters & Search</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 items-end">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search orders..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
@@ -451,6 +480,7 @@ const OrdersTab = () => {
                 <SelectItem value="filed">Filed</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex gap-2 md:col-span-1 col-span-full">
@@ -473,6 +503,15 @@ const OrdersTab = () => {
                 {exporting === 'all-xlsx' ? 'Exporting…' : 'XLSX'}
               </Button>
             </div>
+            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+              <input
+                type="checkbox"
+                className="rounded border-border"
+                checked={showArchived}
+                onChange={(e) => setShowArchived(e.target.checked)}
+              />
+              Show archived orders
+            </label>
           </div>
         </CardContent>
       </Card>
@@ -648,6 +687,20 @@ const OrdersTab = () => {
                               <CheckCircle className="h-3 w-3" />
                             </Button>
                           )}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => {
+                              const isArchived = order.status === 'archived';
+                              if (window.confirm(isArchived ? 'Restore this order to the active list?' : 'Archive this order? It will be hidden from the default list.')) {
+                                setArchiveStatus(order.id, !isArchived);
+                              }
+                            }}
+                            title={order.status === 'archived' ? 'Restore order' : 'Archive order'}
+                          >
+                            {order.status === 'archived' ? <RotateCcw className="h-3 w-3" /> : <Archive className="h-3 w-3" />}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
