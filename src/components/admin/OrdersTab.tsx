@@ -686,6 +686,20 @@ const OrdersTab = () => {
                               <CheckCircle className="h-3 w-3" />
                             </Button>
                           )}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => {
+                              const isArchived = order.status === 'archived';
+                              if (window.confirm(isArchived ? 'Restore this order to the active list?' : 'Archive this order? It will be hidden from the default list.')) {
+                                setArchiveStatus(order.id, !isArchived);
+                              }
+                            }}
+                            title={order.status === 'archived' ? 'Restore order' : 'Archive order'}
+                          >
+                            {order.status === 'archived' ? <RotateCcw className="h-3 w-3" /> : <Archive className="h-3 w-3" />}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
